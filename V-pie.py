@@ -69,10 +69,9 @@ addon_keymaps = []
 
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
-
-    km = addon.keymaps.new(name="View 3D", space_type="VIEW_3D")
+    km = addon.keymaps.new(name="Curve")  # space_type="VIEW_3D"
     kmi = km.keymap_items.new("wm.call_menu_pie", 'V', 'CLICK_DRAG')
-    kmi.properties.name = "VIEW3D_PIE_MT_Bottom_V"
+    kmi.properties.name = 'VIEW3D_PIE_MT_Bottom_V'
     addon_keymaps.append(km)
 
 
@@ -81,7 +80,7 @@ def unregister_keymaps():
     for km in addon_keymaps:
         for kmi in km.keymap_items:
             km.keymap_items.remove(kmi)
-        # wm.keyconfigs.addon.keymaps.remove(km)
+        wm.keyconfigs.addon.keymaps.remove(km)
     addon_keymaps.clear()
 
 
