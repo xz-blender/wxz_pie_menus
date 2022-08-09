@@ -20,6 +20,13 @@ keyconfig_data = \
       },
      ),
     ("wm.call_menu_pie",
+     {"type": 'X', "value": 'CLICK_DRAG', "shift": True, "ctrl": True},
+     {"properties":
+      [("name", 'VIEW3D_PIE_MT_Bottom_X_ctrl_shift'),
+       ],
+      },
+     ),
+    ("wm.call_menu_pie",
      {"type": 'X', "value": 'CLICK_DRAG'},
      {"properties":
       [("name", 'VIEW3D_PIE_MT_Bottom_X'),
