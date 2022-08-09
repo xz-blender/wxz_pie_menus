@@ -26,7 +26,7 @@ class VIEW3D_PIE_MT_Bottom_X_ctrl_shift(Menu):
         ob_type = context.object.type
         ob_mode = context.object.mode
 
-        if context.active_object is not None:
+        if bool(context.active_object) == True:
             if ob_mode == "OBJECT":
                 # 4 - LEFT
                 col = pie.split().box().column(align=True)
