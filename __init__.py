@@ -1,8 +1,8 @@
-from bpy.types import (PropertyGroup, AddonPreferences, Operator)
-from bpy.props import (BoolProperty, PointerProperty)
+from bpy.types import PropertyGroup, AddonPreferences, Operator
+from bpy.props import BoolProperty, PointerProperty
 import bpy
 import os
-from.utils import check_rely_addon, rely_addons
+from .utils import check_rely_addon, rely_addons
 
 
 bl_info = {
@@ -11,7 +11,7 @@ bl_info = {
     "version": (0, 1, 0),
     "blender": (2, 80, 0),
     "description": "Pie Menu",
-    "category": "3D View"
+    "category": "3D View",
 }
 
 sub_modules_names = [
@@ -34,13 +34,15 @@ sub_modules_names = [
     "Q_alt-key",
     "Q-key",
     "V-pie",
+    "X_ctrl_shift-pie",
 ]
 sub_modules_names.sort()
 
-sub_modules = [__import__(__package__ + "." + submod, {}, {}, submod)
-               for submod in sub_modules_names]
-sub_modules.sort(key=lambda mod: (
-    mod.bl_info['name'], mod.bl_info['category']))
+sub_modules = [
+    __import__(__package__ + "." + submod, {}, {}, submod)
+    for submod in sub_modules_names
+]
+sub_modules.sort(key=lambda mod: (mod.bl_info['name'], mod.bl_info['category']))
 
 
 def _get_pref_class(mod):
@@ -101,7 +103,9 @@ def unregister_submodule(mod):
 
 
 def get_dirpath():
-    return os.path.join(os.path.dirname(os.path.realpath(__file__)), "keymap_presets")
+    return os.path.join(
+        os.path.dirname(os.path.realpath(__file__)), "keymap_presets"
+    )
 
 
 class Empty_Operator(Operator):
@@ -127,8 +131,9 @@ class Apply_My_Keymap(Operator):
     def execute(self, context):
         if os.path.exists(self.path):
             bpy.ops.preferences.keyconfig_import(filepath=self.path)
-            self.report({'INFO'}, '已应用快捷键配置:"%s"' %
-                        (os.path.basename(self.path)))
+            self.report(
+                {'INFO'}, '已应用快捷键配置:"%s"' % (os.path.basename(self.path))
+            )
             return {"FINISHED"}
         else:
             self.report({'INFO'}, '未应用快捷键表:"%s"' % (slef.path))
@@ -188,15 +193,18 @@ class WXZ_PIE_Preferences(AddonPreferences):
         sub = box.row(align=True)
         sub.label(text='自定义快捷键表:', icon='EVENT_SPACEKEY')
 
-        sub.operator(Apply_My_Keymap.bl_idname, text='应用--"预设表"').path = os.path.join(
-            get_dirpath(), 'My_Keymaps.py')
-        sub.operator(Apply_My_Keymap.bl_idname, text='应用--"备份表"').path = os.path.join(
-            get_dirpath(), 'Stored_Keymaps.py')
+        sub.operator(
+            Apply_My_Keymap.bl_idname, text='应用--"预设表"'
+        ).path = os.path.join(get_dirpath(), 'My_Keymaps.py')
+        sub.operator(
+            Apply_My_Keymap.bl_idname, text='应用--"备份表"'
+        ).path = os.path.join(get_dirpath(), 'Stored_Keymaps.py')
 
         row = row.box()
         row.alignment = "RIGHT"
-        row.operator(Restore_My_Keymap.bl_idname, text="备份当前快捷键表").path = os.path.join(
-            get_dirpath(), 'Stored_Keymaps.py')
+        row.operator(
+            Restore_My_Keymap.bl_idname, text="备份当前快捷键表"
+        ).path = os.path.join(get_dirpath(), 'Stored_Keymaps.py')
 
         split = layout.split()
 
@@ -217,8 +225,12 @@ class WXZ_PIE_Preferences(AddonPreferences):
                 sub.label(text='', icon="CHECKMARK")
             elif check_rely_addon(name[0], name[1]) == '0':
                 sub.label(text='点此图标开启插件--->')
-                sub.operator(Enable_Addon.bl_idname, text='', icon="CHECKBOX_HLT",
-                             emboss=True).module = name[1]
+                sub.operator(
+                    Enable_Addon.bl_idname,
+                    text='',
+                    icon="CHECKBOX_HLT",
+                    emboss=True,
+                ).module = name[1]
             else:
                 sub.label(text='未安装此插件', icon="ERROR")
 
@@ -235,8 +247,10 @@ class WXZ_PIE_Preferences(AddonPreferences):
             row = box.row()
             sub = row.row()
             sub.context_pointer_set('addon_prefs', self)
-            sub.label(icon="DOT", text='{} ———— {}'.format(
-                info['name'], info['category']))
+            sub.label(
+                icon="DOT",
+                text='{} ———— {}'.format(info['name'], info['category']),
+            )
             sub = row.row()
             sub.alignment = 'RIGHT'
             sub.prop(self, 'use_' + mod_name, text='')
@@ -258,6 +272,7 @@ for mod in sub_modules:
             else:
                 unregister_submodule(mod)
             mod.__addon_enabled__ = enabled
+
         return update
 
     create_property(
@@ -268,12 +283,12 @@ for mod in sub_modules:
             description=info.get('description', ''),
             update=gen_update(mod),
             default=True,
-        ))
+        ),
+    )
 
     create_property(
-        WXZ_PIE_Preferences,
-        'show_expanded_' + mod_name,
-        BoolProperty())
+        WXZ_PIE_Preferences, 'show_expanded_' + mod_name, BoolProperty()
+    )
 
 
 classes = (
