@@ -43,17 +43,29 @@ class VIEW3D_PIE_MT_Bottom_V(Menu):
         elif ob_mode == 'EDIT':
             if ob_type == 'CURVE':
                 # 4 - LEFT
-                pie.operator('curve.handle_type_set').type = 'VECTOR'
+                pie.operator(
+                    'curve.handle_type_set', text='矢量', icon='HANDLE_VECTOR'
+                ).type = 'VECTOR'
                 # 6 - RIGHT
-                pie.operator('curve.handle_type_set').type = 'ALIGNED'
+                pie.operator(
+                    'curve.handle_type_set', text='对齐', icon='HANDLE_ALIGNED'
+                ).type = 'ALIGNED'
                 # 2 - BOTTOM
                 pie.separator()
                 # 8 - TOP
-                pie.operator('curve.handle_type_set').type = 'TOGGLE_FREE_ALIGN'
+                pie.operator(
+                    'curve.handle_type_set',
+                    text='自由',
+                    icon='HANDLE_AUTOCLAMPED',
+                ).type = 'TOGGLE_FREE_ALIGN'
                 # 7 - TOP - LEFT
-                pie.operator('curve.handle_type_set').type = 'FREE_ALIGN'
+                pie.operator(
+                    'curve.handle_type_set', text='自动', icon='HANDLE_AUTO'
+                ).type = 'FREE_ALIGN'
                 # 9 - TOP - RIGHT
-                pie.operator('curve.handle_type_set').type = 'AUTOMATIC'
+                pie.operator(
+                    'curve.handle_type_set', text='自由/对齐', icon='HANDLE_FREE'
+                ).type = 'TOGGLE_FREE_ALIGN'
                 # 1 - BOTTOM - LEFT
                 pie.separator()
                 # 3 - BOTTOM - RIGHT
