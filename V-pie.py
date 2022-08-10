@@ -55,17 +55,17 @@ class VIEW3D_PIE_MT_Bottom_V(Menu):
                 # 8 - TOP
                 pie.operator(
                     'curve.handle_type_set',
-                    text='自由',
+                    text='自由/对齐',
                     icon='HANDLE_AUTOCLAMPED',
                 ).type = 'TOGGLE_FREE_ALIGN'
                 # 7 - TOP - LEFT
                 pie.operator(
-                    'curve.handle_type_set', text='自动', icon='HANDLE_AUTO'
+                    'curve.handle_type_set', text='自由', icon='HANDLE_FREE'
                 ).type = 'FREE_ALIGN'
                 # 9 - TOP - RIGHT
                 pie.operator(
-                    'curve.handle_type_set', text='自由/对齐', icon='HANDLE_FREE'
-                ).type = 'TOGGLE_FREE_ALIGN'
+                    'curve.handle_type_set', text='自动', icon='HANDLE_AUTO'
+                ).type = 'AUTOMATIC'
                 # 1 - BOTTOM - LEFT
                 pie.separator()
                 # 3 - BOTTOM - RIGHT
