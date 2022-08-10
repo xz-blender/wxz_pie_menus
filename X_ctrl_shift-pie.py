@@ -20,59 +20,89 @@ class VIEW3D_PIE_MT_Bottom_X_ctrl_shift(Menu):
 
     def draw(self, context):
         layout = self.layout
-        layout.alignment = "CENTER"
         pie = layout.menu_pie()
 
         ob_type = context.object.type
         ob_mode = context.object.mode
 
-        if bool(context.active_object) == True:
-            if ob_mode == "OBJECT":
-                # 4 - LEFT
-                col = pie.split().box().column(align=True)
-                row = col.row()
-                L_op = row.operator('object.origin_set', text='原点 -> 质心(表面)')
-                L_op.type = 'ORIGIN_CENTER_OF_MASS'
-                L_op.center = 'MEDIAN'
-                col.separator(factor=0.2)
-                row = col.row()
-                L_op = row.operator('object.origin_set', text='原点 -> 质心(体积)')
-                L_op.type = 'ORIGIN_CENTER_OF_VOLUME'
-                L_op.center = 'MEDIAN'
-                # 6 - RIGHT
-                pie.separator()
-                # 2 - BOTTOM
-                pie.separator()
-                # 8 - TOP
-                pie.operator()
-                # 7 - TOP - LEFT
-                pie.separator()
-                # 9 - TOP - RIGHT
-                pie.separator()
-                # 1 - BOTTOM - LEFT
-                pie.separator()
-                # 3 - BOTTOM - RIGHT
-                pie.separator()
+        if ob_mode == "OBJECT":
+            # 4 - LEFT
+            col = pie.split().box().column(align=True)
+            col.scale_y = 1.2
+            row = col.row()
+            L_op = row.operator('object.origin_set', text='原点 -> 质心(表面)')
+            L_op.type = 'ORIGIN_CENTER_OF_MASS'
+            L_op.center = 'MEDIAN'
+            col.separator(factor=0.2)
+            row = col.row()
+            L_op = row.operator('object.origin_set', text='原点 -> 质心(体积)')
+            L_op.type = 'ORIGIN_CENTER_OF_VOLUME'
+            L_op.center = 'MEDIAN'
+            # 6 - RIGHT
+            TR_op = pie.operator('object.origin_set', text='原点 -> 游标')
+            TR_op.type = 'ORIGIN_CURSOR'
+            TR_op.center = 'BOUNDS'
+            # # 2 - BOTTOM
+            pie.operator(
+                PIE_Origin_TO_Bottom_Apply_Object.bl_idname, text='原点 -> 底部'
+            )
+            # # 8 - TOP
+            pie.operator(
+                PIE_Origin_To_Selection_Object.bl_idname, text='原点 -> 选择'
+            )
+            # # 7 - TOP - LEFT
+            TL_op = pie.operator('object.origin_set', text='几何中心 -> 原点')
+            TL_op.type = 'GEOMETRY_ORIGIN'
+            TL_op.center = 'BOUNDS'
+            # # 9 - TOP - RIGHT
+            # pie.separator()
+            TR_op = pie.operator('object.origin_set', text='原点 -> 几何中心')
+            TR_op.type = 'ORIGIN_GEOMETRY'
+            TR_op.center = 'BOUNDS'
+            # # 1 - BOTTOM - LEFT
+            pie.separator()
+            # # 3 - BOTTOM - RIGHT
+            pie.operator(
+                PIE_Origin_TO_Bottom_No_Apply.bl_idname, text='原点 -> 底部(不应用)'
+            )
 
-            elif ob_mode == "MESH":
-                # 4 - LEFT
-                pie.separator(
-                    PIE_Origin_To_Mass_Edit.bl_idname, text='原点 --> 质心'
-                )
-                # 6 - RIGHT
-                pie.separator()
-                # 2 - BOTTOM
-                pie.separator()
-                # 8 - TOP
-                pie.operator()
-                # 7 - TOP - LEFT
-                pie.separator()
-                # 9 - TOP - RIGHT
-                pie.separator()
-                # 1 - BOTTOM - LEFT
-                pie.separator()
-                # 3 - BOTTOM - RIGHT
-                pie.separator()
+        elif ob_mode == "EDIT":
+            # 4 - LEFT
+            col = pie.split().box().column(align=True)
+            col.scale_y = 1.2
+            row = col.row()
+            L_op = row.operator(
+                PIE_Origin_To_Mass_Edit.bl_idname, text='原点 -> 质心(表面)'
+            )
+            L_op.mass_type = 'ORIGIN_CENTER_OF_MASS'
+            col.separator(factor=0.2)
+            row = col.row()
+            L_op = row.operator(
+                PIE_Origin_To_Mass_Edit.bl_idname, text='原点 -> 质心(体积)'
+            )
+            L_op.mass_type = 'ORIGIN_CENTER_OF_VOLUME'
+            # 6 - RIGHT
+            pie.operator(PIE_Origin_To_Cursor_Edit.bl_idname, text='原点 -> 游标')
+            # 2 - BOTTOM
+            pie.operator(
+                PIE_Origin_TO_Bottom_Apply_Edit.bl_idname, text='原点 -> 底部'
+            )
+            # 8 - TOP
+            pie.operator(
+                PIE_Origin_To_Selection_Edit.bl_idname, text='原点 -> 选择'
+            )
+            # 7 - TOP - LEFT
+            pie.operator(
+                PIE_Geometry_To_Origin_Edit.bl_idname, text='几何中心 -> 原点'
+            )
+            # 9 - TOP - RIGHT
+            pie.operator(PIE_Origin_To_Geometry_Edit, text='原点 -> 几何中心')
+            # 1 - BOTTOM - LEFT
+            pie.separator()
+            # 3 - BOTTOM - RIGHT
+            pie.operator(
+                PIE_Origin_TO_Bottom_No_Apply.bl_idname, text='原点 -> 底部(不应用)'
+            )
 
 
 # --------Operator---------
@@ -146,7 +176,6 @@ class PIE_Origin_TO_Bottom_Apply_Object(Operator):
         return obj is not None and obj.type == "MESH"
 
     def execute(self, context):
-        bpy.ops.object.mode_set(mode='OBJECT')
         bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
         bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY')
         o = context.active_object
@@ -179,21 +208,9 @@ class PIE_Origin_TO_Bottom_Apply_Edit(Operator):
 
     def execute(self, context):
         bpy.ops.object.mode_set(mode='OBJECT')
-        bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
-        bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY')
-        o = context.active_object
-        init = 0
-        for x in o.data.vertices:
-            if init == 0:
-                a = x.co.z
-                init = 1
-            elif x.co.z < a:
-                a = x.co.z
 
-        for x in o.data.vertices:
-            x.co.z -= a
+        bpy.ops.pie.origin_to_bottom_apply_object()
 
-        o.location.z += a
         bpy.ops.object.mode_set(mode='EDIT')
 
         return {'FINISHED'}
@@ -238,7 +255,7 @@ def CheckOrigin(context):
         return False
 
 
-class PIE_Origin_To_Selection_Edit(bpy.types.Operator):
+class PIE_Origin_To_Selection_Edit(Operator):
     bl_idname = "pie.origin_to_selection_edit"
     bl_label = __qualname__
     bl_description = ""
@@ -287,13 +304,15 @@ class PIE_Origin_To_Mass_Edit(Operator):
     bl_description = ""
     bl_options = {'REGISTER', 'UNDO'}
 
+    mass_type: bpy.props.StringProperty()
+
     @classmethod
     def poll(cls, context):
         return context.active_object is not None
 
     def execute(self, context):
         bpy.ops.object.mode_set(mode='OBJECT')
-        bpy.ops.object.origin_set(type='ORIGIN_CENTER_OF_MASS', center='MEDIAN')
+        bpy.ops.object.origin_set(type=self.mass_type, center='MEDIAN')
         bpy.ops.object.mode_set(mode='EDIT')
 
         return {'FINISHED'}
@@ -306,15 +325,13 @@ class PIE_Origin_To_Geometry_Edit(Operator):
     bl_description = "Origin To Geometry Edit"
     bl_options = {'REGISTER', 'UNDO'}
 
-    mass_type: bpy.props.StringProperty()
-
     @classmethod
     def poll(cls, context):
         return context.active_object is not None
 
     def execute(self, context):
         bpy.ops.object.mode_set(mode='OBJECT')
-        bpy.ops.object.origin_set(type=self.mass_type, center='MEDIAN')
+        bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='MEDIAN')
         bpy.ops.object.mode_set(mode='EDIT')
 
         return {'FINISHED'}
@@ -359,9 +376,16 @@ addon_keymaps = []
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
 
-    km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
+    km = addon.keymaps.new(name="Object Mode")
     kmi = km.keymap_items.new(
-        "wm.call_menu_pie", "X", "CLICK_DRAG", ctrl=True, shift=True
+        "wm.call_menu_pie", "X", "CLICK_DRAG", ctrl=True, alt=True
+    )
+    kmi.properties.name = "VIEW3D_PIE_MT_Bottom_X_ctrl_shift"
+    addon_keymaps.append(km)
+
+    km = addon.keymaps.new(name="Mesh")
+    kmi = km.keymap_items.new(
+        "wm.call_menu_pie", "X", "CLICK_DRAG", ctrl=True, alt=True
     )
     kmi.properties.name = "VIEW3D_PIE_MT_Bottom_X_ctrl_shift"
     addon_keymaps.append(km)
@@ -372,7 +396,7 @@ def unregister_keymaps():
     for km in addon_keymaps:
         for kmi in km.keymap_items:
             km.keymap_items.remove(kmi)
-        # wm.keyconfigs.addon.keymaps.remove(km)
+        wm.keyconfigs.addon.keymaps.remove(km)
     addon_keymaps.clear()
 
 

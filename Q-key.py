@@ -9,7 +9,8 @@ bl_info = {
     "version": (0, 0, 1),
     "blender": (3, 3, 0),
     "location": "View3D",
-    "category": "Interface"}
+    "category": "Interface",
+}
 
 
 class PIE_MT_Bottom_Q_favorite(Menu):
@@ -95,13 +96,16 @@ class PIE_Q_key_shift(Operator):
             if ob_mode == 'EDIT':
                 if ob_type == 'MESH':
                     bpy.ops.mesh.select_linked_pick(
-                        'INVOKE_DEFAULT', deselect=True)
+                        'INVOKE_DEFAULT', deselect=True
+                    )
                 elif ob_type == 'CURVE':
                     bpy.ops.curve.select_linked_pick(
-                        'INVOKE_DEFAULT', deselect=True)
+                        'INVOKE_DEFAULT', deselect=True
+                    )
                 elif ob_type == 'ARMATURE':
                     bpy.ops.armature.select_linked_pick(
-                        'INVOKE_DEFAULT', deselect=True)
+                        'INVOKE_DEFAULT', deselect=True
+                    )
             elif ob_mode == 'SCULPT':
                 # 当您尝试调用它时，执行上下文是 EXEC_DEFAULT，但它只支持 INVOKE_DEFAULT。
                 bpy.ops.object.transfer_mode('INVOKE_DEFAULT')
@@ -110,7 +114,8 @@ class PIE_Q_key_shift(Operator):
                     bpy.ops.gpencil.select_alternate('INVOKE_DEFAULT')
         elif area_type == 'IMAGE_EDITOR':
             bpy.ops.uv.select_linked_pick(
-                'INVOKE_DEFAULT', extend=True, deselect=True)
+                'INVOKE_DEFAULT', extend=True, deselect=True
+            )
 
         return {"FINISHED"}
 
@@ -148,14 +153,24 @@ addon_keymaps = []
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
 
-    km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
-    kmi = km.keymap_items.new("pie.q_key",  'Q', 'CLICK')
-    kmi = km.keymap_items.new("pie.q_key_shift",  'Q', 'CLICK', shift=True)
+    km = addon.keymaps.new(name="Object Mode")
+    kmi = km.keymap_items.new("pie.q_key", 'Q', 'CLICK')
+    kmi = km.keymap_items.new("pie.q_key_shift", 'Q', 'CLICK', shift=True)
     addon_keymaps.append(km)
 
-    km = addon.keymaps.new(name="Image", space_type="IMAGE_EDITOR")
-    kmi = km.keymap_items.new("pie.q_key",  'Q', 'CLICK')
-    kmi = km.keymap_items.new("pie.q_key_shift",  'Q', 'CLICK', shift=True)
+    km = addon.keymaps.new(name="Mesh")
+    kmi = km.keymap_items.new("pie.q_key", 'Q', 'CLICK')
+    kmi = km.keymap_items.new("pie.q_key_shift", 'Q', 'CLICK', shift=True)
+    addon_keymaps.append(km)
+
+    km = addon.keymaps.new(name="Object Mode")
+    kmi = km.keymap_items.new("wm.call_menu", 'Q', 'CLICK', ctrl=True)
+    kmi.properties.name = 'VIEW3D_MT_make_links'
+    addon_keymaps.append(km)
+
+    km = addon.keymaps.new(name="UV Editor")
+    kmi = km.keymap_items.new("pie.q_key", 'Q', 'CLICK')
+    kmi = km.keymap_items.new("pie.q_key_shift", 'Q', 'CLICK', shift=True)
     addon_keymaps.append(km)
 
 
