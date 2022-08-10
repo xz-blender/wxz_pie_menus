@@ -88,7 +88,7 @@ class PIE_Q_key_shift(Operator):
     def execute(self, context):
         ob_mode = context.object.mode
         ob_type = context.object.type
-        area_type = context.area.ui_type
+        area_type = context.area.type
 
         if area_type == 'VIEW_3D':
             if ob_mode == 'OBJECT':
@@ -113,6 +113,7 @@ class PIE_Q_key_shift(Operator):
                 if self.gpencil_seselect_linkes_toggle == True:
                     bpy.ops.gpencil.select_alternate('INVOKE_DEFAULT')
         elif area_type == 'IMAGE_EDITOR':
+            print('UVyes')
             bpy.ops.uv.select_linked_pick(
                 'INVOKE_DEFAULT', extend=True, deselect=True
             )

@@ -13,6 +13,7 @@ rely_addons = [
     ('EdgeFlow', 'slide_edge'),  # 7
     ('Bend Face', 'bend_face'),  # 8
     ('Face Cutter', 'face_cutter'),  # 9
+    ('Curve Tools', 'curve_tools'),  # 10
 ]
 
 # rely_addons.sort(key=lambda name: name[0])

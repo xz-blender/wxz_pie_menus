@@ -96,7 +96,9 @@ class VIEW3D_PIE_MT_Bottom_X_ctrl_shift(Menu):
                 PIE_Geometry_To_Origin_Edit.bl_idname, text='几何中心 -> 原点'
             )
             # 9 - TOP - RIGHT
-            pie.operator(PIE_Origin_To_Geometry_Edit, text='原点 -> 几何中心')
+            pie.operator(
+                PIE_Origin_To_Geometry_Edit.bl_idname, text='原点 -> 几何中心'
+            )
             # 1 - BOTTOM - LEFT
             pie.separator()
             # 3 - BOTTOM - RIGHT
