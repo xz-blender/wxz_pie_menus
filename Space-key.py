@@ -52,7 +52,7 @@ class VIEW3D_PIE_MT_Space_KEY_shift(Menu):
     def draw(self, context):
         pie = self.layout.menu_pie()
 
-        set_pie_ridius(context)
+        set_pie_ridius(context, 100)
 
         if context.area.ui_type in [
             'VIEW_3D',

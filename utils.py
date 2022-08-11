@@ -34,7 +34,5 @@ def check_rely_addon(a_name, p_name):  # addon name & path name
         return '2'  # 未安装
 
 
-def set_pie_ridius(context, radius, default=True):
-    default_radius = 100
-    if self.default == False:
-        context.preferences.pie_menu_radius = self.radius
+def set_pie_ridius(context, radius=100):
+    context.preferences.view.pie_menu_radius = radius

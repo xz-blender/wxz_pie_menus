@@ -25,7 +25,7 @@ class VIEW3D_PIE_MT_Bottom_E(Menu):
         ob_type = context.object.type
         ob_mode = context.object.mode
 
-        set_pie_ridius(context)
+        set_pie_ridius(context, 100)
 
         # "EdgeFlow"addon
         ef_name, ef_path = rely_addons[7][0], rely_addons[7][1]

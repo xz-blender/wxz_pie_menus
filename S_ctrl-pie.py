@@ -41,7 +41,7 @@ class VIEW3D_PIE_MT_Bottom_S_ctrl(Menu):
         ob_type = context.object.type
         ob_mode = context.object.mode
 
-        set_pie_ridius(context)
+        set_pie_ridius(context, 100)
 
         # SketchUp IO Addon:
         su_name, su_path = rely_addons[5][0], rely_addons[5][1]

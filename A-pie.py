@@ -24,7 +24,7 @@ class PIE_MT_Bottom_A(Menu):
         ob_mode = context.object.mode
 
         # set pie radius
-        set_pie_ridius(context)
+        set_pie_ridius(context, 100)
 
         # addon1:"DPFR Distribute Objects"
         addon1 = check_rely_addon(rely_addons[4][0], rely_addons[4][1])

@@ -21,12 +21,11 @@ class OUTLINER_PIE_MT_Bottom_A(Menu):
         layout = self.layout
         pie = layout.menu_pie()
 
-        set_pie_ridius(context, 20, False)
-
         ob_type = context.object.type
         ob_mode = context.object.mode
-        # if context.area.type == "OUTLINER":
-        context.preferences.view.pie_menu_radius = 20
+
+        set_pie_ridius(context, 20)
+
         pie.operator(
             'outliner.show_one_level', icon='REMOVE', text=''
         ).open = False
@@ -44,8 +43,6 @@ class OUTLINER_PIE_MT_Bottom_A(Menu):
         pie.separator()
         # 3 - BOTTOM - RIGHT
         pie.separator()
-
-        context.preferences.view.pie_menu_radius = 100
 
 
 classes = [

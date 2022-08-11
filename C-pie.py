@@ -25,7 +25,7 @@ class VIEW3D_PIE_MT_Bottom_C(Menu):
         ob_type = context.object.type
         ob_mode = context.object.mode
 
-        set_pie_ridius(context)
+        set_pie_ridius(context, 100)
 
         # addon1:"LoopTools"
         # addon1 = check_rely_addon(rely_addons[2][0], rely_addons[2][1])

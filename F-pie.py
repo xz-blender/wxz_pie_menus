@@ -25,7 +25,7 @@ class VIEW3D_PIE_MT_Bottom_F(Menu):
         ob_type = context.object.type
         ob_mode = context.object.mode
 
-        set_pie_ridius(context)
+        set_pie_ridius(context, 100)
 
         # addon1:"Edit Mesh Tools"
         addon1 = check_rely_addon(rely_addons[0][0], rely_addons[0][1])

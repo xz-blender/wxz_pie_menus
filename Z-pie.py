@@ -25,7 +25,7 @@ class VIEW3D_PIE_MT_Bottom_Z_Overlay(Menu):
         ob_type = context.object.type
         ob_mode = context.object.mode
 
-        set_pie_ridius(context)
+        set_pie_ridius(context, 100)
 
         # 4 - LEFT
         col = pie.column()

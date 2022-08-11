@@ -31,7 +31,7 @@ class VIEW3D_PIE_MT_Bottom_X(Menu):
         ob_mode = context.object.mode
         ed_mode = context.tool_settings.mesh_select_mode
 
-        set_pie_ridius(context)
+        set_pie_ridius(context, 100)
 
         if ob_mode == 'EDIT':
             col = pie.split().box().column(align=True)

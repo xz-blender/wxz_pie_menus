@@ -24,7 +24,7 @@ class VIEW3D_PIE_MT_Bottom_V(Menu):
         ob_type = context.object.type
         ob_mode = context.object.mode
 
-        set_pie_ridius(context)
+        set_pie_ridius(context, 100)
 
         if ob_mode == 'OBJECT':
             # 4 - LEFT

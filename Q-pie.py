@@ -30,7 +30,7 @@ class VIEW3D_PIE_MT_Bottom_Q(Menu):
         layout = self.layout
         pie = layout.menu_pie()
 
-        set_pie_ridius(context)
+        set_pie_ridius(context, 100)
 
         # 4 - LEFT
         pie.operator(
