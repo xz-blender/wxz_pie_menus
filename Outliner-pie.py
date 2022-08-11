@@ -22,7 +22,7 @@ class OUTLINER_PIE_MT_Bottom_A(Menu):
 
         ob_type = context.object.type
         ob_mode = context.object.mode
-        radius = context.user_preferences.view.pie_menu_radius
+        radius = context.preferences.view.pie_menu_radius
         if context.area.type == 'OUTLINER':
             radius = 50
         else:
@@ -56,8 +56,7 @@ addon_keymaps = []
 
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
-
-    km = addon.keymaps.new(name="Outliner")
+    km = addon.keymaps.new(name="Outliner", space_type='OUTLINER')
     kmi = km.keymap_items.new("wm.call_menu_pie", 'A', 'CLICK_DRAG')
     kmi.properties.name = "OUTLINER_PIE_MT_Bottom_A"
     kmi = km.keymap_items.new("outliner.show_active", 'F', 'CLICK')
