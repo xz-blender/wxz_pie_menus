@@ -62,21 +62,6 @@ keyconfig_data = \
        ],
       },
      ),
-    ("pie.q_alt_key", {"type": 'Q', "value": 'CLICK', "alt": True}, None),
-    ("wm.call_menu_pie",
-     {"type": 'Q', "value": 'CLICK_DRAG'},
-     {"properties":
-      [("name", 'VIEW3D_PIE_MT_Bottom_Q'),
-       ],
-      },
-     ),
-    ("wm.call_menu_pie",
-     {"type": 'F', "value": 'CLICK_DRAG'},
-     {"properties":
-      [("name", 'VIEW3D_PIE_MT_Bottom_F'),
-       ],
-      },
-     ),
     ("wm.call_menu_pie",
      {"type": 'E', "value": 'CLICK_DRAG'},
      {"properties":
@@ -106,8 +91,6 @@ keyconfig_data = \
        ],
       },
      ),
-    ("wm.super_export", {"type": 'C', "value": 'PRESS', "shift": True, "ctrl": True}, None),
-    ("wm.super_import", {"type": 'V', "value": 'PRESS', "shift": True, "ctrl": True}, None),
     ("wm.call_menu_pie",
      {"type": 'Z', "value": 'CLICK_DRAG', "shift": True},
      {"properties":
@@ -2601,8 +2584,6 @@ keyconfig_data = \
        ],
       },
      ),
-    ("wm.super_export", {"type": 'C', "value": 'PRESS', "shift": True, "ctrl": True}, None),
-    ("wm.super_import", {"type": 'V', "value": 'PRESS', "shift": True, "ctrl": True}, None),
     ("wm.call_menu_pie",
      {"type": 'TAB', "value": 'CLICK_DRAG', "ctrl": True},
      {"properties":
@@ -4681,7 +4662,6 @@ keyconfig_data = \
        ],
       },
      ),
-    ("atomic.invoke_pie_menu_ui", {"type": 'C', "value": 'PRESS', "shift": True, "ctrl": True, "alt": True}, None),
     ("pie.ranslate_tooltips", {"type": 'T', "value": 'CLICK', "shift": True, "ctrl": True, "alt": True}, None),
     ("pie.translate_interface", {"type": 'T', "value": 'CLICK', "shift": True, "alt": True}, None),
     ("wm.call_menu",
