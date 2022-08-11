@@ -2,7 +2,7 @@ from bpy.types import PropertyGroup, AddonPreferences, Operator
 from bpy.props import BoolProperty, PointerProperty
 import bpy
 import os
-from .utils import check_rely_addon, rely_addons
+from .pie.utils import check_rely_addon, rely_addons
 
 
 bl_info = {
@@ -40,7 +40,7 @@ sub_modules_names = [
 sub_modules_names.sort()
 
 sub_modules = [
-    __import__(__package__ + "." + submod, {}, {}, submod)
+    __import__(__package__ + "." + "pie" + "." + submod, {}, {}, submod)
     for submod in sub_modules_names
 ]
 sub_modules.sort(key=lambda mod: (mod.bl_info['name'], mod.bl_info['category']))
