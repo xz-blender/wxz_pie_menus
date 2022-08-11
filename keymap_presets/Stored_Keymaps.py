@@ -3,9 +3,7 @@ keyconfig_data = \
 [("3D View",
   {"space_type": 'VIEW_3D', "region_type": 'WINDOW'},
   {"items":
-   [("wm.super_export", {"type": 'C', "value": 'PRESS', "shift": True, "ctrl": True}, None),
-    ("wm.super_import", {"type": 'V', "value": 'PRESS', "shift": True, "ctrl": True}, None),
-    ("wm.call_menu_pie",
+   [("wm.call_menu_pie",
      {"type": 'Z', "value": 'CLICK_DRAG', "shift": True},
      {"properties":
       [("name", 'VIEW3D_PIE_MT_Bottom_Z_Shift'),
@@ -16,13 +14,6 @@ keyconfig_data = \
      {"type": 'Z', "value": 'CLICK_DRAG'},
      {"properties":
       [("name", 'VIEW3D_PIE_MT_Bottom_Z_Overlay'),
-       ],
-      },
-     ),
-    ("wm.call_menu_pie",
-     {"type": 'X', "value": 'CLICK_DRAG', "shift": True, "ctrl": True},
-     {"properties":
-      [("name", 'VIEW3D_PIE_MT_Bottom_X_ctrl_shift'),
        ],
       },
      ),
@@ -65,13 +56,6 @@ keyconfig_data = \
     ("screen.animation_play", {"type": 'SPACE', "value": 'CLICK', "shift": True}, None),
     ("pie.key_space", {"type": 'SPACE', "value": 'CLICK'}, None),
     ("wm.call_menu_pie",
-     {"type": 'S', "value": 'CLICK_DRAG', "ctrl": True},
-     {"properties":
-      [("name", 'VIEW3D_PIE_MT_Bottom_S_ctrl'),
-       ],
-      },
-     ),
-    ("wm.call_menu_pie",
      {"type": 'R', "value": 'CLICK_DRAG'},
      {"properties":
       [("name", 'VIEW3D_PIE_MT_Bottom_R'),
@@ -86,8 +70,6 @@ keyconfig_data = \
        ],
       },
      ),
-    ("pie.q_key_shift", {"type": 'Q', "value": 'CLICK', "shift": True}, None),
-    ("pie.q_key", {"type": 'Q', "value": 'CLICK'}, None),
     ("wm.call_menu_pie",
      {"type": 'F', "value": 'CLICK_DRAG'},
      {"properties":
@@ -99,13 +81,6 @@ keyconfig_data = \
      {"type": 'E', "value": 'CLICK_DRAG'},
      {"properties":
       [("name", 'VIEW3D_PIE_MT_Bottom_E'),
-       ],
-      },
-     ),
-    ("wm.call_menu_pie",
-     {"type": 'D', "value": 'CLICK_DRAG'},
-     {"properties":
-      [("name", 'VIEW3D_PIE_MT_Bottom_D'),
        ],
       },
      ),
@@ -131,6 +106,8 @@ keyconfig_data = \
        ],
       },
      ),
+    ("wm.super_export", {"type": 'C', "value": 'PRESS', "shift": True, "ctrl": True}, None),
+    ("wm.super_import", {"type": 'V', "value": 'PRESS', "shift": True, "ctrl": True}, None),
     ("wm.call_menu_pie",
      {"type": 'Z', "value": 'CLICK_DRAG', "shift": True},
      {"properties":
@@ -1021,14 +998,21 @@ keyconfig_data = \
  ("Curve",
   {"space_type": 'EMPTY', "region_type": 'WINDOW'},
   {"items":
-   [("wm.call_menu",
+   [("wm.call_menu_pie",
+     {"type": 'V', "value": 'CLICK_DRAG'},
+     {"properties":
+      [("name", 'VIEW3D_PIE_MT_Bottom_V'),
+       ],
+      },
+     ),
+    ("wm.call_menu",
      {"type": 'A', "value": 'PRESS', "shift": True},
      {"properties":
       [("name", 'TOPBAR_MT_edit_curve_add'),
        ],
       },
      ),
-    ("curve.handle_type_set", {"type": 'V', "value": 'PRESS'}, None),
+    ("curve.handle_type_set", {"type": 'V', "value": 'CLICK'}, None),
     ("curve.vertex_add", {"type": 'RIGHTMOUSE', "value": 'CLICK', "ctrl": True}, None),
     ("curve.select_all",
      {"type": 'A', "value": 'PRESS'},
@@ -1082,7 +1066,7 @@ keyconfig_data = \
     ("curve.split", {"type": 'Y', "value": 'PRESS'}, None),
     ("curve.extrude_move", {"type": 'E', "value": 'CLICK'}, None),
     ("curve.duplicate_move", {"type": 'D', "value": 'PRESS', "shift": True}, None),
-    ("curve.make_segment", {"type": 'F', "value": 'PRESS'}, None),
+    ("curve.make_segment", {"type": 'F', "value": 'CLICK'}, None),
     ("curve.cyclic_toggle", {"type": 'C', "value": 'PRESS', "alt": True}, None),
     ("wm.call_menu",
      {"type": 'X', "value": 'CLICK'},
@@ -2139,7 +2123,16 @@ keyconfig_data = \
  ("Mesh",
   {"space_type": 'EMPTY', "region_type": 'WINDOW'},
   {"items":
-   [("mesh.loopcut_slide",
+   [("wm.call_menu_pie",
+     {"type": 'X', "value": 'CLICK_DRAG', "ctrl": True, "alt": True},
+     {"properties":
+      [("name", 'VIEW3D_PIE_MT_Bottom_X_ctrl_shift'),
+       ],
+      },
+     ),
+    ("pie.q_key_shift", {"type": 'Q', "value": 'CLICK', "shift": True}, None),
+    ("pie.q_key", {"type": 'Q', "value": 'CLICK'}, None),
+    ("mesh.loopcut_slide",
      {"type": 'R', "value": 'CLICK', "ctrl": True},
      {"properties":
       [("TRANSFORM_OT_edge_slide",
@@ -2601,15 +2594,15 @@ keyconfig_data = \
  ("Node Editor",
   {"space_type": 'NODE_EDITOR', "region_type": 'WINDOW'},
   {"items":
-   [("wm.super_export", {"type": 'C', "value": 'PRESS', "shift": True, "ctrl": True}, None),
-    ("wm.super_import", {"type": 'V', "value": 'PRESS', "shift": True, "ctrl": True}, None),
-    ("wm.call_menu_pie",
+   [("wm.call_menu_pie",
      {"type": 'TAB', "value": 'CLICK_DRAG', "ctrl": True},
      {"properties":
       [("name", 'VIEW3D_PIE_MT_Ctrl_Tab'),
        ],
       },
      ),
+    ("wm.super_export", {"type": 'C', "value": 'PRESS', "shift": True, "ctrl": True}, None),
+    ("wm.super_import", {"type": 'V', "value": 'PRESS', "shift": True, "ctrl": True}, None),
     ("wm.call_menu_pie",
      {"type": 'TAB', "value": 'CLICK_DRAG', "ctrl": True},
      {"properties":
@@ -2977,6 +2970,22 @@ keyconfig_data = \
   {"space_type": 'EMPTY', "region_type": 'WINDOW'},
   {"items":
    [("wm.call_menu_pie",
+     {"type": 'X', "value": 'CLICK_DRAG', "ctrl": True, "alt": True},
+     {"properties":
+      [("name", 'VIEW3D_PIE_MT_Bottom_X_ctrl_shift'),
+       ],
+      },
+     ),
+    ("wm.call_menu",
+     {"type": 'Q', "value": 'CLICK', "ctrl": True},
+     {"properties":
+      [("name", 'VIEW3D_MT_make_links'),
+       ],
+      },
+     ),
+    ("pie.q_key_shift", {"type": 'Q', "value": 'CLICK', "shift": True}, None),
+    ("pie.q_key", {"type": 'Q', "value": 'CLICK'}, None),
+    ("wm.call_menu_pie",
      {"type": 'O', "value": 'PRESS', "shift": True},
      {"properties":
       [("name", 'VIEW3D_MT_proportional_editing_falloff_pie'),
@@ -3764,14 +3773,14 @@ keyconfig_data = \
       },
      ),
     ("outliner.select_all",
-     {"type": 'A', "value": 'PRESS'},
+     {"type": 'A', "value": 'CLICK'},
      {"properties":
       [("action", 'SELECT'),
        ],
       },
      ),
     ("outliner.select_all",
-     {"type": 'A', "value": 'PRESS', "alt": True},
+     {"type": 'A', "value": 'CLICK', "alt": True},
      {"properties":
       [("action", 'DESELECT'),
        ],
@@ -3791,7 +3800,7 @@ keyconfig_data = \
        ],
       },
      ),
-    ("outliner.expanded_toggle", {"type": 'A', "value": 'PRESS', "shift": True}, None),
+    ("outliner.expanded_toggle", {"type": 'A', "value": 'CLICK', "shift": True}, None),
     ("outliner.keyingset_add_selected", {"type": 'K', "value": 'PRESS'}, None),
     ("outliner.keyingset_remove_selected", {"type": 'K', "value": 'PRESS', "alt": True}, None),
     ("anim.keyframe_insert", {"type": 'I', "value": 'PRESS'}, None),
@@ -4262,7 +4271,9 @@ keyconfig_data = \
  ("UV Editor",
   {"space_type": 'EMPTY', "region_type": 'WINDOW'},
   {"items":
-   [("wm.call_menu",
+   [("pie.q_key_shift", {"type": 'Q', "value": 'CLICK', "shift": True}, None),
+    ("pie.q_key", {"type": 'Q', "value": 'CLICK'}, None),
+    ("wm.call_menu",
      {"type": 'TAB', "value": 'PRESS', "ctrl": True},
      {"properties":
       [("name", 'IMAGE_MT_uvs_select_mode'),
@@ -4661,9 +4672,16 @@ keyconfig_data = \
  ("Window",
   {"space_type": 'EMPTY', "region_type": 'WINDOW'},
   {"items":
-   [("atomic.invoke_pie_menu_ui", {"type": 'D', "value": 'PRESS'}, None),
-    ("pie.ranslate_tooltips", {"type": 'T', "value": 'CLICK', "shift": True, "ctrl": True, "alt": True}, None),
+   [("pie.ranslate_tooltips", {"type": 'T', "value": 'CLICK', "shift": True, "ctrl": True, "alt": True}, None),
     ("pie.translate_interface", {"type": 'T', "value": 'CLICK', "shift": True, "alt": True}, None),
+    ("wm.call_menu_pie",
+     {"type": 'S', "value": 'CLICK_DRAG', "ctrl": True},
+     {"properties":
+      [("name", 'VIEW3D_PIE_MT_Bottom_S_ctrl'),
+       ],
+      },
+     ),
+    ("atomic.invoke_pie_menu_ui", {"type": 'C', "value": 'PRESS', "shift": True, "ctrl": True, "alt": True}, None),
     ("pie.ranslate_tooltips", {"type": 'T', "value": 'CLICK', "shift": True, "ctrl": True, "alt": True}, None),
     ("pie.translate_interface", {"type": 'T', "value": 'CLICK', "shift": True, "alt": True}, None),
     ("wm.call_menu",
