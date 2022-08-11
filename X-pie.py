@@ -1,5 +1,6 @@
 import bpy
 from bpy.types import Menu
+from .utils import set_pie_ridius
 
 submoduname = __name__.split('.')[-1]
 bl_info = {
@@ -8,7 +9,8 @@ bl_info = {
     "version": (0, 0, 1),
     "blender": (3, 3, 0),
     "location": "View3D",
-    "category": "KEY"}
+    "category": "KEY",
+}
 
 
 def has_verties(context):
@@ -29,19 +31,23 @@ class VIEW3D_PIE_MT_Bottom_X(Menu):
         ob_mode = context.object.mode
         ed_mode = context.tool_settings.mesh_select_mode
 
+        set_pie_ridius(context)
+
         if ob_mode == 'EDIT':
             col = pie.split().box().column(align=True)
 
             row = col.row(align=True)
             if ed_mode[0] == True:
                 if has_verties(context) == True:
-                    row.operator('mesh.merge', text='首点',
-                                 icon='DOT').type = 'FIRST'
+                    row.operator(
+                        'mesh.merge', text='首点', icon='DOT'
+                    ).type = 'FIRST'
                     row.separator(factor=0.1)
                     row.operator('mesh.merge', text='中心').type = 'CENTER'
                     row.separator(factor=0.1)
-                    row.operator('mesh.merge', text='末点',
-                                 icon='DOT').type = 'LAST'
+                    row.operator(
+                        'mesh.merge', text='末点', icon='DOT'
+                    ).type = 'LAST'
                 else:
                     row.operator('empty_operator', text='没有选择顶点')
             else:
@@ -83,8 +89,9 @@ class VIEW3D_PIE_MT_Bottom_X(Menu):
             # 2 - BOTTOM
             pie.operator('mesh.edge_collapse', text='塌陷边面')
             # 8 - TOP
-            pie.operator('mesh.delete', text='仅面',
-                         icon='SNAP_FACE_CENTER').type = 'ONLY_FACE'
+            pie.operator(
+                'mesh.delete', text='仅面', icon='SNAP_FACE_CENTER'
+            ).type = 'ONLY_FACE'
             # 7 - TOP - LEFT
             pie.separator()
             # 9 - TOP - RIGHT
@@ -106,7 +113,7 @@ def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
 
     km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
-    kmi = km.keymap_items.new("wm.call_menu_pie",  'X', 'CLICK_DRAG')
+    kmi = km.keymap_items.new("wm.call_menu_pie", 'X', 'CLICK_DRAG')
     kmi.properties.name = "VIEW3D_PIE_MT_Bottom_X"
     addon_keymaps.append(km)
 

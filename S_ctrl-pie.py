@@ -1,10 +1,11 @@
 import bpy
 import os
 from bpy.types import Menu, Panel, Operator
-from .utils import check_rely_addon, rely_addons
+from .utils import check_rely_addon, rely_addons, set_pie_ridius
 
+submoduname = __name__.split('.')[-1]
 bl_info = {
-    "name": __name__.split('.')[-1],
+    "name": submoduname,
     "author": "wxz",
     "version": (0, 0, 1),
     "blender": (3, 3, 0),
@@ -27,16 +28,10 @@ for name, path in import_export_relay_default_addons.items():
             bpy.ops.preferences.addon_enable(module=path)
         except:
             pass
-# SketchUp IO Addon:
-su_name, su_path = rely_addons[5][0], rely_addons[5][1]
-su_check = check_rely_addon(su_name, su_path)
-# Atomic Data Manager :
-atomic_name, atomic_path = rely_addons[6][0], rely_addons[6][1]
-atomic_check = check_rely_addon(atomic_name, atomic_path)
 
 
 class VIEW3D_PIE_MT_Bottom_S_ctrl(Menu):
-    bl_label = __name__.split('.')[-1]
+    bl_label = submoduname
 
     def draw(self, context):
         layout = self.layout
@@ -46,7 +41,14 @@ class VIEW3D_PIE_MT_Bottom_S_ctrl(Menu):
         ob_type = context.object.type
         ob_mode = context.object.mode
 
-        # addon1:"SketchUp Import Addon"
+        set_pie_ridius(context)
+
+        # SketchUp IO Addon:
+        su_name, su_path = rely_addons[5][0], rely_addons[5][1]
+        su_check = check_rely_addon(su_name, su_path)
+        # Atomic Data Manager :
+        atomic_name, atomic_path = rely_addons[6][0], rely_addons[6][1]
+        atomic_check = check_rely_addon(atomic_name, atomic_path)
 
         # 4 - LEFT
         pie.operator('wm.open_mainfile', text='打开文件', icon='FILEBROWSER')

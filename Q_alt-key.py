@@ -1,7 +1,8 @@
 import bpy
 import os
 from bpy.types import Menu, Panel, Operator
-from . import check_rely_addon, rely_addons
+
+# from . import check_rely_addon, rely_addons
 
 submoduname = __name__.split('.')[-1]
 bl_info = {
@@ -10,7 +11,8 @@ bl_info = {
     "version": (0, 0, 1),
     "blender": (3, 3, 0),
     "location": "View3D",
-    "category": "PIE"}
+    "category": "PIE",
+}
 
 
 # class VIEW3D_PIE_MT_Bottom_Q_alt(Menu):
@@ -43,7 +45,7 @@ bl_info = {
 #         # 3 - BOTTOM - RIGHT
 
 
-class PIE_Bottom_Q_alt(bpy.types.Operator):
+class PIE_Bottom_Q_alt(Operator):
     bl_idname = "pie.q_alt_key"
     bl_label = submoduname
     bl_options = {"REGISTER"}
@@ -71,7 +73,8 @@ def register_keymaps():
 
     km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
     kmi = km.keymap_items.new(
-        PIE_Bottom_Q_alt.bl_idname,  'Q', 'CLICK', alt=True)
+        PIE_Bottom_Q_alt.bl_idname, 'Q', 'CLICK', alt=True
+    )
     addon_keymaps.append(km)
 
 

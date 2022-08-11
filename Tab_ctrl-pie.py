@@ -1,6 +1,7 @@
 import bpy
 import os
 from bpy.types import Menu, Operator, AddonPreferences
+from .utils import set_pie_ridius
 
 
 bl_info = {
@@ -9,7 +10,8 @@ bl_info = {
     "version": (0, 0, 1),
     "blender": (3, 3, 0),
     "location": "View3D",
-    "category": "PIE"}
+    "category": "PIE",
+}
 
 
 class VIEW3D_PIE_MT_Ctrl_Tab(Menu):
@@ -21,53 +23,58 @@ class VIEW3D_PIE_MT_Ctrl_Tab(Menu):
 
         # ob_type = context.object.type
         # ob_mode = context.object.mode
+
+        set_pie_ridius(context)
+
         # 4 - LEFT
-        L = pie.operator('pie.workspaceswapper', text='UV',
-                         icon='UV_DATA')
+        L = pie.operator('pie.workspaceswapper', text='UV', icon='UV_DATA')
         L.target_workspace = 'UV'
         L.default_workspace = 'UV Editing'
         # 6 - RIGHT
-        R = pie.operator('pie.workspaceswapper', text='MOD',
-                         icon='CUBE')
+        R = pie.operator('pie.workspaceswapper', text='MOD', icon='CUBE')
         R.target_workspace = 'MOD'
         R.default_workspace = 'Modeling'
         # 2 - BOTTOM
-        B = pie.operator('pie.workspaceswapper', text='MAT',
-                         icon='MATERIAL')
+        B = pie.operator('pie.workspaceswapper', text='MAT', icon='MATERIAL')
         B.target_workspace = 'MAT'
         B.default_workspace = 'Shading'
         # 8 - TOP
         box = pie.column(align=True)
         row = box.row()
         row.scale_y = 1.3
-        T1 = row.operator('pie.workspaceswapper', text='SETTING',
-                          icon='SETTINGS')
+        T1 = row.operator(
+            'pie.workspaceswapper', text='SETTING', icon='SETTINGS'
+        )
         T1.target_workspace = 'SETTING'
         T1.default_workspace = 'Scripting'
 
         row = box.row(align=True)
         row.scale_y = 1.1
         split = row.split()
-        T2_1 = split.operator('pie.workspaceswapper', text='LIB',
-                              icon='BOOKMARKS')
+        T2_1 = split.operator(
+            'pie.workspaceswapper', text='LIB', icon='BOOKMARKS'
+        )
         T2_1.target_workspace = 'LIB'
         T2_1.default_workspace = 'Layout'
         split = row.split()
-        T2_2 = split.operator('pie.workspaceswapper', text='COMPO',
-                              icon='NODE_COMPOSITING')
+        T2_2 = split.operator(
+            'pie.workspaceswapper', text='COMPO', icon='NODE_COMPOSITING'
+        )
         T2_2.target_workspace = 'COMPO'
         T2_2.default_workspace = 'Compositing'
 
         row = box.row(align=True)
         row.scale_y = 1.1
         split = row.split()
-        T3_1 = split.operator('pie.workspaceswapper', text='MOTION',
-                              icon='MOD_INSTANCE')
+        T3_1 = split.operator(
+            'pie.workspaceswapper', text='MOTION', icon='MOD_INSTANCE'
+        )
         T3_1.target_workspace = 'MOTION'
         T3_1.default_workspace = 'Animation'
         split = row.split()
-        T3_2 = split.operator('pie.workspaceswapper', text='RENDER',
-                              icon='RENDER_STILL')
+        T3_2 = split.operator(
+            'pie.workspaceswapper', text='RENDER', icon='RENDER_STILL'
+        )
         T3_2.target_workspace = 'RENDER'
         T3_2.default_workspace = 'Rendering'
         # 7 - TOP - LEFT
@@ -77,8 +84,7 @@ class VIEW3D_PIE_MT_Ctrl_Tab(Menu):
         # 1 - BOTTOM - LEFT
         pie.separator()
         # 3 - BOTTOM - RIGHT
-        BR = pie.operator('pie.workspaceswapper', text='GN',
-                          icon='CUBE')
+        BR = pie.operator('pie.workspaceswapper', text='GN', icon='CUBE')
         BR.target_workspace = 'GN'
         BR.default_workspace = 'Geometry Nodes'
 
@@ -92,7 +98,8 @@ class PIE_WorkspaceSwapOperator(Operator):
 
     target_workspace: bpy.props.StringProperty(name='Target Workspace')
     default_workspace: bpy.props.StringProperty(
-        name='Default Workspcae', default='Layout')
+        name='Default Workspcae', default='Layout'
+    )
 
     def execute(self, context):
         t_name = self.target_workspace
@@ -120,14 +127,14 @@ class PIE_WorkspaceSwapOperator(Operator):
             except:
                 context.window.workspace = bpy.data.workspaces[d_name]
                 self.report(
-                    {'INFO'}, '没找到"{}"工作空间,已切换默认:"{}"'.format(t_name, d_name))
+                    {'INFO'}, '没找到"{}"工作空间,已切换默认:"{}"'.format(t_name, d_name)
+                )
                 return {'FINISHED'}
 
 
 classes = [
     VIEW3D_PIE_MT_Ctrl_Tab,
     PIE_WorkspaceSwapOperator,
-
 ]
 
 
@@ -138,15 +145,18 @@ def register_keymaps():
     keymap_items = {
         '3D View': 'VIEW_3D',
         'Node Editor': 'NODE_EDITOR',
-        'Image': 'IMAGE_EDITOR'
+        'Image': 'IMAGE_EDITOR',
     }
     for name, space in keymap_items.items():
         addon = bpy.context.window_manager.keyconfigs.addon
         km = addon.keymaps.new(name=name, space_type=space)
         kmi = km.keymap_items.new(
             idname='wm.call_menu_pie',
-            type="TAB", value="CLICK_DRAG",
-            ctrl=True, shift=False, alt=False
+            type="TAB",
+            value="CLICK_DRAG",
+            ctrl=True,
+            shift=False,
+            alt=False,
         )
         kmi.properties.name = "VIEW3D_PIE_MT_Ctrl_Tab"
         addon_keymaps.append(km)

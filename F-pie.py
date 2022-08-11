@@ -2,7 +2,7 @@ import bpy
 import os
 import sys
 from bpy.types import Menu, Operator
-from .utils import check_rely_addon, rely_addons
+from .utils import check_rely_addon, rely_addons, set_pie_ridius
 
 bl_info = {
     "name": "F-PIE",
@@ -24,6 +24,8 @@ class VIEW3D_PIE_MT_Bottom_F(Menu):
 
         ob_type = context.object.type
         ob_mode = context.object.mode
+
+        set_pie_ridius(context)
 
         # addon1:"Edit Mesh Tools"
         addon1 = check_rely_addon(rely_addons[0][0], rely_addons[0][1])

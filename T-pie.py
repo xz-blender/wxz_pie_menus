@@ -1,7 +1,7 @@
 import bpy
 import os
 from bpy.types import Menu, Panel, Operator
-from .utils import check_rely_addon, rely_addons
+from .utils import check_rely_addon, rely_addons, set_pie_ridius
 
 submoduname = __name__.split('.')[-1]
 bl_info = {
@@ -10,7 +10,8 @@ bl_info = {
     "version": (0, 0, 1),
     "blender": (3, 3, 0),
     "location": "View3D",
-    "category": "3D View"}
+    "category": "3D View",
+}
 
 
 class VIEW3D_PIE_MT_Bottom_T(Menu):
@@ -23,6 +24,8 @@ class VIEW3D_PIE_MT_Bottom_T(Menu):
 
         ob_type = context.object.type
         ob_mode = context.object.mode
+
+        set_pie_ridius(context)
 
         # addon1:"LoopTools"
         # addon1 = check_rely_addon(rely_addons[2][0], rely_addons[2][1])
@@ -58,7 +61,7 @@ def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
 
     km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
-    kmi = km.keymap_items.new("wm.call_menu_pie",  'T', 'CLICK_DRAG')
+    kmi = km.keymap_items.new("wm.call_menu_pie", 'T', 'CLICK_DRAG')
     kmi.properties.name = "VIEW3D_PIE_MT_Bottom_T"
     addon_keymaps.append(km)
 

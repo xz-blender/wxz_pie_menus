@@ -1,13 +1,16 @@
 import bpy
 from bpy.types import Operator, Menu
+from .utils import set_pie_ridius
 
+submoduname = __name__.split('.')[-1]
 bl_info = {
-    "name": "Space-key",
+    "name": submoduname,
     "author": "wxz",
     "version": (0, 0, 1),
     "blender": (3, 3, 0),
     "location": "View3D",
-    "category": "KEY"}
+    "category": "KEY",
+}
 
 
 class PIE_Space_KEY(Operator):
@@ -21,13 +24,24 @@ class PIE_Space_KEY(Operator):
             mode = context.object.mode
             if mode in ['OBJECT', 'EDIT']:
                 bpy.ops.wm.tool_set_by_id(name='builtin.select_box')
-            elif mode in ['SCULPT', 'WEIGHT_PAINT', 'TEXTURE_PAINT', 'VERTEX_PAINT']:
+            elif mode in [
+                'SCULPT',
+                'WEIGHT_PAINT',
+                'TEXTURE_PAINT',
+                'VERTEX_PAINT',
+            ]:
                 bpy.ops.wm.tool_set_by_index(index=1)
         elif context.area.ui_type == 'IMAGE_EDITOR':
             bpy.ops.wm.tool_set_by_id(name='builtin.select_box')
-        elif context.area.ui_type in ['SEQUENCE_EDITOR', 'CLIP_EDITOR',
-                                      'DOPESHEET', 'TIMELINE', 'FCURVES',
-                                      'DRIVERS', 'NLA_EDITOR']:
+        elif context.area.ui_type in [
+            'SEQUENCE_EDITOR',
+            'CLIP_EDITOR',
+            'DOPESHEET',
+            'TIMELINE',
+            'FCURVES',
+            'DRIVERS',
+            'NLA_EDITOR',
+        ]:
             bpy.ops.screen.animation_play()
         return {"FINISHED"}
 
@@ -38,25 +52,34 @@ class VIEW3D_PIE_MT_Space_KEY_shift(Menu):
     def draw(self, context):
         pie = self.layout.menu_pie()
 
-        if context.area.ui_type in ['VIEW_3D', 'SEQUENCE_EDITOR', 'CLIP_EDITOR',
-                                    'DOPESHEET', 'TIMELINE', 'FCURVES', 'DRIVERS',
-                                    'NLA_EDITOR']:
+        set_pie_ridius(context)
+
+        if context.area.ui_type in [
+            'VIEW_3D',
+            'SEQUENCE_EDITOR',
+            'CLIP_EDITOR',
+            'DOPESHEET',
+            'TIMELINE',
+            'FCURVES',
+            'DRIVERS',
+            'NLA_EDITOR',
+        ]:
             # 4 - LEFT
-            pie.operator('screen.frame_jump', text='首帧',
-                         icon='REW').end = False
+            pie.operator('screen.frame_jump', text='首帧', icon='REW').end = False
             # 6 - RIGHT
-            pie.operator('screen.frame_jump', text='末帧',
-                         icon='FF').end = True
+            pie.operator('screen.frame_jump', text='末帧', icon='FF').end = True
             # 2 - BOTTOM
             pie.separator()
             # 8 - TOP
             pie.separator()
             # 7 - TOP - LEFT
-            pie.operator('screen.keyframe_jump', text='上一关键帧',
-                         icon='PREV_KEYFRAME').next = False
+            pie.operator(
+                'screen.keyframe_jump', text='上一关键帧', icon='PREV_KEYFRAME'
+            ).next = False
             # 9 - TOP - RIGHT
-            pie.operator('screen.keyframe_jump', text='下一关键帧',
-                         icon='NEXT_KEYFRAME').next = True
+            pie.operator(
+                'screen.keyframe_jump', text='下一关键帧', icon='NEXT_KEYFRAME'
+            ).next = True
             # 1 - BOTTOM - LEFT
             pie.separator()
             # 3 - BOTTOM - RIGHT
@@ -84,18 +107,24 @@ def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
     # KEY:
     for area in keymap_areas:
-        km = addon.keymaps.new(
-            name=area[0], space_type=area[1])  # ----视频序列播放器
+        km = addon.keymaps.new(name=area[0], space_type=area[1])  # ----视频序列播放器
         kmi = km.keymap_items.new(
-            PIE_Space_KEY.bl_idname, 'SPACE', 'CLICK')  # space
+            PIE_Space_KEY.bl_idname, 'SPACE', 'CLICK'
+        )  # space
         if area[0] == '3D View':
-            kmi = km.keymap_items.new('screen.animation_play', 'SPACE', 'CLICK',  # shift-space
-                                      shift=True)
+            kmi = km.keymap_items.new(
+                'screen.animation_play',
+                'SPACE',
+                'CLICK',  # shift-space
+                shift=True,
+            )
         else:
-            kmi = km.keymap_items.new('screen.animation_play', 'SPACE', 'CLICK',
-                                      shift=True).properties.reverse = True  # shift-space
-        kmi = km.keymap_items.new('wm.call_menu_pie', 'SPACE', 'CLICK_DRAG',
-                                  shift=True)  # 拖拽
+            kmi = km.keymap_items.new(
+                'screen.animation_play', 'SPACE', 'CLICK', shift=True
+            ).properties.reverse = True  # shift-space
+        kmi = km.keymap_items.new(
+            'wm.call_menu_pie', 'SPACE', 'CLICK_DRAG', shift=True
+        )  # 拖拽
         kmi.properties.name = "VIEW3D_PIE_MT_Space_KEY_shift"
         addon_keymaps.append(km)
 

@@ -1,6 +1,7 @@
 import bpy
 import os
 from bpy.types import Menu, Operator
+
 # from .utils import check_rely_addon, rely_addons
 
 bl_info = {
@@ -9,7 +10,8 @@ bl_info = {
     "version": (0, 0, 1),
     "blender": (3, 3, 0),
     "location": "View3D",
-    "category": "3D View"}
+    "category": "3D View",
+}
 
 
 class VIEW3D_PIE_MT_Bottom_C(Menu):
@@ -23,6 +25,8 @@ class VIEW3D_PIE_MT_Bottom_C(Menu):
         ob_type = context.object.type
         ob_mode = context.object.mode
 
+        set_pie_ridius(context)
+
         # addon1:"LoopTools"
         # addon1 = check_rely_addon(rely_addons[2][0], rely_addons[2][1])
 
@@ -31,7 +35,10 @@ class VIEW3D_PIE_MT_Bottom_C(Menu):
         # 6 - RIGHT
         pie.operator("view3d.walk", text="行走漫游", icon="MOD_DYNAMICPAINT")
         # 2 - BOTTOM
-        if ob_type == 'CAMERA' or context.space_data.region_3d.view_perspective == 'CAMERA':
+        if (
+            ob_type == 'CAMERA'
+            or context.space_data.region_3d.view_perspective == 'CAMERA'
+        ):
             pie.prop(context.space_data, "lock_camera", text="锁定相机视图")
         else:
             pie.separator()
@@ -76,10 +83,10 @@ def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
 
     km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
-    kmi = km.keymap_items.new("wm.call_menu_pie",  'C', 'CLICK_DRAG')
+    kmi = km.keymap_items.new("wm.call_menu_pie", 'C', 'CLICK_DRAG')
     kmi.properties.name = "VIEW3D_PIE_MT_Bottom_C"
 
-    kmi = km.keymap_items.new(PIE_C_KEY.bl_idname,  'C', 'CLICK')
+    kmi = km.keymap_items.new(PIE_C_KEY.bl_idname, 'C', 'CLICK')
     addon_keymaps.append(km)
 
 

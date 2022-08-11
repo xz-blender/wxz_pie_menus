@@ -3,6 +3,7 @@ import os
 from bpy.types import Menu, Panel, Operator
 from mathutils import Matrix, Vector
 import numpy as np
+from .utils import set_pie_ridius
 
 submoduname = __name__.split(".")[-1]
 bl_info = {
@@ -24,6 +25,8 @@ class VIEW3D_PIE_MT_Bottom_X_ctrl_shift(Menu):
 
         ob_type = context.object.type
         ob_mode = context.object.mode
+
+        set_pie_ridius(context)
 
         if ob_mode == "OBJECT":
             # 4 - LEFT

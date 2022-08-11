@@ -1,7 +1,7 @@
 import bpy
 import os
 from bpy.types import Menu, Panel, Operator
-from . import check_rely_addon, rely_addons
+from .utils import check_rely_addon, rely_addons, set_pie_ridius
 
 submoduname = __name__.split('.')[-1]
 bl_info = {
@@ -10,7 +10,8 @@ bl_info = {
     "version": (0, 0, 1),
     "blender": (3, 3, 0),
     "location": "View3D",
-    "category": "PIE"}
+    "category": "PIE",
+}
 
 
 class VIEW3D_PIE_MT_Bottom_E(Menu):
@@ -23,6 +24,8 @@ class VIEW3D_PIE_MT_Bottom_E(Menu):
 
         ob_type = context.object.type
         ob_mode = context.object.mode
+
+        set_pie_ridius(context)
 
         # "EdgeFlow"addon
         ef_name, ef_path = rely_addons[7][0], rely_addons[7][1]
@@ -41,12 +44,10 @@ class VIEW3D_PIE_MT_Bottom_E(Menu):
             col = pie.split().box().column()
             if ef_check == '2':
                 row = col.row()
-                row.operator('pie.empty_operator',
-                             text='未安装"%s"插件' % (ef_name))
+                row.operator('pie.empty_operator', text='未安装"%s"插件' % (ef_name))
             elif ef_check == '0':
                 row = col.row()
-                row.operator('pie.empty_operator',
-                             text='未启用"%s"插件' % (ef_name))
+                row.operator('pie.empty_operator', text='未启用"%s"插件' % (ef_name))
             elif ef_check == '1':
                 row = col.row()
                 row.operator('mesh.set_edge_flow')
@@ -67,24 +68,20 @@ class VIEW3D_PIE_MT_Bottom_E(Menu):
             col = pie.split().box().column()
             if bf_check == '2':
                 row = col.row()
-                row.operator('pie.empty_operator',
-                             text='未安装"%s"插件' % (bf_name))
+                row.operator('pie.empty_operator', text='未安装"%s"插件' % (bf_name))
             elif bf_check == '0':
                 row = col.row()
-                row.operator('pie.empty_operator',
-                             text='未启用"%s"插件' % (bf_name))
+                row.operator('pie.empty_operator', text='未启用"%s"插件' % (bf_name))
             elif bf_check == '1':
                 row = col.row()
                 row.operator('mesh.bend_face_operator')
 
             if fc_check == '2':
                 row = col.row()
-                row.operator('pie.empty_operator',
-                             text='未安装"%s"插件' % (fc_name))
+                row.operator('pie.empty_operator', text='未安装"%s"插件' % (fc_name))
             elif fc_check == '0':
                 row = col.row()
-                row.operator('pie.empty_operator',
-                             text='未启用"%s"插件' % (fc_name))
+                row.operator('pie.empty_operator', text='未启用"%s"插件' % (fc_name))
             elif fc_check == '1':
                 row = col.row()
                 row.operator('mesh.face_cutter_operator')
@@ -101,7 +98,7 @@ def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
 
     km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
-    kmi = km.keymap_items.new("wm.call_menu_pie",  'E', 'CLICK_DRAG')
+    kmi = km.keymap_items.new("wm.call_menu_pie", 'E', 'CLICK_DRAG')
     kmi.properties.name = "VIEW3D_PIE_MT_Bottom_E"
 
 

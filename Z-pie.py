@@ -1,6 +1,7 @@
 from bpy.types import Menu, Panel, Operator
 import bpy
 import os
+from .utils import set_pie_ridius
 
 submoduname = __name__.split('.')[-1]
 bl_info = {
@@ -9,7 +10,8 @@ bl_info = {
     "version": (0, 0, 1),
     "blender": (3, 3, 0),
     "location": "View3D",
-    "category": "3D View"}
+    "category": "3D View",
+}
 
 
 class VIEW3D_PIE_MT_Bottom_Z_Overlay(Menu):
@@ -22,6 +24,9 @@ class VIEW3D_PIE_MT_Bottom_Z_Overlay(Menu):
 
         ob_type = context.object.type
         ob_mode = context.object.mode
+
+        set_pie_ridius(context)
+
         # 4 - LEFT
         col = pie.column()
 
@@ -29,27 +34,31 @@ class VIEW3D_PIE_MT_Bottom_Z_Overlay(Menu):
         row.alignment = "RIGHT"
         row.scale_y = 1.4
         row.scale_x = 1.8
-        row.prop(context.object, 'show_bounds',
-                 icon='SHADING_BBOX', icon_only=True)
-        row.prop(context.object, 'show_wire',
-                 icon='CUBE', icon_only=True)
+        row.prop(
+            context.object, 'show_bounds', icon='SHADING_BBOX', icon_only=True
+        )
+        row.prop(context.object, 'show_wire', icon='CUBE', icon_only=True)
 
         row = col.row(align=True)
         row.scale_x = 0.8
         row.scale_y = 1.2
-        row.prop(context.object, 'display_type',
-                 expand=True, invert_checkbox=True)
+        row.prop(
+            context.object, 'display_type', expand=True, invert_checkbox=True
+        )
 
         # 6 - RIGHT
-        pie.operator('view3d.toggle_shading', text='实体',
-                     icon='SHADING_SOLID').type = 'SOLID'
+        pie.operator(
+            'view3d.toggle_shading', text='实体', icon='SHADING_SOLID'
+        ).type = 'SOLID'
         # 2 - BOTTOM
-        pie.operator('view3d.toggle_shading', text='预览',
-                     icon='SHADING_TEXTURE').type = 'MATERIAL'
+        pie.operator(
+            'view3d.toggle_shading', text='预览', icon='SHADING_TEXTURE'
+        ).type = 'MATERIAL'
         # 8 - TOP
         if ob_type == 'MESH':
-            pie.operator('wm.call_menu', text='自动光滑',
-                         icon='RADIOBUT_ON', emboss=True).name = VIEW_PIE_MT_AutoSmooth.bl_idname
+            pie.operator(
+                'wm.call_menu', text='自动光滑', icon='RADIOBUT_ON', emboss=True
+            ).name = VIEW_PIE_MT_AutoSmooth.bl_idname
         else:
             pie.separator()
         # 7 - TOP - LEFT    &     9 - TOP - RIGHT
@@ -63,11 +72,20 @@ class VIEW3D_PIE_MT_Bottom_Z_Overlay(Menu):
             pie.separator()
             pie.separator()
         # 1 - BOTTOM - LEFT
-        pie.prop(context.space_data.overlay, 'show_wireframes', text="所有线框",
-                 icon='SHADING_WIRE', toggle=False)
+        pie.prop(
+            context.space_data.overlay,
+            'show_wireframes',
+            text="所有线框",
+            icon='SHADING_WIRE',
+            toggle=False,
+        )
         # 3 - BOTTOM - RIGHT
-        pie.prop(context.space_data.overlay,
-                 'show_face_orientation', icon='NORMALS_FACE', toggle=False)
+        pie.prop(
+            context.space_data.overlay,
+            'show_face_orientation',
+            icon='NORMALS_FACE',
+            toggle=False,
+        )
 
 
 class VIEW_PIE_MT_AutoSmooth(Menu):
@@ -83,8 +101,14 @@ class VIEW_PIE_MT_AutoSmooth(Menu):
 
         row = layout.row()
         row.scale_y = 1.1
-        row.prop(context.object.data, 'auto_smooth_angle',
-                 text='角度', slider=True, expand=True, invert_checkbox=True)
+        row.prop(
+            context.object.data,
+            'auto_smooth_angle',
+            text='角度',
+            slider=True,
+            expand=True,
+            invert_checkbox=True,
+        )
 
 
 class VIEW3D_PIE_MT_Bottom_Z_Shift(Menu):
@@ -116,7 +140,7 @@ class VIEW3D_PIE_MT_Bottom_Z_Shift(Menu):
 classes = [
     VIEW3D_PIE_MT_Bottom_Z_Overlay,
     VIEW_PIE_MT_AutoSmooth,
-    VIEW3D_PIE_MT_Bottom_Z_Shift
+    VIEW3D_PIE_MT_Bottom_Z_Shift,
 ]
 
 addon_keymaps = []
@@ -129,15 +153,10 @@ def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
 
     km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
-    kmi = km.keymap_items.new("wm.call_menu_pie",
-                              'Z',
-                              'CLICK_DRAG')
+    kmi = km.keymap_items.new("wm.call_menu_pie", 'Z', 'CLICK_DRAG')
     kmi.properties.name = "VIEW3D_PIE_MT_Bottom_Z_Overlay"
 
-    kmi = km.keymap_items.new("wm.call_menu_pie",
-                              'Z',
-                              'CLICK_DRAG',
-                              shift=True)
+    kmi = km.keymap_items.new("wm.call_menu_pie", 'Z', 'CLICK_DRAG', shift=True)
     kmi.properties.name = "VIEW3D_PIE_MT_Bottom_Z_Shift"
     addon_keymaps.append(km)
 
