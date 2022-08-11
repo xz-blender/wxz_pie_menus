@@ -35,6 +35,7 @@ sub_modules_names = [
     "Q-key",
     "V-pie",
     "X_ctrl_shift-pie",
+    "Outliner-pie",
 ]
 sub_modules_names.sort()
 
