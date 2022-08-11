@@ -9,7 +9,7 @@ bl_info = {
     "version": (0, 0, 1),
     "blender": (3, 3, 0),
     "location": "View3D",
-    "category": "3D View"
+    "category": "3D View",
 }
 
 import_export_relay_default_addons = {
@@ -51,8 +51,9 @@ class VIEW3D_PIE_MT_Bottom_S_ctrl(Menu):
         # 4 - LEFT
         pie.operator('wm.open_mainfile', text='打开文件', icon='FILEBROWSER')
         # 6 - RIGHT
-        pie.operator('wm.read_homefile', text='新建文件',
-                     icon='FILE_NEW').app_template = ""
+        pie.operator(
+            'wm.read_homefile', text='新建文件', icon='FILE_NEW'
+        ).app_template = ""
         # 2 - BOTTOM
         pie.menu('PIE_MT_S_Ctrl_export', text='导出', icon='EXPORT')
         # 8 - TOP
@@ -87,16 +88,21 @@ class VIEW3D_PIE_MT_Bottom_S_ctrl(Menu):
         row.operator('wm.append', text='追加数据', icon='APPEND_BLEND')
 
         # 1 - BOTTOM - LEFT
-        pie.operator('outliner.orphans_purge',
-                     text='清理未使用', icon='ORPHAN_DATA')
+        pie.operator('outliner.orphans_purge', text='清理未使用', icon='ORPHAN_DATA')
 
         # 3 - BOTTOM - RIGHT
         if atomic_check == '2':
-            pie.operator('pie.empty_operator', text='安装%s插件' %
-                         (atomic_name), icon='ERROR')
+            pie.operator(
+                'pie.empty_operator',
+                text='安装%s插件' % (atomic_name),
+                icon='ERROR',
+            )
         elif atomic_check == '0':
-            pie.operator('pie.empty_operator', text='启用%s插件' %
-                         (atomic_name), icon='QUESTION')
+            pie.operator(
+                'pie.empty_operator',
+                text='启用%s插件' % (atomic_name),
+                icon='QUESTION',
+            )
         elif atomic_check == '1':
             pie.operator('atomic.clean_all', text='清理所有', icon='PARTICLEMODE')
 
@@ -131,8 +137,7 @@ class PIE_MT_S_Ctrl_import(Menu):
         if su_check == '2':
             row.operator('pie.empty_operator', text='安装SU导入插件', icon='ERROR')
         elif su_check == '0':
-            row.operator('pie.empty_operator',
-                         text='启用SU导入插件', icon='QUESTION')
+            row.operator('pie.empty_operator', text='启用SU导入插件', icon='QUESTION')
         elif su_check == '1':
             row.operator('import_scene.skp', text='—— skp ——', icon='EVENT_S')
 
@@ -180,7 +185,6 @@ classes = [
     VIEW3D_PIE_MT_Bottom_S_ctrl,
     PIE_MT_S_Ctrl_import,
     PIE_MT_S_Ctrl_export,
-
 ]
 
 addon_keymaps = []
@@ -188,10 +192,8 @@ addon_keymaps = []
 
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
-
-    km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
-    kmi = km.keymap_items.new(
-        "wm.call_menu_pie",  'S', 'CLICK_DRAG', ctrl=True)
+    km = addon.keymaps.new(name="Window")
+    kmi = km.keymap_items.new("wm.call_menu_pie", 'S', 'CLICK_DRAG', ctrl=True)
     kmi.properties.name = "VIEW3D_PIE_MT_Bottom_S_ctrl"
     addon_keymaps.append(km)
 
