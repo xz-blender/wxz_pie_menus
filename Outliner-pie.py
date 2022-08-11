@@ -22,11 +22,11 @@ class OUTLINER_PIE_MT_Bottom_A(Menu):
 
         ob_type = context.object.type
         ob_mode = context.object.mode
-        radius = context.preferences.view.pie_menu_radius
-        # if context.area.ui_type == 'OUTLINER':
-        radius = 10
-        # else:
-        #     radius = 100
+        # radius = context.preferences.view.pie_menu_radius
+        # # if context.area.ui_type == 'OUTLINER':
+        # radius = 10
+        # # else:
+        # #     radius = 100
         # 4 - LEFT
         pie.operator(
             'outliner.show_one_level', icon='REMOVE', text=''
