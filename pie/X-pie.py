@@ -13,10 +13,12 @@ bl_info = {
 }
 
 
-def has_verties(context):
+def verties_lenth(context):
+    lenth = 0
     for vertex in context.active_object.data.vertices:
         if vertex.select == True:
-            return True
+            lenth += 1
+            return lenth
 
 
 class VIEW3D_PIE_MT_Bottom_X(Menu):
@@ -38,7 +40,7 @@ class VIEW3D_PIE_MT_Bottom_X(Menu):
 
             row = col.row(align=True)
             if ed_mode[0] == True:
-                if has_verties(context) == True:
+                if verties_lenth(context) >= 2:
                     row.operator(
                         'mesh.merge', text='首点', icon='DOT'
                     ).type = 'FIRST'
@@ -49,7 +51,7 @@ class VIEW3D_PIE_MT_Bottom_X(Menu):
                         'mesh.merge', text='末点', icon='DOT'
                     ).type = 'LAST'
                 else:
-                    row.operator('empty_operator', text='没有选择顶点')
+                    row.operator('empty_operator', text='请选择多顶点')
             else:
                 sub = row.row()
                 # sub.alignment = 'CENTER'
