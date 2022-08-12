@@ -25,3 +25,5 @@ __pycache__/Outliner-pie.cpython-310.pyc
 keymap_presets/Stored_Keymaps.py
 keymap_presets/Stored_Keymaps.py
 *.pyc
+pie/__pycache__/A-pie.cpython-310.pyc
+pie/__pycache__/Outliner-pie.cpython-310.pyc
