@@ -51,7 +51,7 @@ class VIEW3D_PIE_MT_Bottom_X(Menu):
                         'mesh.merge', text='末点', icon='DOT'
                     ).type = 'LAST'
                 except TypeError:
-                    row.operator('pie.empty_operator', text='请选择多顶点')
+                    row.operator('mesh.merge', text='中心').type = 'CENTER'
             else:
                 sub = row.row()
                 # sub.alignment = 'CENTER'
