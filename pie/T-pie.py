@@ -1,7 +1,7 @@
 import bpy
 import os
 from bpy.types import Menu, Panel, Operator
-from .utils import check_rely_addon, rely_addons, set_pie_ridius
+from .utils import check_rely_addon, rely_addons, set_pie_ridius, pie_op_check
 
 submoduname = __name__.split('.')[-1]
 bl_info = {
@@ -28,26 +28,30 @@ class VIEW3D_PIE_MT_Bottom_T(Menu):
         set_pie_ridius(context, 100)
 
         # addon1:"LoopTools"
-        # addon1 = check_rely_addon(rely_addons[2][0], rely_addons[2][1])
-        # if addon1:
-        # pie.separator()
-        # self.bl_label = "none"
-        # 4 - LEFT
-        pie.separator()
-        # 6 - RIGHT
-        pie.separator()
-        # 2 - BOTTOM
-        pie.separator()
-        # 8 - TOP
-        pie.separator()
-        # 7 - TOP - LEFT
-        pie.separator()
-        # 9 - TOP - RIGHT
-        pie.separator()
-        # 1 - BOTTOM - LEFT
-        pie.separator()
-        # 3 - BOTTOM - RIGHT
-        pie.separator()
+        lt_name, lt_path = rely_addons[2][0], rely_addons[2][1]
+        lt_check = check_rely_addon(lt_name, lt_path)
+
+        if ob_mode == 'EDIT':
+            if ob_type == 'MESH':
+                # 4 - LEFT
+                if pie_op_check(pie, lt_check, lt_name) == True:
+                    pie.operator('mesh.looptools_relax', text='松弛')
+                # 6 - RIGHT
+                if pie_op_check(pie, lt_check, lt_name) == True:
+                    pie.operator('mesh.looptools_space', text='平均')
+                # 2 - BOTTOM
+                pie.separator()
+                # 8 - TOP
+                if pie_op_check(pie, lt_check, lt_name) == True:
+                    pie.operator('mesh.looptools_circle', text='圆环')
+                # 7 - TOP - LEFT
+                pie.separator()
+                # 9 - TOP - RIGHT
+                pie.separator()
+                # 1 - BOTTOM - LEFT
+                pie.separator()
+                # 3 - BOTTOM - RIGHT
+                pie.separator()
 
 
 classes = [
@@ -59,11 +63,16 @@ addon_keymaps = []
 
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
-
-    km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
-    kmi = km.keymap_items.new("wm.call_menu_pie", 'T', 'CLICK_DRAG')
-    kmi.properties.name = "VIEW3D_PIE_MT_Bottom_T"
-    addon_keymaps.append(km)
+    space_name = [
+        'Object mode',
+        'Mesh',
+        'Curve',
+    ]
+    for name in space_name:
+        km = addon.keymaps.new(name=name)
+        kmi = km.keymap_items.new("wm.call_menu_pie", 'T', 'CLICK_DRAG')
+        kmi.properties.name = "VIEW3D_PIE_MT_Bottom_T"
+        addon_keymaps.append(km)
 
 
 def unregister_keymaps():

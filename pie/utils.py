@@ -36,3 +36,14 @@ def check_rely_addon(a_name, p_name):  # addon name & path name
 
 def set_pie_ridius(context, radius=100):
     context.preferences.view.pie_menu_radius = radius
+
+
+def pie_op_check(pie, check_op, op_text):
+    if check_op == '2':
+        pie.operator('pie.empty_operator', text='未安装%s插件' % (op_text))
+        return False
+    elif check_op == '0':
+        pie.operator('pie.empty_operator', text='未启用%s插件' % (op_text))
+        return False
+    elif lt_check == '1':
+        return True
