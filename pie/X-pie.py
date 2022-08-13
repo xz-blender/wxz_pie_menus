@@ -18,7 +18,7 @@ def verties_lenth(context):
     for vertex in context.active_object.data.vertices:
         if vertex.select == True:
             lenth += 1
-            return lenth
+    return lenth
 
 
 class VIEW3D_PIE_MT_Bottom_X(Menu):
@@ -31,16 +31,16 @@ class VIEW3D_PIE_MT_Bottom_X(Menu):
 
         ob_type = context.object.type
         ob_mode = context.object.mode
-        ed_mode = context.tool_settings.mesh_select_mode
 
         set_pie_ridius(context, 100)
 
         if ob_mode == 'EDIT':
+            ed_mode = context.tool_settings.mesh_select_mode
             col = pie.split().box().column(align=True)
 
             row = col.row(align=True)
             if ed_mode[0] == True:
-                if verties_lenth(context) >= 2:
+                try:
                     row.operator(
                         'mesh.merge', text='首点', icon='DOT'
                     ).type = 'FIRST'
@@ -50,8 +50,8 @@ class VIEW3D_PIE_MT_Bottom_X(Menu):
                     row.operator(
                         'mesh.merge', text='末点', icon='DOT'
                     ).type = 'LAST'
-                else:
-                    row.operator('empty_operator', text='请选择多顶点')
+                except TypeError:
+                    row.operator('pie.empty_operator', text='请选择多顶点')
             else:
                 sub = row.row()
                 # sub.alignment = 'CENTER'
