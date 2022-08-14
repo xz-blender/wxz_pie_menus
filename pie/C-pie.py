@@ -35,10 +35,7 @@ class VIEW3D_PIE_MT_Bottom_C(Menu):
         # 6 - RIGHT
         pie.operator("view3d.walk", text="行走漫游", icon="MOD_DYNAMICPAINT")
         # 2 - BOTTOM
-        if (
-            ob_type == 'CAMERA'
-            or context.space_data.region_3d.view_perspective == 'CAMERA'
-        ):
+        if ob_type == 'CAMERA' or context.space_data.region_3d.view_perspective == 'CAMERA':
             pie.prop(context.space_data, "lock_camera", text="锁定相机视图")
         else:
             pie.separator()
