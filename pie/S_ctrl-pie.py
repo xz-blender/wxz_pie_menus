@@ -53,9 +53,7 @@ class VIEW3D_PIE_MT_Bottom_S_ctrl(Menu):
         # 4 - LEFT
         pie.operator('wm.open_mainfile', text='打开文件', icon='FILEBROWSER')
         # 6 - RIGHT
-        pie.operator(
-            'wm.read_homefile', text='新建文件', icon='FILE_NEW'
-        ).app_template = ""
+        pie.operator('wm.read_homefile', text='新建文件', icon='FILE_NEW').app_template = ""
         # 2 - BOTTOM
         pie.menu('PIE_MT_S_Ctrl_export', text='导出', icon='EXPORT')
         # 8 - TOP
@@ -90,7 +88,7 @@ class VIEW3D_PIE_MT_Bottom_S_ctrl(Menu):
         row.operator('wm.append', text='追加数据', icon='APPEND_BLEND')
 
         # 1 - BOTTOM - LEFT
-        pie.operator('outliner.orphans_purge', text='清理未使用', icon='ORPHAN_DATA')
+        pie.operator('outliner.orphans_purge', text='清理未使用', icon='ORPHAN_DATA').do_recursive = True
 
         # 3 - BOTTOM - RIGHT
         if atomic_check == '2':
