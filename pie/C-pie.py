@@ -1,8 +1,7 @@
 import bpy
 import os
 from bpy.types import Menu, Operator
-
-# from .utils import check_rely_addon, rely_addons
+from .utils import set_pie_ridius
 
 bl_info = {
     "name": "C-PIE",
@@ -24,6 +23,7 @@ class VIEW3D_PIE_MT_Bottom_C(Menu):
 
         ob_type = context.object.type
         ob_mode = context.object.mode
+        region = context.space_data.region_3d.view_perspective
 
         set_pie_ridius(context, 100)
 
@@ -35,7 +35,7 @@ class VIEW3D_PIE_MT_Bottom_C(Menu):
         # 6 - RIGHT
         pie.operator("view3d.walk", text="行走漫游", icon="MOD_DYNAMICPAINT")
         # 2 - BOTTOM
-        if ob_type == 'CAMERA' or context.space_data.region_3d.view_perspective == 'CAMERA':
+        if ob_type == 'CAMERA' or region == 'CAMERA':
             pie.prop(context.space_data, "lock_camera", text="锁定相机视图")
         else:
             pie.separator()

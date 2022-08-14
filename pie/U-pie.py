@@ -1,6 +1,7 @@
 import bpy
 import os
 from bpy.types import Menu, Panel, Operator
+from .utils import set_pie_ridius
 
 submoduname = __name__.split('.')[-1]
 bl_info = {
