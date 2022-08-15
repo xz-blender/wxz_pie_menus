@@ -64,13 +64,6 @@ keyconfig_data = \
       },
      ),
     ("wm.call_menu_pie",
-     {"type": 'F', "value": 'CLICK_DRAG'},
-     {"properties":
-      [("name", 'VIEW3D_PIE_MT_Bottom_F'),
-       ],
-      },
-     ),
-    ("wm.call_menu_pie",
      {"type": 'E', "value": 'CLICK_DRAG'},
      {"properties":
       [("name", 'VIEW3D_PIE_MT_Bottom_E'),
@@ -824,7 +817,7 @@ keyconfig_data = \
     "active":False,
       },
      ),
-    ("view3d.toggle_xray", {"type": 'Z', "value": 'CLICK', "alt": True}, None),
+    ("view3d.toggle_xray", {"type": 'Z', "value": 'PRESS', "alt": True}, None),
     ("wm.context_toggle",
      {"type": 'Z', "value": 'CLICK', "shift": True, "alt": True},
      {"properties":
@@ -1019,6 +1012,13 @@ keyconfig_data = \
      {"type": 'T', "value": 'CLICK_DRAG'},
      {"properties":
       [("name", 'VIEW3D_PIE_MT_Bottom_T'),
+       ],
+      },
+     ),
+    ("wm.call_menu_pie",
+     {"type": 'F', "value": 'CLICK_DRAG'},
+     {"properties":
+      [("name", 'VIEW3D_PIE_MT_Bottom_F'),
        ],
       },
      ),
@@ -2605,6 +2605,13 @@ keyconfig_data = \
       },
      ),
     ("wm.call_menu_pie",
+     {"type": 'U', "value": 'CLICK_DRAG'},
+     {"properties":
+      [("name", 'VIEW3D_PIE_MT_Bottom_U'),
+       ],
+      },
+     ),
+    ("wm.call_menu_pie",
      {"type": 'T', "value": 'CLICK_DRAG'},
      {"properties":
       [("name", 'VIEW3D_PIE_MT_Bottom_T'),
@@ -2613,6 +2620,14 @@ keyconfig_data = \
      ),
     ("pie.q_key_shift", {"type": 'Q', "value": 'CLICK', "shift": True}, None),
     ("pie.q_key", {"type": 'Q', "value": 'CLICK'}, None),
+    ("mesh.vert_connect_path", {"type": 'F', "value": 'CLICK', "shift": True}, None),
+    ("wm.call_menu_pie",
+     {"type": 'F', "value": 'CLICK_DRAG'},
+     {"properties":
+      [("name", 'VIEW3D_PIE_MT_Bottom_F'),
+       ],
+      },
+     ),
     ("machin3.symmetrize",
      {"type": 'X', "value": 'PRESS', "alt": True},
      {"properties":
@@ -4191,6 +4206,13 @@ keyconfig_data = \
      ),
     ("pie.q_key_shift", {"type": 'Q', "value": 'CLICK', "shift": True}, None),
     ("pie.q_key", {"type": 'Q', "value": 'CLICK'}, None),
+    ("wm.call_menu_pie",
+     {"type": 'F', "value": 'CLICK_DRAG'},
+     {"properties":
+      [("name", 'VIEW3D_PIE_MT_Bottom_F'),
+       ],
+      },
+     ),
     ("machin3.call_mesh_machine_menu",
      {"type": 'Y', "value": 'PRESS'},
      {"properties":
