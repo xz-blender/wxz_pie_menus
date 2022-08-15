@@ -23,9 +23,9 @@ for mod in addon_utils.modules():
     addon_lists.append(mod.bl_info.get('name'))
 
 
-addons_dir = []
+addons_dir = {}
 for mod in addon_utils.modules():
-    addons_dir[mod.bl_info.get('name')] = [mod.__name__]
+    addons_dir[mod.bl_info.get('name')] = mod.__name__
 
 
 def check_rely_addon(a_name, p_name):  # addon name & path name

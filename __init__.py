@@ -36,6 +36,7 @@ sub_modules_names = [
     "V-pie",
     "X_ctrl_shift-pie",
     "Outliner-pie",
+    "U-pie",
 ]
 sub_modules_names.sort()
 
@@ -104,9 +105,7 @@ def unregister_submodule(mod):
 
 
 def get_dirpath():
-    return os.path.join(
-        os.path.dirname(os.path.realpath(__file__)), "keymap_presets"
-    )
+    return os.path.join(os.path.dirname(os.path.realpath(__file__)), "keymap_presets")
 
 
 class Empty_Operator(Operator):
@@ -132,9 +131,7 @@ class Apply_My_Keymap(Operator):
     def execute(self, context):
         if os.path.exists(self.path):
             bpy.ops.preferences.keyconfig_import(filepath=self.path)
-            self.report(
-                {'INFO'}, '已应用快捷键配置:"%s"' % (os.path.basename(self.path))
-            )
+            self.report({'INFO'}, '已应用快捷键配置:"%s"' % (os.path.basename(self.path)))
             return {"FINISHED"}
         else:
             self.report({'INFO'}, '未应用快捷键表:"%s"' % (slef.path))
@@ -194,18 +191,18 @@ class WXZ_PIE_Preferences(AddonPreferences):
         sub = box.row(align=True)
         sub.label(text='自定义快捷键表:', icon='EVENT_SPACEKEY')
 
-        sub.operator(
-            Apply_My_Keymap.bl_idname, text='应用--"预设表"'
-        ).path = os.path.join(get_dirpath(), 'My_Keymaps.py')
-        sub.operator(
-            Apply_My_Keymap.bl_idname, text='应用--"备份表"'
-        ).path = os.path.join(get_dirpath(), 'Stored_Keymaps.py')
+        sub.operator(Apply_My_Keymap.bl_idname, text='应用--"预设表"').path = os.path.join(
+            get_dirpath(), 'My_Keymaps.py'
+        )
+        sub.operator(Apply_My_Keymap.bl_idname, text='应用--"备份表"').path = os.path.join(
+            get_dirpath(), 'Stored_Keymaps.py'
+        )
 
         row = row.box()
         row.alignment = "RIGHT"
-        row.operator(
-            Restore_My_Keymap.bl_idname, text="备份当前快捷键表"
-        ).path = os.path.join(get_dirpath(), 'Stored_Keymaps.py')
+        row.operator(Restore_My_Keymap.bl_idname, text="备份当前快捷键表").path = os.path.join(
+            get_dirpath(), 'Stored_Keymaps.py'
+        )
 
         split = layout.split()
 
@@ -287,9 +284,7 @@ for mod in sub_modules:
         ),
     )
 
-    create_property(
-        WXZ_PIE_Preferences, 'show_expanded_' + mod_name, BoolProperty()
-    )
+    create_property(WXZ_PIE_Preferences, 'show_expanded_' + mod_name, BoolProperty())
 
 
 classes = (

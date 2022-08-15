@@ -50,6 +50,7 @@ class VIEW3D_PIE_MT_Bottom_W(Menu):
                     )
             # 9 - TOP - RIGHT
             # ---------------
+            col = pie.split().column(align=True)
             row = col.row(align=True)
             row.alignment = "CENTER"
             row.scale_x = 1.3
@@ -81,7 +82,6 @@ class VIEW3D_PIE_MT_Bottom_W(Menu):
             pie.separator()
             # 2 - BOTTOM
             pie.prop(context.scene.tool_settings, 'use_mesh_automerge', text='自动合并')
-            bpy.context.scene.tool_settings.use_mesh_automerge = True
             # 8 - TOP
             pie.prop(context.scene.tool_settings, 'use_proportional_edit', text='衰减编辑网格')
             # 7 - TOP - LEFT
@@ -93,6 +93,7 @@ class VIEW3D_PIE_MT_Bottom_W(Menu):
                         'object.toggle_apply_modifiers_view', text='显示/隐藏所有修改器', icon='MODIFIER'
                     )
             # 9 - TOP - RIGHT
+            col = pie.split().column(align=True)
             row = col.row(align=True)
             row.alignment = "CENTER"
             row.scale_x = 2

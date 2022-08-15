@@ -61,7 +61,7 @@ def register_keymaps():
     ]
     for name in space_name:
         km = addon.keymaps.new(name=name)
-        kmi = km.keymap_items.new("wm.call_menu_pie", 'T', 'CLICK_DRAG')
+        kmi = km.keymap_items.new("wm.call_menu_pie", 'U', 'CLICK_DRAG')
         kmi.properties.name = "VIEW3D_PIE_MT_Bottom_U"
         addon_keymaps.append(km)
 
@@ -71,7 +71,7 @@ def unregister_keymaps():
     for km in addon_keymaps:
         for kmi in km.keymap_items:
             km.keymap_items.remove(kmi)
-        # wm.keyconfigs.addon.keymaps.remove(km)
+        wm.keyconfigs.addon.keymaps.remove(km)
     addon_keymaps.clear()
 
 
