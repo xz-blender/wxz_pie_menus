@@ -810,11 +810,10 @@ keyconfig_data = \
       },
      ),
     ("wm.call_menu_pie",
-     {"type": 'Z', "value": 'PRESS'},
+     {"type": 'Z', "value": 'CLICK'},
      {"properties":
       [("name", 'VIEW3D_MT_shading_pie'),
        ],
-    "active":False,
       },
      ),
     ("view3d.toggle_shading",
@@ -825,7 +824,7 @@ keyconfig_data = \
     "active":False,
       },
      ),
-    ("view3d.toggle_xray", {"type": 'Z', "value": 'CLICK'}, None),
+    ("view3d.toggle_xray", {"type": 'Z', "value": 'CLICK', "alt": True}, None),
     ("wm.context_toggle",
      {"type": 'Z', "value": 'CLICK', "shift": True, "alt": True},
      {"properties":

@@ -38,8 +38,8 @@ class VIEW3D_PIE_MT_Bottom_S_ctrl(Menu):
         layout.alignment = "CENTER"
         pie = layout.menu_pie()
 
-        ob_type = context.object.type
-        ob_mode = context.object.mode
+        # ob_type = context.object.type
+        # ob_mode = context.object.mode
 
         set_pie_ridius(context, 100)
 

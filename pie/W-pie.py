@@ -1,9 +1,10 @@
 import bpy
 from bpy.types import Menu, Operator
-from .utils import check_rely_addon, rely_addons, set_pie_ridius
+from .utils import check_rely_addon, rely_addons, set_pie_ridius, pie_check_rely_addon_op
 
+submoduname = __name__.split('.')[-1]
 bl_info = {
-    "name": "W-PIE",
+    "name": submoduname,
     "author": "wxz",
     "version": (0, 0, 1),
     "blender": (3, 3, 0),
@@ -13,7 +14,7 @@ bl_info = {
 
 
 class VIEW3D_PIE_MT_Bottom_W(Menu):
-    bl_label = "W"
+    bl_label = submoduname
 
     def draw(self, context):
 
@@ -27,55 +28,71 @@ class VIEW3D_PIE_MT_Bottom_W(Menu):
         set_pie_ridius(context, 100)
 
         # addon1: "Modifier Tools"
-        adname = rely_addons[3][0]
-        addon1 = check_rely_addon(adname, rely_addons[3][1])
+        mt_name, mt_path = rely_addons[3][0], rely_addons[3][1]
+        mt_check = check_rely_addon(mt_name, mt_path)
 
-        # 4 - LEFT
-        pie.separator()
-        # 6 - RIGHT
-        pie.separator()
-        # 2 - BOTTOM
         if ob_mode == 'OBJECT':
-            pie.prop(
-                bpy.context.scene.tool_settings,
-                'use_transform_data_origin',
-                text='仅原点',
-            )
-        else:
+            # 4 - LEFT
             pie.separator()
-        # 8 - TOP
-        if ob_mode == 'EDIT':
-            pie.prop(
-                bpy.context.scene.tool_settings,
-                'use_proportional_edit',
-                text='衰减编辑网格',
-            )
-        elif ob_mode == 'OBJECT':
-            pie.prop(
-                bpy.context.scene.tool_settings,
-                'use_proportional_edit_objects',
-                text='衰减编辑物体',
-            )
-        else:
+            # 6 - RIGHT
             pie.separator()
-        # 7 - TOP - LEFT
-        if addon1 == '2':
-            pie.operator('pie.empty_operator', text='未找到"%s"插件!' % (adname))
-        elif addon1 == '0':
-            pie.operator('pie.empty_operator', text='启用"%s"插件!' % (adname))
-        elif addon1 == '1':
-            if bool(context.object.modifiers) == False:
-                pie.operator('pie.empty_operator', text='没有任何修改器!')
-            else:
-                pie.operator(
-                    'object.toggle_apply_modifiers_view',
-                    text='显示/隐藏所有修改器',
-                    icon='MODIFIER',
-                )
+            # 2 - BOTTOM
+            pie.prop(context.scene.tool_settings, 'use_transform_data_origin', text='仅原点')
+            # 8 - TOP
+            pie.prop(context.scene.tool_settings, 'use_proportional_edit_objects', text='衰减编辑物体')
+            # 7 - TOP - LEFT
+            if pie_check_rely_addon_op(pie, 'Modifier Tools'):
+                if bool(context.object.modifiers) == False:
+                    pie.operator('pie.empty_operator', text='没有任何修改器!')
+                else:
+                    pie.operator(
+                        'object.toggle_apply_modifiers_view', text='显示/隐藏所有修改器', icon='MODIFIER'
+                    )
+            # 9 - TOP - RIGHT
+            # ---------------
+            row = col.row(align=True)
+            row.alignment = "CENTER"
+            row.scale_x = 1.3
+            row.scale_y = 1.2
+            row.operator(Proportional_Edit_Falloff.bl_idname, icon='SMOOTHCURVE').mode = 'SMOOOTH'
+            row.operator(Proportional_Edit_Falloff.bl_idname, icon='SPHERECURVE').mode = 'SPHERE'
+            row.operator(Proportional_Edit_Falloff.bl_idname, icon='ROOTCURVE').mode = 'ROOT'
+            row.operator(
+                Proportional_Edit_Falloff.bl_idname, icon='INVERSESQUARECURVE'
+            ).mode = 'INVERSE_SQUARE'
+            # ---------------
+            row = col.row(align=True)
+            row.alignment = "CENTER"
+            row.scale_x = 1.3
+            row.scale_y = 1.2
+            row.operator(Proportional_Edit_Falloff.bl_idname, icon='SHARPCURVE').mode = 'SHARP'
+            row.operator(Proportional_Edit_Falloff.bl_idname, icon='LINCURVE').mode = 'LINEAR'
+            row.operator(Proportional_Edit_Falloff.bl_idname, icon='NOCURVE').mode = 'CONSTANT'
+            row.operator(Proportional_Edit_Falloff.bl_idname, icon='RNDCURVE').mode = 'RANDOM'
+            # 1 - BOTTOM - LEFT
+            pie.prop(bpy.context.scene.tool_settings, 'use_transform_pivot_point_align', text='仅位置')
+            # 3 - BOTTOM - RIGHT
+            pie.prop(bpy.context.scene.tool_settings, 'use_transform_skip_children', text='仅父级')
 
-        # 9 - TOP - RIGHT
-        col = pie.column(align=True)
-        if ob_mode == 'EDIT':
+        elif ob_mode == 'EDIT':
+            # 4 - LEFT
+            pie.separator()
+            # 6 - RIGHT
+            pie.separator()
+            # 2 - BOTTOM
+            pie.prop(context.scene.tool_settings, 'use_mesh_automerge', text='自动合并')
+            bpy.context.scene.tool_settings.use_mesh_automerge = True
+            # 8 - TOP
+            pie.prop(context.scene.tool_settings, 'use_proportional_edit', text='衰减编辑网格')
+            # 7 - TOP - LEFT
+            if pie_check_rely_addon_op(pie, 'Modifier Tools'):
+                if bool(context.object.modifiers) == False:
+                    pie.operator('pie.empty_operator', text='没有任何修改器!')
+                else:
+                    pie.operator(
+                        'object.toggle_apply_modifiers_view', text='显示/隐藏所有修改器', icon='MODIFIER'
+                    )
+            # 9 - TOP - RIGHT
             row = col.row(align=True)
             row.alignment = "CENTER"
             row.scale_x = 2
@@ -88,66 +105,52 @@ class VIEW3D_PIE_MT_Bottom_W(Menu):
             )
             row.separator(factor=0.1)
             row.prop(
-                bpy.context.scene.tool_settings,
+                context.scene.tool_settings,
                 'use_proportional_projected',
                 icon='RESTRICT_VIEW_OFF',
                 icon_only=True,
             )
             # -
             col.separator(factor=0.4)
-        # -
-        row = col.row(align=True)
-        row.alignment = "CENTER"
-        row.scale_x = 1.3
-        row.scale_y = 1.2
-        row.operator(
-            Proportional_Edit_Falloff.bl_idname, icon='SMOOTHCURVE'
-        ).mode = 'SMOOOTH'
-        row.operator(
-            Proportional_Edit_Falloff.bl_idname, icon='SPHERECURVE'
-        ).mode = 'SPHERE'
-        row.operator(
-            Proportional_Edit_Falloff.bl_idname, icon='ROOTCURVE'
-        ).mode = 'ROOT'
-        row.operator(
-            Proportional_Edit_Falloff.bl_idname, icon='INVERSESQUARECURVE'
-        ).mode = 'INVERSE_SQUARE'
-        # -
-        row = col.row(align=True)
-        row.alignment = "CENTER"
-        row.scale_x = 1.3
-        row.scale_y = 1.2
-        row.operator(
-            Proportional_Edit_Falloff.bl_idname, icon='SHARPCURVE'
-        ).mode = 'SHARP'
-        row.operator(
-            Proportional_Edit_Falloff.bl_idname, icon='LINCURVE'
-        ).mode = 'LINEAR'
-        row.operator(
-            Proportional_Edit_Falloff.bl_idname, icon='NOCURVE'
-        ).mode = 'CONSTANT'
-        row.operator(
-            Proportional_Edit_Falloff.bl_idname, icon='RNDCURVE'
-        ).mode = 'RANDOM'
+            # ---------------
+            row = col.row(align=True)
+            row.alignment = "CENTER"
+            row.scale_x = 1.3
+            row.scale_y = 1.2
+            row.operator(Proportional_Edit_Falloff.bl_idname, icon='SMOOTHCURVE').mode = 'SMOOOTH'
+            row.operator(Proportional_Edit_Falloff.bl_idname, icon='SPHERECURVE').mode = 'SPHERE'
+            row.operator(Proportional_Edit_Falloff.bl_idname, icon='ROOTCURVE').mode = 'ROOT'
+            row.operator(
+                Proportional_Edit_Falloff.bl_idname, icon='INVERSESQUARECURVE'
+            ).mode = 'INVERSE_SQUARE'
+            # ---------------
+            row = col.row(align=True)
+            row.alignment = "CENTER"
+            row.scale_x = 1.3
+            row.scale_y = 1.2
+            row.operator(Proportional_Edit_Falloff.bl_idname, icon='SHARPCURVE').mode = 'SHARP'
+            row.operator(Proportional_Edit_Falloff.bl_idname, icon='LINCURVE').mode = 'LINEAR'
+            row.operator(Proportional_Edit_Falloff.bl_idname, icon='NOCURVE').mode = 'CONSTANT'
+            row.operator(Proportional_Edit_Falloff.bl_idname, icon='RNDCURVE').mode = 'RANDOM'
 
-        # 1 - BOTTOM - LEFT
-        if ob_mode == 'OBJECT':
-            pie.prop(
-                bpy.context.scene.tool_settings,
-                'use_transform_pivot_point_align',
-                text='仅位置',
-            )
-        else:
-            pie.separator()
-        # 3 - BOTTOM - RIGHT
-        if ob_mode == 'OBJECT':
-            pie.prop(
-                bpy.context.scene.tool_settings,
-                'use_transform_skip_children',
-                text='仅父级',
-            )
-        else:
-            pie.separator()
+            # 1 - BOTTOM - LEFT
+            col = pie.split().column(align=True)
+            col.scale_y = 1.2
+            row = col.row()
+            row.prop(context.scene.tool_settings, 'use_edge_path_live_unwrap')
+            row = col.row()
+            row.prop(context.scene.tool_settings, 'use_mesh_automerge_and_split')
+
+            # 3 - BOTTOM - RIGHT
+            if context.scene.tool_settings.use_transform_correct_face_attributes == False:
+                pie.prop(context.scene.tool_settings, 'use_transform_correct_face_attributes')
+            else:
+                col = pie.split().column(align=True)
+                col.scale_y = 1.2
+                row = col.row()
+                row.prop(context.scene.tool_settings, 'use_transform_correct_face_attributes')
+                row = col.row()
+                row.prop(context.scene.tool_settings, 'use_transform_correct_keep_connected')
 
 
 class Proportional_Edit_Falloff(Operator):
@@ -163,9 +166,7 @@ class Proportional_Edit_Falloff(Operator):
         return True
 
     def execute(self, context):
-        bpy.context.scene.tool_settings.proportional_edit_falloff = '%s' % (
-            self.mode
-        )
+        bpy.context.scene.tool_settings.proportional_edit_falloff = '%s' % (self.mode)
         return {"FINISHED"}
 
 

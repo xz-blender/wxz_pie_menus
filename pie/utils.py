@@ -23,6 +23,11 @@ for mod in addon_utils.modules():
     addon_lists.append(mod.bl_info.get('name'))
 
 
+addons_dir = []
+for mod in addon_utils.modules():
+    addons_dir[mod.bl_info.get('name')] = [mod.__name__]
+
+
 def check_rely_addon(a_name, p_name):  # addon name & path name
     if a_name in addon_lists:
         if addon_utils.check(p_name)[0] == False:
@@ -43,7 +48,20 @@ def pie_op_check(pie, check_op, op_text):
         pie.operator('pie.empty_operator', text='未安装%s插件' % (op_text))
         return False
     elif check_op == '0':
-        pie.operator('pie.empty_operator', text='未启用%s插件' % (op_text))
+
         return False
     elif check_op == '1':
         return True
+
+
+def pie_check_rely_addon_op(pie, addon_name):  # addon name & path name
+    if addon_name in addon_lists:
+        if addon_utils.check(addons_dir[addon_name])[0] == False:
+            # return: (loaded_default, loaded_state) 元组
+            pie.operator('pie.empty_operator', text='未启用%s插件' % (addon_name))
+            return False  # 安装未启用
+        else:
+            return True  # 安装已启用
+    else:
+        pie.operator('pie.empty_operator', text='未安装%s插件' % (addon_name))  # 未安装
+        return False
