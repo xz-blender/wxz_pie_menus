@@ -45,9 +45,7 @@ class VIEW3D_PIE_MT_Bottom_F(Menu):
             'LIGHT',
         ]:
             # 4 - LEFT
-            op = pie.operator(
-                'object.make_single_user', text='单一化', icon='UNLINKED'
-            )
+            op = pie.operator('object.make_single_user', text='单一化', icon='UNLINKED')
             op.object = True
             op.obdata = True
             # 6 - RIGHT
@@ -78,14 +76,10 @@ class VIEW3D_PIE_MT_Bottom_F(Menu):
         elif ob_mode == 'EDIT':
             if ob_type == 'MESH':
                 # 4 - LEFT
-                pie.operator(
-                    'wm.tool_set_by_id', text='切刀工具'
-                ).name = "builtin.knife"
+                pie.operator('wm.tool_set_by_id', text='切刀工具').name = "builtin.knife"
                 # 6 - RIGHT
                 if addon1 == '0':
-                    pie.operator(
-                        'pie.empty_operator', text='启用"Edit Mesh Tools"插件!'
-                    )
+                    pie.operator('pie.empty_operator', text='启用"Edit Mesh Tools"插件!')
                 elif addon1 == '1':
                     pie.operator('mesh.offset_edges', text='偏移边线')
                 # 2 - BOTTOM
@@ -96,27 +90,19 @@ class VIEW3D_PIE_MT_Bottom_F(Menu):
                 pie.operator('mesh.split', text='拆分')
                 # 9 - TOP - RIGHT
                 if addon1 == '0':
-                    pie.operator(
-                        'pie.empty_operator', text='启用"Edit Mesh Tools"插件!'
-                    )
+                    pie.operator('pie.empty_operator', text='启用"Edit Mesh Tools"插件!')
                 elif addon1 == '1':
                     pie.operator('mesh.edgetools_extend', text='延伸边')
                 # 1 - BOTTOM - LEFT
                 if addon2 == '2':
-                    pie.operator(
-                        'pie.empty_operator', text='未找到"Straight Skeleton"插件!'
-                    )
+                    pie.operator('pie.empty_operator', text='未找到"Straight Skeleton"插件!')
                 elif addon2 == '0':
-                    pie.operator(
-                        'pie.empty_operator', text='启用"Straight Skeleton"插件!'
-                    )
+                    pie.operator('pie.empty_operator', text='启用"Straight Skeleton"插件!')
                 elif addon2 == '1':
                     pie.operator('mesh.inset_polygon', text='连续偏移')
                 # 3 - BOTTOM - RIGHT
                 if addon1 == '0':
-                    pie.operator(
-                        'pie.empty_operator', text='启用"Edit Mesh Tools"插件!'
-                    )
+                    pie.operator('pie.empty_operator', text='启用"Edit Mesh Tools"插件!')
                 elif addon1 == '1':
                     pie.operator('object.mesh_edge_length_set', text='设边长')
             if ob_type == 'CURVE':
@@ -124,17 +110,11 @@ class VIEW3D_PIE_MT_Bottom_F(Menu):
                 pie.operator('curve.smooth', text='光滑')
                 # 6 - RIGHT
                 if addon3 == '2':
-                    pie.operator(
-                        'pie.empty_operator', text='未找到"Straight Skeleton"插件!'
-                    )
+                    pie.operator('pie.empty_operator', text='未找到"Straight Skeleton"插件!')
                 elif addon3 == '0':
-                    pie.operator(
-                        'pie.empty_operator', text='启用"Straight Skeleton"插件!'
-                    )
+                    pie.operator('pie.empty_operator', text='启用"Straight Skeleton"插件!')
                 elif addon3 == '1':
-                    pie.operator(
-                        'curvetools.add_toolpath_offset_curve', text='曲线偏移'
-                    )
+                    pie.operator('curvetools.add_toolpath_offset_curve', text='曲线偏移')
                 pie.separator()
                 # 2 - BOTTOM
                 pie.operator('curve.subdivide', text='细分')
@@ -177,11 +157,19 @@ addon_keymaps = []
 
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
+    space_name = [
+        'Object Mode',
+        'Mesh',
+        'Curve',
+    ]
+    for name in space_name:
+        km = addon.keymaps.new(name=name)
+        kmi = km.keymap_items.new("wm.call_menu_pie", 'F', 'CLICK_DRAG')
+        kmi.properties.name = "VIEW3D_PIE_MT_Bottom_F"
 
-    km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
-    kmi = km.keymap_items.new("wm.call_menu_pie", 'F', 'CLICK_DRAG')
-    kmi.properties.name = "VIEW3D_PIE_MT_Bottom_F"
-    addon_keymaps.append(km)
+        if name == 'Mesh':
+            kmi = km.keymap_items.new("mesh.vert_connect_path", 'F', 'CLICK', shift=True)
+        addon_keymaps.append(km)
 
 
 def unregister_keymaps():
@@ -189,7 +177,7 @@ def unregister_keymaps():
     for km in addon_keymaps:
         for kmi in km.keymap_items:
             km.keymap_items.remove(kmi)
-        # wm.keyconfigs.addon.keymaps.remove(km)
+        wm.keyconfigs.addon.keymaps.remove(km)
     addon_keymaps.clear()
 
 
