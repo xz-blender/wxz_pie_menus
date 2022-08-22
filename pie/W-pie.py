@@ -187,7 +187,7 @@ def register_keymaps():
     kmi.properties.name = "VIEW3D_PIE_MT_Bottom_W"
     addon_keymaps.append(km)
 
-    km = addon.keymaps.new(name='UV Editor', space_type='IMAGE_EDITOR')
+    km = addon.keymaps.new(name='UV Editor')
     kmi = km.keymap_items.new("wm.call_menu_pie", 'W', 'CLICK_DRAG')
     kmi.properties.name = "VIEW3D_PIE_MT_Bottom_W"
     addon_keymaps.append(km)
@@ -198,7 +198,7 @@ def unregister_keymaps():
     for km in addon_keymaps:
         for kmi in km.keymap_items:
             km.keymap_items.remove(kmi)
-        # wm.keyconfigs.addon.keymaps.remove(km)
+        wm.keyconfigs.addon.keymaps.remove(km)
     addon_keymaps.clear()
 
 
