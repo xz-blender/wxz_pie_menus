@@ -20,19 +20,12 @@ class PIE_Space_KEY(Operator):
 
     def execute(self, context):
 
-        if context.area.ui_type == 'VIEW_3D':
+        if context.area.ui_type == 'VIEW_3D' or 'IMAGE_EDITOR':
             mode = context.object.mode
             if mode in ['OBJECT', 'EDIT']:
                 bpy.ops.wm.tool_set_by_id(name='builtin.select_box')
-            elif mode in [
-                'SCULPT',
-                'WEIGHT_PAINT',
-                'TEXTURE_PAINT',
-                'VERTEX_PAINT',
-            ]:
+            elif mode in ['SCULPT', 'WEIGHT_PAINT', 'TEXTURE_PAINT', 'VERTEX_PAINT']:
                 bpy.ops.wm.tool_set_by_index(index=1)
-        elif context.area.type == 'IMAGE_EDITOR':
-            bpy.ops.wm.tool_set_by_id(name='builtin.select_box')
         elif context.area.ui_type in [
             'SEQUENCE_EDITOR',
             'CLIP_EDITOR',
