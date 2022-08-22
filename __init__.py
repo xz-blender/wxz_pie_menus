@@ -29,6 +29,7 @@ sub_modules_names = [
     "E-pie",
     "Translate-key",
     "Space-key",
+    "Space_shift-pie",
     "C-pie",
     "S_ctrl-pie",
     "Q_alt-key",

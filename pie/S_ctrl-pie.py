@@ -27,7 +27,14 @@ for name, path in import_export_relay_default_addons.items():
         try:
             bpy.ops.preferences.addon_enable(module=path)
         except:
-            pass
+            print(name + "addon can't enabled---module name:" + path)
+
+# SketchUp IO Addon:
+su_name, su_path = rely_addons[5][0], rely_addons[5][1]
+su_check = check_rely_addon(su_name, su_path)
+# Atomic Data Manager :
+atomic_name, atomic_path = rely_addons[6][0], rely_addons[6][1]
+atomic_check = check_rely_addon(atomic_name, atomic_path)
 
 
 class VIEW3D_PIE_MT_Bottom_S_ctrl(Menu):
@@ -42,13 +49,6 @@ class VIEW3D_PIE_MT_Bottom_S_ctrl(Menu):
         # ob_mode = context.object.mode
 
         set_pie_ridius(context, 100)
-
-        # SketchUp IO Addon:
-        su_name, su_path = rely_addons[5][0], rely_addons[5][1]
-        su_check = check_rely_addon(su_name, su_path)
-        # Atomic Data Manager :
-        atomic_name, atomic_path = rely_addons[6][0], rely_addons[6][1]
-        atomic_check = check_rely_addon(atomic_name, atomic_path)
 
         # 4 - LEFT
         pie.operator('wm.open_mainfile', text='打开文件', icon='FILEBROWSER')
