@@ -53,25 +53,8 @@ class VIEW3D_PIE_MT_Bottom_C(Menu):
             pie.operator("view3d.object_as_camera", text="激活选择相机")
 
 
-class PIE_C_KEY(Operator):
-    bl_idname = "pie.c_key"
-    bl_label = "C-key"
-    bl_options = {"REGISTER"}
-
-    @classmethod
-    def poll(cls, context):
-        return True
-
-    def execute(self, context):
-        mode = context.object.mode
-        if mode in ['OBJECT', 'EDIT']:
-            bpy.ops.wm.tool_set_by_id(name='builtin.select_circle')
-        return {"FINISHED"}
-
-
 classes = [
     VIEW3D_PIE_MT_Bottom_C,
-    PIE_C_KEY,
 ]
 
 addon_keymaps = []
@@ -83,9 +66,6 @@ def register_keymaps():
     km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
     kmi = km.keymap_items.new("wm.call_menu_pie", 'C', 'CLICK_DRAG')
     kmi.properties.name = "VIEW3D_PIE_MT_Bottom_C"
-
-    kmi = km.keymap_items.new(PIE_C_KEY.bl_idname, 'C', 'CLICK')
-    addon_keymaps.append(km)
 
 
 def unregister_keymaps():

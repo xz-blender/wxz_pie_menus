@@ -118,7 +118,7 @@ class VIEW3D_PIE_MT_Bottom_W(Menu):
             row.alignment = "CENTER"
             row.scale_x = 1.3
             row.scale_y = 1.2
-            row.operator(Proportional_Edit_Falloff.bl_idname, icon='SMOOTHCURVE').mode = 'SMOOOTH'
+            row.operator(Proportional_Edit_Falloff.bl_idname, icon='SMOOTHCURVE').mode = 'SMOOTH'
             row.operator(Proportional_Edit_Falloff.bl_idname, icon='SPHERECURVE').mode = 'SPHERE'
             row.operator(Proportional_Edit_Falloff.bl_idname, icon='ROOTCURVE').mode = 'ROOT'
             row.operator(

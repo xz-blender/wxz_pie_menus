@@ -30,6 +30,8 @@ class VIEW3D_PIE_MT_Space_KEY_shift(Menu):
             'FCURVES',
             'DRIVERS',
             'NLA_EDITOR',
+            'UV',
+            'IMAGE_EDITOR',
         ]:
             # 4 - LEFT
             pie.operator('screen.frame_jump', text='首帧', icon='REW').end = False
@@ -63,6 +65,7 @@ keymap_areas = [
     ('Graph Editor', 'GRAPH_EDITOR'),
     ('Dopesheet', 'DOPESHEET_EDITOR'),
     ('UV Editor', 'IMAGE_EDITOR'),
+    ('Image', 'IMAGE_EDITOR'),
 ]
 
 

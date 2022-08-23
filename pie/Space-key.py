@@ -19,15 +19,26 @@ class PIE_Space_KEY(Operator):
     bl_options = {"REGISTER"}
 
     def execute(self, context):
-        print(context.area.ui_type)
+        # print(context.area.ui_type)
+        # 3D视图
         if context.area.ui_type == 'VIEW_3D':
             mode = context.object.mode
             if mode in ['OBJECT', 'EDIT']:
                 bpy.ops.wm.tool_set_by_id(name='builtin.select_box')
             elif mode in ['SCULPT', 'WEIGHT_PAINT', 'TEXTURE_PAINT', 'VERTEX_PAINT']:
                 bpy.ops.wm.tool_set_by_index(index=1)
-        elif context.area.ui_type == 'IMAGE_EDITOR':
+        # UV编辑器
+        elif context.area.ui_type == 'UV':
             bpy.ops.wm.tool_set_by_id(name='builtin.select_box')
+        # 图像编辑器
+        elif context.area.ui_type == 'IMAGE_EDITOR':
+            if bpy.context.space_data.ui_mode == 'VIEW':
+                bpy.ops.wm.tool_set_by_index(index=1)
+            elif bpy.context.space_data.ui_mode == 'PAINT':
+                bpy.ops.wm.tool_set_by_id(name="builtin_brush.Draw")
+            elif bpy.context.space_data.ui_mode == 'MASK':
+                bpy.ops.screen.animation_play()
+        # 动画类
         elif context.area.ui_type in [
             'SEQUENCE_EDITOR',
             'CLIP_EDITOR',
@@ -54,7 +65,8 @@ keymap_areas = [
     ('NLA Editor', 'NLA_EDITOR'),
     ('Graph Editor', 'GRAPH_EDITOR'),
     ('Dopesheet', 'DOPESHEET_EDITOR'),
-    ('UV Editor', 'EMPTY'),
+    ('UV Editor', 'IMAGE_EDITOR'),
+    ('Image', 'IMAGE_EDITOR'),
 ]
 
 
