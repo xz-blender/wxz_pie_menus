@@ -34,7 +34,10 @@ class VIEW3D_PIE_MT_Bottom_S(Menu):
             # 6 - RIGHT
             pie.separator()
             # 2 - BOTTOM
-            pie.operator(PIE_S_flat_op.bl_idname, text='Z拍平')
+            if ob_mode == 'EDIT':
+                pie.operator(PIE_S_flat_op.bl_idname, text='Z拍平')
+            else:
+                pie.separator()
             # 8 - TOP
             pie.separator()
             # 7 - TOP - LEFT
@@ -47,11 +50,11 @@ class VIEW3D_PIE_MT_Bottom_S(Menu):
             pie.separator()
         elif ui == "UV":
             # 4 - LEFT
-            pie.operator('uv.align').axis = 'ALIGN_X'
+            pie.operator('uv.align', text='对齐到 X 轴').axis = 'ALIGN_X'
             # 6 - RIGHT
             pie.separator()
             # 2 - BOTTOM
-            pie.operator('uv.align').axis = 'ALIGN_Y'
+            pie.operator('uv.align', text='对齐到 Y 轴').axis = 'ALIGN_Y'
             # 8 - TOP
             pie.separator()
             # 7 - TOP - LEFT
@@ -73,20 +76,18 @@ class PIE_S_flat_op(Operator):
         return True
 
     def execute(self, context):
-        mode = context.object.mode
-        if mode == 'EDIT':
-            bpy.ops.transform.resize(
-                value=(1, 1, -0),
-                # orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)),
-                # orient_matrix_type='GLOBAL',
-                # constraint_axis=(False, False, True),
-                # mirror=True,
-                # use_proportional_edit=False,
-                # proportional_edit_falloff='SMOOTH',
-                # proportional_size=1,
-                # use_proportional_connected=False,
-                # use_proportional_projected=False,
-            )
+        bpy.ops.transform.resize(
+            value=(1, 1, -0),
+            # orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)),
+            # orient_matrix_type='GLOBAL',
+            # constraint_axis=(False, False, True),
+            # mirror=True,
+            # use_proportional_edit=False,
+            # proportional_edit_falloff='SMOOTH',
+            # proportional_size=1,
+            # use_proportional_connected=False,
+            # use_proportional_projected=False,
+        )
         return {"FINISHED"}
 
 
@@ -99,11 +100,11 @@ def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
 
     space_name = [
-        '3D View',
-        'UV Editor',
+        ('3D View', 'VIEW_3D'),
+        ('UV Editor', 'EMPTY'),
     ]
-    for name in space_name:
-        km = addon.keymaps.new(name=name)
+    for space in space_name:
+        km = addon.keymaps.new(name=space[0], space_type=space[1])
         kmi = km.keymap_items.new("wm.call_menu_pie", 'S', 'CLICK_DRAG')
         kmi.properties.name = "VIEW3D_PIE_MT_Bottom_S"
         addon_keymaps.append(km)
