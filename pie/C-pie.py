@@ -3,8 +3,9 @@ import os
 from bpy.types import Menu, Operator
 from .utils import set_pie_ridius
 
+submoduname = __name__.split('.')[-1]
 bl_info = {
-    "name": "C-PIE",
+    "name": submoduname,
     "author": "wxz",
     "version": (0, 0, 1),
     "blender": (3, 3, 0),
@@ -14,7 +15,7 @@ bl_info = {
 
 
 class VIEW3D_PIE_MT_Bottom_C(Menu):
-    bl_label = "C-pie"
+    bl_label = submoduname
 
     def draw(self, context):
         layout = self.layout

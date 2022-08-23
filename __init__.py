@@ -248,7 +248,8 @@ class WXZ_PIE_Preferences(AddonPreferences):
             sub.context_pointer_set('addon_prefs', self)
             sub.label(
                 icon="DOT",
-                text='{} ———— {}'.format(info['name'], info['category']),
+                # text='{} ———— {}'.format(info['name'], info['category']),
+                text='%s' % (info['name']),
             )
             sub = row.row()
             sub.alignment = 'RIGHT'

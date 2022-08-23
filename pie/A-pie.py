@@ -3,8 +3,9 @@ import bpy
 from bpy.types import Menu, Operator
 from .utils import check_rely_addon, rely_addons, set_pie_ridius
 
+submoduname = __name__.split('.')[-1]
 bl_info = {
-    "name": "A-PIE",
+    "name": submoduname,
     "author": "wxz",
     "version": (0, 0, 1),
     "blender": (3, 3, 0),
@@ -14,7 +15,7 @@ bl_info = {
 
 
 class PIE_MT_Bottom_A(Menu):
-    bl_label = "A"
+    bl_label = submoduname
 
     def draw(self, context):
         layout = self.layout
@@ -32,13 +33,9 @@ class PIE_MT_Bottom_A(Menu):
         if ob_mode == 'OBJECT':
             # 4 - LEFT
             if addon1 == '2':
-                pie.operator(
-                    'pie.empty_operator', text='未找到"Distribute Objects"插件!'
-                )
+                pie.operator('pie.empty_operator', text='未找到"Distribute Objects"插件!')
             elif addon1 == '0':
-                pie.operator(
-                    'pie.empty_operator', text='启用"Distribute Objects"插件!'
-                )
+                pie.operator('pie.empty_operator', text='启用"Distribute Objects"插件!')
             elif addon1 == '1':
                 pie.operator('object.distribute', text='排列物体', icon='MOD_ARRAY')
             # 6 - RIGHT
@@ -46,9 +43,7 @@ class PIE_MT_Bottom_A(Menu):
             # 2 - BOTTOM
             pie.separator()
             # 8 - TOP
-            pie.operator(
-                "object.select_all", text="反选", icon='DECORATE_OVERRIDE'
-            ).action = 'INVERT'
+            pie.operator("object.select_all", text="反选", icon='DECORATE_OVERRIDE').action = 'INVERT'
             # 7 - TOP - LEFT
             if ob_type == 'EMPTY':
                 if context.active_object.data.type == 'IMAGE':
@@ -68,9 +63,7 @@ class PIE_MT_Bottom_A(Menu):
             row = col.row()
             row.operator("asset.mark", text="标记资产", icon="ASSET_MANAGER")
             row = col.row()
-            row.operator(
-                'asset.clear', text='抹除资产', icon='REMOVE'
-            ).set_fake_user = False
+            row.operator('asset.clear', text='抹除资产', icon='REMOVE').set_fake_user = False
 
             # 1 - BOTTOM - LEFT
             pie.separator()
@@ -102,9 +95,7 @@ class PIE_MT_Bottom_A(Menu):
                     "mesh.select_all", text="反选", icon='EMPTY_SINGLE_ARROW'
                 ).action = 'INVERT'
                 # 7 - TOP - LEFT
-                pie.operator(
-                    "mesh.select_prev_item", text="上一个元素", icon="REMOVE"
-                )
+                pie.operator("mesh.select_prev_item", text="上一个元素", icon="REMOVE")
                 # 9 - TOP - RIGHT
                 pie.operator("mesh.select_next_item", text="下一个元素", icon="ADD")
                 # 1 - BOTTOM - LEFT
@@ -138,13 +129,9 @@ class PIE_MT_Bottom_A(Menu):
                     "curve.select_all", text="反选", icon='EMPTY_SINGLE_ARROW'
                 ).action = 'INVERT'
                 # 7 - TOP - LEFT
-                pie.operator(
-                    "curve.de_select_last", text="选首端点", icon='FORCE_CURVE'
-                )
+                pie.operator("curve.de_select_last", text="选首端点", icon='FORCE_CURVE')
                 # 9 - TOP - RIGHT
-                pie.operator(
-                    "curve.de_select_last", text="选尾端点", icon='FORCE_CURVE'
-                )
+                pie.operator("curve.de_select_last", text="选尾端点", icon='FORCE_CURVE')
                 # 1 - BOTTOM - LEFT
                 pie.separator()
                 # 3 - BOTTOM - RIGHT

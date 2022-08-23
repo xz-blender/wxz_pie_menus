@@ -14,6 +14,8 @@ rely_addons = [
     ('Bend Face', 'bend_face'),  # 8
     ('Face Cutter', 'face_cutter'),  # 9
     ('Curve Tools', 'curve_tools'),  # 10
+    ('Import AutoCAD DXF Format (.dxf)', 'io_import_dxf'),  # 11
+    ('Export Autocad DXF Format (.dxf)', 'io_export_dxf'),  # 12
 ]
 
 # rely_addons.sort(key=lambda name: name[0])
@@ -63,5 +65,5 @@ def pie_check_rely_addon_op(pie, addon_name):  # addon name & path name
         else:
             return True  # 安装已启用
     else:
-        pie.operator('pie.empty_operator', text='未安装%s插件' % (addon_name))  # 未安装
-        return False
+        pie.operator('pie.empty_operator', text='未安装%s插件' % (addon_name))
+        return False  # 未安装

@@ -1,7 +1,7 @@
 import bpy
 import os
 from bpy.types import Menu, Panel, Operator
-from .utils import check_rely_addon, rely_addons, set_pie_ridius
+from .utils import check_rely_addon, rely_addons, set_pie_ridius, pie_check_rely_addon_op
 
 submoduname = __name__.split('.')[-1]
 bl_info = {
@@ -27,14 +27,19 @@ for name, path in import_export_relay_default_addons.items():
         try:
             bpy.ops.preferences.addon_enable(module=path)
         except:
-            print(name + "addon can't enabled---module name:" + path)
+            print("%s插件启用失败,请手动开启!" % (name))
 
 # SketchUp IO Addon:
 su_name, su_path = rely_addons[5][0], rely_addons[5][1]
 su_check = check_rely_addon(su_name, su_path)
-# Atomic Data Manager :
-atomic_name, atomic_path = rely_addons[6][0], rely_addons[6][1]
-atomic_check = check_rely_addon(atomic_name, atomic_path)
+
+# DXF import
+i_dxf_name, i_dxf_path = rely_addons[11][0], rely_addons[11][1]
+i_dxf_check = check_rely_addon(i_dxf_name, i_dxf_path)
+
+# DXF export
+e_dxf_name, e_dxf_path = rely_addons[12][0], rely_addons[12][1]
+e_dxf_check = check_rely_addon(e_dxf_name, e_dxf_path)
 
 
 class VIEW3D_PIE_MT_Bottom_S_ctrl(Menu):
@@ -91,19 +96,7 @@ class VIEW3D_PIE_MT_Bottom_S_ctrl(Menu):
         pie.operator('outliner.orphans_purge', text='清理未使用', icon='ORPHAN_DATA').do_recursive = True
 
         # 3 - BOTTOM - RIGHT
-        if atomic_check == '2':
-            pie.operator(
-                'pie.empty_operator',
-                text='安装%s插件' % (atomic_name),
-                icon='ERROR',
-            )
-        elif atomic_check == '0':
-            pie.operator(
-                'pie.empty_operator',
-                text='启用%s插件' % (atomic_name),
-                icon='QUESTION',
-            )
-        elif atomic_check == '1':
+        if pie_check_rely_addon_op(pie, 'Atomic Data Manager'):
             pie.operator('atomic.clean_all', text='清理所有', icon='PARTICLEMODE')
 
 
@@ -122,7 +115,10 @@ class PIE_MT_S_Ctrl_import(Menu):
         row.operator('wm.collada_import', text='—— dae ——', icon='EVENT_D')
 
         row = col.row()
-        row.operator('import_scene.dxf', text='—— dxf ——', icon='EVENT_D')
+        if i_dxf_check == '0':
+            row.operator('pie.empty_operator', text='启用DXF导入插件', icon='QUESTION')
+        elif i_dxf_check == '1':
+            row.operator('import.dxf', text='—— DXF ——', icon='EVENT_D')
 
         row = col.row()
         row.operator('import_scene.fbx', text='—— fbx ——', icon='EVENT_F')
@@ -163,7 +159,10 @@ class PIE_MT_S_Ctrl_export(Menu):
         row.operator('wm.collada_export', text='—— DAE ——', icon='EVENT_D')
 
         row = col.row()
-        row.operator('export.dxf', text='—— DXF ——', icon='EVENT_D')
+        if e_dxf_check == '0':
+            row.operator('pie.empty_operator', text='启用DXF导出插件', icon='QUESTION')
+        elif e_dxf_check == '1':
+            row.operator('export.dxf', text='—— DXF ——', icon='EVENT_D')
 
         row = col.row()
         row.operator('export_scene.fbx', text='—— FBX ——', icon='EVENT_F')

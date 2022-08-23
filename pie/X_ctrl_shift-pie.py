@@ -46,13 +46,9 @@ class VIEW3D_PIE_MT_Bottom_X_ctrl_shift(Menu):
             TR_op.type = 'ORIGIN_CURSOR'
             TR_op.center = 'BOUNDS'
             # # 2 - BOTTOM
-            pie.operator(
-                PIE_Origin_TO_Bottom_Apply_Object.bl_idname, text='原点 -> 底部'
-            )
+            pie.operator(PIE_Origin_TO_Bottom_Apply_Object.bl_idname, text='原点 -> 底部')
             # # 8 - TOP
-            pie.operator(
-                PIE_Origin_To_Selection_Object.bl_idname, text='原点 -> 选择'
-            )
+            pie.operator(PIE_Origin_To_Selection_Object.bl_idname, text='原点 -> 选择')
             # # 7 - TOP - LEFT
             TL_op = pie.operator('object.origin_set', text='几何中心 -> 原点')
             TL_op.type = 'GEOMETRY_ORIGIN'
@@ -65,49 +61,33 @@ class VIEW3D_PIE_MT_Bottom_X_ctrl_shift(Menu):
             # # 1 - BOTTOM - LEFT
             pie.separator()
             # # 3 - BOTTOM - RIGHT
-            pie.operator(
-                PIE_Origin_TO_Bottom_No_Apply.bl_idname, text='原点 -> 底部(不应用)'
-            )
+            pie.operator(PIE_Origin_TO_Bottom_No_Apply.bl_idname, text='原点 -> 底部(不应用)')
 
         elif ob_mode == "EDIT":
             # 4 - LEFT
             col = pie.split().box().column(align=True)
             col.scale_y = 1.2
             row = col.row()
-            L_op = row.operator(
-                PIE_Origin_To_Mass_Edit.bl_idname, text='原点 -> 质心(表面)'
-            )
+            L_op = row.operator(PIE_Origin_To_Mass_Edit.bl_idname, text='原点 -> 质心(表面)')
             L_op.mass_type = 'ORIGIN_CENTER_OF_MASS'
             col.separator(factor=0.2)
             row = col.row()
-            L_op = row.operator(
-                PIE_Origin_To_Mass_Edit.bl_idname, text='原点 -> 质心(体积)'
-            )
+            L_op = row.operator(PIE_Origin_To_Mass_Edit.bl_idname, text='原点 -> 质心(体积)')
             L_op.mass_type = 'ORIGIN_CENTER_OF_VOLUME'
             # 6 - RIGHT
             pie.operator(PIE_Origin_To_Cursor_Edit.bl_idname, text='原点 -> 游标')
             # 2 - BOTTOM
-            pie.operator(
-                PIE_Origin_TO_Bottom_Apply_Edit.bl_idname, text='原点 -> 底部'
-            )
+            pie.operator(PIE_Origin_TO_Bottom_Apply_Edit.bl_idname, text='原点 -> 底部')
             # 8 - TOP
-            pie.operator(
-                PIE_Origin_To_Selection_Edit.bl_idname, text='原点 -> 选择'
-            )
+            pie.operator(PIE_Origin_To_Selection_Edit.bl_idname, text='原点 -> 选择')
             # 7 - TOP - LEFT
-            pie.operator(
-                PIE_Geometry_To_Origin_Edit.bl_idname, text='几何中心 -> 原点'
-            )
+            pie.operator(PIE_Geometry_To_Origin_Edit.bl_idname, text='几何中心 -> 原点')
             # 9 - TOP - RIGHT
-            pie.operator(
-                PIE_Origin_To_Geometry_Edit.bl_idname, text='原点 -> 几何中心'
-            )
+            pie.operator(PIE_Origin_To_Geometry_Edit.bl_idname, text='原点 -> 几何中心')
             # 1 - BOTTOM - LEFT
             pie.separator()
             # 3 - BOTTOM - RIGHT
-            pie.operator(
-                PIE_Origin_TO_Bottom_No_Apply.bl_idname, text='原点 -> 底部(不应用)'
-            )
+            pie.operator(PIE_Origin_TO_Bottom_No_Apply.bl_idname, text='原点 -> 底部(不应用)')
 
 
 # --------Operator---------
@@ -141,9 +121,7 @@ class PIE_Origin_TO_Bottom_No_Apply(Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     all_selected: bpy.props.BoolProperty(name='All selected', default=True)
-    global_transform: bpy.props.BoolProperty(
-        name='Global Transform', default=False
-    )
+    global_transform: bpy.props.BoolProperty(name='Global Transform', default=False)
 
     @classmethod
     def poll(self, context):
@@ -268,16 +246,12 @@ class PIE_Origin_To_Selection_Edit(Operator):
 
     @classmethod
     def poll(cls, context):
-        return (
-            context.area.type == "VIEW_3D" and context.active_object is not None
-        )
+        return context.area.type == "VIEW_3D" and context.active_object is not None
 
     def execute(self, context):
         check = CheckOrigin(context)
         if not check:
-            self.report(
-                {"ERROR"}, "Set Origin to Selected could not be performed"
-            )
+            self.report({"ERROR"}, "Set Origin to Selected could not be performed")
             return {'CANCELLED'}
 
         return {'FINISHED'}
@@ -382,16 +356,12 @@ def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
 
     km = addon.keymaps.new(name="Object Mode")
-    kmi = km.keymap_items.new(
-        "wm.call_menu_pie", "X", "CLICK_DRAG", ctrl=True, alt=True
-    )
+    kmi = km.keymap_items.new("wm.call_menu_pie", "X", "CLICK_DRAG", ctrl=True, alt=True)
     kmi.properties.name = "VIEW3D_PIE_MT_Bottom_X_ctrl_shift"
     addon_keymaps.append(km)
 
     km = addon.keymaps.new(name="Mesh")
-    kmi = km.keymap_items.new(
-        "wm.call_menu_pie", "X", "CLICK_DRAG", ctrl=True, alt=True
-    )
+    kmi = km.keymap_items.new("wm.call_menu_pie", "X", "CLICK_DRAG", ctrl=True, alt=True)
     kmi.properties.name = "VIEW3D_PIE_MT_Bottom_X_ctrl_shift"
     addon_keymaps.append(km)
 
@@ -401,7 +371,7 @@ def unregister_keymaps():
     for km in addon_keymaps:
         for kmi in km.keymap_items:
             km.keymap_items.remove(kmi)
-        wm.keyconfigs.addon.keymaps.remove(km)
+        # wm.keyconfigs.addon.keymaps.remove(km)
     addon_keymaps.clear()
 
 

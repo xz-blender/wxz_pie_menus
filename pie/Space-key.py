@@ -19,7 +19,7 @@ class PIE_Space_KEY(Operator):
     bl_options = {"REGISTER"}
 
     def execute(self, context):
-
+        print(context.area.ui_type)
         if context.area.ui_type == 'VIEW_3D':
             mode = context.object.mode
             if mode in ['OBJECT', 'EDIT']:
@@ -54,7 +54,7 @@ keymap_areas = [
     ('NLA Editor', 'NLA_EDITOR'),
     ('Graph Editor', 'GRAPH_EDITOR'),
     ('Dopesheet', 'DOPESHEET_EDITOR'),
-    ('UV Editor', 'IMAGE_EDITOR'),
+    ('UV Editor', 'EMPTY'),
 ]
 
 
