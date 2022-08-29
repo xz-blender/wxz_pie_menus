@@ -1,6 +1,8 @@
 import bpy
 from bpy.types import Menu, Operator
+import math
 from math import pi
+from mathutils import Quaternion
 from .utils import set_pie_ridius
 
 submoduname = __name__.split('.')[-1]
@@ -21,106 +23,112 @@ class VIEW3D_PIE_MT_Bottom_R(Menu):
         layout = self.layout
         pie = layout.menu_pie()
 
-        ob_type = context.object.type
-        ob_mode = context.object.mode
+        if context.area.ui_type == 'VIEW_3D':
 
-        set_pie_ridius(context, 100)
+            ob_type = context.object.type
+            ob_mode = context.object.mode
 
-        if ob_mode == 'OBJECT':
+            set_pie_ridius(context, 100)
+
+            if ob_mode == 'OBJECT':
+                # 4 - LEFT
+                pie.operator(
+                    PIE_Transform_Rotate_Z.bl_idname, text='Z轴-90°', icon='TRIA_LEFT_BAR'
+                ).degree = (-pi / 2)
+                # 6 - RIGHT
+                pie.operator(
+                    PIE_Transform_Rotate_Z.bl_idname, text='Z轴+90°', icon='TRIA_RIGHT_BAR'
+                ).degree = (pi / 2)
+                # 2 - BOTTOM
+                pie.separator()
+                # 8 - TOP
+                pie.separator()
+                # 7 - TOP - LEFT
+                TL = pie.operator(PIE_Transform_Rotate_XY.bl_idname, text='向后转')
+                TL.x = True
+                TL.y = False
+                TL.degree = pi / 2
+                # 9 - TOP - RIGHT
+                TR = pie.operator(PIE_Transform_Rotate_XY.bl_idname, text='向前转')
+                TR.x = True
+                TR.y = False
+                TR.degree = -pi / 2
+                # 1 - BOTTOM - LEFT
+                TR = pie.operator(PIE_Transform_Rotate_XY.bl_idname, text='向左转')
+                TR.x = False
+                TR.y = True
+                TR.degree = pi / 2
+                # 3 - BOTTOM - RIGHT
+                TR = pie.operator(PIE_Transform_Rotate_XY.bl_idname, text='向右转')
+                TR.x = False
+                TR.y = True
+                TR.degree = -pi / 2
+
+            elif ob_mode == 'EDIT':
+                # 4 - LEFT
+                pie.operator(
+                    PIE_Transform_Rotate_Z.bl_idname, text='Z轴-90°', icon='TRIA_LEFT_BAR'
+                ).degree = (-pi / 2)
+                # 6 - RIGHT
+                pie.operator(
+                    PIE_Transform_Rotate_Z.bl_idname, text='Z轴+90°', icon='TRIA_RIGHT_BAR'
+                ).degree = (pi / 2)
+
+                # 2 - BOTTOM # 8 - TOP
+                if ob_type == 'MESH':
+                    pie.operator('mesh.edge_rotate', text='边-逆时针', icon='FRAME_PREV').use_ccw = True
+                    pie.operator(
+                        'mesh.edge_rotate', text='边-顺时针', icon='FRAME_NEXT'
+                    ).use_ccw = False
+                else:
+                    pie.separator()
+                    pie.separator()
+                # 7 - TOP - LEFT
+                TL = pie.operator(PIE_Transform_Rotate_XY.bl_idname, text='向后转')
+                TL.x = True
+                TL.y = False
+                TL.degree = pi / 2
+                # 9 - TOP - RIGHT
+                TR = pie.operator(PIE_Transform_Rotate_XY.bl_idname, text='向前转')
+                TR.x = True
+                TR.y = False
+                TR.degree = -pi / 2
+                # 1 - BOTTOM - LEFT
+                TR = pie.operator(PIE_Transform_Rotate_XY.bl_idname, text='向左转')
+                TR.x = False
+                TR.y = True
+                TR.degree = pi / 2
+                # 3 - BOTTOM - RIGHT
+                TR = pie.operator(PIE_Transform_Rotate_XY.bl_idname, text='向右转')
+                TR.x = False
+                TR.y = True
+                TR.degree = -pi / 2
+
+        elif context.area.ui_type == 'UV':
+
+            set_pie_ridius(context, 100)
             # 4 - LEFT
             pie.operator(
-                PIE_Transform_Rotate_OP.bl_idname,
-                text='Z轴-90°',
-                icon='TRIA_LEFT_BAR',
-            ).degree = (
-                -pi / 2
-            )
+                PIE_Transform_Rotate_Z.bl_idname, text='Z轴-90°', icon='TRIA_LEFT_BAR'
+            ).degree = (-pi / 2)
             # 6 - RIGHT
             pie.operator(
-                PIE_Transform_Rotate_OP.bl_idname,
-                text='Z轴+90°',
-                icon='TRIA_RIGHT_BAR',
-            ).degree = (
-                pi / 2
-            )
+                PIE_Transform_Rotate_Z.bl_idname, text='Z轴+90°', icon='TRIA_RIGHT_BAR'
+            ).degree = (pi / 2)
             # 2 - BOTTOM
             # 8 - TOP
             # 7 - TOP - LEFT
             # 9 - TOP - RIGHT
-            # 1 - BOTTOM - LEFT
-            # 3 - BOTTOM - RIGHT
 
-        elif ob_mode == 'EDIT':
-            # 4 - LEFT
-            pie.operator(
-                PIE_Transform_Rotate_OP.bl_idname,
-                text='Z轴-90°',
-                icon='TRIA_LEFT_BAR',
-            ).degree = (
-                -pi / 2
-            )
-            # 6 - RIGHT
-            pie.operator(
-                PIE_Transform_Rotate_OP.bl_idname,
-                text='Z轴+90°',
-                icon='TRIA_RIGHT_BAR',
-            ).degree = (
-                pi / 2
-            )
-
-            # 2 - BOTTOM
-            pie.separator()
-            # 8 - TOP
-            pie.separator()
-            # 7 - TOP - LEFT# 9 - TOP - RIGHT
-            if ob_type == 'MESH':
-                pie.operator(
-                    'mesh.edge_rotate', text='边-逆时针', icon='FRAME_PREV'
-                ).use_ccw = True
-                pie.operator(
-                    'mesh.edge_rotate', text='边-顺时针', icon='FRAME_NEXT'
-                ).use_ccw = False
-            else:
-                pie.separator()
-                pie.separator()
             # 1 - BOTTOM - LEFT
             # 3 - BOTTOM - RIGHT
 
 
-class UV_PIE_MT_Bottom_R(Menu):
-    bl_label = "UV-%s" % (submoduname)
-
-    def draw(self, context):
-        layout = self.layout
-        pie = layout.menu_pie()
-
-        ob_type = context.object.type
-        ob_mode = context.object.mode
-
-        set_pie_ridius(context, 100)
-
-        # 4 - LEFT
-        pie.operator(
-            PIE_UV_Rotate_OP.bl_idname, text='Z轴-90°', icon='TRIA_LEFT_BAR'
-        ).degree = (-pi / 2)
-        # 6 - RIGHT
-        pie.operator(
-            PIE_UV_Rotate_OP.bl_idname, text='Z轴+90°', icon='TRIA_RIGHT_BAR'
-        ).degree = (pi / 2)
-        # 2 - BOTTOM
-        # 8 - TOP
-        # 7 - TOP - LEFT
-        # 9 - TOP - RIGHT
-
-        # 1 - BOTTOM - LEFT
-        # 3 - BOTTOM - RIGHT
-
-
-class PIE_Transform_Rotate_OP(Operator):
+class PIE_Transform_Rotate_Z(Operator):
     bl_idname = "pie.tramsform_rotate"
     bl_label = "Pie R 物体网格"
     bl_description = ""
-    bl_options = {"REGISTER"}
+    bl_options = {"REGISTER", "UNDO"}
 
     degree: bpy.props.FloatProperty(name="Rotate_Dgree")
 
@@ -133,47 +141,70 @@ class PIE_Transform_Rotate_OP(Operator):
         return {"FINISHED"}
 
 
-class PIE_UV_Rotate_OP(Operator):
-    bl_idname = "pie.uv_rotate"
-    bl_label = "Pie R 图像UV"
+class PIE_Transform_Rotate_XY(Operator):
+    bl_idname = "pie.uv_rotate_xy"
+    bl_label = "旋转轴XY"
     bl_description = ""
-    bl_options = {"REGISTER"}
+    bl_options = {"REGISTER", "UNDO"}
 
-    degree: bpy.props.FloatProperty(name="Rotate_Dgree")
+    x: bpy.props.BoolProperty(name='x', default=False)
+    y: bpy.props.BoolProperty(name='y', default=False)
+    degree: bpy.props.FloatProperty()
 
     def execute(self, context):
-        bpy.ops.transform.rotate(
-            value=self.degree,
-            orient_axis='Z',
-            orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)),
-        )
+        degree = self.degree
+        use_x = self.x
+        use_y = self.y
+        for area in context.screen.areas:
+            if area.type == 'VIEW_3D':
+                rotation = area.spaces.active.region_3d.view_rotation
+                eul = Quaternion(rotation).to_euler()
+                angle = math.degrees(eul.z)
+
+        if -45 < angle < 45:
+            if use_x:
+                bpy.ops.transform.rotate(value=degree, orient_axis='X')
+            elif use_y:
+                bpy.ops.transform.rotate(value=degree, orient_axis='Y')
+        elif 45 < angle < 135:
+            if use_x:
+                bpy.ops.transform.rotate(value=degree, orient_axis='Y')
+            elif use_y:
+                bpy.ops.transform.rotate(value=degree * -1, orient_axis='X')
+        elif 135 < angle < 180 or -180 < angle < -135:
+            if use_x:
+                bpy.ops.transform.rotate(value=degree * -1, orient_axis='X')
+            elif use_y:
+                bpy.ops.transform.rotate(value=degree * -1, orient_axis='Y')
+        elif -135 < angle < -45:
+            if use_x:
+                bpy.ops.transform.rotate(value=degree * -1, orient_axis='Y')
+            elif use_y:
+                bpy.ops.transform.rotate(value=degree, orient_axis='X')
+
         return {"FINISHED"}
 
 
 classes = [
     VIEW3D_PIE_MT_Bottom_R,
-    UV_PIE_MT_Bottom_R,
-    PIE_Transform_Rotate_OP,
-    PIE_UV_Rotate_OP,
+    PIE_Transform_Rotate_Z,
+    PIE_Transform_Rotate_XY,
 ]
 addon_keymaps = []
 
 
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
-    km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
-    kmi = km.keymap_items.new(
-        idname='wm.call_menu_pie', type="R", value="CLICK_DRAG"
-    )
-    kmi.properties.name = "VIEW3D_PIE_MT_Bottom_R"
-    addon_keymaps.append(km)
 
-    km = addon.keymaps.new(name="Image", space_type="IMAGE_EDITOR")
-    kmi = km.keymap_items.new(
-        idname='wm.call_menu_pie', type="R", value="CLICK_DRAG"
-    )
-    kmi.properties.name = "UV_PIE_MT_Bottom_R"
-    addon_keymaps.append(km)
+    space_name = [
+        ('3D View', 'VIEW_3D'),
+        ('UV Editor', 'EMPTY'),
+    ]
+    for space in space_name:
+        km = addon.keymaps.new(name=space[0], space_type=space[1])
+        kmi = km.keymap_items.new(idname='wm.call_menu_pie', type="R", value="CLICK_DRAG")
+        kmi.properties.name = "VIEW3D_PIE_MT_Bottom_R"
+        addon_keymaps.append(km)
 
 
 def unregister_keymaps():

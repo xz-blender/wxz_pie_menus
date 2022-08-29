@@ -32,12 +32,12 @@ class PIE_MT_Bottom_Q_favorite(Menu):
 
         split = layout.split()
         col = split.column()
-        col.label(text="工具集一")
-        # col.operator("view3d.view_axis", text="1").type = 'FRONT'
+        # col.label(text="自定工具集")
+        col.operator('text.run_script', text='运行脚本', icon='PLAY')
 
-        col.separator()
+        # col.separator()
 
-        col.label(text="工具集二")
+        # col.label(text="工具集二")
         # col.operator("view3d.view_axis", text="2").type = 'FRONT'
 
 
@@ -95,17 +95,11 @@ class PIE_Q_key_shift(Operator):
                 bpy.ops.object.select_linked('INVOKE_DEFAULT')
             if ob_mode == 'EDIT':
                 if ob_type == 'MESH':
-                    bpy.ops.mesh.select_linked_pick(
-                        'INVOKE_DEFAULT', deselect=True
-                    )
+                    bpy.ops.mesh.select_linked_pick('INVOKE_DEFAULT', deselect=True)
                 elif ob_type == 'CURVE':
-                    bpy.ops.curve.select_linked_pick(
-                        'INVOKE_DEFAULT', deselect=True
-                    )
+                    bpy.ops.curve.select_linked_pick('INVOKE_DEFAULT', deselect=True)
                 elif ob_type == 'ARMATURE':
-                    bpy.ops.armature.select_linked_pick(
-                        'INVOKE_DEFAULT', deselect=True
-                    )
+                    bpy.ops.armature.select_linked_pick('INVOKE_DEFAULT', deselect=True)
             elif ob_mode == 'SCULPT':
                 # 当您尝试调用它时，执行上下文是 EXEC_DEFAULT，但它只支持 INVOKE_DEFAULT。
                 bpy.ops.object.transfer_mode('INVOKE_DEFAULT')
@@ -114,9 +108,7 @@ class PIE_Q_key_shift(Operator):
                     bpy.ops.gpencil.select_alternate('INVOKE_DEFAULT')
         elif area_type == 'IMAGE_EDITOR':
             print('UVyes')
-            bpy.ops.uv.select_linked_pick(
-                'INVOKE_DEFAULT', extend=True, deselect=True
-            )
+            bpy.ops.uv.select_linked_pick('INVOKE_DEFAULT', extend=True, deselect=True)
 
         return {"FINISHED"}
 
