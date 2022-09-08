@@ -40,6 +40,7 @@ sub_modules_names = [
     "X_ctrl_shift-pie",
     "Outliner-pie",
     "U-pie",
+    "Modifier-bar",
 ]
 sub_modules_names.sort()
 
