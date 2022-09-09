@@ -122,6 +122,7 @@ class Node_Change_Image_ColorSpace(Operator):
 
 classes = [VIEW3D_PIE_MT_Bottom_Q,
            NODE_PIE_MT_Bottom_Q,
+           Node_Change_Image_ColorSpace,
            ]
 
 addon_keymaps = []
