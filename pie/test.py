@@ -2,10 +2,15 @@
 # print(sorted(students, key=lambda student: student[2]))
 
 
-keymap_items = {
-    '3D View': 'VIEW_3D',
-    'Node Editor': 'NODE_EDITOR',
-    'Image': 'IMAGE_EDITOR'
-}
-for i, o in keymap_items.items():
-    print(i, o)
+# keymap_items = {
+#     '3D View': 'VIEW_3D',
+#     'Node Editor': 'NODE_EDITOR',
+#     'Image': 'IMAGE_EDITOR'
+# }
+# for i, o in keymap_items.items():
+#     print(i, o)
+
+count = 4
+out_params = "count"
+# 方法1
+print("test")

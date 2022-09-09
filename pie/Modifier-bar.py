@@ -22,7 +22,6 @@ class Bar_Quick_Decimate(Operator):
 
     def execute(self, context):
         ratio = self.ratio
-        apply = self.apply
 
         if context.selected_objects:
             for obj in context.selected_objects:
@@ -64,15 +63,32 @@ def costom_modifier_bar(self, context):
     col.scale_y = 0.9
 
     row = col.row(align=True)
-    row.operator('object.modifier_add', icon='GEOMETRY_NODES', text='几何节点').type = 'NODES'
-    row.operator('object.modifier_add', icon='MOD_SUBSURF', text='表面细分').type = 'SUBSURF'
+    row.operator('object.modifier_add', icon='GEOMETRY_NODES', text='节点').type = 'NODES'
+    row.operator('object.modifier_add', icon='MOD_SUBSURF', text='细分').type = 'SUBSURF'
     row.operator('object.modifier_add', icon='MOD_SHRINKWRAP', text='缩裹').type = 'SHRINKWRAP'
 
     row = col.row(align=True)
-    row.operator('object.modifier_add', icon='MOD_SHRINKWRAP', text='倒角').type = 'SHRINKWRAP'
+    bevel = row.operator('object.modifier_add', icon='MOD_BEVEL', text='倒角')
+    bevel.type = 'BEVEL'
+    # context.object.modifiers["Bevel"].harden_normals = True
+    # bevel.segments = 2
+    array = row.operator('object.modifier_add', icon='MOD_ARRAY', text='阵列').type = 'ARRAY'
+    row.operator('object.modifier_add', icon='MOD_DISPLACE', text='置换').type = 'DISPLACE'
 
+    row = col.row(align=True)
+    mirror = row.operator('object.modifier_add', icon='MOD_MIRROR', text='镜像')
+    mirror.type = 'MIRROR'
+    # mirror.use_clip = True
+    boolean = row.operator('object.modifier_add', icon='MOD_BOOLEAN', text='布尔')
+    boolean.type = 'BOOLEAN'
+    # boolean.solver = 'FAST'
+    row.operator('object.modifier_add', icon='MOD_SIMPLEDEFORM', text='形变').type = 'SIMPLE_DEFORM'
 
-bpy.ops.object.modifier_add(type='')
+    row = col.row(align=True)
+    row.operator('object.modifier_add', icon='MOD_SOLIDIFY', text='厚度').type = 'SOLIDIFY'
+    row.operator('object.modifier_add', icon='AUTOMERGE_OFF', text='焊接').type = 'WELD'
+    row.operator('object.modifier_add', icon='MOD_SCREW', text='螺旋').type = 'SCREW'
+
 
 classes = [
     Bar_Quick_Decimate,
