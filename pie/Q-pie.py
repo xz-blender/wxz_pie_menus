@@ -1,7 +1,7 @@
 import os
 import bpy
 import bpy.utils.previews
-from bpy.types import Menu
+from bpy.types import Menu, Operator
 from .utils import set_pie_ridius  # check_rely_addon, rely_addons,
 
 submoduname = __name__.split('.')[-1]
@@ -60,7 +60,69 @@ class VIEW3D_PIE_MT_Bottom_Q(Menu):
         pie.operator("view3d.view_selected", text="所选")
 
 
-classes = [VIEW3D_PIE_MT_Bottom_Q]
+class NODE_PIE_MT_Bottom_Q(Menu):
+    bl_label = submoduname
+
+    def draw(self, context):
+        layout = self.layout
+        pie = layout.menu_pie()
+
+        set_pie_ridius(context, 100)
+
+        if context.area.ui_type == 'ShaderNodeTree':
+            active_node = context.active_object.active_material.node_tree.nodes.active
+            if active_node.type == 'TEX_IMAGE':
+                # 4 - LEFT # 6 - RIGHT
+                pie.operator(Node_Change_Image_ColorSpace.bl_idname,
+                             text='图像-sRGB').colorspace = 'sRGB'
+                pie.operator(Node_Change_Image_ColorSpace.bl_idname,
+                             text='图像-非彩色').colorspace = 'Non-Color'
+            else:
+                pie.separator()
+                pie.separator()
+
+            # 2 - BOTTOM
+            # 8 - TOP
+            # 7 - TOP - LEFT
+            # 9 - TOP - RIGHT
+            # 1 - BOTTOM - LEFT
+            # 3 - BOTTOM - RIGHT
+        elif context.area.ui_type == 'GeometryNodeTree':
+            # 4 - LEFT
+            pie.separator()
+            # 6 - RIGHT
+            # 2 - BOTTOM
+            # 8 - TOP
+            # 7 - TOP - LEFT
+            # 9 - TOP - RIGHT
+            # 1 - BOTTOM - LEFT
+            # 3 - BOTTOM - RIGHT
+
+
+class Node_Change_Image_ColorSpace(Operator):
+    bl_idname = "pie.node_change_image_colorspace"
+    bl_label = __qualname__
+    bl_description = ""
+    bl_options = {"REGISTER", "UNDO"}
+
+    colorspace: bpy.props.StringProperty(name='colorspace')
+
+    @classmethod
+    def poll(cls, context):
+        return True
+
+    def execute(self, context):
+        nodes = context.active_object.active_material.node_tree.nodes
+        selected_nodes = [
+            x for x in nodes if x.select and x.type == 'TEX_IMAGE']
+        for node in selected_nodes:
+            node.image.colorspace_settings.name = self.colorspace
+        return {"FINISHED"}
+
+
+classes = [VIEW3D_PIE_MT_Bottom_Q,
+           NODE_PIE_MT_Bottom_Q,
+           ]
 
 addon_keymaps = []
 
@@ -68,9 +130,14 @@ addon_keymaps = []
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
 
-    km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
+    km = addon.keymaps.new(name='3D View', space_type='VIEW_3D')
     kmi = km.keymap_items.new("wm.call_menu_pie", 'Q', 'CLICK_DRAG')
     kmi.properties.name = "VIEW3D_PIE_MT_Bottom_Q"
+    addon_keymaps.append(km)
+
+    km = addon.keymaps.new(name='Node Editor', space_type='NODE_EDITOR')
+    kmi = km.keymap_items.new("wm.call_menu_pie", 'Q', 'CLICK_DRAG')
+    kmi.properties.name = "NODE_PIE_MT_Bottom_Q"
     addon_keymaps.append(km)
 
 

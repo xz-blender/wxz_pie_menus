@@ -26,6 +26,8 @@ class VIEW3D_PIE_MT_Ctrl_Tab(Menu):
 
         set_pie_ridius(context, 100)
 
+        # print(context.area.type,context.area.ui_type)
+
         # 4 - LEFT
         L = pie.operator('pie.workspaceswapper', text='UV', icon='UV_DATA')
         L.target_workspace = 'UV'
