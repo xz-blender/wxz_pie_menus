@@ -37,7 +37,7 @@ sub_modules_names = [
     "Q_alt-key",
     "Q-key",
     "V-pie",
-    "X_ctrl_shift-pie",
+    "X_ctrl_alt-pie",
     "Outliner-pie",
     "U-pie",
     "Modifier-bar",

@@ -16,31 +16,63 @@ bl_info = {
 class Bar_Quick_Decimate(Operator):
     bl_idname = "bar.quick_decimate"
     bl_label = submoduname
-    bl_options = {'REGISTER', 'UNDO'}
+    bl_options = {"REGISTER", "UNDO"}
+
+    ratio: bpy.props.FloatProperty(name='decimate', min=0, max=1)
 
     def execute(self, context):
+        ratio = self.ratio
+        apply = self.apply
 
-        return {"FINISHED"}
+        if context.selected_objects:
+            for obj in context.selected_objects:
+                context.view_layer.objects.active = obj
+
+                md_name = "精简-%.3s" % ratio
+
+                obj.modifiers.new(name=md_name, type='DECIMATE')
+                obj.modifiers[md_name].ratio = ratio
+
+            self.report({"INFO"}, md_name)
+            return {"FINISHED"}
+        else:
+            self.report({"INFO"}, "没有选择物体")
+            return {"FINISHED"}
 
 
 # Menus #
 def menu(self, context):
-    if context.active_object:
-        if len(context.active_object.modifiers):
-            col = self.layout.column(align=True)
+    col = self.layout.column(align=True)
+    col.alignment = 'CENTER'
+    col.scale_y = 0.9
 
-            row = col.row(align=True)
-            row.operator(ApplyAllModifiers.bl_idname, icon='IMPORT', text="Apply All")
-            row.operator(DeleteAllModifiers.bl_idname, icon='X', text="Delete All")
+    row = col.row(align=True)
+    deci_1 = row.operator(Bar_Quick_Decimate.bl_idname, text="精简0.1")
+    deci_1.ratio = 0.1
 
-            row = col.row(align=True)
-            row.operator(
-                ToggleApplyModifiersView.bl_idname, icon='RESTRICT_VIEW_OFF', text="Viewport Vis"
-            )
-            row.operator(
-                ToggleAllShowExpanded.bl_idname, icon='FULLSCREEN_ENTER', text="Toggle Stack"
-            )
+    deci_2 = row.operator(Bar_Quick_Decimate.bl_idname, text="精简0.3")
+    deci_1.ratio = 0.1
 
+    deci_3 = row.operator(Bar_Quick_Decimate.bl_idname, text="精简0.5")
+    deci_1.ratio = 0.1
+
+
+# Modifier Bar
+def costom_modifier_bar(self, context):
+    col = self.layout.column(align=True)
+    col.alignment = 'CENTER'
+    col.scale_y = 0.9
+
+    row = col.row(align=True)
+    row.operator('object.modifier_add', icon='GEOMETRY_NODES', text='几何节点').type = 'NODES'
+    row.operator('object.modifier_add', icon='MOD_SUBSURF', text='表面细分').type = 'SUBSURF'
+    row.operator('object.modifier_add', icon='MOD_SHRINKWRAP', text='缩裹').type = 'SHRINKWRAP'
+
+    row = col.row(align=True)
+    row.operator('object.modifier_add', icon='MOD_SHRINKWRAP', text='倒角').type = 'SHRINKWRAP'
+
+
+bpy.ops.object.modifier_add(type='')
 
 classes = [
     Bar_Quick_Decimate,
@@ -50,11 +82,13 @@ classes = [
 def register():
     for cls in classes:
         bpy.utils.register_class(cls)
+    bpy.types.DATA_PT_modifiers.prepend(costom_modifier_bar)
     bpy.types.DATA_PT_modifiers.append(menu)  # 区别 prepend 和 append
 
 
 def unregister():
     bpy.types.DATA_PT_modifiers.remove(menu)
+    bpy.types.DATA_PT_modifiers.remove(costom_modifier_bar)
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
 
