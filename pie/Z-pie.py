@@ -22,8 +22,7 @@ class VIEW3D_PIE_MT_Bottom_Z_Overlay(Menu):
         layout.alignment = "CENTER"
         pie = layout.menu_pie()
 
-        if context.object.type is not None:
-            ob_type = context.object.type
+        ob_type = context.object.type
         ob_mode = context.object.mode
 
         set_pie_ridius(context, 100)
@@ -35,18 +34,22 @@ class VIEW3D_PIE_MT_Bottom_Z_Overlay(Menu):
         row.alignment = "RIGHT"
         row.scale_y = 1.4
         row.scale_x = 1.8
-        row.prop(context.object, 'show_bounds', icon='SHADING_BBOX', icon_only=True)
+        row.prop(context.object, 'show_bounds',
+                 icon='SHADING_BBOX', icon_only=True)
         row.prop(context.object, 'show_wire', icon='CUBE', icon_only=True)
 
         row = col.row(align=True)
         row.scale_x = 0.8
         row.scale_y = 1.2
-        row.prop(context.object, 'display_type', expand=True, invert_checkbox=True)
+        row.prop(context.object, 'display_type',
+                 expand=True, invert_checkbox=True)
 
         # 6 - RIGHT
-        pie.operator('view3d.toggle_shading', text='实体', icon='SHADING_SOLID').type = 'SOLID'
+        pie.operator('view3d.toggle_shading', text='实体',
+                     icon='SHADING_SOLID').type = 'SOLID'
         # 2 - BOTTOM
-        pie.operator('view3d.toggle_shading', text='预览', icon='SHADING_TEXTURE').type = 'MATERIAL'
+        pie.operator('view3d.toggle_shading', text='预览',
+                     icon='SHADING_TEXTURE').type = 'MATERIAL'
         # 8 - TOP
         if ob_type == 'MESH':
             pie.operator(
@@ -149,7 +152,8 @@ def register_keymaps():
     kmi = km.keymap_items.new("wm.call_menu_pie", 'Z', 'CLICK_DRAG')
     kmi.properties.name = "VIEW3D_PIE_MT_Bottom_Z_Overlay"
 
-    kmi = km.keymap_items.new("wm.call_menu_pie", 'Z', 'CLICK_DRAG', shift=True)
+    kmi = km.keymap_items.new("wm.call_menu_pie", 'Z',
+                              'CLICK_DRAG', shift=True)
     kmi.properties.name = "VIEW3D_PIE_MT_Bottom_Z_Shift"
     addon_keymaps.append(km)
 

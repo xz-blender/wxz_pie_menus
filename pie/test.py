@@ -10,7 +10,10 @@
 # for i, o in keymap_items.items():
 #     print(i, o)
 
+
+import os
+
 count = 4
 out_params = "count"
 # 方法1
-print("test")
+print(os.getcwd())
