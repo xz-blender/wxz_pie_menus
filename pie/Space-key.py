@@ -22,11 +22,14 @@ class PIE_Space_KEY(Operator):
         # print(context.area.ui_type)
         # 3D视图
         if context.area.ui_type == 'VIEW_3D':
-            mode = context.object.mode
-            if mode in ['OBJECT', 'EDIT']:
+            if context.selected_objects:
+                mode = context.object.mode
+                if mode in ['OBJECT', 'EDIT']:
+                    bpy.ops.wm.tool_set_by_id(name='builtin.select_box')
+                elif mode in ['SCULPT', 'WEIGHT_PAINT', 'TEXTURE_PAINT', 'VERTEX_PAINT']:
+                    bpy.ops.wm.tool_set_by_index(index=1)
+            else:
                 bpy.ops.wm.tool_set_by_id(name='builtin.select_box')
-            elif mode in ['SCULPT', 'WEIGHT_PAINT', 'TEXTURE_PAINT', 'VERTEX_PAINT']:
-                bpy.ops.wm.tool_set_by_index(index=1)
         # UV编辑器
         elif context.area.ui_type == 'UV':
             bpy.ops.wm.tool_set_by_id(name='builtin.select_box')
@@ -75,9 +78,11 @@ def register_keymaps():
     # KEY:
     for area in keymap_areas:
         km = addon.keymaps.new(name=area[0], space_type=area[1])  # ----视频序列播放器
-        kmi = km.keymap_items.new(PIE_Space_KEY.bl_idname, 'SPACE', 'CLICK')  # space
+        kmi = km.keymap_items.new(
+            PIE_Space_KEY.bl_idname, 'SPACE', 'CLICK')  # space
         if area[0] == '3D View':  # shift-space
-            kmi = km.keymap_items.new('screen.animation_play', 'SPACE', 'CLICK', shift=True)
+            kmi = km.keymap_items.new(
+                'screen.animation_play', 'SPACE', 'CLICK', shift=True)
         else:
             kmi = km.keymap_items.new(
                 'screen.animation_play', 'SPACE', 'CLICK', shift=True
