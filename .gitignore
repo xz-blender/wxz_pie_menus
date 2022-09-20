@@ -31,3 +31,6 @@ pie/__pycache__/X-pie.cpython-310.pyc
 pie/__pycache__/C-pie.cpython-310.pyc
 pie/__pycache__/utils.cpython-310.pyc
 pie/__pycache__/W-pie.cpython-310.pyc
+*.pyc
+*.pyc
+pie/__pycache__/Q_alt-key.cpython-310.pyc

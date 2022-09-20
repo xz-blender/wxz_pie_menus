@@ -55,7 +55,7 @@ class PIE_Bottom_Q_alt(Operator):
         return True
 
     def execute(self, context):
-        if contex.selected_objects:
+        if context.selected_objects:
             mode = context.object.mode
             if mode == 'OBJECT' or 'EDIT':
                 bpy.ops.view3d.localview(frame_selected=False)
