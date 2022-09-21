@@ -44,22 +44,26 @@ class VIEW3D_PIE_MT_Bottom_R(Menu):
                 # 8 - TOP
                 pie.separator()
                 # 7 - TOP - LEFT
-                TL = pie.operator(PIE_Transform_Rotate_XY.bl_idname, text='向后转')
+                TL = pie.operator(
+                    PIE_Transform_Rotate_XY.bl_idname, text='向后转')
                 TL.x = True
                 TL.y = False
                 TL.degree = pi / 2
                 # 9 - TOP - RIGHT
-                TR = pie.operator(PIE_Transform_Rotate_XY.bl_idname, text='向前转')
+                TR = pie.operator(
+                    PIE_Transform_Rotate_XY.bl_idname, text='向前转')
                 TR.x = True
                 TR.y = False
                 TR.degree = -pi / 2
                 # 1 - BOTTOM - LEFT
-                TR = pie.operator(PIE_Transform_Rotate_XY.bl_idname, text='向左转')
+                TR = pie.operator(
+                    PIE_Transform_Rotate_XY.bl_idname, text='向左转')
                 TR.x = False
                 TR.y = True
                 TR.degree = pi / 2
                 # 3 - BOTTOM - RIGHT
-                TR = pie.operator(PIE_Transform_Rotate_XY.bl_idname, text='向右转')
+                TR = pie.operator(
+                    PIE_Transform_Rotate_XY.bl_idname, text='向右转')
                 TR.x = False
                 TR.y = True
                 TR.degree = -pi / 2
@@ -76,7 +80,8 @@ class VIEW3D_PIE_MT_Bottom_R(Menu):
 
                 # 2 - BOTTOM # 8 - TOP
                 if ob_type == 'MESH':
-                    pie.operator('mesh.edge_rotate', text='边-逆时针', icon='FRAME_PREV').use_ccw = True
+                    pie.operator('mesh.edge_rotate', text='边-逆时针',
+                                 icon='FRAME_PREV').use_ccw = True
                     pie.operator(
                         'mesh.edge_rotate', text='边-顺时针', icon='FRAME_NEXT'
                     ).use_ccw = False
@@ -84,22 +89,26 @@ class VIEW3D_PIE_MT_Bottom_R(Menu):
                     pie.separator()
                     pie.separator()
                 # 7 - TOP - LEFT
-                TL = pie.operator(PIE_Transform_Rotate_XY.bl_idname, text='向后转')
+                TL = pie.operator(
+                    PIE_Transform_Rotate_XY.bl_idname, text='向后转')
                 TL.x = True
                 TL.y = False
                 TL.degree = pi / 2
                 # 9 - TOP - RIGHT
-                TR = pie.operator(PIE_Transform_Rotate_XY.bl_idname, text='向前转')
+                TR = pie.operator(
+                    PIE_Transform_Rotate_XY.bl_idname, text='向前转')
                 TR.x = True
                 TR.y = False
                 TR.degree = -pi / 2
                 # 1 - BOTTOM - LEFT
-                TR = pie.operator(PIE_Transform_Rotate_XY.bl_idname, text='向左转')
+                TR = pie.operator(
+                    PIE_Transform_Rotate_XY.bl_idname, text='向左转')
                 TR.x = False
                 TR.y = True
                 TR.degree = pi / 2
                 # 3 - BOTTOM - RIGHT
-                TR = pie.operator(PIE_Transform_Rotate_XY.bl_idname, text='向右转')
+                TR = pie.operator(
+                    PIE_Transform_Rotate_XY.bl_idname, text='向右转')
                 TR.x = False
                 TR.y = True
                 TR.degree = -pi / 2
@@ -150,6 +159,10 @@ class PIE_Transform_Rotate_XY(Operator):
     x: bpy.props.BoolProperty(name='x', default=False)
     y: bpy.props.BoolProperty(name='y', default=False)
     degree: bpy.props.FloatProperty()
+
+    @classmethod
+    def poll(cls, context):
+        return True
 
     def execute(self, context):
         degree = self.degree
@@ -202,7 +215,8 @@ def register_keymaps():
     ]
     for space in space_name:
         km = addon.keymaps.new(name=space[0], space_type=space[1])
-        kmi = km.keymap_items.new(idname='wm.call_menu_pie', type="R", value="CLICK_DRAG")
+        kmi = km.keymap_items.new(
+            idname='wm.call_menu_pie', type="R", value="CLICK_DRAG")
         kmi.properties.name = "VIEW3D_PIE_MT_Bottom_R"
         addon_keymaps.append(km)
 
