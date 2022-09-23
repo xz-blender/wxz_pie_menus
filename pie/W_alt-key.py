@@ -30,7 +30,7 @@ class PIE_Bottom_W_alt(Operator):
                 bpy.ops.object.transfer_mode('INVOKE_DEFAULT')
                 return {"FINISHED"}
             else:
-                self.report({'INFO'}, '此模式无法传递')
+                self.report({'INFO'}, '此模式无法传递编辑状态')
                 return {"CANCELLED"}
         else:
             return {"CANCELLED"}
