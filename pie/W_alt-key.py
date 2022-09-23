@@ -26,7 +26,7 @@ class PIE_Bottom_W_alt(Operator):
 
     def execute(self, context):
         if context.active_object:
-            if context.object.mode in ['EDIT', 'SCULPT', 'POSE', 'PAINT_WEIGHT', 'PAINT_VERTEX', 'PAINT_TEXTURE']:
+            if context.object.mode in ['EDIT', 'SCULPT', 'POSE', 'WEIGHT_PAINT', 'VERTEX_PAINT', 'TEXTURE_PAINT']:
                 bpy.ops.object.transfer_mode('INVOKE_DEFAULT')
                 return {"FINISHED"}
             else:
