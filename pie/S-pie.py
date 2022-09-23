@@ -31,13 +31,22 @@ class VIEW3D_PIE_MT_Bottom_S(Menu):
 
             if ob_mode == 'EDIT':
                 # 4 - LEFT
-                pie.operator('transform.resize', text='X拍平').value = (0, 1, 1)
+                X = pie.operator(PIE_S_flat_op.bl_idname, text='X拍平')
+                X.X = True
+                X.Y = False
+                X.Z = False
                 # 6 - RIGHT
                 pie.separator()
                 # 2 - BOTTOM
-                pie.operator(PIE_S_flat_op.bl_idname, text='Z拍平')
+                X = pie.operator(PIE_S_flat_op.bl_idname, text='Z拍平')
+                X.X = False
+                X.Y = False
+                X.Z = True
                 # 8 - TOP
-                pie.operator('transform.resize', text='Y拍平').value = (1, 0, 1)
+                X = pie.operator(PIE_S_flat_op.bl_idname, text='Y拍平')
+                X.X = False
+                X.Y = True
+                X.Z = False
                 # 7 - TOP - LEFT
                 pie.separator()
                 # 9 - TOP - RIGHT
@@ -70,23 +79,24 @@ class PIE_S_flat_op(Operator):
     bl_label = ""
     bl_options = {"REGISTER", "UNDO"}
 
+    X: bpy.props.BoolProperty(name='X')
+    Y: bpy.props.BoolProperty(name='Y')
+    Z: bpy.props.BoolProperty(name='Z')
+
     @classmethod
     def poll(cls, context):
         return True
 
     def execute(self, context):
-        bpy.ops.transform.resize(
-            value=(1, 1, -0),
-            # orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)),
-            # orient_matrix_type='GLOBAL',
-            # constraint_axis=(False, False, True),
-            # mirror=True,
-            # use_proportional_edit=False,
-            # proportional_edit_falloff='SMOOTH',
-            # proportional_size=1,
-            # use_proportional_connected=False,
-            # use_proportional_projected=False,
-        )
+        X = self.X
+        Y = self.Y
+        Z = self.Z
+        if X:
+            bpy.ops.transform.resize(value=(0, 1, 1))
+        elif Y:
+            bpy.ops.transform.resize(value=(1, 0, 1))
+        elif Z:
+            bpy.ops.transform.resize(value=(1, 1, 0))
         return {"FINISHED"}
 
 
