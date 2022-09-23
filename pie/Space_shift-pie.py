@@ -22,37 +22,38 @@ class VIEW3D_PIE_MT_Space_KEY_shift(Menu):
         set_pie_ridius(context, 100)
 
         # print(context.area.type)
-        if context.area.type in [
-            'VIEW_3D',
-            'SEQUENCE_EDITOR',
-            'CLIP_EDITOR',
-            'DOPESHEET',
-            'TIMELINE',
-            'FCURVES',
-            'DRIVERS',
-            'NLA_EDITOR',
-            'UV',
-            'IMAGE_EDITOR',
-        ]:
-            # 4 - LEFT
-            pie.operator('screen.frame_jump', text='首帧',
-                         icon='REW').end = False
-            # 6 - RIGHT
-            pie.operator('screen.frame_jump', text='末帧', icon='FF').end = True
-            # 2 - BOTTOM
-            pie.separator()
-            # 8 - TOP
-            pie.separator()
-            # 7 - TOP - LEFT
-            pie.operator('screen.keyframe_jump', text='上一关键帧',
-                         icon='PREV_KEYFRAME').next = False
-            # 9 - TOP - RIGHT
-            pie.operator('screen.keyframe_jump', text='下一关键帧',
-                         icon='NEXT_KEYFRAME').next = True
-            # 1 - BOTTOM - LEFT
-            pie.separator()
-            # 3 - BOTTOM - RIGHT
-            pie.separator()
+        # if context.area.type in [
+        #     'VIEW_3D',
+        #     'SEQUENCE_EDITOR',
+        #     'CLIP_EDITOR',
+        #     'DOPESHEET',
+        #     'TIMELINE',
+        #     'FCURVES',
+        #     'DRIVERS',
+        #     'NLA_EDITOR',
+        #     'UV',
+        #     'IMAGE_EDITOR',
+        # ]:
+
+        # 4 - LEFT
+        pie.operator('screen.frame_jump', text='首帧',
+                     icon='REW').end = False
+        # 6 - RIGHT
+        pie.operator('screen.frame_jump', text='末帧', icon='FF').end = True
+        # 2 - BOTTOM
+        pie.separator()
+        # 8 - TOP
+        pie.separator()
+        # 7 - TOP - LEFT
+        pie.operator('screen.keyframe_jump', text='上一关键帧',
+                     icon='PREV_KEYFRAME').next = False
+        # 9 - TOP - RIGHT
+        pie.operator('screen.keyframe_jump', text='下一关键帧',
+                     icon='NEXT_KEYFRAME').next = True
+        # 1 - BOTTOM - LEFT
+        pie.separator()
+        # 3 - BOTTOM - RIGHT
+        pie.separator()
 
 
 classes = [

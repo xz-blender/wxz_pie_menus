@@ -44,6 +44,7 @@ class PIE_Space_KEY(Operator):
         # 动画类
         elif context.area.ui_type in [
             'SEQUENCE_EDITOR',
+            'NODE_EDITOR',
             'CLIP_EDITOR',
             'DOPESHEET',
             'TIMELINE',
