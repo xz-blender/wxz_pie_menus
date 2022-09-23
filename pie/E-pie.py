@@ -63,7 +63,7 @@ class VIEW3D_PIE_MT_Bottom_E(Menu):
             # 7 - TOP - LEFT
             pie.separator()
             # 9 - TOP - RIGHT
-            pie.separator()
+            pie.operator('mesh.bridge_edge_loops', text='桥接循环边')
             # 1 - BOTTOM - LEFT
             pie.separator()
             # 3 - BOTTOM - RIGHT
