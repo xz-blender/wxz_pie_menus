@@ -119,8 +119,8 @@ class VIEW3D_PIE_MT_Bottom_Z_Shift(Menu):
         layout.alignment = "CENTER"
         pie = layout.menu_pie()
 
-        ob_type = context.object.type
-        ob_mode = context.object.mode
+        # ob_type = context.object.type
+        # ob_mode = context.object.mode
 
         # addon1:"LoopTools"
         # addon1 = check_rely_addon(rely_addons[2][0], rely_addons[2][1])
