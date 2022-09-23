@@ -45,7 +45,7 @@ class PIE_Q_key(Operator):
     bl_idname = "pie.q_key"
     bl_label = submoduname
     bl_description = ""
-    bl_options = {"REGISTER"}
+    bl_options = {"REGISTER", "UNDO"}
 
     @classmethod
     def poll(cls, context):
@@ -95,11 +95,14 @@ class PIE_Q_key_shift(Operator):
                 bpy.ops.object.select_linked('INVOKE_DEFAULT')
             if ob_mode == 'EDIT':
                 if ob_type == 'MESH':
-                    bpy.ops.mesh.select_linked_pick('INVOKE_DEFAULT', deselect=True)
+                    bpy.ops.mesh.select_linked_pick(
+                        'INVOKE_DEFAULT', deselect=True)
                 elif ob_type == 'CURVE':
-                    bpy.ops.curve.select_linked_pick('INVOKE_DEFAULT', deselect=True)
+                    bpy.ops.curve.select_linked_pick(
+                        'INVOKE_DEFAULT', deselect=True)
                 elif ob_type == 'ARMATURE':
-                    bpy.ops.armature.select_linked_pick('INVOKE_DEFAULT', deselect=True)
+                    bpy.ops.armature.select_linked_pick(
+                        'INVOKE_DEFAULT', deselect=True)
             elif ob_mode == 'SCULPT':
                 # 当您尝试调用它时，执行上下文是 EXEC_DEFAULT，但它只支持 INVOKE_DEFAULT。
                 bpy.ops.object.transfer_mode('INVOKE_DEFAULT')
@@ -108,7 +111,8 @@ class PIE_Q_key_shift(Operator):
                     bpy.ops.gpencil.select_alternate('INVOKE_DEFAULT')
         elif area_type == 'IMAGE_EDITOR':
             print('UVyes')
-            bpy.ops.uv.select_linked_pick('INVOKE_DEFAULT', extend=True, deselect=True)
+            bpy.ops.uv.select_linked_pick(
+                'INVOKE_DEFAULT', extend=True, deselect=True)
 
         return {"FINISHED"}
 

@@ -44,10 +44,12 @@ class VIEW3D_PIE_MT_Bottom_E(Menu):
             col = pie.split().box().column()
             if ef_check == '2':
                 row = col.row()
-                row.operator('pie.empty_operator', text='未安装"%s"插件' % (ef_name))
+                row.operator('pie.empty_operator',
+                             text='未安装"%s"插件' % (ef_name))
             elif ef_check == '0':
                 row = col.row()
-                row.operator('pie.empty_operator', text='未启用"%s"插件' % (ef_name))
+                row.operator('pie.empty_operator',
+                             text='未启用"%s"插件' % (ef_name))
             elif ef_check == '1':
                 row = col.row()
                 row.operator('mesh.set_edge_flow')
@@ -57,7 +59,7 @@ class VIEW3D_PIE_MT_Bottom_E(Menu):
             # 2 - BOTTOM
             pie.separator()
             # 8 - TOP
-            pie.separator()
+            pie.operator('mesh.extrude_manifold', text='挤出流形')
             # 7 - TOP - LEFT
             pie.separator()
             # 9 - TOP - RIGHT
@@ -68,20 +70,24 @@ class VIEW3D_PIE_MT_Bottom_E(Menu):
             col = pie.split().box().column()
             if bf_check == '2':
                 row = col.row()
-                row.operator('pie.empty_operator', text='未安装"%s"插件' % (bf_name))
+                row.operator('pie.empty_operator',
+                             text='未安装"%s"插件' % (bf_name))
             elif bf_check == '0':
                 row = col.row()
-                row.operator('pie.empty_operator', text='未启用"%s"插件' % (bf_name))
+                row.operator('pie.empty_operator',
+                             text='未启用"%s"插件' % (bf_name))
             elif bf_check == '1':
                 row = col.row()
                 row.operator('mesh.bend_face_operator')
 
             if fc_check == '2':
                 row = col.row()
-                row.operator('pie.empty_operator', text='未安装"%s"插件' % (fc_name))
+                row.operator('pie.empty_operator',
+                             text='未安装"%s"插件' % (fc_name))
             elif fc_check == '0':
                 row = col.row()
-                row.operator('pie.empty_operator', text='未启用"%s"插件' % (fc_name))
+                row.operator('pie.empty_operator',
+                             text='未启用"%s"插件' % (fc_name))
             elif fc_check == '1':
                 row = col.row()
                 row.operator('mesh.face_cutter_operator')

@@ -67,3 +67,6 @@ def pie_check_rely_addon_op(pie, addon_name):  # addon name & path name
     else:
         pie.operator('pie.empty_operator', text='未安装%s插件' % (addon_name))
         return False  # 未安装
+
+
+# bpy.context.window_manager.keyconfigs.default.keymaps['3D View'].keymap_items.get('view3d.select')

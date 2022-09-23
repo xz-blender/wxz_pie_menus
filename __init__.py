@@ -41,6 +41,7 @@ sub_modules_names = [
     "Outliner-pie",
     "U-pie",
     "Modifier-bar",
+    "W_alt-key",
 ]
 sub_modules_names.sort()
 
@@ -48,7 +49,8 @@ sub_modules = [
     __import__(__package__ + "." + "pie" + "." + submod, {}, {}, submod)
     for submod in sub_modules_names
 ]
-sub_modules.sort(key=lambda mod: (mod.bl_info['name'], mod.bl_info['category']))
+sub_modules.sort(key=lambda mod: (
+    mod.bl_info['name'], mod.bl_info['category']))
 
 
 def _get_pref_class(mod):
@@ -135,7 +137,8 @@ class Apply_My_Keymap(Operator):
     def execute(self, context):
         if os.path.exists(self.path):
             bpy.ops.preferences.keyconfig_import(filepath=self.path)
-            self.report({'INFO'}, '已应用快捷键配置:"%s"' % (os.path.basename(self.path)))
+            self.report({'INFO'}, '已应用快捷键配置:"%s"' %
+                        (os.path.basename(self.path)))
             return {"FINISHED"}
         else:
             self.report({'INFO'}, '未应用快捷键表:"%s"' % (slef.path))
@@ -289,7 +292,8 @@ for mod in sub_modules:
         ),
     )
 
-    create_property(WXZ_PIE_Preferences, 'show_expanded_' + mod_name, BoolProperty())
+    create_property(WXZ_PIE_Preferences, 'show_expanded_' +
+                    mod_name, BoolProperty())
 
 
 classes = (
