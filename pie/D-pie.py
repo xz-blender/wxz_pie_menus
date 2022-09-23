@@ -20,8 +20,8 @@ class VIEW3D_PIE_MT_Bottom_D(Menu):
         layout = self.layout
         pie = layout.menu_pie()
 
-        ob_type = context.object.type
-        ob_mode = context.object.mode
+        # ob_type = context.object.type
+        # ob_mode = context.object.mode
 
         set_pie_ridius(context, 100)
 
@@ -44,7 +44,8 @@ class VIEW3D_PIE_MT_Bottom_D(Menu):
             "pie.transform_orientation", text="万象", icon='ORIENTATION_GIMBAL'
         ).axis = 'GIMBAL'
         row = col.row()
-        row.operator("pie.transform_orientation", text="视图", icon='ORIENTATION_VIEW').axis = 'VIEW'
+        row.operator("pie.transform_orientation", text="视图",
+                     icon='ORIENTATION_VIEW').axis = 'VIEW'
         row = col.row()
         row.operator(
             "pie.transform_orientation", text="游标", icon='ORIENTATION_CURSOR'
@@ -55,7 +56,8 @@ class VIEW3D_PIE_MT_Bottom_D(Menu):
         sp = sp.split(factor=0.8)
         col = sp.box().column()
         row = col.row()
-        row.operator("pie.transform_pivot", text="质心点", icon='PIVOT_MEDIAN').pivot = 'MEDIAN_POINT'
+        row.operator("pie.transform_pivot", text="质心点",
+                     icon='PIVOT_MEDIAN').pivot = 'MEDIAN_POINT'
         row = col.row()
         row.operator(
             "pie.transform_pivot", text="活动项", icon='PIVOT_ACTIVE'
@@ -89,7 +91,8 @@ class VIEW3D_PIE_MT_Bottom_D(Menu):
             "pie.transform_pivot", text="边界框", icon='PIVOT_BOUNDBOX'
         ).pivot = 'BOUNDING_BOX_CENTER'
         # 3 - BOTTOM - RIGHT
-        pie.operator("pie.transform_pivot", text="游标", icon='PIVOT_CURSOR').pivot = 'CURSOR'
+        pie.operator("pie.transform_pivot", text="游标",
+                     icon='PIVOT_CURSOR').pivot = 'CURSOR'
 
 
 class VIEW3D_PIE_MT_Transform_Orientation(Operator):
@@ -103,7 +106,8 @@ class VIEW3D_PIE_MT_Transform_Orientation(Operator):
         return True
 
     def execute(self, context):
-        bpy.context.scene.transform_orientation_slots[0].type = '%s' % (self.axis)
+        bpy.context.scene.transform_orientation_slots[0].type = '%s' % (
+            self.axis)
         return {"FINISHED"}
 
 
@@ -111,14 +115,16 @@ class VIEW3D_PIE_MT_Transform_Pivot(Operator):
     bl_idname = "pie.transform_pivot"
     bl_label = ""
 
-    pivot: bpy.props.StringProperty(name="Pivot", default='BOUNDING_BOX_CENTER')
+    pivot: bpy.props.StringProperty(
+        name="Pivot", default='BOUNDING_BOX_CENTER')
 
     @classmethod
     def poll(cls, context):
         return True
 
     def execute(self, context):
-        bpy.context.scene.tool_settings.transform_pivot_point = '%s' % (self.pivot)
+        bpy.context.scene.tool_settings.transform_pivot_point = '%s' % (
+            self.pivot)
         return {"FINISHED"}
 
 
