@@ -29,25 +29,23 @@ class VIEW3D_PIE_MT_Bottom_S(Menu):
             ob_type = context.object.type
             ob_mode = context.object.mode
 
-            # 4 - LEFT
-            pie.separator()
-            # 6 - RIGHT
-            pie.separator()
-            # 2 - BOTTOM
             if ob_mode == 'EDIT':
-                pie.operator(PIE_S_flat_op.bl_idname, text='Z拍平')
-            else:
+                # 4 - LEFT
+                pie.operator('transform.resize', text='X拍平').value = (0, 1, 1)
+                # 6 - RIGHT
                 pie.separator()
-            # 8 - TOP
-            pie.separator()
-            # 7 - TOP - LEFT
-            pie.separator()
-            # 9 - TOP - RIGHT
-            pie.separator()
-            # 1 - BOTTOM - LEFT
-            pie.separator()
-            # 3 - BOTTOM - RIGHT
-            pie.separator()
+                # 2 - BOTTOM
+                pie.operator(PIE_S_flat_op.bl_idname, text='Z拍平')
+                # 8 - TOP
+                pie.operator('transform.resize', text='Y拍平').value = (1, 0, 1)
+                # 7 - TOP - LEFT
+                pie.separator()
+                # 9 - TOP - RIGHT
+                pie.separator()
+                # 1 - BOTTOM - LEFT
+                pie.separator()
+                # 3 - BOTTOM - RIGHT
+                pie.separator()
         elif ui == "UV":
             # 4 - LEFT
             pie.operator('uv.align', text='对齐到 X 轴').axis = 'ALIGN_X'
@@ -70,6 +68,7 @@ class VIEW3D_PIE_MT_Bottom_S(Menu):
 class PIE_S_flat_op(Operator):
     bl_idname = "pie.view_s_flat_z"
     bl_label = ""
+    bl_options = {"REGISTER", "UNDO"}
 
     @classmethod
     def poll(cls, context):

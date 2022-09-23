@@ -21,7 +21,7 @@ class VIEW3D_PIE_MT_Space_KEY_shift(Menu):
 
         set_pie_ridius(context, 100)
 
-        print(context.aera.type)
+        # print(context.area.type)
         if context.area.type in [
             'VIEW_3D',
             'SEQUENCE_EDITOR',
@@ -85,8 +85,8 @@ def register_keymaps():
         'Sequencer',
         'Screen',
     ]
-    for name in space_name:
-        km = addon.keymaps.new(name=name)
+    for area in space_name:
+        km = addon.keymaps.new(name=area)
         kmi = km.keymap_items.new(
             "wm.call_menu_pie", 'SPACE', 'CLICK_DRAG', shift=True)
         kmi.properties.name = "VIEW3D_PIE_MT_Space_KEY_shift"
