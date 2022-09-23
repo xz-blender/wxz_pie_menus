@@ -22,7 +22,7 @@ class VIEW3D_PIE_MT_Space_KEY_shift(Menu):
         set_pie_ridius(context, 100)
 
         print(context.aera.type)
-        if context.area.ui_type in [
+        if context.area.type in [
             'VIEW_3D',
             'SEQUENCE_EDITOR',
             'CLIP_EDITOR',
@@ -35,7 +35,8 @@ class VIEW3D_PIE_MT_Space_KEY_shift(Menu):
             'IMAGE_EDITOR',
         ]:
             # 4 - LEFT
-            pie.operator('screen.frame_jump', text='首帧', icon='REW').end = False
+            pie.operator('screen.frame_jump', text='首帧',
+                         icon='REW').end = False
             # 6 - RIGHT
             pie.operator('screen.frame_jump', text='末帧', icon='FF').end = True
             # 2 - BOTTOM
@@ -43,9 +44,11 @@ class VIEW3D_PIE_MT_Space_KEY_shift(Menu):
             # 8 - TOP
             pie.separator()
             # 7 - TOP - LEFT
-            pie.operator('screen.keyframe_jump', text='上一关键帧', icon='PREV_KEYFRAME').next = False
+            pie.operator('screen.keyframe_jump', text='上一关键帧',
+                         icon='PREV_KEYFRAME').next = False
             # 9 - TOP - RIGHT
-            pie.operator('screen.keyframe_jump', text='下一关键帧', icon='NEXT_KEYFRAME').next = True
+            pie.operator('screen.keyframe_jump', text='下一关键帧',
+                         icon='NEXT_KEYFRAME').next = True
             # 1 - BOTTOM - LEFT
             pie.separator()
             # 3 - BOTTOM - RIGHT
@@ -84,7 +87,8 @@ def register_keymaps():
     ]
     for name in space_name:
         km = addon.keymaps.new(name=name)
-        kmi = km.keymap_items.new("wm.call_menu_pie", 'SPACE', 'CLICK_DRAG', shift=True)
+        kmi = km.keymap_items.new(
+            "wm.call_menu_pie", 'SPACE', 'CLICK_DRAG', shift=True)
         kmi.properties.name = "VIEW3D_PIE_MT_Space_KEY_shift"
         addon_keymaps.append(km)
 

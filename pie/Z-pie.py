@@ -22,27 +22,27 @@ class VIEW3D_PIE_MT_Bottom_Z_Overlay(Menu):
         layout.alignment = "CENTER"
         pie = layout.menu_pie()
 
-        ob_type = context.object.type
-        ob_mode = context.object.mode
-
         set_pie_ridius(context, 100)
 
         # 4 - LEFT
-        col = pie.column()
+        if context.active_object:
+            col = pie.column()
 
-        row = col.row(align=True)
-        row.alignment = "RIGHT"
-        row.scale_y = 1.4
-        row.scale_x = 1.8
-        row.prop(context.object, 'show_bounds',
-                 icon='SHADING_BBOX', icon_only=True)
-        row.prop(context.object, 'show_wire', icon='CUBE', icon_only=True)
+            row = col.row(align=True)
+            row.alignment = "RIGHT"
+            row.scale_y = 1.4
+            row.scale_x = 1.8
+            row.prop(context.object, 'show_bounds',
+                     icon='SHADING_BBOX', icon_only=True)
+            row.prop(context.object, 'show_wire', icon='CUBE', icon_only=True)
 
-        row = col.row(align=True)
-        row.scale_x = 0.8
-        row.scale_y = 1.2
-        row.prop(context.object, 'display_type',
-                 expand=True, invert_checkbox=True)
+            row = col.row(align=True)
+            row.scale_x = 0.8
+            row.scale_y = 1.2
+            row.prop(context.object, 'display_type',
+                     expand=True, invert_checkbox=True)
+        else:
+            pie.separator()
 
         # 6 - RIGHT
         pie.operator('view3d.toggle_shading', text='实体',
@@ -51,19 +51,23 @@ class VIEW3D_PIE_MT_Bottom_Z_Overlay(Menu):
         pie.operator('view3d.toggle_shading', text='预览',
                      icon='SHADING_TEXTURE').type = 'MATERIAL'
         # 8 - TOP
-        if ob_type == 'MESH':
+        if context.active_object and context.object.type == 'MESH':
             pie.operator(
                 'wm.call_menu', text='自动光滑', icon='RADIOBUT_ON', emboss=True
             ).name = VIEW_PIE_MT_AutoSmooth.bl_idname
         else:
             pie.separator()
         # 7 - TOP - LEFT    &     9 - TOP - RIGHT
-        if ob_mode == 'OBJECT' and ob_type == 'MESH':
-            pie.operator("OBJECT_OT_shade_smooth", icon='ANTIALIASED')
-            pie.operator("OBJECT_OT_shade_flat", icon='ALIASED')
-        elif ob_mode == 'EDIT' and ob_type == 'MESH':
-            pie.operator("MESH_OT_faces_shade_smooth", icon='ANTIALIASED')
-            pie.operator("MESH_OT_faces_shade_flat", icon='ALIASED')
+        if context.active_object:
+            if context.object.mode == 'OBJECT' and context.object.type == 'MESH':
+                pie.operator("OBJECT_OT_shade_smooth", icon='ANTIALIASED')
+                pie.operator("OBJECT_OT_shade_flat", icon='ALIASED')
+            elif context.object.mode == 'EDIT' and context.object.type == 'MESH':
+                pie.operator("MESH_OT_faces_shade_smooth", icon='ANTIALIASED')
+                pie.operator("MESH_OT_faces_shade_flat", icon='ALIASED')
+            else:
+                pie.separator()
+                pie.separator()
         else:
             pie.separator()
             pie.separator()
