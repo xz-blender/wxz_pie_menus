@@ -48,19 +48,14 @@ bl_info = {
 class PIE_Bottom_Q_alt(Operator):
     bl_idname = "pie.q_alt_key"
     bl_label = submoduname
-    bl_options = {"REGISTER"}
+    bl_options = {"REGISTER", "UNDO"}
 
     @classmethod
     def poll(cls, context):
         return True
 
     def execute(self, context):
-        if context.selected_objects:
-            mode = context.object.mode
-            if mode == 'OBJECT' or 'EDIT':
-                bpy.ops.view3d.localview(frame_selected=False)
-        else:
-            self.report('INFO', '未选择物体')
+        bpy.ops.view3d.localview(frame_selected=False)
         return {"FINISHED"}
 
 
