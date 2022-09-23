@@ -28,11 +28,12 @@ class PIE_Bottom_W_alt(Operator):
         if context.active_object:
             if context.object.mode in ['EDIT', 'SCULPT', 'POSE', 'PAINT_WEIGHT', 'PAINT_VERTEX', 'PAINT_TEXTURE']:
                 bpy.ops.object.transfer_mode('INVOKE_DEFAULT')
+                return {"FINISHED"}
             else:
                 self.report("INFO", '此模式无法传递')
+                return {"CANCELLED"}
         else:
             return {"CANCELLED"}
-        return {"FINISHED"}
 
 
 classes = [
