@@ -58,7 +58,8 @@ class VIEW3D_PIE_MT_Bottom_S_ctrl(Menu):
         # 4 - LEFT
         pie.operator('wm.open_mainfile', text='打开文件', icon='FILEBROWSER')
         # 6 - RIGHT
-        pie.operator('wm.read_homefile', text='新建文件', icon='FILE_NEW').app_template = ""
+        pie.operator('wm.read_homefile', text='新建文件',
+                     icon='FILE_NEW').app_template = ""
         # 2 - BOTTOM
         pie.menu('PIE_MT_S_Ctrl_export', text='导出', icon='EXPORT')
         # 8 - TOP
@@ -93,7 +94,8 @@ class VIEW3D_PIE_MT_Bottom_S_ctrl(Menu):
         row.operator('wm.append', text='追加数据', icon='APPEND_BLEND')
 
         # 1 - BOTTOM - LEFT
-        pie.operator('outliner.orphans_purge', text='清理未使用', icon='ORPHAN_DATA').do_recursive = True
+        pie.operator('outliner.orphans_purge', text='清理未使用',
+                     icon='ORPHAN_DATA').do_recursive = True
 
         # 3 - BOTTOM - RIGHT
         if pie_check_rely_addon_op(pie, 'Atomic Data Manager'):
@@ -116,9 +118,10 @@ class PIE_MT_S_Ctrl_import(Menu):
 
         row = col.row()
         if i_dxf_check == '0':
-            row.operator('pie.empty_operator', text='启用DXF导入插件', icon='QUESTION')
+            row.operator('pie.empty_operator',
+                         text='启用DXF导入插件', icon='QUESTION')
         elif i_dxf_check == '1':
-            row.operator('import.dxf', text='—— DXF ——', icon='EVENT_D')
+            row.operator('import_scene.dxf', text='—— DXF ——', icon='EVENT_D')
 
         row = col.row()
         row.operator('import_scene.fbx', text='—— fbx ——', icon='EVENT_F')
@@ -133,7 +136,8 @@ class PIE_MT_S_Ctrl_import(Menu):
         if su_check == '2':
             row.operator('pie.empty_operator', text='安装SU导入插件', icon='ERROR')
         elif su_check == '0':
-            row.operator('pie.empty_operator', text='启用SU导入插件', icon='QUESTION')
+            row.operator('pie.empty_operator',
+                         text='启用SU导入插件', icon='QUESTION')
         elif su_check == '1':
             row.operator('import_scene.skp', text='—— skp ——', icon='EVENT_S')
 
@@ -160,7 +164,8 @@ class PIE_MT_S_Ctrl_export(Menu):
 
         row = col.row()
         if e_dxf_check == '0':
-            row.operator('pie.empty_operator', text='启用DXF导出插件', icon='QUESTION')
+            row.operator('pie.empty_operator',
+                         text='启用DXF导出插件', icon='QUESTION')
         elif e_dxf_check == '1':
             row.operator('export.dxf', text='—— DXF ——', icon='EVENT_D')
 
