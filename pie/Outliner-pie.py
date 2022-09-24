@@ -21,8 +21,8 @@ class OUTLINER_PIE_MT_Bottom_A(Menu):
         layout = self.layout
         pie = layout.menu_pie()
 
-        ob_type = context.object.type
-        ob_mode = context.object.mode
+        # ob_type = context.object.type
+        # ob_mode = context.object.mode
 
         set_pie_ridius(context, 20)
 

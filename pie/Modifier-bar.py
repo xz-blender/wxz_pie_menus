@@ -65,36 +65,44 @@ def costom_modifier_bar(self, context):
     col = self.layout.column(align=True)
     col.alignment = 'CENTER'
     col.scale_y = 0.9
-
+    # ----------------------------------------------------------------------
     row = col.row(align=True)
     row.operator('object.modifier_add', icon='GEOMETRY_NODES',
                  text='节点').type = 'NODES'
     row.operator('object.modifier_add', icon='MOD_SUBSURF',
                  text='细分').type = 'SUBSURF'
+
     row.operator('object.modifier_add', icon='MOD_SHRINKWRAP',
                  text='缩裹').type = 'SHRINKWRAP'
-
+    # ----------------------------------------------------------------------
     row = col.row(align=True)
     bevel = row.operator('object.modifier_add', icon='MOD_BEVEL', text='倒角')
     bevel.type = 'BEVEL'
     # context.object.modifiers["Bevel"].harden_normals = True
     # bevel.segments = 2
-    array = row.operator('object.modifier_add',
-                         icon='MOD_ARRAY', text='阵列').type = 'ARRAY'
-    row.operator('object.modifier_add', icon='MOD_DISPLACE',
-                 text='置换').type = 'DISPLACE'
-
+    row.operator('object.modifier_add',
+                 icon='MOD_ARRAY', text='阵列').type = 'ARRAY'
+    if context.active_object.type == 'MESH':
+        row.operator('object.modifier_add', icon='MOD_DISPLACE',
+                     text='置换').type = 'DISPLACE'
+    else:
+        row.operator('pie.empty_operator', icon='ERROR', text='置换')
+    # ----------------------------------------------------------------------
     row = col.row(align=True)
     mirror = row.operator('object.modifier_add', icon='MOD_MIRROR', text='镜像')
     mirror.type = 'MIRROR'
     # mirror.use_clip = True
-    boolean = row.operator('object.modifier_add',
-                           icon='MOD_BOOLEAN', text='布尔')
-    boolean.type = 'BOOLEAN'
+    if context.active_object.type == 'MESH':
+        row.operator('object.modifier_add',
+                     icon='MOD_BOOLEAN', text='布尔').type = 'BOOLEAN'
+    else:
+        row.operator('pie.empty_operator', icon='ERROR', text='布尔')
+
     # boolean.solver = 'FAST'
     row.operator('object.modifier_add', icon='MOD_SIMPLEDEFORM',
                  text='形变').type = 'SIMPLE_DEFORM'
 
+    # ----------------------------------------------------------------------
     row = col.row(align=True)
     row.operator('object.modifier_add', icon='MOD_SOLIDIFY',
                  text='厚度').type = 'SOLIDIFY'

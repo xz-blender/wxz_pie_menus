@@ -4,8 +4,9 @@ from bpy.types import Menu, Operator, AddonPreferences
 from .utils import set_pie_ridius
 
 
+submoduname = __name__.split('.')[-1]
 bl_info = {
-    "name": "Tab_ctrl-pie",
+    "name": submoduname,
     "author": "wxz",
     "version": (0, 0, 1),
     "blender": (3, 3, 0),
