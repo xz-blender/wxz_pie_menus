@@ -24,9 +24,6 @@ class PIE_MT_Bottom_A_shift(Menu):
         # ob_type = context.object.type
         # ob_mode = context.object.mode
 
-        # if context.active_object:
-        #     if context.object.type == 'MESH':
-
         # 4 - LEFT
         pie.operator('mesh.primitive_plane_add',
                      text='平面', icon='MESH_PLANE')
