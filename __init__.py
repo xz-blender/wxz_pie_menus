@@ -42,6 +42,7 @@ sub_modules_names = [
     "U-pie",
     "Modifier-bar",
     "W_alt-key",
+    "A_shift-pie",
 ]
 sub_modules_names.sort()
 
