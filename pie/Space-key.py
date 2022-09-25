@@ -71,6 +71,7 @@ keymap_areas = [
     ('Dopesheet', 'DOPESHEET_EDITOR'),
     ('UV Editor', 'IMAGE_EDITOR'),
     ('Image', 'IMAGE_EDITOR'),
+    ('Node Editor', 'NODE_EDITOR')
 ]
 
 
@@ -81,7 +82,7 @@ def register_keymaps():
         km = addon.keymaps.new(name=area[0], space_type=area[1])  # ----视频序列播放器
         kmi = km.keymap_items.new(
             PIE_Space_KEY.bl_idname, 'SPACE', 'CLICK')  # space
-        if area[0] == '3D View':  # shift-space
+        if area[0] == '3D View' or 'Node Editor':  # shift-space
             kmi = km.keymap_items.new(
                 'screen.animation_play', 'SPACE', 'CLICK', shift=True)
         else:
