@@ -54,10 +54,10 @@ def menu(self, context):
     deci_1.ratio = 0.1
 
     deci_2 = row.operator(Bar_Quick_Decimate.bl_idname, text="精简0.3")
-    deci_1.ratio = 0.1
+    deci_1.ratio = 0.3
 
     deci_3 = row.operator(Bar_Quick_Decimate.bl_idname, text="精简0.5")
-    deci_1.ratio = 0.1
+    deci_1.ratio = 0.5
 
 
 # Modifier Bar
