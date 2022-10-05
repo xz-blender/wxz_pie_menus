@@ -50,6 +50,9 @@ def menu(self, context):
     col.scale_y = 0.9
 
     row = col.row(align=True)
+    row.operator('object.modifier_add', icon='MOD_TRIANGULATE',
+                 text='三角化').type = 'TRIANGULATE'
+
     deci_1 = row.operator(Bar_Quick_Decimate.bl_idname, text="精简0.1")
     deci_1.ratio = 0.1
 
