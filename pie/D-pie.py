@@ -13,7 +13,7 @@ bl_info = {
 }
 
 
-class VIEW3D_PIE_MT_Bottom_D(Menu):
+class VIEW3D_PIE_MT_Bottom_D_Object(Menu):
     bl_label = submoduname
 
     def draw(self, context):
@@ -95,6 +95,31 @@ class VIEW3D_PIE_MT_Bottom_D(Menu):
                      icon='PIVOT_CURSOR').pivot = 'CURSOR'
 
 
+class VIEW3D_PIE_MT_Bottom_D_UV(Menu):
+    bl_label = submoduname
+
+    def draw(self, context):
+        layout = self.layout
+        pie = layout.menu_pie()
+
+        set_pie_ridius(context, 100)
+        # 4 - LEFT
+        pie.props_enum(context.space_data, 'pivot_point')
+        # 6 - RIGHT
+
+        # 2 - BOTTOM
+
+        # 8 - TOP
+
+        # 7 - TOP - LEFT
+
+        # 9 - TOP - RIGHT
+
+        # 1 - BOTTOM - LEFT
+
+        # 3 - BOTTOM - RIGHT
+
+
 class VIEW3D_PIE_MT_Transform_Orientation(Operator):
     bl_idname = "pie.transform_orientation"
     bl_label = ""
@@ -129,7 +154,8 @@ class VIEW3D_PIE_MT_Transform_Pivot(Operator):
 
 
 classes = [
-    VIEW3D_PIE_MT_Bottom_D,
+    VIEW3D_PIE_MT_Bottom_D_Object,
+    VIEW3D_PIE_MT_Bottom_D_UV,
     VIEW3D_PIE_MT_Transform_Orientation,
     VIEW3D_PIE_MT_Transform_Pivot,
 ]
@@ -143,7 +169,12 @@ def register_keymaps():
 
     km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
     kmi = km.keymap_items.new("wm.call_menu_pie", 'D', 'CLICK_DRAG')
-    kmi.properties.name = "VIEW3D_PIE_MT_Bottom_D"
+    kmi.properties.name = "VIEW3D_PIE_MT_Bottom_D_Object"
+    addon_keymaps.append(km)
+
+    km = addon.keymaps.new(name="UV Editor", space_type="EMPTY")
+    kmi = km.keymap_items.new("wm.call_menu_pie", 'D', 'CLICK_DRAG')
+    kmi.properties.name = "VIEW3D_PIE_MT_Bottom_D_UV"
     addon_keymaps.append(km)
 
 
@@ -170,4 +201,4 @@ def unregister():
 
 # if __name__ == "__main__":
 #     register()
-#     bpy.ops.wm.call_menu_pie(name="VIEW3D_PIE_MT_Bottom_D")
+#     bpy.ops.wm.call_menu_pie(name="VIEW3D_PIE_MT_Bottom_D_Object")

@@ -36,7 +36,7 @@ class VIEW3D_PIE_MT_Bottom_U(Menu):
                 # 2 - BOTTOM
                 pie.separator()
                 # 8 - TOP
-                pie.separator()
+                pie.operator('uv.project_from_view', text='视角投影')
                 # 7 - TOP - LEFT
                 pie.separator()
                 # 9 - TOP - RIGHT

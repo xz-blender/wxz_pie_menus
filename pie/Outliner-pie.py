@@ -15,7 +15,7 @@ bl_info = {
 
 
 class OUTLINER_PIE_MT_Bottom_A(Menu):
-    bl_label = 'Outliner-A'
+    bl_label = submoduname
 
     def draw(self, context):
         layout = self.layout
