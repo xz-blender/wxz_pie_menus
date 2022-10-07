@@ -104,25 +104,30 @@ class VIEW3D_PIE_MT_Bottom_D_UV(Menu):
 
         set_pie_ridius(context, 100)
         # 4 - LEFT
-        pie.props_enum(context.space_data, 'pivot_point')
+        pie.separator()
         # 6 - RIGHT
-
+        pie.separator()
         # 2 - BOTTOM
-
+        pie.operator(VIEW3D_PIE_MT_Transform_Pivot_UV.bl_idname,
+                     text='各自中心', icon='PIVOT_INDIVIDUAL').pivot = 'CENTER'
         # 8 - TOP
-
+        pie.separator()
         # 7 - TOP - LEFT
-
+        pie.separator()
         # 9 - TOP - RIGHT
-
+        pie.separator()
         # 1 - BOTTOM - LEFT
-
+        pie.operator(VIEW3D_PIE_MT_Transform_Pivot_UV.bl_idname,
+                     text='边界框', icon='PIVOT_BOUNDBOX').pivot = 'INDIVIDUAL_ORIGINS'
         # 3 - BOTTOM - RIGHT
+        pie.operator(VIEW3D_PIE_MT_Transform_Pivot_UV.bl_idname,
+                     text='游标', icon='PIVOT_CURSOR').pivot = 'CURSOR'
 
 
 class VIEW3D_PIE_MT_Transform_Orientation(Operator):
     bl_idname = "pie.transform_orientation"
     bl_label = ""
+    bl_options = {"REGISTER", "UNDO"}
 
     axis: bpy.props.StringProperty(name="Axis", default='GLOBAL')
 
@@ -139,6 +144,7 @@ class VIEW3D_PIE_MT_Transform_Orientation(Operator):
 class VIEW3D_PIE_MT_Transform_Pivot(Operator):
     bl_idname = "pie.transform_pivot"
     bl_label = ""
+    bl_options = {"REGISTER", "UNDO"}
 
     pivot: bpy.props.StringProperty(
         name="Pivot", default='BOUNDING_BOX_CENTER')
@@ -153,11 +159,29 @@ class VIEW3D_PIE_MT_Transform_Pivot(Operator):
         return {"FINISHED"}
 
 
+class VIEW3D_PIE_MT_Transform_Pivot_UV(Operator):
+    bl_idname = "pie.transform_pivot"
+    bl_label = ""
+    bl_options = {"REGISTER", "UNDO"}
+
+    pivot: bpy.props.StringProperty(
+        name="Pivot", default='CENTER')
+
+    @classmethod
+    def poll(cls, context):
+        return True
+
+    def execute(self, context):
+        bpy.context.space_data.pivot_point = '%s' % (self.pivot)
+        return {"FINISHED"}
+
+
 classes = [
     VIEW3D_PIE_MT_Bottom_D_Object,
     VIEW3D_PIE_MT_Bottom_D_UV,
     VIEW3D_PIE_MT_Transform_Orientation,
     VIEW3D_PIE_MT_Transform_Pivot,
+    VIEW3D_PIE_MT_Transform_Pivot_UV
 ]
 
 
