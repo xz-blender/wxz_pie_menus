@@ -155,7 +155,7 @@ class VIEW3D_PIE_MT_Transform_Pivot(Operator):
 
 
 class VIEW3D_PIE_MT_Transform_Pivot_UV(Operator):
-    bl_idname = "pie.transform_pivot"
+    bl_idname = "pie.transform_pivot_uv"
     bl_label = ""
     bl_options = {"REGISTER", "UNDO"}
 
