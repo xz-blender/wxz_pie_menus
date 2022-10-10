@@ -13,115 +13,110 @@ bl_info = {
 }
 
 
-class VIEW3D_PIE_MT_Bottom_D_Object(Menu):
+class VIEW3D_PIE_MT_Bottom_D(Menu):
     bl_label = submoduname
 
     def draw(self, context):
         layout = self.layout
         pie = layout.menu_pie()
 
-        # ob_type = context.object.type
-        # ob_mode = context.object.mode
+        ui = context.area.ui_type
 
-        set_pie_ridius(context, 100)
+        if ui == "VIEW_3D":
+            # ob_type = context.object.type
+            # ob_mode = context.object.mode
 
-        # 4 - LEFT
-        sp = pie.split()
-        sp.scale_x = 1.1
+            set_pie_ridius(context, 100)
 
-        sp = sp.split(factor=0.18)
-        col_l = sp.column()
-        row_l = col_l.row()
-        row_l.label(text='坐')
-        row_l = col_l.row()
-        row_l.label(text='标')
-        row_l = col_l.row()
-        row_l.label(text='系')
+            # 4 - LEFT
+            sp = pie.split()
+            sp.scale_x = 1.1
 
-        col = sp.box().column()
-        row = col.row()
-        row.operator(
-            "pie.transform_orientation", text="万象", icon='ORIENTATION_GIMBAL'
-        ).axis = 'GIMBAL'
-        row = col.row()
-        row.operator("pie.transform_orientation", text="视图",
-                     icon='ORIENTATION_VIEW').axis = 'VIEW'
-        row = col.row()
-        row.operator(
-            "pie.transform_orientation", text="游标", icon='ORIENTATION_CURSOR'
-        ).axis = 'CURSOR'
-        # 6 - RIGHT
-        sp = pie.split()
+            sp = sp.split(factor=0.18)
+            col_l = sp.column()
+            row_l = col_l.row()
+            row_l.label(text='坐')
+            row_l = col_l.row()
+            row_l.label(text='标')
+            row_l = col_l.row()
+            row_l.label(text='系')
 
-        sp = sp.split(factor=0.8)
-        col = sp.box().column()
-        row = col.row()
-        row.operator("pie.transform_pivot", text="质心点",
-                     icon='PIVOT_MEDIAN').pivot = 'MEDIAN_POINT'
-        row = col.row()
-        row.operator(
-            "pie.transform_pivot", text="活动项", icon='PIVOT_ACTIVE'
-        ).pivot = 'ACTIVE_ELEMENT'
+            col = sp.box().column()
+            row = col.row()
+            row.operator(
+                "pie.transform_orientation", text="万象", icon='ORIENTATION_GIMBAL'
+            ).axis = 'GIMBAL'
+            row = col.row()
+            row.operator("pie.transform_orientation", text="视图",
+                         icon='ORIENTATION_VIEW').axis = 'VIEW'
+            row = col.row()
+            row.operator(
+                "pie.transform_orientation", text="游标", icon='ORIENTATION_CURSOR'
+            ).axis = 'CURSOR'
+            # 6 - RIGHT
+            sp = pie.split()
 
-        col_r = sp.column()
-        row = col_r.row()
-        row.label(text='轴')
-        row = col_r.row()
-        row.label(text='心')
-        row = col_r.row()
-        row.label(text='点')
-        # 2 - BOTTOM
-        pie.operator(
-            "pie.transform_pivot", text="各自原点", icon='PIVOT_INDIVIDUAL'
-        ).pivot = 'INDIVIDUAL_ORIGINS'
-        # 8 - TOP
-        pie.operator(
-            "pie.transform_orientation", text="法向", icon='ORIENTATION_NORMAL'
-        ).axis = 'NORMAL'
-        # 7 - TOP - LEFT
-        pie.operator(
-            "pie.transform_orientation", text="全局", icon='ORIENTATION_GLOBAL'
-        ).axis = 'GLOBAL'
-        # 9 - TOP - RIGHT
-        pie.operator(
-            "pie.transform_orientation", text="局部", icon='ORIENTATION_LOCAL'
-        ).axis = 'LOCAL'
-        # 1 - BOTTOM - LEFT
-        pie.operator(
-            "pie.transform_pivot", text="边界框", icon='PIVOT_BOUNDBOX'
-        ).pivot = 'BOUNDING_BOX_CENTER'
-        # 3 - BOTTOM - RIGHT
-        pie.operator("pie.transform_pivot", text="游标",
-                     icon='PIVOT_CURSOR').pivot = 'CURSOR'
+            sp = sp.split(factor=0.8)
+            col = sp.box().column()
+            row = col.row()
+            row.operator("pie.transform_pivot", text="质心点",
+                         icon='PIVOT_MEDIAN').pivot = 'MEDIAN_POINT'
+            row = col.row()
+            row.operator(
+                "pie.transform_pivot", text="活动项", icon='PIVOT_ACTIVE'
+            ).pivot = 'ACTIVE_ELEMENT'
 
-
-class VIEW3D_PIE_MT_Bottom_D_UV(Menu):
-    bl_label = submoduname
-
-    def draw(self, context):
-        layout = self.layout
-        pie = layout.menu_pie()
-
-        set_pie_ridius(context, 100)
-        # 4 - LEFT
-        pie.separator()
-        # 6 - RIGHT
-        pie.separator()
-        # 2 - BOTTOM
-        pie.operator(VIEW3D_PIE_MT_Transform_Pivot_UV.bl_idname,
-                     text='各自中心', icon='PIVOT_INDIVIDUAL').pivot = 'CENTER'
-        # 8 - TOP
-        pie.separator()
-        # 7 - TOP - LEFT
-        pie.separator()
-        # 9 - TOP - RIGHT
-        pie.separator()
-        # 1 - BOTTOM - LEFT
-        pie.operator(VIEW3D_PIE_MT_Transform_Pivot_UV.bl_idname,
-                     text='边界框', icon='PIVOT_BOUNDBOX').pivot = 'INDIVIDUAL_ORIGINS'
-        # 3 - BOTTOM - RIGHT
-        pie.operator(VIEW3D_PIE_MT_Transform_Pivot_UV.bl_idname,
-                     text='游标', icon='PIVOT_CURSOR').pivot = 'CURSOR'
+            col_r = sp.column()
+            row = col_r.row()
+            row.label(text='轴')
+            row = col_r.row()
+            row.label(text='心')
+            row = col_r.row()
+            row.label(text='点')
+            # 2 - BOTTOM
+            pie.operator(
+                "pie.transform_pivot", text="各自原点", icon='PIVOT_INDIVIDUAL'
+            ).pivot = 'INDIVIDUAL_ORIGINS'
+            # 8 - TOP
+            pie.operator(
+                "pie.transform_orientation", text="法向", icon='ORIENTATION_NORMAL'
+            ).axis = 'NORMAL'
+            # 7 - TOP - LEFT
+            pie.operator(
+                "pie.transform_orientation", text="全局", icon='ORIENTATION_GLOBAL'
+            ).axis = 'GLOBAL'
+            # 9 - TOP - RIGHT
+            pie.operator(
+                "pie.transform_orientation", text="局部", icon='ORIENTATION_LOCAL'
+            ).axis = 'LOCAL'
+            # 1 - BOTTOM - LEFT
+            pie.operator(
+                "pie.transform_pivot", text="边界框", icon='PIVOT_BOUNDBOX'
+            ).pivot = 'BOUNDING_BOX_CENTER'
+            # 3 - BOTTOM - RIGHT
+            pie.operator("pie.transform_pivot", text="游标",
+                         icon='PIVOT_CURSOR').pivot = 'CURSOR'
+        elif ui == "UV":
+            set_pie_ridius(context, 100)
+            # 4 - LEFT
+            pie.separator()
+            # 6 - RIGHT
+            pie.separator()
+            # 2 - BOTTOM
+            pie.operator(VIEW3D_PIE_MT_Transform_Pivot_UV.bl_idname,
+                         text='各自中心', icon='PIVOT_INDIVIDUAL').pivot = 'CENTER'
+            # 8 - TOP
+            pie.separator()
+            # 7 - TOP - LEFT
+            pie.separator()
+            # 9 - TOP - RIGHT
+            pie.separator()
+            # 1 - BOTTOM - LEFT
+            pie.operator(VIEW3D_PIE_MT_Transform_Pivot_UV.bl_idname,
+                         text='边界框', icon='PIVOT_BOUNDBOX').pivot = 'INDIVIDUAL_ORIGINS'
+            # 3 - BOTTOM - RIGHT
+            pie.operator(VIEW3D_PIE_MT_Transform_Pivot_UV.bl_idname,
+                         text='游标', icon='PIVOT_CURSOR').pivot = 'CURSOR'
 
 
 class VIEW3D_PIE_MT_Transform_Orientation(Operator):
@@ -177,8 +172,7 @@ class VIEW3D_PIE_MT_Transform_Pivot_UV(Operator):
 
 
 classes = [
-    VIEW3D_PIE_MT_Bottom_D_Object,
-    VIEW3D_PIE_MT_Bottom_D_UV,
+    VIEW3D_PIE_MT_Bottom_D,
     VIEW3D_PIE_MT_Transform_Orientation,
     VIEW3D_PIE_MT_Transform_Pivot,
     VIEW3D_PIE_MT_Transform_Pivot_UV
@@ -191,15 +185,15 @@ addon_keymaps = []
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
 
-    km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
-    kmi = km.keymap_items.new("wm.call_menu_pie", 'D', 'CLICK_DRAG')
-    kmi.properties.name = "VIEW3D_PIE_MT_Bottom_D_Object"
-    addon_keymaps.append(km)
-
-    km = addon.keymaps.new(name="UV Editor", space_type="EMPTY")
-    kmi = km.keymap_items.new("wm.call_menu_pie", 'D', 'CLICK_DRAG')
-    kmi.properties.name = "VIEW3D_PIE_MT_Bottom_D_UV"
-    addon_keymaps.append(km)
+    space_name = [
+        ('3D View', 'VIEW_3D'),
+        ('UV Editor', 'EMPTY'),
+    ]
+    for space in space_name:
+        km = addon.keymaps.new(name=space[0], space_type=space[1])
+        kmi = km.keymap_items.new("wm.call_menu_pie", 'D', 'CLICK_DRAG')
+        kmi.properties.name = "VIEW3D_PIE_MT_Bottom_D"
+        addon_keymaps.append(km)
 
 
 def unregister_keymaps():
@@ -225,4 +219,4 @@ def unregister():
 
 # if __name__ == "__main__":
 #     register()
-#     bpy.ops.wm.call_menu_pie(name="VIEW3D_PIE_MT_Bottom_D_Object")
+#     bpy.ops.wm.call_menu_pie(name="VIEW3D_PIE_MT_Bottom_D")
