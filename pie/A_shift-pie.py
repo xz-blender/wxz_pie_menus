@@ -31,18 +31,18 @@ class PIE_MT_Bottom_A_shift(Menu):
         pie.operator('mesh.primitive_cube_add', text='立方体', icon='MESH_CUBE')
         # 2 - BOTTOM
         pie.operator('curve.primitive_bezier_circle_add',
-                     text='圆', icon='MESH_CIRCLE')
+                     text='矢量圆', icon='MESH_CIRCLE')
         # 8 - TOP
         pie.operator('mesh.primitive_circle_add',
-                     text='圆', icon='MESH_CIRCLE')
+                     text='网格圆', icon='MESH_CIRCLE')
         # 7 - TOP - LEFT
-        pie.operator('mesh.primitive_vert_add', text='单点', icon='DOT')
+        pie.operator('mesh.primitive_vert_add', text='矢量点', icon='DOT')
         # 9 - TOP - RIGHT
-        pie.operator('curve.simple', text='单点',
+        pie.operator('curve.simple', text='网格点',
                      icon='DOT').Simple_Type = 'Point'
         # 1 - BOTTOM - LEFT
         pie.operator('mesh.primitive_cylinder_add',
-                     text='单点', icon='MESH_CYLINDER')
+                     text='柱', icon='MESH_CYLINDER')
         # 3 - BOTTOM - RIGHT
         pie.operator('mesh.primitive_uv_sphere_add',
                      text='球', icon='MESH_UVSPHERE')
