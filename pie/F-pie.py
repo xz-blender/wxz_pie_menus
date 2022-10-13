@@ -75,7 +75,7 @@ class VIEW3D_PIE_MT_Bottom_F(Menu):
                 icon='NORMALS_VERTEX_FACE',
             )
 
-        elif ob_mode == 'EDIT':
+        if ob_mode == 'EDIT':
             if ob_type == 'MESH':
                 # 4 - LEFT
                 pie.operator('wm.tool_set_by_id',

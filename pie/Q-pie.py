@@ -96,7 +96,9 @@ class NODE_PIE_MT_Bottom_Q(Menu):
             # 7 - TOP - LEFT
             # 9 - TOP - RIGHT
             # 1 - BOTTOM - LEFT
+            pie.operator('node.view_all', text='全部')
             # 3 - BOTTOM - RIGHT
+            pie.operator('node.view_selected', text='所选')
 
 
 class Node_Change_Image_ColorSpace(Operator):
