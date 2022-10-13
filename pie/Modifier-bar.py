@@ -53,14 +53,11 @@ def menu(self, context):
     row.operator('object.modifier_add', icon='MOD_TRIANGULATE',
                  text='三角化').type = 'TRIANGULATE'
 
-    deci_1 = row.operator(Bar_Quick_Decimate.bl_idname, text="精简0.1")
-    deci_1.ratio = 0.1
+    row.operator(Bar_Quick_Decimate.bl_idname, text="精简0.1").ratio = 0.1
 
-    deci_2 = row.operator(Bar_Quick_Decimate.bl_idname, text="精简0.3")
-    deci_1.ratio = 0.3
+    row.operator(Bar_Quick_Decimate.bl_idname, text="精简0.3").ratio = 0.3
 
-    deci_3 = row.operator(Bar_Quick_Decimate.bl_idname, text="精简0.5")
-    deci_1.ratio = 0.5
+    row.operator(Bar_Quick_Decimate.bl_idname, text="精简0.5").ratio = 0.5
 
 
 # Modifier Bar

@@ -36,9 +36,9 @@ class PIE_MT_Bottom_A_shift(Menu):
         pie.operator('mesh.primitive_circle_add',
                      text='网格圆', icon='MESH_CIRCLE')
         # 7 - TOP - LEFT
-        pie.operator('mesh.primitive_vert_add', text='矢量点', icon='DOT')
+        pie.operator('mesh.primitive_vert_add', text='网格点', icon='DOT')
         # 9 - TOP - RIGHT
-        pie.operator('curve.simple', text='网格点',
+        pie.operator('curve.simple', text='矢量点',
                      icon='DOT').Simple_Type = 'Point'
         # 1 - BOTTOM - LEFT
         pie.operator('mesh.primitive_cylinder_add',
