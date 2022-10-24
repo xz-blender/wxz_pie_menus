@@ -143,15 +143,16 @@ class VIEW3D_PIE_MT_Bottom_W(Menu):
             row.prop(context.scene.tool_settings, 'use_mesh_automerge_and_split')
 
             # 3 - BOTTOM - RIGHT
-            if context.scene.tool_settings.use_transform_correct_face_attributes == False:
-                pie.prop(context.scene.tool_settings, 'use_transform_correct_face_attributes')
-            else:
-                col = pie.split().column(align=True)
-                col.scale_y = 1.2
-                row = col.row()
-                row.prop(context.scene.tool_settings, 'use_transform_correct_face_attributes')
-                row = col.row()
-                row.prop(context.scene.tool_settings, 'use_transform_correct_keep_connected')
+            pie.prop(context.scene.tool_settings,'use_transform_correct_face_attributes')
+            # if context.scene.tool_settings.use_transform_correct_face_attributes == False:
+            #     pie.prop(context.scene.tool_settings, 'use_transform_correct_face_attributes')
+            # else:
+            #     col = pie.split().column(align=True)
+            #     col.scale_y = 1.2
+            #     row = col.row()
+            #     row.prop(context.scene.tool_settings, 'use_transform_correct_face_attributes')
+            #     row = col.row()
+            #     row.prop(context.scene.tool_settings, 'use_transform_correct_keep_connected')
 
 
 class Proportional_Edit_Falloff(Operator):

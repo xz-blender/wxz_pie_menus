@@ -41,15 +41,15 @@ class VIEW3D_PIE_MT_Space_KEY_shift(Menu):
         # 6 - RIGHT
         pie.operator('screen.frame_jump', text='末帧', icon='FF').end = True
         # 2 - BOTTOM
-        pie.separator()
-        # 8 - TOP
-        pie.separator()
-        # 7 - TOP - LEFT
-        pie.operator('screen.keyframe_jump', text='上一关键帧',
-                     icon='PREV_KEYFRAME').next = False
-        # 9 - TOP - RIGHT
         pie.operator('screen.keyframe_jump', text='下一关键帧',
                      icon='NEXT_KEYFRAME').next = True
+        # 8 - TOP
+        pie.operator('screen.keyframe_jump', text='上一关键帧',
+                     icon='PREV_KEYFRAME').next = False
+        # 7 - TOP - LEFT
+        pie.separator()
+        # 9 - TOP - RIGHT
+        pie.separator()
         # 1 - BOTTOM - LEFT
         pie.separator()
         # 3 - BOTTOM - RIGHT
