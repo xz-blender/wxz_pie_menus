@@ -29,21 +29,42 @@ class VIEW3D_PIE_MT_Bottom_S(Menu):
             ob_type = context.object.type
             ob_mode = context.object.mode
 
+
             if ob_mode == 'EDIT':
-                # 4 - LEFT
-                X = pie.operator(PIE_S_flat_op.bl_idname, text='X拍平')
+                #4 - LEFT
+                X = pie.operator(PIE_S_Flat_Object.bl_idname, text='X对齐')
                 X.X = True
                 X.Y = False
                 X.Z = False
                 # 6 - RIGHT
                 pie.separator()
                 # 2 - BOTTOM
-                X = pie.operator(PIE_S_flat_op.bl_idname, text='Z拍平')
+                X = pie.operator(PIE_S_Flat_Object.bl_idname, text='Z对齐')
+                # 8 - TOP
+                X = pie.operator(PIE_S_Flat_Object.bl_idname, text='Y对齐')
+                # 7 - TOP - LEFT
+                pie.separator()
+                # 9 - TOP - RIGHT
+                pie.separator()
+                # 1 - BOTTOM - LEFT
+                pie.separator()
+                # 3 - BOTTOM - RIGHT
+                pie.separator()
+            if ob_mode == 'EDIT':
+                # 4 - LEFT
+                X = pie.operator(PIE_S_Flat_Mesh.bl_idname, text='X拍平')
+                X.X = True
+                X.Y = False
+                X.Z = False
+                # 6 - RIGHT
+                pie.separator()
+                # 2 - BOTTOM
+                X = pie.operator(PIE_S_Flat_Mesh.bl_idname, text='Z拍平')
                 X.X = False
                 X.Y = False
                 X.Z = True
                 # 8 - TOP
-                X = pie.operator(PIE_S_flat_op.bl_idname, text='Y拍平')
+                X = pie.operator(PIE_S_Flat_Mesh.bl_idname, text='Y拍平')
                 X.X = False
                 X.Y = True
                 X.Z = False
@@ -74,8 +95,8 @@ class VIEW3D_PIE_MT_Bottom_S(Menu):
             pie.separator()
 
 
-class PIE_S_flat_op(Operator):
-    bl_idname = "pie.view_s_flat_z"
+class PIE_S_Flat_Mesh(Operator):
+    bl_idname = "pie.view_s_flat_mesh"
     bl_label = ""
     bl_options = {"REGISTER", "UNDO"}
 
@@ -100,7 +121,50 @@ class PIE_S_flat_op(Operator):
         return {"FINISHED"}
 
 
-classes = [VIEW3D_PIE_MT_Bottom_S, PIE_S_flat_op]
+class PIE_S_Flat_Object(Operator):
+    bl_idname = "pie.view_s_flat_object"
+    bl_label = ""
+    bl_options = {"REGISTER", "UNDO"}
+
+    X: bpy.props.BoolProperty(name='X')
+    Y: bpy.props.BoolProperty(name='Y')
+    Z: bpy.props.BoolProperty(name='Z')
+
+    @classmethod
+    def poll(cls, context):
+        if context.object.selected_objects:
+            if context.object.mode == 'OBJECT':
+                return True
+        else:
+            return False
+
+    def execute(self, context):
+        X = self.X
+        Y = self.Y
+        Z = self.Z
+        if context.scene.tool_settings.use_transform_pivot_point_align == False:
+            context.scene.tool_settings.use_transform_pivot_point_align = True
+            if X:
+                bpy.ops.transform.resize(value=(0, 1, 1))
+            elif Y:
+                bpy.ops.transform.resize(value=(1, 0, 1))
+            elif Z:
+                bpy.ops.transform.resize(value=(1, 1, 0))
+            context.scene.tool_settings.use_transform_pivot_point_align = False
+        else:
+            if X:
+                bpy.ops.transform.resize(value=(0, 1, 1))
+            elif Y:
+                bpy.ops.transform.resize(value=(1, 0, 1))
+            elif Z:
+                bpy.ops.transform.resize(value=(1, 1, 0))
+        return {"FINISHED"}
+
+
+classes = [VIEW3D_PIE_MT_Bottom_S, 
+        PIE_S_Flat_Mesh,
+        PIE_S_Flat_Object
+        ]
 
 addon_keymaps = []
 
