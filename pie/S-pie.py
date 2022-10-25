@@ -30,7 +30,7 @@ class VIEW3D_PIE_MT_Bottom_S(Menu):
             ob_mode = context.object.mode
 
 
-            if ob_mode == 'EDIT':
+            if ob_mode == 'OBJECT':
                 #4 - LEFT
                 X = pie.operator(PIE_S_Flat_Object.bl_idname, text='X对齐')
                 X.X = True
