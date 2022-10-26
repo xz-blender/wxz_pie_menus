@@ -40,8 +40,14 @@ class VIEW3D_PIE_MT_Bottom_S(Menu):
                 pie.separator()
                 # 2 - BOTTOM
                 X = pie.operator(PIE_S_Flat_Object.bl_idname, text='Z对齐')
+                X.X = False
+                X.Y = False
+                X.Z = True
                 # 8 - TOP
                 X = pie.operator(PIE_S_Flat_Object.bl_idname, text='Y对齐')
+                X.X = False
+                X.Y = True
+                X.Z = False
                 # 7 - TOP - LEFT
                 pie.separator()
                 # 9 - TOP - RIGHT
