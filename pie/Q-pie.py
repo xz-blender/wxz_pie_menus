@@ -86,10 +86,14 @@ class NODE_PIE_MT_Bottom_Q(Menu):
                 pie.separator()
 
             # 2 - BOTTOM
+            pie.separator()
             # 8 - TOP
+            pie.separator()
             # 7 - TOP - LEFT
+            pie.separator()
             # 9 - TOP - RIGHT
-            pie.props_enum(context.object.active_material, 'blend_method')
+            box = pie.box()
+            box.props_enum(context.object.active_material, 'blend_method')
             # 1 - BOTTOM - LEFT
             common_pie()
             # 3 - BOTTOM - RIGHT
