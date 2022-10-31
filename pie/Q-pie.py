@@ -69,6 +69,10 @@ class NODE_PIE_MT_Bottom_Q(Menu):
 
         set_pie_ridius(context, 100)
 
+        def common_pie():
+            pie.operator('node.view_all', text='全部')
+            pie.operator('node.view_selected', text='所选')
+
         if context.area.ui_type == 'ShaderNodeTree':
             active_node = context.active_object.active_material.node_tree.nodes.active
             # 4 - LEFT # 6 - RIGHT
@@ -87,9 +91,8 @@ class NODE_PIE_MT_Bottom_Q(Menu):
             # 9 - TOP - RIGHT
             pie.props_enum(context.object.active_material, 'blend_method')
             # 1 - BOTTOM - LEFT
-            pie.operator('node.view_all', text='全部')
+            common_pie()
             # 3 - BOTTOM - RIGHT
-            pie.operator('node.view_selected', text='所选')
             
         elif context.area.ui_type == 'GeometryNodeTree':
             # 4 - LEFT
@@ -105,9 +108,25 @@ class NODE_PIE_MT_Bottom_Q(Menu):
             # 9 - TOP - RIGHT
             pie.separator()
             # 1 - BOTTOM - LEFT
-            pie.operator('node.view_all', text='全部')
+            common_pie()
             # 3 - BOTTOM - RIGHT
-            pie.operator('node.view_selected', text='所选')
+
+        elif context.area.ui_type == 'CompositorNodeTree':
+            # 4 - LEFT
+            pie.separator()
+            # 6 - RIGHT
+            pie.separator()
+            # 2 - BOTTOM
+            pie.separator()
+            # 8 - TOP
+            pie.separator()
+            # 7 - TOP - LEFT
+            pie.separator()
+            # 9 - TOP - RIGHT
+            pie.separator()
+            # 1 - BOTTOM - LEFT
+            common_pie()
+            # 3 - BOTTOM - RIGHT
 
 
 class Node_Change_Image_ColorSpace(Operator):
