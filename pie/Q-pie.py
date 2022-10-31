@@ -71,8 +71,8 @@ class NODE_PIE_MT_Bottom_Q(Menu):
 
         if context.area.ui_type == 'ShaderNodeTree':
             active_node = context.active_object.active_material.node_tree.nodes.active
+            # 4 - LEFT # 6 - RIGHT
             if active_node.type == 'TEX_IMAGE':
-                # 4 - LEFT # 6 - RIGHT
                 pie.operator(Node_Change_Image_ColorSpace.bl_idname,
                              text='图像-sRGB').colorspace = 'sRGB'
                 pie.operator(Node_Change_Image_ColorSpace.bl_idname,
@@ -86,7 +86,10 @@ class NODE_PIE_MT_Bottom_Q(Menu):
             # 7 - TOP - LEFT
             # 9 - TOP - RIGHT
             # 1 - BOTTOM - LEFT
+            pie.operator('node.view_all', text='全部')
             # 3 - BOTTOM - RIGHT
+            pie.operator('node.view_selected', text='所选')
+            
         elif context.area.ui_type == 'GeometryNodeTree':
             # 4 - LEFT
             pie.separator()
