@@ -85,6 +85,7 @@ class NODE_PIE_MT_Bottom_Q(Menu):
             # 8 - TOP
             # 7 - TOP - LEFT
             # 9 - TOP - RIGHT
+            pie.props_enum(context.object.active_material, 'blend_method')
             # 1 - BOTTOM - LEFT
             pie.operator('node.view_all', text='全部')
             # 3 - BOTTOM - RIGHT
