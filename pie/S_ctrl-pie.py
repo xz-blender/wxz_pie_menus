@@ -64,7 +64,7 @@ class VIEW3D_PIE_MT_Bottom_S_ctrl(Menu):
         pie.menu('PIE_MT_S_Ctrl_export', text='导出', icon='EXPORT')
         # 8 - TOP
         if pie_check_rely_addon_op(pie, 'Blender Open Import'):
-            pie.operator('atomic.clean_all', text='任意导入', icon='IMPORT')
+            pie.operator('import_.everything', text='任意导入', icon='IMPORT')
         else:
             pie.menu('PIE_MT_S_Ctrl_import', text='导入', icon='IMPORT')
 
