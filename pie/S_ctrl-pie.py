@@ -63,11 +63,10 @@ class VIEW3D_PIE_MT_Bottom_S_ctrl(Menu):
         # 2 - BOTTOM
         pie.menu('PIE_MT_S_Ctrl_export', text='导出', icon='EXPORT')
         # 8 - TOP
-        col = pie.split().column(align=True)
-        row = col.box().row()
-        check_rely_addon(row, 'Blender Open Import')
-        row = col.box().row()
-        row.menu('PIE_MT_S_Ctrl_import', text='导入', icon='IMPORT')
+        if pie_check_rely_addon_op(pie, 'Blender Open Import'):
+            pie.operator('atomic.clean_all', text='任意导入', icon='IMPORT')
+        else:
+            pie.menu('PIE_MT_S_Ctrl_import', text='导入', icon='IMPORT')
 
         # 7 - TOP - LEFT
         col = pie.split().column(align=True)
