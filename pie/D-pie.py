@@ -122,7 +122,7 @@ class VIEW3D_PIE_MT_Bottom_D(Menu):
 class VIEW3D_PIE_MT_Transform_Orientation(Operator):
     bl_idname = "pie.transform_orientation"
     bl_label = ""
-    bl_options = {"REGISTER", "UNDO"}
+    bl_options = {"REGISTER"}
 
     axis: bpy.props.StringProperty(name="Axis", default='GLOBAL')
 
@@ -139,7 +139,7 @@ class VIEW3D_PIE_MT_Transform_Orientation(Operator):
 class VIEW3D_PIE_MT_Transform_Pivot(Operator):
     bl_idname = "pie.transform_pivot"
     bl_label = ""
-    bl_options = {"REGISTER", "UNDO"}
+    bl_options = {"REGISTER"}
 
     pivot: bpy.props.StringProperty(
         name="Pivot", default='BOUNDING_BOX_CENTER')
@@ -157,7 +157,7 @@ class VIEW3D_PIE_MT_Transform_Pivot(Operator):
 class VIEW3D_PIE_MT_Transform_Pivot_UV(Operator):
     bl_idname = "pie.transform_pivot_uv"
     bl_label = ""
-    bl_options = {"REGISTER", "UNDO"}
+    bl_options = {"REGISTER"}
 
     pivot: bpy.props.StringProperty(
         name="Pivot", default='CENTER')
