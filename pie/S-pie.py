@@ -138,7 +138,7 @@ class PIE_S_Flat_Object(Operator):
 
     @classmethod
     def poll(cls, context):
-        if context.object.selected_objects:
+        if context.selected_objects:
             if context.object.mode == 'OBJECT':
                 return True
         else:

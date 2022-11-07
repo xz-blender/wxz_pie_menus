@@ -141,12 +141,21 @@ class PIE_Transform_Rotate_Z(Operator):
 
     degree: bpy.props.FloatProperty(name="Rotate_Dgree")
 
-    def execute(self, context):
+    def rotation_ops():
         bpy.ops.transform.rotate(
             value=self.degree,
             orient_axis='Z',
-            orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)),
-        )
+            orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1))
+            )
+        
+    def execute(self, context):
+        is_pivot = context.scene.tool_settings.use_transform_pivot_point_align
+        if is_pivot == True:
+            is_pivot == False
+            rotation_ops()
+            is_pivot = True
+        else:
+            rotation_ops()
         return {"FINISHED"}
 
 
