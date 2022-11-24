@@ -17,3 +17,5 @@ count = 4
 out_params = "count"
 # 方法1
 print(os.getcwd())
+
+print(eval(out_params))

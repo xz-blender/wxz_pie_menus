@@ -12,6 +12,46 @@ bl_info = {
     "category": "BAR",
 }
 
+class Bar_Add_New_Modifier(Operator):
+    bl_idname = "bar.add_new_modifier"
+    bl_label = "Add New Modifier"
+    bl_description = ""
+    bl_options = {"REGISTER","UNDO"}
+
+    name : bpy.props.StringProperty()
+    prop_name : bpy.props.StringProperty()
+    prop_value : bpy.props.BoolProperty()
+
+    @classmethod
+    def poll(cls, context):
+        return context.active_object is not None
+
+    def execute(self, context):
+        name = self.name
+        prop_name = self.prop_name
+        prop_value = self.prop_value
+        ob_modifiers = context.active_object.modifiers
+        active_modifier = ob_modifiers.active
+
+        if active_modifier is not None:
+            active_modifier_name = active_modifier.name
+
+            modifier_list = []
+            for md in ob_modifiers:
+                modifier_list.append(md.name)
+
+            add = bpy.context.active_object.modifiers.new(name = '',type=name)
+            add_name = add.name
+            setattr(add, prop_name, prop_value)
+            bpy.ops.object.modifier_move_to_index(
+                modifier=add_name, 
+                index=modifier_list.index(active_modifier_name)+1
+                )
+            modifier_list.clear()
+        else:
+            add = bpy.context.active_object.modifiers.new(name = '',type=name)
+            setattr(add, prop_name, prop_value)
+        return {"FINISHED"}
 
 class Bar_Quick_Decimate(Operator):
     bl_idname = "bar.quick_decimate"
@@ -65,7 +105,7 @@ def costom_modifier_bar(self, context):
     col = self.layout.column(align=True)
     col.alignment = 'CENTER'
     col.scale_y = 0.9
-    # ----------------------------------------------------------------------
+    # ---------------------------- 1 Level --------------------------------
     row = col.row(align=True)
     row.operator('object.modifier_add', icon='GEOMETRY_NODES',
                  text='节点').type = 'NODES'
@@ -74,10 +114,16 @@ def costom_modifier_bar(self, context):
 
     row.operator('object.modifier_add', icon='MOD_SHRINKWRAP',
                  text='缩裹').type = 'SHRINKWRAP'
-    # ----------------------------------------------------------------------
+
+    # ----------------------------- 2 Level --------------------------------
     row = col.row(align=True)
-    bevel = row.operator('object.modifier_add', icon='MOD_BEVEL', text='倒角')
-    bevel.type = 'BEVEL'
+    
+    bevel = row.operator(Bar_Add_New_Modifier.bl_idname,icon = 'MOD_BEVEL', text='倒角')
+    bevel.name = 'BEVEL'
+    bevel.prop_name = 'harden_normals'
+    bevel.prop_value = True
+    # bevel = row.operator('object.modifier_add', icon='MOD_BEVEL', text='倒角')
+    # bevel.type = 'BEVEL'
     # context.object.modifiers["Bevel"].harden_normals = True
     # bevel.segments = 2
     row.operator('object.modifier_add',
@@ -87,7 +133,8 @@ def costom_modifier_bar(self, context):
                      text='置换').type = 'DISPLACE'
     else:
         row.operator('pie.empty_operator', icon='ERROR', text='置换')
-    # ----------------------------------------------------------------------
+
+    # ------------------------------3 Level--------------------------------
     row = col.row(align=True)
     mirror = row.operator('object.modifier_add', icon='MOD_MIRROR', text='镜像')
     mirror.type = 'MIRROR'
@@ -102,7 +149,7 @@ def costom_modifier_bar(self, context):
     row.operator('object.modifier_add', icon='MOD_SIMPLEDEFORM',
                  text='形变').type = 'SIMPLE_DEFORM'
 
-    # ----------------------------------------------------------------------
+    # ------------------------------4 Level-------------------------------
     row = col.row(align=True)
     row.operator('object.modifier_add', icon='MOD_SOLIDIFY',
                  text='厚度').type = 'SOLIDIFY'
@@ -114,6 +161,7 @@ def costom_modifier_bar(self, context):
 
 classes = [
     Bar_Quick_Decimate,
+    Bar_Add_New_Modifier,
 ]
 
 

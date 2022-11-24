@@ -52,9 +52,9 @@ class VIEW3D_PIE_MT_Bottom_Z_Overlay(Menu):
                      icon='SHADING_TEXTURE').type = 'MATERIAL'
         # 8 - TOP
         if context.active_object and context.object.type == 'MESH':
-            pie.operator(
-                'wm.call_menu', text='自动光滑', icon='RADIOBUT_ON', emboss=True
-            ).name = VIEW_PIE_MT_AutoSmooth.bl_idname
+            auto_smooth = pie.operator('wm.call_panel', text='自动光滑', icon='RADIOBUT_ON', emboss=True)
+            auto_smooth.name = VIEW_PIE_MT_AutoSmooth.bl_idname
+            auto_smooth.keep_open = True
         else:
             pie.separator()
         # 7 - TOP - LEFT    &     9 - TOP - RIGHT
@@ -88,9 +88,11 @@ class VIEW3D_PIE_MT_Bottom_Z_Overlay(Menu):
         )
 
 
-class VIEW_PIE_MT_AutoSmooth(Menu):
-    bl_idname = "PIE_MT_Auto_Smooth"
+class VIEW_PIE_MT_AutoSmooth(Panel):
+    bl_idname = "pie.pie_pt_auto_smooth"
     bl_label = ""
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'WINDOW'
 
     def draw(self, context):
         layout = self.layout
