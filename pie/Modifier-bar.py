@@ -18,7 +18,7 @@ def add_set_modifier_prop(self,context,add_modifier):
     prop_int = self.prop_int
     prop_string = self.prop_string
     #转化自定义修改器参数
-    if prop_bool is not None:
+    if prop_bool != '':
         prop_bool_list = prop_bool.split(',')
         for prop in prop_bool_list:
             split = prop.split('=')
@@ -26,7 +26,7 @@ def add_set_modifier_prop(self,context,add_modifier):
             prop_value = split[1] == 'True'
             #设置自定义参数，布尔类型
             setattr(add_modifier, prop_name, prop_value)
-    if prop_float is not None:
+    if prop_float != '':
         prop_float_list = prop_float.split(',')
         for prop in prop_float_list:
             split = prop.split('=')
@@ -34,7 +34,7 @@ def add_set_modifier_prop(self,context,add_modifier):
             prop_value = float(split[1])
             #设置自定义参数，浮点类型
             setattr(add_modifier, prop_name, prop_value)
-    if prop_int is not None:
+    if prop_int != '':
         prop_int_list = prop_int.split(',')
         for prop in prop_int_list:
             split = prop.split('=')
@@ -42,7 +42,7 @@ def add_set_modifier_prop(self,context,add_modifier):
             prop_value = int(split[1])
             #设置自定义参数，浮点类型
             setattr(add_modifier, prop_name, prop_value)
-    if prop_string is not None:
+    if prop_string != '':
         prop_string_list = prop_string.split(',')
         for prop in prop_string_list:
             split = prop.split('=')
@@ -169,7 +169,7 @@ def costom_modifier_bar(self, context):
     bevel = row.operator(Bar_Add_New_Modifier.bl_idname,icon = 'MOD_BEVEL', text='倒角')
     bevel.name = 'BEVEL'
     bevel.prop_bool = 'harden_normals=True,use_clamp_overlap=False'
-    bevel.prop_int = 'segments=2'
+    # bevel.prop_int = 'segments=2'
     #阵列
     row.operator('object.modifier_add',
                  icon='MOD_ARRAY', text='阵列').type = 'ARRAY'
@@ -190,7 +190,7 @@ def costom_modifier_bar(self, context):
     if context.active_object.type == 'MESH':
         bool1 = row.operator(Bar_Add_New_Modifier.bl_idname,icon='MOD_BOOLEAN', text='布尔')
         bool1.name='BOOLEAN'
-        boll1.prop_string = 'solver=FAST'
+        bool1.prop_string = 'solver=FAST'
     else:
         row.operator('pie.empty_operator', icon='ERROR', text='布尔')
     #形变

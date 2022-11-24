@@ -19,3 +19,7 @@ out_params = "count"
 print(os.getcwd())
 
 print(eval(out_params))
+
+string = ''
+
+print(bool(string))
