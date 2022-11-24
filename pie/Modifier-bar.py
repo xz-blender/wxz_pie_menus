@@ -12,6 +12,46 @@ bl_info = {
     "category": "BAR",
 }
 
+def add_set_modifier_prop(self,context,add_modifier):
+    prop_bool = self.prop_bool
+    prop_float = self.prop_float
+    prop_int = self.prop_int
+    prop_string = self.prop_string
+    #转化自定义修改器参数
+    if prop_bool is not None:
+        prop_bool_list = prop_bool.split(',')
+        for prop in prop_bool_list:
+            split = prop.split('=')
+            prop_name = split[0]
+            prop_value = split[1] == 'True'
+            #设置自定义参数，布尔类型
+            setattr(add_modifier, prop_name, prop_value)
+    if prop_float is not None:
+        prop_float_list = prop_float.split(',')
+        for prop in prop_float_list:
+            split = prop.split('=')
+            prop_name = split[0]
+            prop_value = float(split[1])
+            #设置自定义参数，浮点类型
+            setattr(add_modifier, prop_name, prop_value)
+    if prop_int is not None:
+        prop_int_list = prop_int.split(',')
+        for prop in prop_int_list:
+            split = prop.split('=')
+            prop_name = split[0]
+            prop_value = int(split[1])
+            #设置自定义参数，浮点类型
+            setattr(add_modifier, prop_name, prop_value)
+    if prop_string is not None:
+        prop_string_list = prop_string.split(',')
+        for prop in prop_string_list:
+            split = prop.split('=')
+            prop_name = split[0]
+            prop_value = split[1]
+            #设置自定义参数,文本类型
+            setattr(add_modifier, prop_name, prop_value)
+
+
 class Bar_Add_New_Modifier(Operator):
     bl_idname = "bar.add_new_modifier"
     bl_label = "Add New Modifier"
@@ -19,30 +59,37 @@ class Bar_Add_New_Modifier(Operator):
     bl_options = {"REGISTER","UNDO"}
 
     name : bpy.props.StringProperty()
-    prop_name : bpy.props.StringProperty()
-    prop_value : bpy.props.BoolProperty()
+    prop_bool : bpy.props.StringProperty()
+    prop_float : bpy.props.StringProperty()
+    prop_int : bpy.props.StringProperty()
+    prop_string : bpy.props.StringProperty()
 
     @classmethod
     def poll(cls, context):
         return context.active_object is not None
 
+
+
     def execute(self, context):
         name = self.name
-        prop_name = self.prop_name
-        prop_value = self.prop_value
+
         ob_modifiers = context.active_object.modifiers
         active_modifier = ob_modifiers.active
-
+        
         if active_modifier is not None:
+            #获取当前激活修改器位置
             active_modifier_name = active_modifier.name
 
             modifier_list = []
             for md in ob_modifiers:
                 modifier_list.append(md.name)
-
+            #添加修改器
             add = bpy.context.active_object.modifiers.new(name = '',type=name)
             add_name = add.name
-            setattr(add, prop_name, prop_value)
+
+            add_set_modifier_prop(self,context,add)
+
+            #移动修改器到激活位置+1
             bpy.ops.object.modifier_move_to_index(
                 modifier=add_name, 
                 index=modifier_list.index(active_modifier_name)+1
@@ -50,7 +97,9 @@ class Bar_Add_New_Modifier(Operator):
             modifier_list.clear()
         else:
             add = bpy.context.active_object.modifiers.new(name = '',type=name)
-            setattr(add, prop_name, prop_value)
+
+            add_set_modifier_prop(self,context,add)
+
         return {"FINISHED"}
 
 class Bar_Quick_Decimate(Operator):
@@ -120,12 +169,9 @@ def costom_modifier_bar(self, context):
     
     bevel = row.operator(Bar_Add_New_Modifier.bl_idname,icon = 'MOD_BEVEL', text='倒角')
     bevel.name = 'BEVEL'
-    bevel.prop_name = 'harden_normals'
-    bevel.prop_value = True
-    # bevel = row.operator('object.modifier_add', icon='MOD_BEVEL', text='倒角')
-    # bevel.type = 'BEVEL'
-    # context.object.modifiers["Bevel"].harden_normals = True
-    # bevel.segments = 2
+    bevel.prop_bool = 'harden_normals=True,use_clamp_overlap=False'
+    bevel.prop_int = 'segments=2'
+
     row.operator('object.modifier_add',
                  icon='MOD_ARRAY', text='阵列').type = 'ARRAY'
     if context.active_object.type == 'MESH':
