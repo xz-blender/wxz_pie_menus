@@ -68,8 +68,6 @@ class Bar_Add_New_Modifier(Operator):
     def poll(cls, context):
         return context.active_object is not None
 
-
-
     def execute(self, context):
         name = self.name
 
@@ -124,6 +122,7 @@ class Bar_Quick_Decimate(Operator):
 
                 obj.modifiers.new(name=md_name, type='DECIMATE')
                 obj.modifiers[md_name].ratio = ratio
+                obj.modifiers[md_name].use_bollapse_triangulate = True
 
             self.report({"INFO"}, md_name)
             return {"FINISHED"}
@@ -166,14 +165,15 @@ def costom_modifier_bar(self, context):
 
     # ----------------------------- 2 Level --------------------------------
     row = col.row(align=True)
-    
+    #倒角
     bevel = row.operator(Bar_Add_New_Modifier.bl_idname,icon = 'MOD_BEVEL', text='倒角')
     bevel.name = 'BEVEL'
     bevel.prop_bool = 'harden_normals=True,use_clamp_overlap=False'
     bevel.prop_int = 'segments=2'
-
+    #阵列
     row.operator('object.modifier_add',
                  icon='MOD_ARRAY', text='阵列').type = 'ARRAY'
+    #置换
     if context.active_object.type == 'MESH':
         row.operator('object.modifier_add', icon='MOD_DISPLACE',
                      text='置换').type = 'DISPLACE'
@@ -182,25 +182,31 @@ def costom_modifier_bar(self, context):
 
     # ------------------------------3 Level--------------------------------
     row = col.row(align=True)
-    mirror = row.operator('object.modifier_add', icon='MOD_MIRROR', text='镜像')
-    mirror.type = 'MIRROR'
-    # mirror.use_clip = True
+    #镜像
+    mirror = row.operator(Bar_Add_New_Modifier.bl_idname, icon='MOD_MIRROR', text='镜像')
+    mirror.name = 'MIRROR'
+    mirror.prop_bool = 'use_clip=True'
+    #布尔
     if context.active_object.type == 'MESH':
-        row.operator('object.modifier_add',
-                     icon='MOD_BOOLEAN', text='布尔').type = 'BOOLEAN'
+        bool1 = row.operator(Bar_Add_New_Modifier.bl_idname,icon='MOD_BOOLEAN', text='布尔')
+        bool1.name='BOOLEAN'
+        boll1.prop_string = 'solver=FAST'
     else:
         row.operator('pie.empty_operator', icon='ERROR', text='布尔')
-
-    # boolean.solver = 'FAST'
-    row.operator('object.modifier_add', icon='MOD_SIMPLEDEFORM',
-                 text='形变').type = 'SIMPLE_DEFORM'
+    #形变
+    deform = row.operator(Bar_Add_New_Modifier.bl_idname, icon='MOD_SIMPLEDEFORM',text='形变')
+    deform.name = 'SIMPLE_DEFORM'
+    deform.prop_string = 'deform_method=BEND'
 
     # ------------------------------4 Level-------------------------------
     row = col.row(align=True)
-    row.operator('object.modifier_add', icon='MOD_SOLIDIFY',
-                 text='厚度').type = 'SOLIDIFY'
-    row.operator('object.modifier_add', icon='AUTOMERGE_OFF',
-                 text='焊接').type = 'WELD'
+    #厚度
+    solidfy = row.operator(Bar_Add_New_Modifier.bl_idname, icon='MOD_SOLIDIFY',text='厚度')
+    solidfy.name = 'SOLIDIFY'
+    solidfy.prop_bool = 'use_even_offset=True'
+    #焊接
+    row.operator('object.modifier_add', icon='AUTOMERGE_OFF',text='焊接').type = 'WELD'
+    #螺旋
     row.operator('object.modifier_add', icon='MOD_SCREW',
                  text='螺旋').type = 'SCREW'
 
