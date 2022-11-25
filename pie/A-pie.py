@@ -94,7 +94,16 @@ class PIE_MT_Bottom_A(Menu):
                 # 6 - RIGHT
                 pie.operator("mesh.select_more", text="扩展选择", icon="ADD")
                 # 2 - BOTTOM
-                pie.separator()
+                box = pie.split().box().column()
+                box.scale_y = 1.2
+                row = box.row(align=True)
+                row.operator("mesh.edges_select_sharp", text="选择锐边")
+                row.separator_spacer()
+                row.operator("mesh.edges_select_sharp", text="选择相连")
+                row = box.row(align=True)
+                row.operator("mesh.select_face_by_sides", text="边数选面")
+                row.separator_spacer()
+                row.operator("mesh.select_axis", text="按轴选点")
                 # 8 - TOP
                 pie.operator(
                     "mesh.select_all", text="反选", icon='EMPTY_SINGLE_ARROW'
