@@ -136,16 +136,28 @@ def menu(self, context):
     col = self.layout.column(align=True)
     col.alignment = 'CENTER'
     col.scale_y = 0.9
-
     row = col.row(align=True)
-    row.operator('object.modifier_add', icon='MOD_TRIANGULATE',
+
+    split = row.split(factor = 0.2)
+    
+    split_1 = split.operator('object.modifier_add', icon='MOD_TRIANGULATE',
                  text='三角化').type = 'TRIANGULATE'
+    #------
+    split_2 = split.row()
+    sub_row = split_2.row()
 
-    row.operator(Bar_Quick_Decimate.bl_idname, text="精简0.1").ratio = 0.1
+    sub_row.label(text='精简')
+    sub_row.operator(Bar_Quick_Decimate.bl_idname, text="0.1").ratio = 0.1
+    sub_row.separator_spacer
+    sub_row.operator(Bar_Quick_Decimate.bl_idname, text="0.3").ratio = 0.3
+    sub_row.separator_spacer
+    sub_row.operator(Bar_Quick_Decimate.bl_idname, text="0.5").ratio = 0.5
+    sub_row.separator_spacer
+    re_sub = sub_row.operator(Bar_Add_New_Modifier.bl_idname,icon = '', text='反细分')
+    re_sub.name ='DECIMATE'
+    re_sub.prop_string = 'decimate_type=UNSUBDIV'
+    re_sub.prop_int='iterations=2'
 
-    row.operator(Bar_Quick_Decimate.bl_idname, text="精简0.3").ratio = 0.3
-
-    row.operator(Bar_Quick_Decimate.bl_idname, text="精简0.5").ratio = 0.5
 
 
 # Modifier Bar
