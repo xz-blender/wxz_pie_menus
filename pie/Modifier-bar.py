@@ -122,7 +122,6 @@ class Bar_Quick_Decimate(Operator):
 
                 obj.modifiers.new(name=md_name, type='DECIMATE')
                 obj.modifiers[md_name].ratio = ratio
-                obj.modifiers[md_name].use_bollapse_triangulate = True
 
             self.report({"INFO"}, md_name)
             return {"FINISHED"}
@@ -144,16 +143,15 @@ def menu(self, context):
                  text='三角化').type = 'TRIANGULATE'
     #------
     split_2 = split.row()
-    sub_row = split_2.row()
 
-    sub_row.label(text='精简')
-    sub_row.operator(Bar_Quick_Decimate.bl_idname, text="0.1").ratio = 0.1
-    sub_row.separator_spacer
-    sub_row.operator(Bar_Quick_Decimate.bl_idname, text="0.3").ratio = 0.3
-    sub_row.separator_spacer
-    sub_row.operator(Bar_Quick_Decimate.bl_idname, text="0.5").ratio = 0.5
-    sub_row.separator_spacer
-    re_sub = sub_row.operator(Bar_Add_New_Modifier.bl_idname,icon = '', text='反细分')
+    split_2.operator(Bar_Quick_Decimate.bl_idname, text="0.1").ratio = 0.1
+    split_2.separator
+    split_2.operator(Bar_Quick_Decimate.bl_idname, text="0.3").ratio = 0.3
+    split_2.separator
+    split_2.operator(Bar_Quick_Decimate.bl_idname, text="0.5").ratio = 0.5
+    split_2.separator
+    split_2.operator(Bar_Quick_Decimate.bl_idname, text="1").ratio = 1.0
+    re_sub = split_2.operator(Bar_Add_New_Modifier.bl_idname,icon = '', text='反细分')
     re_sub.name ='DECIMATE'
     re_sub.prop_string = 'decimate_type=UNSUBDIV'
     re_sub.prop_int='iterations=2'
