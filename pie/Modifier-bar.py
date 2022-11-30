@@ -145,18 +145,9 @@ def menu(self, context):
     split_2 = split.row()
 
     split_2.operator(Bar_Quick_Decimate.bl_idname, text="0.1").ratio = 0.1
-    split_2.separator
     split_2.operator(Bar_Quick_Decimate.bl_idname, text="0.3").ratio = 0.3
-    split_2.separator
     split_2.operator(Bar_Quick_Decimate.bl_idname, text="0.5").ratio = 0.5
-    split_2.separator
     split_2.operator(Bar_Quick_Decimate.bl_idname, text="1").ratio = 1.0
-    re_sub = split_2.operator(Bar_Add_New_Modifier.bl_idname,icon = '', text='反细分')
-    re_sub.name ='DECIMATE'
-    re_sub.prop_string = 'decimate_type=UNSUBDIV'
-    re_sub.prop_int='iterations=2'
-
-
 
 # Modifier Bar
 def costom_modifier_bar(self, context):
