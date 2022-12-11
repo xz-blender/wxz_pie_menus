@@ -156,13 +156,14 @@ def costom_modifier_bar(self, context):
     col.scale_y = 0.9
     # ---------------------------- 1 Level --------------------------------
     row = col.row(align=True)
-    row.operator('object.modifier_add', icon='GEOMETRY_NODES',
-                 text='节点').type = 'NODES'
-    row.operator('object.modifier_add', icon='MOD_SUBSURF',
-                 text='细分').type = 'SUBSURF'
+    nodes = row.operator(Bar_Add_New_Modifier.bl_idname,icon = 'GEOMETRY_NODES', text='节点')
+    nodes.name = 'NODES'
 
-    row.operator('object.modifier_add', icon='MOD_SHRINKWRAP',
-                 text='缩裹').type = 'SHRINKWRAP'
+    subs = row.operator(Bar_Add_New_Modifier.bl_idname,icon = 'MOD_SUBSURF', text='细分')
+    subs.name = 'SUBSURF'
+
+    shirink = row.operator(Bar_Add_New_Modifier.bl_idname,icon = 'MOD_SHRINKWRAP', text='缩裹')
+    shirink.name = 'SHRINKWRAP'
 
     # ----------------------------- 2 Level --------------------------------
     row = col.row(align=True)
@@ -170,14 +171,14 @@ def costom_modifier_bar(self, context):
     bevel = row.operator(Bar_Add_New_Modifier.bl_idname,icon = 'MOD_BEVEL', text='倒角')
     bevel.name = 'BEVEL'
     bevel.prop_bool = 'harden_normals=True,use_clamp_overlap=False'
-    # bevel.prop_int = 'segments=2'
+    bevel.prop_int = 'segments=2'
     #阵列
-    row.operator('object.modifier_add',
-                 icon='MOD_ARRAY', text='阵列').type = 'ARRAY'
+    array = row.operator(Bar_Add_New_Modifier.bl_idname,icon = 'MOD_ARRAY', text='阵列')
+    array.name = 'ARRAY'
     #置换
     if context.active_object.type == 'MESH':
-        row.operator('object.modifier_add', icon='MOD_DISPLACE',
-                     text='置换').type = 'DISPLACE'
+        displace = row.operator(Bar_Add_New_Modifier.bl_idname,icon = 'MOD_DISPLACE', text='置换')
+        displace.name = 'DISPLACE'
     else:
         row.operator('pie.empty_operator', icon='ERROR', text='置换')
 
@@ -206,11 +207,11 @@ def costom_modifier_bar(self, context):
     solidfy.name = 'SOLIDIFY'
     solidfy.prop_bool = 'use_even_offset=True'
     #焊接
-    row.operator('object.modifier_add', icon='AUTOMERGE_OFF',text='焊接').type = 'WELD'
+    weld = row.operator(Bar_Add_New_Modifier.bl_idname, icon='AUTOMERGE_OFF',text='焊接')
+    weld.name = 'WELD'
     #螺旋
-    row.operator('object.modifier_add', icon='MOD_SCREW',
-                 text='螺旋').type = 'SCREW'
-
+    weld = row.operator(Bar_Add_New_Modifier.bl_idname, icon='MOD_SCREW',text='螺旋')
+    weld.name = 'SCREW'
 
 classes = [
     Bar_Quick_Decimate,
