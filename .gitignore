@@ -61,3 +61,4 @@ pie/__pycache__/W-pie.cpython-310.pyc
 pie/__pycache__/X-key.cpython-310.pyc
 pie/__pycache__/X-pie.cpython-310.pyc
 pie/__pycache__/Z-pie.cpython-310.pyc
+*.pyc
