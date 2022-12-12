@@ -26,7 +26,7 @@ def add_set_modifier_prop(self,context,add_modifier):
             prop_value = split[1] == 'True'
             #设置自定义参数，布尔类型
             setattr(add_modifier, prop_name, prop_value)
-    if prop_float != '':
+    elif prop_float != '':
         prop_float_list = prop_float.split(',')
         for prop in prop_float_list:
             split = prop.split('=')
@@ -34,7 +34,7 @@ def add_set_modifier_prop(self,context,add_modifier):
             prop_value = float(split[1])
             #设置自定义参数，浮点类型
             setattr(add_modifier, prop_name, prop_value)
-    if prop_int != '':
+    elif prop_int != '':
         prop_int_list = prop_int.split(',')
         for prop in prop_int_list:
             split = prop.split('=')
@@ -42,7 +42,7 @@ def add_set_modifier_prop(self,context,add_modifier):
             prop_value = int(split[1])
             #设置自定义参数，浮点类型
             setattr(add_modifier, prop_name, prop_value)
-    if prop_string != '':
+    elif prop_string != '':
         prop_string_list = prop_string.split(',')
         for prop in prop_string_list:
             split = prop.split('=')
@@ -50,6 +50,11 @@ def add_set_modifier_prop(self,context,add_modifier):
             prop_value = split[1]
             #设置自定义参数,文本类型
             setattr(add_modifier, prop_name, prop_value)
+def set_default_props(self):
+    self.prop_bool = ''
+    self.prop_float = ''
+    self.prop_int = ''
+    self.prop_string = ''
 
 
 class Bar_Add_New_Modifier(Operator):
@@ -86,6 +91,7 @@ class Bar_Add_New_Modifier(Operator):
             add_name = add.name
 
             add_set_modifier_prop(self,context,add)
+            set_default_props(self)
 
             #移动修改器到激活位置+1
             bpy.ops.object.modifier_move_to_index(
@@ -97,6 +103,7 @@ class Bar_Add_New_Modifier(Operator):
             add = bpy.context.active_object.modifiers.new(name = '',type=name)
 
             add_set_modifier_prop(self,context,add)
+            set_default_props(self)
 
         return {"FINISHED"}
 
@@ -190,9 +197,9 @@ def costom_modifier_bar(self, context):
     mirror.prop_bool = 'use_clip=True'
     #布尔
     if context.active_object.type == 'MESH':
-        bool1 = row.operator(Bar_Add_New_Modifier.bl_idname,icon='MOD_BOOLEAN', text='布尔')
-        bool1.name='BOOLEAN'
-        bool1.prop_string = 'solver=FAST'
+        bool_mod = row.operator(Bar_Add_New_Modifier.bl_idname,icon='MOD_BOOLEAN', text='布尔')
+        bool_mod.name='BOOLEAN'
+        bool_mod.prop_string = 'solver=FAST'
     else:
         row.operator('pie.empty_operator', icon='ERROR', text='布尔')
     #形变
