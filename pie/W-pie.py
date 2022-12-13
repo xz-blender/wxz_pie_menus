@@ -181,6 +181,8 @@ addon_keymaps = []
 
 
 def register_keymaps():
+    keyconfigs = bpy.context.window_manager.keyconfigs.default
+
     addon = bpy.context.window_manager.keyconfigs.addon
 
     km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
@@ -188,19 +190,25 @@ def register_keymaps():
     kmi.properties.name = "VIEW3D_PIE_MT_Bottom_W"
     addon_keymaps.append(km)
 
+    value_view_3d = keyconfigs.keymaps['3D View'].keymap_items['wm.tool_set_by_id'].value = 'CLICK'
+
     km = addon.keymaps.new(name='UV Editor')
     kmi = km.keymap_items.new("wm.call_menu_pie", 'W', 'CLICK_DRAG')
     kmi.properties.name = "VIEW3D_PIE_MT_Bottom_W"
     addon_keymaps.append(km)
 
+    value_uv_editor = keyconfigs.keymaps['UV Editor'].keymap_items['wm.tool_set_by_id'].value = 'CLICK'
 
 def unregister_keymaps():
+    keyconfigs = bpy.context.window_manager.keyconfigs.default
     wm = bpy.context.window_manager
     for km in addon_keymaps:
         for kmi in km.keymap_items:
             km.keymap_items.remove(kmi)
         # wm.keyconfigs.addon.keymaps.remove(km)
     addon_keymaps.clear()
+    value_view_3d = keyconfigs.keymaps['3D View'].keymap_items['wm.tool_set_by_id'].value = 'PRESS'
+    value_uv_editor = keyconfigs.keymaps['UV Editor'].keymap_items['wm.tool_set_by_id'].value = 'PRESS'
 
 
 def register():
