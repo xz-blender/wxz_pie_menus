@@ -190,19 +190,16 @@ def register_keymaps():
     kmi.properties.name = "VIEW3D_PIE_MT_Bottom_W"
     addon_keymaps.append(km)
 
-    change_keys = [
-        ('3D View','wm.tool_set_by_id','value','CLICK'),
-        ('UV Editor','wm.tool_set_by_id','value','CLICK'),
-    ]
-
-    stored = change_keys_value(change_keys)
-
     km = addon.keymaps.new(name='UV Editor')
     kmi = km.keymap_items.new("wm.call_menu_pie", 'W', 'CLICK_DRAG')
     kmi.properties.name = "VIEW3D_PIE_MT_Bottom_W"
     addon_keymaps.append(km)
 
-    value_uv_editor = keyconfigs.keymaps['UV Editor'].keymap_items['wm.tool_set_by_id'].value = 'CLICK'
+    change_keys = [
+        ('3D View','wm.tool_set_by_id','value','CLICK'),
+        ('UV Editor','wm.tool_set_by_id','value','CLICK'),
+    ]
+    stored = change_keys_value(change_keys)
 
 def unregister_keymaps():
     keyconfigs = bpy.context.window_manager.keyconfigs.default
