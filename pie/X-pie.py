@@ -1,6 +1,6 @@
 import bpy
 from bpy.types import Menu
-from .utils import set_pie_ridius
+from .utils import set_pie_ridius, change_keys_value, restore_keys_value
 
 submoduname = __name__.split('.')[-1]
 bl_info = {

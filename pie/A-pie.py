@@ -14,7 +14,7 @@ bl_info = {
 }
 
 
-class PIE_MT_Bottom_A(Menu):
+class PIE_MT_Bottom_A_Base(Menu):
     bl_label = submoduname
 
     def draw(self, context):
@@ -231,7 +231,7 @@ class PIE_MT_Bottom_A_Ctrl(Menu):
 
 
 classes = [
-    PIE_MT_Bottom_A,
+    PIE_MT_Bottom_A_Base,
     PIE_MT_Bottom_A_Ctrl,
     PIE_Image_usefaker,
 ]
@@ -245,7 +245,7 @@ def register_keymaps():
 
     km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
     kmi = km.keymap_items.new("wm.call_menu_pie", 'A', 'CLICK_DRAG')
-    kmi.properties.name = "PIE_MT_Bottom_A"
+    kmi.properties.name = "PIE_MT_Bottom_A_Base"
 
     kmi = km.keymap_items.new("wm.call_menu_pie", "A", "CLICK_DRAG", ctrl=True)
     kmi.properties.name = "PIE_MT_Bottom_A_Ctrl"
@@ -275,4 +275,4 @@ def unregister():
 
 # if __name__ == "__main__":
 #     register()
-#     bpy.ops.wm.call_menu_pie(name="PIE_MT_Bottom_A")
+#     bpy.ops.wm.call_menu_pie(name="PIE_MT_Bottom_A_Base")

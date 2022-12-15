@@ -73,12 +73,12 @@ def pie_check_rely_addon_op(pie, addon_name):  # addon name & path name
 def change_keys_value(keys_config):
     stored = []
     for attr in keys_config:
-        kyes_ob = bpy.context.window_manager.keyconfigs.default.keymaps[keys_config[0]].keymap_items[keys_config[1]]
-        stored.append(keys_config[0],keys_config[1],keys_config[2],getattr(keys_ob, keys_config[2]))
-        setattr(keys_ob ,keys_config[2], keys_config[3])
+        kyes_ob = bpy.context.window_manager.keyconfigs.default.keymaps[attr[0]].keymap_items[attr[1]]
+        stored.append(attr[0],attr[1],attr[2],getattr(keys_ob, attr[2]))
+        setattr(keys_ob ,attr[2], attr[3])
     return stored
 
 def restore_keys_value(keys_stored):
     for attr in keys_stored:
-        kyes_ob = bpy.context.window_manager.keyconfigs.default.keymaps[keys_stored[0]].keymap_items[keys_stored[1]]
-        setattr(keys_ob ,keys_stored[2], keys_stored[3])
+        kyes_ob = bpy.context.window_manager.keyconfigs.default.keymaps[attr[0]].keymap_items[attr[1]]
+        setattr(keys_ob ,attr[2], attr[3])
