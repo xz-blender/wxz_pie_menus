@@ -1,7 +1,7 @@
 import bpy
 from bpy.types import Menu, Operator
 from .utils import check_rely_addon, rely_addons, set_pie_ridius, pie_check_rely_addon_op
-
+from .utils import change_keys_value, restore_keys_value
 submoduname = __name__.split('.')[-1]
 bl_info = {
     "name": submoduname,
@@ -190,7 +190,12 @@ def register_keymaps():
     kmi.properties.name = "VIEW3D_PIE_MT_Bottom_W"
     addon_keymaps.append(km)
 
-    value_view_3d = keyconfigs.keymaps['3D View'].keymap_items['wm.tool_set_by_id'].value = 'CLICK'
+    change_keys = [
+        ('3D View','wm.tool_set_by_id','value','CLICK'),
+        ('UV Editor','wm.tool_set_by_id','value','CLICK'),
+    ]
+
+    stored = change_keys_value(change_keys)
 
     km = addon.keymaps.new(name='UV Editor')
     kmi = km.keymap_items.new("wm.call_menu_pie", 'W', 'CLICK_DRAG')
@@ -207,9 +212,8 @@ def unregister_keymaps():
             km.keymap_items.remove(kmi)
         # wm.keyconfigs.addon.keymaps.remove(km)
     addon_keymaps.clear()
-    value_view_3d = keyconfigs.keymaps['3D View'].keymap_items['wm.tool_set_by_id'].value = 'PRESS'
-    value_uv_editor = keyconfigs.keymaps['UV Editor'].keymap_items['wm.tool_set_by_id'].value = 'PRESS'
 
+    restore_keys_value(stored)
 
 def register():
     for cls in classes:

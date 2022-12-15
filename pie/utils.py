@@ -68,5 +68,17 @@ def pie_check_rely_addon_op(pie, addon_name):  # addon name & path name
         pie.operator('pie.empty_operator', text='未安装%s插件' % (addon_name))
         return False  # 未安装
 
-
 # bpy.context.window_manager.keyconfigs.default.keymaps['3D View'].keymap_items.get('view3d.select')
+
+def change_keys_value(keys_config):
+    stored = []
+    for attr in keys_config:
+        kyes_ob = bpy.context.window_manager.keyconfigs.default.keymaps[keys_config[0]].keymap_items[keys_config[1]]
+        stored.append(keys_config[0],keys_config[1],keys_config[2],getattr(keys_ob, keys_config[2]))
+        setattr(keys_ob ,keys_config[2], keys_config[3])
+    return stored
+
+def restore_keys_value(keys_stored):
+    for attr in keys_stored:
+        kyes_ob = bpy.context.window_manager.keyconfigs.default.keymaps[keys_stored[0]].keymap_items[keys_stored[1]]
+        setattr(keys_ob ,keys_stored[2], keys_stored[3])
