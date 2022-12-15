@@ -53,7 +53,7 @@ class VIEW3D_PIE_MT_Bottom_Z_Overlay(Menu):
         # 8 - TOP
         if context.active_object and context.object.type == 'MESH':
             auto_smooth = pie.operator('wm.call_panel', text='自动光滑', icon='RADIOBUT_ON', emboss=True)
-            auto_smooth.name = VIEW_PIE_MT_AutoSmooth.bl_idname
+            auto_smooth.name = VIEW_PIE_PT_AutoSmooth.bl_idname
             auto_smooth.keep_open = True
         else:
             pie.separator()
@@ -88,7 +88,7 @@ class VIEW3D_PIE_MT_Bottom_Z_Overlay(Menu):
         )
 
 
-class VIEW_PIE_MT_AutoSmooth(Panel):
+class VIEW_PIE_PT_AutoSmooth(Panel):
     bl_idname = "pie.pie_pt_auto_smooth"
     bl_label = ""
     bl_space_type = 'VIEW_3D'
@@ -141,7 +141,7 @@ class VIEW3D_PIE_MT_Bottom_Z_Shift(Menu):
 
 classes = [
     VIEW3D_PIE_MT_Bottom_Z_Overlay,
-    VIEW_PIE_MT_AutoSmooth,
+    VIEW_PIE_PT_AutoSmooth,
     VIEW3D_PIE_MT_Bottom_Z_Shift,
 ]
 

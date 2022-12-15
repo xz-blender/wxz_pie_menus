@@ -1,5 +1,6 @@
 import bpy
 from bpy.types import Operator
+from .utils import change_keys_value, restore_keys_value
 
 submoduname = __name__.split('.')[-1]
 bl_info = {
@@ -61,7 +62,6 @@ def unregister_keymaps():
             km.keymap_items.remove(kmi)
         # wm.keyconfigs.addon.keymaps.remove(km)
     addon_keymaps.clear()
-
 
 def register():
     for cls in classes:

@@ -195,11 +195,12 @@ def register_keymaps():
     kmi.properties.name = "VIEW3D_PIE_MT_Bottom_W"
     addon_keymaps.append(km)
 
-    change_keys = [
-        ('3D View','wm.tool_set_by_id','value','CLICK'),
-        ('UV Editor','wm.tool_set_by_id','value','CLICK'),
-    ]
-    stored = change_keys_value(change_keys)
+    # change_keys = [
+    #     ['3D View','wm.tool_set_by_id','value','CLICK'],
+    #     ['UV Editor','wm.tool_set_by_id','value','CLICK'],
+    # ]
+    # global stored
+    # stored = change_keys_value(change_keys)
 
 def unregister_keymaps():
     keyconfigs = bpy.context.window_manager.keyconfigs.default
@@ -210,7 +211,7 @@ def unregister_keymaps():
         # wm.keyconfigs.addon.keymaps.remove(km)
     addon_keymaps.clear()
 
-    restore_keys_value(stored)
+    # restore_keys_value(stored)
 
 def register():
     for cls in classes:
