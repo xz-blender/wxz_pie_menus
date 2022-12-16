@@ -89,7 +89,7 @@ class VIEW3D_PIE_MT_Bottom_Z_Overlay(Menu):
 
 
 class VIEW_PIE_PT_AutoSmooth(Panel):
-    bl_idname = "pie.pie_pt_auto_smooth"
+    bl_idname = __qualname__
     bl_label = ""
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'WINDOW'

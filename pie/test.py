@@ -11,15 +11,20 @@
 #     print(i, o)
 
 
-import os
+# import os
 
-count = 4
-out_params = "count"
-# 方法1
-print(os.getcwd())
+# count = 4
+# out_params = "count"
+# # 方法1
+# print(os.getcwd())
 
-print(eval(out_params))
+# print(eval(out_params))
 
-string = ''
+# string = ''
 
-print(bool(string))
+# print(bool(string))
+
+
+a = {'a':'a',"b":True}
+
+print(len(a))

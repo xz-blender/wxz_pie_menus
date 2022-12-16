@@ -1,7 +1,6 @@
 import bpy
 from bpy.types import Menu, Operator
 from .utils import check_rely_addon, rely_addons, set_pie_ridius, pie_check_rely_addon_op
-from .utils import change_keys_value, restore_keys_value
 submoduname = __name__.split('.')[-1]
 bl_info = {
     "name": submoduname,
@@ -177,12 +176,10 @@ classes = [
     Proportional_Edit_Falloff,
 ]
 
+
 addon_keymaps = []
 
-
 def register_keymaps():
-    keyconfigs = bpy.context.window_manager.keyconfigs.default
-
     addon = bpy.context.window_manager.keyconfigs.addon
 
     km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
@@ -190,7 +187,7 @@ def register_keymaps():
     kmi.properties.name = "VIEW3D_PIE_MT_Bottom_W"
     addon_keymaps.append(km)
 
-    km = addon.keymaps.new(name='UV Editor')
+    km = addon.keymaps.new(name='UV Editor', space_type="IMAGE_EDITOR")
     kmi = km.keymap_items.new("wm.call_menu_pie", 'W', 'CLICK_DRAG')
     kmi.properties.name = "VIEW3D_PIE_MT_Bottom_W"
     addon_keymaps.append(km)
@@ -201,6 +198,7 @@ def register_keymaps():
     # ]
     # global stored
     # stored = change_keys_value(change_keys)
+    
 
 def unregister_keymaps():
     keyconfigs = bpy.context.window_manager.keyconfigs.default
@@ -208,8 +206,9 @@ def unregister_keymaps():
     for km in addon_keymaps:
         for kmi in km.keymap_items:
             km.keymap_items.remove(kmi)
-        # wm.keyconfigs.addon.keymaps.remove(km)
+        wm.keyconfigs.addon.keymaps.remove(km)
     addon_keymaps.clear()
+
 
     # restore_keys_value(stored)
 
@@ -223,7 +222,6 @@ def unregister():
     unregister_keymaps()
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
-
 
 # if __name__ == "__main__":
 #     register()

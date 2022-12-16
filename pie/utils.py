@@ -1,7 +1,6 @@
 import bpy
 import addon_utils
 
-
 rely_addons = [
     ('Edit Mesh Tools', 'mesh_tools'),  # 0
     ('Straight Skeleton', 'straight_skeleton'),  # 1
@@ -68,23 +67,46 @@ def pie_check_rely_addon_op(pie, addon_name):  # addon name & path name
         pie.operator('pie.empty_operator', text='未安装%s插件' % (addon_name))
         return False  # 未安装
 
-# bpy.context.window_manager.keyconfigs.default.keymaps['3D View'].keymap_items.get('view3d.select')
 
-def change_keys_value(keys_config):
-    stored = []
-    key_list = []
-    for attr in keys_config:
-        keys_ob = bpy.context.window_manager.keyconfigs.default.keymaps[attr[0]].keymap_items
-        for keys in keys_ob:
-            if keys.idname == attr[1]:
-                key_list.append([attr[1],attr[2],attr(3)])
-        for key in key_list:
-            now_ob = bpy.context.window_manager.keyconfigs.default.keymaps[attr[0]].keymap_items[key[0]]
-            stored.append([attr[0],key[0],key[1],getattr(now_ob,key[1])])
-            setattr(now_ob ,key[1], key[2])
-    return stored
+def change_default_keymap(keys_class,keys_idname,value_list,prop_list = None):
+    keys_config = bpy.context.window_manager.keyconfigs.default.keymaps[keys_class].keymap_items
 
-def restore_keys_value(keys_stored):
-    for attr in keys_stored:
-        keys_ob = bpy.context.window_manager.keyconfigs.default.keymaps[attr[0]].keymap_items[attr[1]]
-        setattr(keys_ob ,attr[2], attr[3])
+    keys_list = []
+
+    stored_value_list = {}
+    stored_prop_list = {}
+
+    for keys_name, keys_bpy in keys_config.items():
+        if keys_name == keys_idname:
+            keys_list.append(keys_bpy)
+    for keys in keys_list:
+        for value in value_list:
+            # ----stored----
+            stored_value_list[keys] = [value[0],getattr(keys, value[0])]
+            setattr(keys, value[0], value[1]) 
+        if prop_list and prop_list is not None:  
+            for prop in prop_list:
+                # ----stored----
+                stored_prop_list[keys] = [prop[0],getattr(keys.properties, prop[0])]
+                try:
+                    setattr(keys.properties,prop[0],prop[1])
+                except:
+                    None
+    keys_list.clear()
+    return (stored_value_list, stored_prop_list)
+
+
+def restored_default_keymap(stored_keys):
+    stored_value_list = stored_keys[0]
+    stored_prop_list = stored_keys[1]
+
+    for value_bpy , value in stored_value_list.items():
+        setattr(value_bpy, value[0], value[1])
+    if len(stored_prop_list) is not None:
+        for prop_bpy , prop in stored_prop_list.items():
+            try:
+                setattr(prop_bpy.properties, prop[0], prop[1])
+            except:
+                print('error:',prop_bpy, prop[0], prop[1])
+    stored_value_list.clear()
+    stored_prop_list.clear()

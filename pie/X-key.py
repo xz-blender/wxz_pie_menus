@@ -1,6 +1,6 @@
 import bpy
 from bpy.types import Operator
-from .utils import change_keys_value, restore_keys_value
+from .utils import change_default_keymap, restored_default_keymap
 
 submoduname = __name__.split('.')[-1]
 bl_info = {
@@ -43,17 +43,13 @@ classes = [
     Mesh_Delete_By_mode,
 ]
 
-
 addon_keymaps = []
-
 
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
-
     km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
     kmi = km.keymap_items.new(Mesh_Delete_By_mode.bl_idname, 'X', 'CLICK')
     addon_keymaps.append(km)
-
 
 def unregister_keymaps():
     wm = bpy.context.window_manager
@@ -63,14 +59,32 @@ def unregister_keymaps():
         # wm.keyconfigs.addon.keymaps.remove(km)
     addon_keymaps.clear()
 
+
 def register():
     for cls in classes:
         bpy.utils.register_class(cls)
     register_keymaps()
 
+    global key1
+    key1 = change_default_keymap(
+        'Object Mode','object.delete',
+        [('value','CLICK')],
+        [('use_global',False),('confirm',False)]
+        )
+
+    global key2
+    key2 = change_default_keymap(
+        'Mesh','wm.call_menu',
+        [('value','CLICK'),('active',False)]
+        )
+
 
 def unregister():
     unregister_keymaps()
+
+    restored_default_keymap(key1)
+    restored_default_keymap(key2)
+
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
 
