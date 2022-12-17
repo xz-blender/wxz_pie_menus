@@ -112,7 +112,7 @@ def unregister_submodule(mod):
 
 
 def get_dirpath():
-    return os.path.join(os.path.dirname(os.path.realpath(__file__)), "keymap_presets")
+    return os.path.join(os.path.dirname(os.path.realpath(__file__)), "Default_Keymaps")
 
 
 class Empty_Operator(Operator):
@@ -199,16 +199,16 @@ class WXZ_PIE_Preferences(AddonPreferences):
         sub = box.row(align=True)
         sub.label(text='自定义快捷键表:', icon='EVENT_SPACEKEY')
 
-        sub.operator(Apply_My_Keymap.bl_idname, text='应用--"预设表"').path = os.path.join(
+        sub.operator(Apply_My_Keymap.bl_idname, text='应用--默认快捷键表').path = os.path.join(
             get_dirpath(), 'My_Keymaps.py'
         )
-        sub.operator(Apply_My_Keymap.bl_idname, text='应用--"备份表"').path = os.path.join(
+        sub.operator(Apply_My_Keymap.bl_idname, text='应用--备份快捷键表').path = os.path.join(
             get_dirpath(), 'Stored_Keymaps.py'
         )
 
         row = row.box()
         row.alignment = "RIGHT"
-        row.operator(Restore_My_Keymap.bl_idname, text="备份当前快捷键表").path = os.path.join(
+        row.operator(Restore_My_Keymap.bl_idname, text="备份--当前快捷键表").path = os.path.join(
             get_dirpath(), 'Stored_Keymaps.py'
         )
 
@@ -244,7 +244,7 @@ class WXZ_PIE_Preferences(AddonPreferences):
         box = column.box()
         row = box.row()
         row.alignment = "CENTER"
-        row.label(text='已安装并启用Pie插件 :')
+        row.label(text='已启用以下Pie插件 :')
 
         for mod in sub_modules:
             mod_name = mod.__name__.split('.')[-1]
@@ -308,7 +308,10 @@ classes = (
 
 def register():
     for cls in classes:
+        # try:
         bpy.utils.register_class(cls)
+        # except(ValueError):
+            # print(cls,"Subclass already registered!")
 
     prefs = get_addon_preferences()
     for mod in sub_modules:
@@ -328,5 +331,5 @@ def unregister():
         bpy.utils.unregister_class(cls)
 
 
-# if __name__ == "__main__":
-#     register()
+if __name__ == "__main__":
+    register()

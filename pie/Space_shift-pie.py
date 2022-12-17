@@ -1,6 +1,6 @@
 import bpy
 from bpy.types import Operator, Menu
-from .utils import set_pie_ridius
+from .utils import set_pie_ridius, change_default_keymap, restored_default_keymap
 
 submoduname = __name__.split('.')[-1]
 bl_info = {

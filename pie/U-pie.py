@@ -1,7 +1,7 @@
 import bpy
 import os
 from bpy.types import Menu, Panel, Operator
-from .utils import set_pie_ridius
+from .utils import set_pie_ridius, change_default_keymap, restored_default_keymap
 
 submoduname = __name__.split('.')[-1]
 bl_info = {
@@ -79,6 +79,12 @@ def register():
     for cls in classes:
         bpy.utils.register_class(cls)
     register_keymaps()
+
+    global key1 # Object X delete
+    key1 = change_default_keymap(
+        'UV Editor','wm.call_menu',
+        [('value','CLICK')]
+        )
 
 
 def unregister():

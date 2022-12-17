@@ -1,6 +1,7 @@
 import bpy
 import os
 from bpy.types import Menu, Panel, Operator
+from .utils import change_default_keymap, restored_default_keymap
 
 # from . import check_rely_addon, rely_addons
 
@@ -67,8 +68,16 @@ def register():
         bpy.utils.register_class(cls)
     register_keymaps()
 
+    global key1
+    key1 = change_default_keymap(
+        'Window','wm.toolbar_fallback_pie',
+        [('active',False)]
+        )
+
 
 def unregister():
+    restored_default_keymap(key1)
+
     unregister_keymaps()
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)

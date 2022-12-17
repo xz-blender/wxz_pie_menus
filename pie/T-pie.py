@@ -2,7 +2,7 @@ import bpy
 import os
 from bpy.types import Menu, Panel, Operator
 from .utils import check_rely_addon, rely_addons, set_pie_ridius, pie_op_check
-
+from .utils import change_default_keymap, restored_default_keymap
 submoduname = __name__.split('.')[-1]
 bl_info = {
     "name": submoduname,
@@ -64,7 +64,7 @@ addon_keymaps = []
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
     space_name = [
-        'Object mode',
+        'Object Mode',
         'Mesh',
         'Curve',
     ]
@@ -89,8 +89,22 @@ def register():
         bpy.utils.register_class(cls)
     register_keymaps()
 
+    global key1 # 3D T key
+    key1 = change_default_keymap(
+        '3D View Generic','wm.context_toggle',
+        [('value','CLICK')]
+        )
+    global key2 # Node T key
+    key2 = change_default_keymap(
+        'Node Generic','wm.context_toggle',
+        [('value','CLICK')]
+        )
+
 
 def unregister():
+    restored_default_keymap(key1)
+    restored_default_keymap(key2)
+
     unregister_keymaps()
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)

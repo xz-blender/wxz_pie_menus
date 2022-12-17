@@ -96,7 +96,7 @@ class Bar_Add_New_Modifier(Operator):
             #移动修改器到激活位置+1
             bpy.ops.object.modifier_move_to_index(
                 modifier=add_name, 
-                index=modifier_list.index(active_modifier_name)
+                index=modifier_list.index(active_modifier_name)+1
                 )
             modifier_list.clear()
         else:

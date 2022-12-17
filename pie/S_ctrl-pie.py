@@ -2,6 +2,7 @@ import bpy
 import os
 from bpy.types import Menu, Panel, Operator
 from .utils import check_rely_addon, rely_addons, set_pie_ridius, pie_check_rely_addon_op
+from .utils import change_default_keymap, restored_default_keymap
 
 submoduname = __name__.split('.')[-1]
 bl_info = {
@@ -211,14 +212,27 @@ def unregister_keymaps():
         # wm.keyconfigs.addon.keymaps.remove(km)
     addon_keymaps.clear()
 
-
 def register():
     for cls in classes:
         bpy.utils.register_class(cls)
     register_keymaps()
 
+    global key1 # ctrl s
+    key1 = change_default_keymap(
+        'Window','wm.save_mainfile',
+        [('value','CLICK')]
+        )
+    global key2 # ctrl shift s
+    key2 = change_default_keymap(
+        'Window','wm.save_mainfile',
+        [('value','CLICK')]
+        )
+
 
 def unregister():
+    restored_default_keymap(key1)
+    restored_default_keymap(key2)
+
     unregister_keymaps()
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)

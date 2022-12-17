@@ -1,7 +1,7 @@
 from bpy.types import Menu, Panel, Operator
 import bpy
 import os
-from .utils import set_pie_ridius
+from .utils import set_pie_ridius, change_default_keymap, restored_default_keymap
 
 submoduname = __name__.split('.')[-1]
 bl_info = {
@@ -89,7 +89,7 @@ class VIEW3D_PIE_MT_Bottom_Z_Overlay(Menu):
 
 
 class VIEW_PIE_PT_AutoSmooth(Panel):
-    bl_idname = "pie.pie_pt_auto_smooth"
+    bl_idname = __qualname__
     bl_label = ""
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'WINDOW'
@@ -178,8 +178,20 @@ def register():
         bpy.utils.register_class(cls)
     register_keymaps()
 
+    global key1
+    key1 = change_default_keymap(
+        '3D View','wm.call_menu_pie',
+        [('value','CLICK')],
+        )
+    global key2
+    key2 = change_default_keymap(
+        '3D View','view3d.toggle_shading',
+        [('active',False)],
+        )
 
 def unregister():
+    restored_default_keymap(key1)
+
     unregister_keymaps()
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)

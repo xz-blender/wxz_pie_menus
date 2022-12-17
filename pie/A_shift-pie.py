@@ -39,7 +39,7 @@ class PIE_MT_Bottom_A_shift(Menu):
         pie.operator('mesh.primitive_vert_add', text='网格点', icon='DOT')
         # 9 - TOP - RIGHT
         pie.operator('curve.simple', text='矢量点',
-                     icon='DOT').Simple_Type = 'Point'
+                     icon='DOT')
         # 1 - BOTTOM - LEFT
         pie.operator('mesh.primitive_cylinder_add',
                      text='柱', icon='MESH_CYLINDER')
@@ -78,7 +78,10 @@ def unregister_keymaps():
 
 def register():
     for cls in classes:
-        bpy.utils.register_class(cls)
+        try:
+            bpy.utils.register_class(cls)
+        except:
+            print(__name__,'->',cls,' error')
     register_keymaps()
 
 

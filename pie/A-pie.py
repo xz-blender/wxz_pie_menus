@@ -263,7 +263,10 @@ def unregister_keymaps():
 
 def register():
     for cls in classes:
-        bpy.utils.register_class(cls)
+        try:
+            bpy.utils.register_class(cls)
+        except:
+            None
     register_keymaps()
 
 
