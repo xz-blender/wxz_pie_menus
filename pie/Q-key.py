@@ -171,6 +171,17 @@ def register_keymaps():
     addon_keymaps.append(km)
 
 
+def change_q_keymap(active):
+    keys = bpy.context.window_manager.keyconfigs.default.keymaps['Window'].keymap_items.items()
+    q_list = []
+    for name,data in keys:
+        if name == 'wm.call_menu':
+            q_list.append(data)
+
+    for key in q_list:
+        if key.name == 'Quick Favorites':
+            key.active = active
+
 def unregister_keymaps():
     wm = bpy.context.window_manager
     for km in addon_keymaps:
@@ -185,8 +196,12 @@ def register():
         bpy.utils.register_class(cls)
     register_keymaps()
 
+    change_q_keymap(False)
+    
 
 def unregister():
+    change_q_keymap(True)
+
     unregister_keymaps()
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)

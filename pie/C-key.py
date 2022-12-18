@@ -69,10 +69,7 @@ def unregister_keymaps():
 
 def register():
     for cls in classes:
-        try:
-            bpy.utils.register_class(cls)
-        except():
-            print(None)
+        bpy.utils.register_class(cls)
     register_keymaps()
 
 

@@ -3,7 +3,7 @@ from bpy.types import Menu, Operator
 import math
 from math import pi
 from mathutils import Quaternion
-from .utils import set_pie_ridius
+from .utils import set_pie_ridius, change_default_keymap, restored_default_keymap
 
 submoduname = __name__.split('.')[-1]
 bl_info = {
