@@ -59,6 +59,16 @@ def unregister_keymaps():
         # wm.keyconfigs.addon.keymaps.remove(km)
     addon_keymaps.clear()
 
+def toggle_keymap(active):
+    keys = bpy.context.window_manager.keyconfigs.default.keymaps['Mesh'].keymap_items.items()
+    q_list = []
+    for name,data in keys:
+        if name == 'wm.call_menu':
+            q_list.append(data)
+    for key in q_list:
+        if key.name == 'Delete':
+            key.active = active
+    q_list.clear()
 
 def register():
     for cls in classes:
@@ -72,11 +82,12 @@ def register():
         [('use_global',False),('confirm',False)]
         )
 
-    global key2 # Mesh X delete
-    key2 = change_default_keymap(
-        'Mesh','wm.call_menu',
-        [('value','CLICK'),('active',False)]
-        )
+    toggle_keymap(False)
+    # global key2 # Mesh X delete
+    # key2 = change_default_keymap(
+    #     'Mesh','wm.call_menu',
+    #     [('value','CLICK'),('active',False)]
+    #     )
 
     global key3 # Curve X delete
     key3 = change_default_keymap(
@@ -104,7 +115,8 @@ def register():
         
 def unregister():
     restored_default_keymap(key1)
-    restored_default_keymap(key2)
+    # restored_default_keymap(key2)
+    toggle_keymap(True)
     restored_default_keymap(key3)
     restored_default_keymap(key4)
     restored_default_keymap(key5)

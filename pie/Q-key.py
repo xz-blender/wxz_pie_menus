@@ -1,6 +1,7 @@
 import os
 import bpy
 from bpy.types import Menu, Operator
+from .utils import change_default_keymap, restored_default_keymap
 
 submoduname = __name__.split('.')[-1]
 bl_info = {
@@ -33,7 +34,7 @@ class PIE_MT_Bottom_Q_favorite(Menu):
         split = layout.split()
         col = split.column()
         # col.label(text="自定工具集")
-        col.operator('text.run_script', text='运行脚本', icon='PLAY')
+        col.operator('render.opengl', text='视图渲染', icon='RESTRICT_VIEW_OFF')
 
         # col.separator()
 
@@ -177,10 +178,10 @@ def change_q_keymap(active):
     for name,data in keys:
         if name == 'wm.call_menu':
             q_list.append(data)
-
     for key in q_list:
         if key.name == 'Quick Favorites':
             key.active = active
+    q_list.clear()
 
 def unregister_keymaps():
     wm = bpy.context.window_manager
@@ -198,9 +199,17 @@ def register():
 
     change_q_keymap(False)
     
+    global key1
+    key1 = change_default_keymap(
+        'Object Non-modal','object.transfer_mode',
+        [('active',False)]
+        )
+    
 
 def unregister():
     change_q_keymap(True)
+
+    restored_default_keymap(key1)
 
     unregister_keymaps()
     for cls in reversed(classes):

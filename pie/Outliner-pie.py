@@ -1,7 +1,7 @@
 import bpy
 import os
 from bpy.types import Menu, Panel, Operator
-from .utils import set_pie_ridius
+from .utils import set_pie_ridius, change_default_keymap, restored_default_keymap
 
 submoduname = __name__.split('.')[-1]
 bl_info = {
@@ -44,9 +44,26 @@ class OUTLINER_PIE_MT_Bottom_A(Menu):
         # 3 - BOTTOM - RIGHT
         pie.separator()
 
+class Collection_Enable_Toggle(Operator):
+    bl_idname = "pie.toggle_collection"
+    bl_label = submoduname
+    bl_options = {"REGISTER",'"UNDO"'}
+
+    @classmethod
+    def poll(cls, context):
+        return True
+
+    def execute(self, context):
+        active = context.view_layer.active_layer_collection.exclude
+        if active:
+            bpy.ops.outliner.collection_exclude_set()
+        else:
+            bpy.ops.outliner.collection_exclude_clear()
+        return {"FINISHED"}
 
 classes = [
     OUTLINER_PIE_MT_Bottom_A,
+    Collection_Enable_Toggle,
 ]
 
 addon_keymaps = []
@@ -58,6 +75,7 @@ def register_keymaps():
     kmi = km.keymap_items.new("wm.call_menu_pie", 'A', 'CLICK_DRAG')
     kmi.properties.name = "OUTLINER_PIE_MT_Bottom_A"
     kmi = km.keymap_items.new("outliner.show_active", 'F', 'CLICK')
+    kmi = km.keymap_items.new("pie.toggle_collection", 'E', 'CLICK')
     addon_keymaps.append(km)
 
 
@@ -75,8 +93,28 @@ def register():
         bpy.utils.register_class(cls)
     register_keymaps()
 
+    global key1
+    key1 = change_default_keymap(
+        'Outliner','outliner.select_all',
+        [('value','CLICK')],
+        )
+    global key2
+    key2 = change_default_keymap(
+        'Outliner','outliner.collection_exclude_set',
+        [('value','CLICK')],
+        )
+    global key2
+    key2 = change_default_keymap(
+        'Outliner','collection_exclude_clear',
+        [('value','CLICK')],
+        )
+
 
 def unregister():
+    restored_default_keymap(key1)
+    restored_default_keymap(key2)
+    restored_default_keymap(key3)
+
     unregister_keymaps()
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
