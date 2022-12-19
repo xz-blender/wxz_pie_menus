@@ -181,7 +181,6 @@ def register_keymaps():
 
     km = addon.keymaps.new(name='Mesh',space_type ='VIEW_3D')
     kmi = km.keymap_items.new("mesh.vert_connect_path", 'F', 'CLICK',shift=True)
-    kmi.properties.name = "VIEW3D_PIE_MT_Bottom_F"
     addon_keymaps.append(km)
 
 
