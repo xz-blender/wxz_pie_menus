@@ -317,6 +317,7 @@ def register():
             # print(cls,"Subclass already registered!")
 
     prefs = get_addon_preferences()
+    
     for mod in sub_modules:
         if not hasattr(mod, '__addon_enabled__'):
             mod.__addon_enabled__ = False
@@ -324,6 +325,8 @@ def register():
         if getattr(prefs, 'use_' + name):
             register_submodule(mod)
 
+    if bpy.context.window_manager.keyconfigs.active.name == 'Blender':
+        bpy.ops.wm.keyconfig_preset_add(name="wxz_keyconfig")
 
 def unregister():
     for mod in sub_modules:
