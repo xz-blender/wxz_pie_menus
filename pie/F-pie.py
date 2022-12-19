@@ -2,7 +2,7 @@ import bpy
 import os
 import sys
 from bpy.types import Menu, Operator
-from .utils import check_rely_addon, rely_addons, set_pie_ridius
+from .utils import check_rely_addon, rely_addons, set_pie_ridius, change_default_keymap, restored_default_keymap
 
 submoduname = __name__.split('.')[-1]
 bl_info = {
@@ -203,9 +203,21 @@ def register():
         'Mesh','mesh.edge_face_add',
         [('value','CLICK')],
         )
+    global key2
+    key2 = change_default_keymap(
+        'Curve','curve.make_segment',
+        [('value','CLICK')],
+        )
+    global key3
+    key3 = change_default_keymap(
+        'Node Editor','node.link_make',
+        [('value','CLICK')],
+        )
 
 def unregister():
-    mesh.edge_face_add
+    restored_default_keymap(key1)
+    restored_default_keymap(key2)
+    restored_default_keymap(key3)
 
     unregister_keymaps()
     for cls in reversed(classes):

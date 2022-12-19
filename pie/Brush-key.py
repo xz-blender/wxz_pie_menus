@@ -65,6 +65,16 @@ classes = [
 
 addon_keymaps = []
 
+def toggle_keymap(value):
+    keys = bpy.context.window_manager.keyconfigs.default.keymaps['Sculpt'].keymap_items
+    a_list = []
+    for name,data in keys.items():
+        if name == 'wm.call_menu_pie':
+            a_list.append(data)
+    for key in a_list:
+        if key.name == 'Mask Edit':
+            key.value = value
+    a_list.clear()
 
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
@@ -89,8 +99,11 @@ def register():
         bpy.utils.register_class(cls)
     register_keymaps()
 
+    toggle_keymap('CLICK_DRAG')
 
 def unregister():
+    toggle_keymap('PRESS')
+
     unregister_keymaps()
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)

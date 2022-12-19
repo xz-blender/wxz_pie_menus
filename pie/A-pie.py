@@ -239,7 +239,6 @@ classes = [
 
 addon_keymaps = []
 
-
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
 
@@ -260,6 +259,25 @@ def unregister_keymaps():
         # wm.keyconfigs.addon.keymaps.remove(km)
     addon_keymaps.clear()
 
+change_dir = [
+    'Pose','Object Mode','Curve','Mesh',
+    'Armature','Metaball','Lattice','Particle',
+    'Sculpt Curves','UV Editor','Graph Editor','Node Editor',
+    'NLA Editor','Sequencer','Clip Editor'
+    ] 
+
+def change_a_keys(change_dir,value):
+    for space_type in change_dir:
+        keymap_list =[]
+        items = bpy.context.window_manager.keyconfigs.default.keymaps[space_type].keymap_items.items()
+        for name, datas in items:
+            data_name = space_type.lower()+'.select_all'
+            data_name.replace(' ','_').replace('_editor','')
+            if name == data_name and datas.value != 'DOUBLE_CLICK':
+                keymap_list.append(datas)
+        for data in keymap_list:
+            setattr(data, 'value', value)
+        keymap_list.clear()
 
 def register():
     for cls in classes:
@@ -269,8 +287,11 @@ def register():
             None
     register_keymaps()
 
+    change_a_keys(change_dir,'CLICK')
 
 def unregister():
+    change_a_keys(change_dir,'PRESS')
+
     unregister_keymaps()
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)

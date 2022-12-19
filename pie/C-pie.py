@@ -1,7 +1,7 @@
 import bpy
 import os
 from bpy.types import Menu, Operator
-from .utils import set_pie_ridius
+from .utils import set_pie_ridius,change_default_keymap, restored_default_keymap
 
 submoduname = __name__.split('.')[-1]
 bl_info = {
@@ -66,6 +66,7 @@ def register_keymaps():
     km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
     kmi = km.keymap_items.new("wm.call_menu_pie", 'C', 'CLICK_DRAG')
     kmi.properties.name = "VIEW3D_PIE_MT_Bottom_C"
+    addon_keymaps.append(km)
 
 
 def unregister_keymaps():
@@ -82,8 +83,15 @@ def register():
         bpy.utils.register_class(cls)
     register_keymaps()
 
+    global key1
+    key1 = change_default_keymap(
+        'Outliner','outliner.collection_new',
+        [('value','CLICK')],
+        )
 
 def unregister():
+    restored_default_keymap(key1)
+
     unregister_keymaps()
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)

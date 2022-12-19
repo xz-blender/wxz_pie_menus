@@ -91,7 +91,10 @@ def create_property(cls, name, prop):
 
 
 def register_submodule(mod):
-    mod.register()
+    try:
+        mod.register()
+    except(ValueError):
+        pass
     mod.__addon_enabled__ = True
 
 

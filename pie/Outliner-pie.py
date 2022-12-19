@@ -47,7 +47,7 @@ class OUTLINER_PIE_MT_Bottom_A(Menu):
 class Collection_Enable_Toggle(Operator):
     bl_idname = "pie.toggle_collection"
     bl_label = submoduname
-    bl_options = {"REGISTER",'"UNDO"'}
+    bl_options = {"REGISTER",'UNDO'}
 
     @classmethod
     def poll(cls, context):
@@ -101,12 +101,12 @@ def register():
     global key2
     key2 = change_default_keymap(
         'Outliner','outliner.collection_exclude_set',
-        [('value','CLICK')],
+        [('active',False)],
         )
-    global key2
-    key2 = change_default_keymap(
+    global key3
+    key3 = change_default_keymap(
         'Outliner','collection_exclude_clear',
-        [('value','CLICK')],
+        [('active',False)],
         )
 
 
