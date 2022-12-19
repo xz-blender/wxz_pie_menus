@@ -326,7 +326,7 @@ def register():
             register_submodule(mod)
 
     if bpy.context.window_manager.keyconfigs.active.name == 'Blender':
-        bpy.ops.wm.keyconfig_preset_add(name="wxz_keyconfig")
+        bpy.ops.pie.apply_my_keymap(path = os.path.join(get_dirpath(), 'Stored_Keymaps.py'))
 
 def unregister():
     for mod in sub_modules:
