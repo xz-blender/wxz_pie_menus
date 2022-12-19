@@ -115,7 +115,7 @@ def unregister_submodule(mod):
 
 
 def get_dirpath():
-    return os.path.join(os.path.dirname(os.path.realpath(__file__)), "Default_Keymaps")
+    return os.path.join(os.path.dirname(os.path.realpath(__file__)), "keymap_presets")
 
 
 class Empty_Operator(Operator):
@@ -130,7 +130,7 @@ class Apply_My_Keymap(Operator):
     bl_idname = "pie.apply_my_keymap"
     bl_label = "应用快捷键表"
     bl_description = ""
-    bl_options = {"REGISTER"}
+    bl_options = {"REGISTER","UNDO"}
 
     path: bpy.props.StringProperty(name="apply_name")
 
@@ -139,13 +139,14 @@ class Apply_My_Keymap(Operator):
         return True
 
     def execute(self, context):
+        print(self.path)
         if os.path.exists(self.path):
             bpy.ops.preferences.keyconfig_import(filepath=self.path)
             self.report({'INFO'}, '已应用快捷键配置:"%s"' %
                         (os.path.basename(self.path)))
             return {"FINISHED"}
         else:
-            self.report({'INFO'}, '未应用快捷键表:"%s"' % (slef.path))
+            self.report({'INFO'}, '未应用快捷键表:"%s"' % (self.path))
             return {"FINISHED"}
 
 
@@ -153,7 +154,7 @@ class Restore_My_Keymap(Operator):
     bl_idname = "pie.restore_my_keymap"
     bl_label = "备份当前快捷键表"
     bl_description = ""
-    bl_options = {"REGISTER"}
+    bl_options = {"REGISTER","UNDO"}
 
     path: bpy.props.StringProperty(name="backup_name")
 
@@ -163,15 +164,16 @@ class Restore_My_Keymap(Operator):
 
     def invoke(self, context, event):
         if os.path.exists(self.path) == True:
-            return context.window_manager.invoke_props_dialog(self)
-
+            return context.window_manager.invoke_confirm(self, event)
+        return self.execute(context)
+        
     def draw(self, context):
         layout = self.layout
         layout.label(text="已有备份!是否覆盖？", icon="QUESTION")
 
     def execute(self, context):
         bpy.ops.preferences.keyconfig_export(filepath=self.path)
-        bpy.ops.wm.save_userpref()
+        bpy.ops.wm.save_userpref('INVOKE_DEFAULT')
         self.report({'INFO'}, '已备份配置到: "%s"' % (self.path))
         return {"FINISHED"}
 
@@ -325,8 +327,9 @@ def register():
         if getattr(prefs, 'use_' + name):
             register_submodule(mod)
 
-    if bpy.context.window_manager.keyconfigs.active.name == 'Blender':
-        bpy.ops.pie.apply_my_keymap(path = os.path.join(get_dirpath(), 'Stored_Keymaps.py'))
+    # if bpy.context.window_manager.keyconfigs.active.name == 'Blender':
+    #     bpy.ops.preferences.keyconfig_import(filepath=os.path.join(get_dirpath(), 'Stored_Keymaps.py'))
+    #     # bpy.ops.pie.apply_my_keymap(path = os.path.join(get_dirpath(), 'Stored_Keymaps.py'))
 
 def unregister():
     for mod in sub_modules:

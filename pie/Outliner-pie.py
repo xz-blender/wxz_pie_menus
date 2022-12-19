@@ -56,9 +56,9 @@ class Collection_Enable_Toggle(Operator):
     def execute(self, context):
         active = context.view_layer.active_layer_collection.exclude
         if active:
-            bpy.ops.outliner.collection_exclude_set()
+            bpy.ops.outliner.collection_exclude_set('INVOKE_DEFAULT')
         else:
-            bpy.ops.outliner.collection_exclude_clear()
+            bpy.ops.outliner.collection_exclude_clear('INVOKE_DEFAULT')
         return {"FINISHED"}
 
 classes = [

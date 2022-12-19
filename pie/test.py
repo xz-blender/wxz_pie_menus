@@ -25,6 +25,8 @@
 # print(bool(string))
 
 
-a = {'a':'a',"b":True}
+# a = {'a':'a',"b":True}
 
-print(len(a))
+c = 'cc'
+test = 'AAA bbb' +c
+print(test)

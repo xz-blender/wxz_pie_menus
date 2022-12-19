@@ -1,7 +1,7 @@
 import os
 import bpy
 from bpy.types import Menu, Operator
-from .utils import check_rely_addon, rely_addons, set_pie_ridius
+from .utils import check_rely_addon, rely_addons, set_pie_ridius, change_default_keymap, restored_default_keymap
 
 submoduname = __name__.split('.')[-1]
 bl_info = {
@@ -30,133 +30,148 @@ class PIE_MT_Bottom_A(Menu):
         # addon1:"DPFR Distribute Objects"
         addon1 = check_rely_addon(rely_addons[4][0], rely_addons[4][1])
 
-        if ob_mode == 'OBJECT':
+        if context.area.ui_type == 'VIEW_3D':
+            if ob_mode == 'OBJECT':
+                # 4 - LEFT
+                if addon1 == '2':
+                    pie.operator('pie.empty_operator',
+                                text='未找到"Distribute Objects"插件!')
+                elif addon1 == '0':
+                    pie.operator('pie.empty_operator',
+                                text='启用"Distribute Objects"插件!')
+                elif addon1 == '1':
+                    pie.operator('object.distribute',
+                                text='排列物体', icon='MOD_ARRAY')
+                # 6 - RIGHT
+                pie.separator()
+                # 2 - BOTTOM
+                pie.separator()
+                # 8 - TOP
+                pie.operator("object.select_all", text="反选",
+                            icon='DECORATE_OVERRIDE').action = 'INVERT'
+                # 7 - TOP - LEFT
+                if ob_type == 'EMPTY':
+                    if context.active_object.data.type == 'IMAGE':
+                        pie.operator(
+                            PIE_Image_usefaker.bl_idname,
+                            text='设置参考伪用户',
+                            icon='FAKE_USER_ON',
+                        )
+                    else:
+                        pie.separator()
+                else:
+                    pie.separator()
+                # 9 - TOP - RIGHT
+                col = pie.split().box().column(align=True)
+                col.scale_x = 1.3
+                col.scale_y = 1.2
+                row = col.row()
+                row.operator("asset.mark", text="标记资产", icon="ASSET_MANAGER")
+                row = col.row()
+                row.operator('asset.clear', text='抹除资产',
+                            icon='REMOVE').set_fake_user = False
+
+                # 1 - BOTTOM - LEFT
+                pie.separator()
+                # 3 - BOTTOM - RIGHT
+                if ob_type in [
+                    'ARMATURE',
+                    'LIGHT',
+                    'EMPTY',
+                    'LATTICE',
+                    'GPENCIL',
+                    'LIGHT_PROBE',
+                    'EMPTY',
+                ]:
+                    pie.separator()
+                else:
+                    pie.menu("VIEW3D_MT_object_convert", text="转换物体")
+
+            # 编辑模式
+            if context.object.mode == 'EDIT':
+                if ob_type == 'MESH':
+                    # 4 - LEFT
+                    pie.operator("mesh.select_less", text="缩减选择", icon='REMOVE')
+                    # 6 - RIGHT
+                    pie.operator("mesh.select_more", text="扩展选择", icon="ADD")
+                    # 2 - BOTTOM
+                    box = pie.split().box().column()
+                    box.scale_y = 1.2
+                    row = box.row(align=True)
+                    row.operator("mesh.edges_select_sharp", text="选择锐边")
+                    row.separator()
+                    row.operator("mesh.edges_select_sharp", text="选择相连")
+                    row = box.row(align=True)
+                    row.operator("mesh.select_face_by_sides", text="边数选面")
+                    row.separator()
+                    row.operator("mesh.select_axis", text="按轴选点")
+                    # 8 - TOP
+                    pie.operator(
+                        "mesh.select_all", text="反选", icon='EMPTY_SINGLE_ARROW'
+                    ).action = 'INVERT'
+                    # 7 - TOP - LEFT
+                    pie.operator("mesh.select_prev_item",
+                                text="上一个元素", icon="REMOVE")
+                    # 9 - TOP - RIGHT
+                    pie.operator("mesh.select_next_item", text="下一个元素", icon="ADD")
+                    # 1 - BOTTOM - LEFT
+                    box = pie.split().box().column()
+                    box.scale_y = 1.2
+                    row = box.row(align=True)
+                    row.operator("mesh.loop_multi_select", text="循环边").ring = False
+                    row.operator("mesh.loop_multi_select", text="并排边").ring = True
+                    row = box.row(align=True)
+                    row.operator("mesh.loop_to_region", text="选循环内侧")
+                    row.operator("mesh.region_to_loop", text="选区域轮廓")
+                    # 3 - BOTTOM - RIGHT
+                    box = pie.split().box().column()
+                    box.scale_y = 1.2
+                    row = box.row(align=True)
+                    row.operator("mesh.faces_select_linked_flat", text="相连平展面")
+                    row.operator("mesh.select_nth", text="间隔式弃选")
+                    row = box.row(align=True)
+                    row.operator("mesh.select_loose", text="选松散元素")
+                    row.operator("mesh.select_non_manifold", text="选择非流形")
+
+                if ob_type in ['CURVE', 'SURFACE']:
+                    # 4 - LEFT
+                    pie.operator("curve.select_less", text="缩减选择", icon='REMOVE')
+                    # 6 - RIGHT
+                    pie.operator("curve.select_more", text="扩展选择", icon='ADD')
+                    # 2 - BOTTOM
+                    pie.separator()
+                    # 8 - TOP
+                    pie.operator(
+                        "curve.select_all", text="反选", icon='EMPTY_SINGLE_ARROW'
+                    ).action = 'INVERT'
+                    # 7 - TOP - LEFT
+                    pie.operator("curve.de_select_last",
+                                text="选首端点", icon='FORCE_CURVE')
+                    # 9 - TOP - RIGHT
+                    pie.operator("curve.de_select_last",
+                                text="选尾端点", icon='FORCE_CURVE')
+                    # 1 - BOTTOM - LEFT
+                    pie.separator()
+                    # 3 - BOTTOM - RIGHT
+                    pie.menu(
+                        "VIEW3D_MT_object_convert",
+                        text="转换物体",
+                        icon='MOD_DATA_TRANSFER',
+                    )
+
+        elif context.area.ui_type == 'UV':
             # 4 - LEFT
-            if addon1 == '2':
-                pie.operator('pie.empty_operator',
-                             text='未找到"Distribute Objects"插件!')
-            elif addon1 == '0':
-                pie.operator('pie.empty_operator',
-                             text='启用"Distribute Objects"插件!')
-            elif addon1 == '1':
-                pie.operator('object.distribute',
-                             text='排列物体', icon='MOD_ARRAY')
+            pie.operator("uv.select_less", text="缩减选择", icon='REMOVE')
             # 6 - RIGHT
-            pie.separator()
+            pie.operator("uv.select_more", text="扩展选择", icon="ADD")
             # 2 - BOTTOM
             pie.separator()
             # 8 - TOP
-            pie.operator("object.select_all", text="反选",
-                         icon='DECORATE_OVERRIDE').action = 'INVERT'
+            pie.operator("uv.select_all", text="反选", icon='EMPTY_SINGLE_ARROW').action = 'INVERT'
             # 7 - TOP - LEFT
-            if ob_type == 'EMPTY':
-                if context.active_object.data.type == 'IMAGE':
-                    pie.operator(
-                        PIE_Image_usefaker.bl_idname,
-                        text='设置参考伪用户',
-                        icon='FAKE_USER_ON',
-                    )
-                else:
-                    pie.separator()
-            else:
-                pie.separator()
             # 9 - TOP - RIGHT
-            col = pie.split().box().column(align=True)
-            col.scale_x = 1.3
-            col.scale_y = 1.2
-            row = col.row()
-            row.operator("asset.mark", text="标记资产", icon="ASSET_MANAGER")
-            row = col.row()
-            row.operator('asset.clear', text='抹除资产',
-                         icon='REMOVE').set_fake_user = False
-
             # 1 - BOTTOM - LEFT
-            pie.separator()
             # 3 - BOTTOM - RIGHT
-            if ob_type in [
-                'ARMATURE',
-                'LIGHT',
-                'EMPTY',
-                'LATTICE',
-                'GPENCIL',
-                'LIGHT_PROBE',
-                'EMPTY',
-            ]:
-                pie.separator()
-            else:
-                pie.menu("VIEW3D_MT_object_convert", text="转换物体")
-
-        # 编辑模式
-        if context.object.mode == 'EDIT':
-            if ob_type == 'MESH':
-                # 4 - LEFT
-                pie.operator("mesh.select_less", text="缩减选择", icon='REMOVE')
-                # 6 - RIGHT
-                pie.operator("mesh.select_more", text="扩展选择", icon="ADD")
-                # 2 - BOTTOM
-                box = pie.split().box().column()
-                box.scale_y = 1.2
-                row = box.row(align=True)
-                row.operator("mesh.edges_select_sharp", text="选择锐边")
-                row.separator_spacer()
-                row.operator("mesh.edges_select_sharp", text="选择相连")
-                row = box.row(align=True)
-                row.operator("mesh.select_face_by_sides", text="边数选面")
-                row.separator_spacer()
-                row.operator("mesh.select_axis", text="按轴选点")
-                # 8 - TOP
-                pie.operator(
-                    "mesh.select_all", text="反选", icon='EMPTY_SINGLE_ARROW'
-                ).action = 'INVERT'
-                # 7 - TOP - LEFT
-                pie.operator("mesh.select_prev_item",
-                             text="上一个元素", icon="REMOVE")
-                # 9 - TOP - RIGHT
-                pie.operator("mesh.select_next_item", text="下一个元素", icon="ADD")
-                # 1 - BOTTOM - LEFT
-                box = pie.split().box().column()
-                box.scale_y = 1.2
-                row = box.row(align=True)
-                row.operator("mesh.loop_multi_select", text="循环边").ring = False
-                row.operator("mesh.loop_multi_select", text="并排边").ring = True
-                row = box.row(align=True)
-                row.operator("mesh.loop_to_region", text="选循环内侧")
-                row.operator("mesh.region_to_loop", text="选区域轮廓")
-                # 3 - BOTTOM - RIGHT
-                box = pie.split().box().column()
-                box.scale_y = 1.2
-                row = box.row(align=True)
-                row.operator("mesh.faces_select_linked_flat", text="相连平展面")
-                row.operator("mesh.select_nth", text="间隔式弃选")
-                row = box.row(align=True)
-                row.operator("mesh.select_loose", text="选松散元素")
-                row.operator("mesh.select_non_manifold", text="选择非流形")
-
-            if ob_type in ['CURVE', 'SURFACE']:
-                # 4 - LEFT
-                pie.operator("curve.select_less", text="缩减选择", icon='REMOVE')
-                # 6 - RIGHT
-                pie.operator("curve.select_more", text="扩展选择", icon='ADD')
-                # 2 - BOTTOM
-                pie.separator()
-                # 8 - TOP
-                pie.operator(
-                    "curve.select_all", text="反选", icon='EMPTY_SINGLE_ARROW'
-                ).action = 'INVERT'
-                # 7 - TOP - LEFT
-                pie.operator("curve.de_select_last",
-                             text="选首端点", icon='FORCE_CURVE')
-                # 9 - TOP - RIGHT
-                pie.operator("curve.de_select_last",
-                             text="选尾端点", icon='FORCE_CURVE')
-                # 1 - BOTTOM - LEFT
-                pie.separator()
-                # 3 - BOTTOM - RIGHT
-                pie.menu(
-                    "VIEW3D_MT_object_convert",
-                    text="转换物体",
-                    icon='MOD_DATA_TRANSFER',
-                )
 
 
 class PIE_Image_usefaker(Operator):
@@ -239,16 +254,34 @@ classes = [
 
 addon_keymaps = []
 
+def toggle_keymap(value):
+    keys = bpy.context.window_manager.keyconfigs.default.keymaps['3D View'].keymap_items
+    a_list = []
+    for name,data in keys.items():
+        if name == 'transform.skin_resize':
+            a_list.append(data)
+    for key in a_list:
+        if key.name == 'Skin Resize':
+            key.value = value
+    a_list.clear()
+
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
 
     km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
     kmi = km.keymap_items.new("wm.call_menu_pie", 'A', 'CLICK_DRAG')
     kmi.properties.name = "PIE_MT_Bottom_A"
+    addon_keymaps.append(km)
 
     kmi = km.keymap_items.new("wm.call_menu_pie", "A", "CLICK_DRAG", ctrl=True)
     kmi.properties.name = "PIE_MT_Bottom_A_Ctrl"
     addon_keymaps.append(km)
+    
+    km = addon.keymaps.new(name="UV Editor")
+    kmi = km.keymap_items.new("wm.call_menu_pie", 'A', 'CLICK_DRAG')
+    kmi.properties.name = "PIE_MT_Bottom_A"
+    addon_keymaps.append(km)
+
 
 
 def unregister_keymaps():
@@ -260,25 +293,24 @@ def unregister_keymaps():
     addon_keymaps.clear()
 
 change_dir = [
-    'Pose','Object Mode','Curve','Mesh',
+    'UV Editor','Pose','Object Mode','Curve','Mesh',
     'Armature','Metaball','Lattice','Particle',
-    'Sculpt Curves','UV Editor','Graph Editor','Node Editor',
+    'Sculpt Curves','Graph Editor','Node Editor',
     'NLA Editor','Sequencer','Clip Editor'
     ] 
 
 def change_a_keys(change_dir,value):
     for space_type in change_dir:
         keymap_list =[]
-        items = bpy.context.window_manager.keyconfigs.default.keymaps[space_type].keymap_items.items()
-        for name, datas in items:
-            data_name = space_type.lower()+'.select_all'
-            data_name.replace(' ','_').replace('_editor','')
+        items = bpy.context.window_manager.keyconfigs['Blender'].keymaps[space_type].keymap_items
+        data_name = space_type.lower().replace(' ','_').replace('_editor','').replace('_mode','')+'.select_all'
+        for name, datas in items.items():
             if name == data_name and datas.value != 'DOUBLE_CLICK':
                 keymap_list.append(datas)
         for data in keymap_list:
             setattr(data, 'value', value)
         keymap_list.clear()
-
+# ---------------------------------------------------------------------
 def register():
     for cls in classes:
         try:
@@ -289,7 +321,19 @@ def register():
 
     change_a_keys(change_dir,'CLICK')
 
+    global key1
+    key1 = change_default_keymap(
+        'Object Mode','wm.call_menu',
+        [('value','CLICK')],
+        )
+
+    toggle_keymap('CLICK')
+
 def unregister():
+    restored_default_keymap(key1)
+
+    toggle_keymap('PRESS')
+
     change_a_keys(change_dir,'PRESS')
 
     unregister_keymaps()
