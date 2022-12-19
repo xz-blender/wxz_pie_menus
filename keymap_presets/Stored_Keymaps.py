@@ -1315,7 +1315,7 @@ keyconfig_data = \
     "active":False,
       },
      ),
-    ("mesh.smart_fill_popup", {"type": 'F', "value": 'PRESS'}, None),
+    ("mesh.smart_fill_popup", {"type": 'F', "value": 'CLICK'}, None),
     ("mesh.snap_utilities_line",
      {"type": 'K', "value": 'PRESS'},
      {"properties":
