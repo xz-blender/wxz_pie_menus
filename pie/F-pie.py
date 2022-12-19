@@ -226,4 +226,3 @@ def unregister():
 
 if __name__ == "__main__":
     register()
-    bpy.ops.wm.call_menu_pie(name="VIEW3D_PIE_MT_Bottom_F")
