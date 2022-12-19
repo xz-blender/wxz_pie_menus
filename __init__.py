@@ -205,7 +205,7 @@ class WXZ_PIE_Preferences(AddonPreferences):
         sub.label(text='自定义快捷键表:', icon='EVENT_SPACEKEY')
 
         sub.operator(Apply_My_Keymap.bl_idname, text='应用--默认快捷键表').path = os.path.join(
-            get_dirpath(), 'My_Keymaps.py'
+            get_dirpath(), 'Default_Keymaps.py'
         )
         sub.operator(Apply_My_Keymap.bl_idname, text='应用--备份快捷键表').path = os.path.join(
             get_dirpath(), 'Stored_Keymaps.py'
