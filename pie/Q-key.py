@@ -34,12 +34,25 @@ class PIE_MT_Bottom_Q_favorite(Menu):
         split = layout.split()
         col = split.column()
         # col.label(text="自定工具集")
-        col.operator('render.opengl', text='视图渲染', icon='RESTRICT_VIEW_OFF')
+        col.operator('pie.q_render_viewport')
 
         # col.separator()
 
         # col.label(text="工具集二")
         # col.operator("view3d.view_axis", text="2").type = 'FRONT'
+
+class Render_Viewport_OpenGL(Operator):
+    bl_idname = "pie.q_render_viewport"
+    bl_label = submoduname
+    bl_options = {"REGISTER", "UNDO"}
+
+    @classmethod
+    def poll(cls, context):
+        return True
+
+    def execute(self, context):
+        bpy.ops.render.opengl('INVOKE_DEFAULT')
+        return {"CANCELLED"}
 
 
 class PIE_Q_key(Operator):
