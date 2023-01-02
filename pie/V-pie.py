@@ -105,38 +105,7 @@ def register():
         bpy.utils.register_class(cls)
     register_keymaps()
 
-    global key0 # 曲线控制柄
-    key0 = change_default_keymap(
-        'Curve','curve.handle_type_set',
-        [('active',False)]
-        )
-
-    global key1 # 断离
-    key1 = change_default_keymap(
-        'Mesh','mesh.rip_move',
-        [('value','CLICK')]
-        )
-
-    global key2 # mesh_vertices_menu
-    key2 = change_default_keymap(
-        'Mesh','wm.call_menu',
-        [('value','CLICK')]
-        )
-
-    global key3 # 滑移
-    key3 = change_default_keymap(
-        'Mesh','transform.vert_slide',
-        [('value','CLICK')]
-        )
-
-
 def unregister():
-    restored_default_keymap(key0)
-    restored_default_keymap(key1)
-    restored_default_keymap(key2)
-    restored_default_keymap(key3)
-
-
     unregister_keymaps()
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)

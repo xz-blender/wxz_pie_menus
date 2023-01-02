@@ -77,20 +77,12 @@ def unregister_keymaps():
         # wm.keyconfigs.addon.keymaps.remove(km)
     addon_keymaps.clear()
 
-
 def register():
     for cls in classes:
         bpy.utils.register_class(cls)
     register_keymaps()
 
-    global key1
-    key1 = change_default_keymap(
-        'Outliner','outliner.collection_new',
-        [('value','CLICK')],
-        )
-
 def unregister():
-    restored_default_keymap(key1)
 
     unregister_keymaps()
     for cls in reversed(classes):

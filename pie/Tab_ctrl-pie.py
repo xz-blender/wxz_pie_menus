@@ -179,28 +179,7 @@ def register():
         bpy.utils.register_class(cls)
     register_keymaps()
 
-    global key0
-    key0 = change_default_keymap(
-        'Object Non-modal','object.mode_set',
-        [('value','CLICK')]
-        )
-    global key1 
-    key1 = change_default_keymap(
-        'Object Non-modal','view3d.object_mode_pie_or_toggle',
-        [('value','CLICK_DRAG'),('type','TAB'),('ctrl',False)]
-        )
-    # global key2
-    # key2 = change_default_keymap(
-    #     'Node Editor','wm.call_menu',
-    #     [('value','CLICK')]
-    #     )
-
-
 def unregister():
-    restored_default_keymap(key0)
-    restored_default_keymap(key1)
-    # restored_default_keymap(key2)
-
     unregister_keymaps()
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)

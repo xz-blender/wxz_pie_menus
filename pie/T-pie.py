@@ -89,22 +89,7 @@ def register():
         bpy.utils.register_class(cls)
     register_keymaps()
 
-    global key1 # 3D T key
-    key1 = change_default_keymap(
-        '3D View Generic','wm.context_toggle',
-        [('value','CLICK')]
-        )
-    # global key2 # Node T key
-    # key2 = change_default_keymap(
-    #     'Node Generic','wm.context_toggle',
-    #     [('value','CLICK')]
-    #     )
-
-
 def unregister():
-    restored_default_keymap(key1)
-    # restored_default_keymap(key2)
-
     unregister_keymaps()
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)

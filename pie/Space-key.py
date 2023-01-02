@@ -125,28 +125,7 @@ def register():
         bpy.utils.register_class(cls)
     register_keymaps()
 
-    global key1 # window 3D space key
-    key1 = change_default_keymap(
-        'Window','wm.toolbar',
-        [('active',False)]
-        )
-    global key2 # frame space key
-    key2 = change_default_keymap(
-        'Frames','screen.animation_play',
-        [('active',False)]
-        )
-    global key3 # search menu
-    key3 = change_default_keymap(
-        'Window','wm.search_menu',
-        [('type','SPACE'),('value','DOUBLE_CLICK')]
-        )
-
-
-
 def unregister():
-    restored_default_keymap(key1)
-    restored_default_keymap(key2)
-    restored_default_keymap(key3)
 
     unregister_keymaps()
     for cls in reversed(classes):

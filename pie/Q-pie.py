@@ -190,16 +190,7 @@ def register():
         bpy.utils.register_class(cls)
     register_keymaps()
 
-    global key1
-    key1 = change_default_keymap(
-        'Window','wm.call_menu',
-        [('value','CLICK')],
-        )
-
-
 def unregister():
-    restored_default_keymap(key1)
-    
     unregister_keymaps()
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)

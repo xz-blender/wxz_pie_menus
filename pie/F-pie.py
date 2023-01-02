@@ -198,27 +198,7 @@ def register():
         bpy.utils.register_class(cls)
     register_keymaps()
 
-    global key1
-    key1 = change_default_keymap(
-        'Mesh','mesh.edge_face_add',
-        [('value','CLICK')],
-        )
-    global key2
-    key2 = change_default_keymap(
-        'Curve','curve.make_segment',
-        [('value','CLICK')],
-        )
-    # global key3
-    # key3 = change_default_keymap(
-    #     'Node Editor','node.link_make',
-    #     [('value','CLICK')],
-    #     )
-
 def unregister():
-    restored_default_keymap(key1)
-    restored_default_keymap(key2)
-    # restored_default_keymap(key3)
-
     unregister_keymaps()
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)

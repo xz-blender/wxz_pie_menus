@@ -79,14 +79,7 @@ def register():
     for cls in classes:
         bpy.utils.register_class(cls)
     register_keymaps()
-
-    # global key1 # Object X delete
-    # key1 = change_default_keymap(
-    #     'UV Editor','wm.call_menu',
-    #     [('value','CLICK')]
-    #     )
-
-
+    
 def unregister():
     unregister_keymaps()
     for cls in reversed(classes):

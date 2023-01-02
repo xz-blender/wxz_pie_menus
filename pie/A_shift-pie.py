@@ -47,14 +47,12 @@ class PIE_MT_Bottom_A_shift(Menu):
         pie.operator('mesh.primitive_uv_sphere_add',
                      text='球', icon='MESH_UVSPHERE')
 
-
 classes = [
     PIE_MT_Bottom_A_shift,
 
 ]
 
 addon_keymaps = []
-
 
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
@@ -72,7 +70,6 @@ def unregister_keymaps():
             km.keymap_items.remove(kmi)
         # wm.keyconfigs.addon.keymaps.remove(km)
     addon_keymaps.clear()
-
 
 def register():
     for cls in classes:

@@ -93,17 +93,6 @@ def register():
         bpy.utils.register_class(cls)
     register_keymaps()
 
-    # global key2
-    # key2 = change_default_keymap(
-    #     'Outliner','outliner.collection_exclude_set',
-    #     [('active',False)],
-    #     )
-    # global key3
-    # key3 = change_default_keymap(
-    #     'Outliner','collection_exclude_clear',
-    #     [('active',False)],
-    #     )
-
 def unregister():
 
     unregister_keymaps()

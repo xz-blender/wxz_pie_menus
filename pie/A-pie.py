@@ -279,7 +279,6 @@ def unregister_keymaps():
         # wm.keyconfigs.addon.keymaps.remove(km)
     addon_keymaps.clear()
 
-# ---------------------------------------------------------------------
 def register():
     for cls in classes:
         try:

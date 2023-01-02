@@ -43,7 +43,7 @@ class PIE_MT_Bottom_Q_favorite(Menu):
 
 class Render_Viewport_OpenGL(Operator):
     bl_idname = "pie.q_render_viewport"
-    bl_label = submoduname
+    bl_label = '视图渲染图像'
     bl_options = {"REGISTER", "UNDO"}
 
     @classmethod
@@ -156,6 +156,7 @@ classes = [
     PIE_MT_Bottom_Q_favorite,
     PIE_Q_key,
     PIE_Q_key_shift,
+    Render_Viewport_OpenGL,
 ]
 
 addon_keymaps = []
@@ -185,17 +186,6 @@ def register_keymaps():
     addon_keymaps.append(km)
 
 
-def change_q_keymap(active):
-    keys = bpy.context.window_manager.keyconfigs.default.keymaps['Window'].keymap_items.items()
-    q_list = []
-    for name,data in keys:
-        if name == 'wm.call_menu':
-            q_list.append(data)
-    for key in q_list:
-        if key.name == 'Quick Favorites':
-            key.active = active
-    q_list.clear()
-
 def unregister_keymaps():
     wm = bpy.context.window_manager
     for km in addon_keymaps:
@@ -204,26 +194,12 @@ def unregister_keymaps():
         # wm.keyconfigs.addon.keymaps.remove(km)
     addon_keymaps.clear()
 
-
 def register():
     for cls in classes:
         bpy.utils.register_class(cls)
     register_keymaps()
 
-    change_q_keymap(False)
-    
-    global key1
-    key1 = change_default_keymap(
-        'Object Non-modal','object.transfer_mode',
-        [('active',False)]
-        )
-    
-
 def unregister():
-    change_q_keymap(True)
-
-    restored_default_keymap(key1)
-
     unregister_keymaps()
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
