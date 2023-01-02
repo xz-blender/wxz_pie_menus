@@ -254,17 +254,6 @@ classes = [
 
 addon_keymaps = []
 
-def toggle_keymap(value):
-    keys = bpy.context.window_manager.keyconfigs.default.keymaps['3D View'].keymap_items
-    a_list = []
-    for name,data in keys.items():
-        if name == 'transform.skin_resize':
-            a_list.append(data)
-    for key in a_list:
-        if key.name == 'Skin Resize':
-            key.value = value
-    a_list.clear()
-
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
 
@@ -281,8 +270,6 @@ def register_keymaps():
     kmi = km.keymap_items.new("wm.call_menu_pie", 'A', 'CLICK_DRAG')
     kmi.properties.name = "PIE_MT_Bottom_A"
     addon_keymaps.append(km)
-
-
 
 def unregister_keymaps():
     wm = bpy.context.window_manager
@@ -301,21 +288,7 @@ def register():
             None
     register_keymaps()
 
-    global key1
-    key1 = change_default_keymap(
-        'Object Mode','wm.call_menu',
-        [('value','CLICK')],
-        )
-
-    toggle_keymap('CLICK')
-
 def unregister():
-    restored_default_keymap(key1)
-
-    toggle_keymap('PRESS')
-
-    # change_a_keys(change_dir,'PRESS')
-
     unregister_keymaps()
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)

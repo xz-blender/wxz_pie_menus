@@ -46,14 +46,83 @@ def change_key_value_2(change_dir):
                 list_keymaps.clear()
     return (stored_value_list, stored_prop_list)
 
-A_dir = [
-    'Pose','Object Mode','Curve','Mesh','UV Editor','NLA Editor','Clip Editor','Node Editor','Graph Editor','Sequencer'
-    'Armature','Metaball','Lattice','Particle',
-    'Sculpt Curves'
-    ] 
+A_select_dir = [
+    'Pose','Object Mode','Curve','Mesh','UV Editor','NLA Editor',
+    'Clip Editor','Node Editor','Graph Editor','Sequencer',
+    'Armature','Metaball','Lattice','Particle','Sculpt Curves'
+    ]
 
+
+A_dir =[
+    (['3D View','transform.skin_resize','Skin Resize'],[('value','CLICK')],[]), # ctrl A  -- mesh
+    (['Object Mode','wm.call_menu','Apply'],[('value','CLICK')],[]), # ctrl A  -- object
+    (['Object Mode','wm.call_menu','Add'],[('value','CLICK')],[]), # shift A  -- object
+]
+Brush_dir =[
+    (['Sculpt','wm.call_menu_pie','Mask Edit'],[('value','CLICK_DRAG')],[]), # A
+]
+C_dir =[
+    (['3D View','view3d.select_circle','Circle Select'],[('active',False)],[]), 
+    (['UV Editor','uv.select_circle','Circle Select'],[('active',False)],[]),
+    (['Graph Editor','graph.select_circle','Circle Select'],[('active',False)],[]),
+    (['Node Editor','node.select_circle','Circle Select'],[('active',False)],[]),
+    (['3D View','view3d.copybuffer','Copy Objects'],[('value','CLICK')],[]), # ctrl C
+]
+E_dir =[
+    (['Curve','curve.extrude_move','Extrude Curve and Move'],[('value','CLICK')],[]), 
+    (['Mesh','view3d.edit_mesh_extrude_move_normal','Extrude and Move on Normals'],[('value','CLICK')],[]), 
+    (['Mesh','transform.edge_crease','Edge Crease'],[('value','CLICK')],[]), # shift E
+    (['Graph Editor','transform.transform','Transform'],[('value','CLICK')],[]),
+    (['Armature','armature.extrude_move','Extrude'],[('value','CLICK')],[]),
+]
+F_dir =[
+    (['Curve','curve.make_segment','Make Segment'],[('value','CLICK')],[]), 
+    (['Mesh','mesh.edge_face_add','Make Edge/Face'],[('value','CLICK')],[]), 
+    (['Mesh','wm.call_menu','Face'],[('value','CLICK')],[]), # ctrl F
+    (['Node Editor','node.link_make','Make Links'],[('value','CLICK')],[]), # ctrl F
+]
+Outliner_dir =[
+    (['Outliner','outliner.select_all','Toggle Selected'],[('value','CLICK')],[]),  # A
+    (['Outliner','outliner.collection_exclude_set','Disable from View Layer'],[('value','CLICK')],[]),  # E
+    (['Outliner','outliner.collection_exclude_clear','Enable in View Layer'],[('value','CLICK')],[]),  # alt E
+    (['Outliner','outliner.collection_new','New Collection'],[('value','CLICK')],[]),  # C
+]
+Q_dir =[
+    (['Window','wm.call_menu','Quick Favorites'],[('active',False)],[]), # Q
+    (['Window','wm.quit_blender','Quit Blender'],[('active',False)],[]), # ctrl Q
+    (['Object Non-modal','object.transfer_mode','Transfer Mode'],[('active',False)],[]), # alt Q
+]
+R_dir =[
+    (['3D View','transform.rotate','Rotate'],[('value','CLICK')],[]),
+    (['UV Editor','transform.rotate','Rotate'],[('value','CLICK')],[]),
+    (['Node Editor','transform.rotate','Rotate'],[('value','CLICK')],[]),
+]
+S_dir =[
+    (['Window','wm.save_mainfile','Save Blender File'],[('value','CLICK')],[]), # ctrl S -- save file
+    (['Window','wm.save_as_mainfile','Save As'],[('value','CLICK')],[]), # ctrl shift S -- save file
+    (['3D View','transform.resize','Resize'],[('value','CLICK')],[]),
+    (['UV Editor','transform.resize','Resize'],[('value','CLICK')],[]),
+    (['Graph Editor','transform.resize','Resize'],[('value','CLICK')],[]),
+    (['Node Editor','transform.resize','Resize'],[('value','CLICK')],[]),
+]
+SPACE_dir =[
+    (['Window','wm.toolbar','Toolbar'],[('active',False)],[]),  # shift space
+    (['Window','wm.search_menu','Search Menu'],[('type','SPACE'),('value','DOUBLE_CLICK')],[]),  # search
+    (['Frames','screen.animation_play','Play Animation'],[('active',False)],[]),  # space
+]
+T_dir =[
+    (['3D View Generic','wm.context_toggle','Context Toggle'],[('value','CLICK')],[]), 
+    (['Image Generic','wm.context_toggle','Context Toggle'],[('value','CLICK')],[]), 
+    (['Node Generic','wm.context_toggle','Context Toggle'],[('value','CLICK')],[]), 
+]
+TAB_dir =[
+    (['Object Non-modal','object.mode_set','Set Object Mode'],[('value','CLICK')],[]), 
+    (['Object Non-modal','view3d.object_mode_pie_or_toggle','Object Mode Menu'],[('value','CLICK_DRAG'),('type','TAB'),('ctrl',False)],[]), 
+    (['Node Editor','wm.call_menu','Edit Group'],[('value','CLICK')],[]), 
+]
 U_dir =[
     (['Mesh','wm.call_menu','UV Mapping'],[('value','CLICK')],[]), 
+    (['UV Editor','wm.call_menu','Unwrap'],[('value','CLICK')],[]), 
 ]
 V_dir =[
     (['Curve','curve.handle_type_set','Set Handle Type'],[('value','CLICK')],[]), # V
@@ -64,7 +133,7 @@ V_dir =[
 ]
 W_dir =[
     (['3D View','wm.tool_set_by_id','Set Tool by Name'],[('value','CLICK')],[]), # W
-    (['3D View','wm.toolbar_fallback_pie','Fallback Tool Pie Menu'],[('value','CLICK_DRAG')],[]), # alt W
+    (['Window','wm.toolbar_fallback_pie','Fallback Tool Pie Menu'],[('value','CLICK_DRAG')],[]), # alt W
 ]
 X_dir =[
     (['Object Mode','object.delete','Delete'],[('value','CLICK')],[('use_global',False),('confirm',False)]),
@@ -82,16 +151,16 @@ Z_dir =[
         
 def changes_keys():
 
-    change_key_value(A_dir, "CLICK")
+    change_key_value(A_select_dir, "CLICK")
 
-    for _dir in [V_dir, W_dir, X_dir, Z_dir]:
+    for _dir in [A_dir,Brush_dir,C_dir,E_dir,F_dir,Outliner_dir,Q_dir,R_dir,S_dir,SPACE_dir,T_dir,TAB_dir,U_dir,V_dir,W_dir,X_dir,Z_dir]:
         change_key_value_2(_dir)
 
     print('"WXZ_Pie_Menu" changed keys!')
 
 def register():
     if not bpy.app.timers.is_registered(changes_keys):
-        bpy.app.timers.register(changes_keys, first_interval=5)
+        bpy.app.timers.register(changes_keys, first_interval=2)
 
 
 def unregister(): 

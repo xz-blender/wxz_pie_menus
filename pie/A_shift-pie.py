@@ -53,19 +53,8 @@ classes = [
 
 ]
 
-
 addon_keymaps = []
 
-def toggle_keymap(value):
-    keys = bpy.context.window_manager.keyconfigs.default.keymaps['Object Mode'].keymap_items.items()
-    a_list = []
-    for name,data in keys:
-        if name == 'wm.call_menu':
-            a_list.append(data)
-    for key in a_list:
-        if key.name == 'Add':
-            key.value = value
-    a_list.clear()
 
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
@@ -75,7 +64,6 @@ def register_keymaps():
                               "CLICK_DRAG", shift=True)
     kmi.properties.name = "PIE_MT_Bottom_A_shift"
     addon_keymaps.append(km)
-
 
 def unregister_keymaps():
     wm = bpy.context.window_manager
@@ -94,12 +82,7 @@ def register():
             print(__name__,'->',cls,' error')
     register_keymaps()
 
-    toggle_keymap('CLICK')
-
-
 def unregister():
-    toggle_keymap('PRESS')
-
     unregister_keymaps()
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)

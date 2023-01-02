@@ -75,7 +75,7 @@ def register_keymaps():
     kmi = km.keymap_items.new("wm.call_menu_pie", 'A', 'CLICK_DRAG')
     kmi.properties.name = "OUTLINER_PIE_MT_Bottom_A"
     kmi = km.keymap_items.new("outliner.show_active", 'F', 'CLICK')
-    kmi = km.keymap_items.new("pie.toggle_collection", 'E', 'CLICK')
+    # kmi = km.keymap_items.new("pie.toggle_collection", 'E', 'CLICK')
     addon_keymaps.append(km)
 
 
@@ -93,27 +93,18 @@ def register():
         bpy.utils.register_class(cls)
     register_keymaps()
 
-    global key1
-    key1 = change_default_keymap(
-        'Outliner','outliner.select_all',
-        [('value','CLICK')],
-        )
-    global key2
-    key2 = change_default_keymap(
-        'Outliner','outliner.collection_exclude_set',
-        [('active',False)],
-        )
-    global key3
-    key3 = change_default_keymap(
-        'Outliner','collection_exclude_clear',
-        [('active',False)],
-        )
-
+    # global key2
+    # key2 = change_default_keymap(
+    #     'Outliner','outliner.collection_exclude_set',
+    #     [('active',False)],
+    #     )
+    # global key3
+    # key3 = change_default_keymap(
+    #     'Outliner','collection_exclude_clear',
+    #     [('active',False)],
+    #     )
 
 def unregister():
-    restored_default_keymap(key1)
-    restored_default_keymap(key2)
-    restored_default_keymap(key3)
 
     unregister_keymaps()
     for cls in reversed(classes):
