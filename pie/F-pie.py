@@ -208,16 +208,16 @@ def register():
         'Curve','curve.make_segment',
         [('value','CLICK')],
         )
-    global key3
-    key3 = change_default_keymap(
-        'Node Editor','node.link_make',
-        [('value','CLICK')],
-        )
+    # global key3
+    # key3 = change_default_keymap(
+    #     'Node Editor','node.link_make',
+    #     [('value','CLICK')],
+    #     )
 
 def unregister():
     restored_default_keymap(key1)
     restored_default_keymap(key2)
-    restored_default_keymap(key3)
+    # restored_default_keymap(key3)
 
     unregister_keymaps()
     for cls in reversed(classes):

@@ -73,28 +73,28 @@ def register():
         '3D View','view3d.select_circle',
         [('active',False)],
         )
-    global key2
-    key2 = change_default_keymap(
-        'UV Editor','uv.select_circle',
-        [('active',False)],
-        )
-    global key3
-    key3 = change_default_keymap(
-        'Node Editor','node.select_circle',
-        [('active',False)],
-        )
-    global key4
-    key4 = change_default_keymap(
-        'Graph Editor','graph.select_circle',
-        [('active',False)],
-        )
+    # global key2
+    # key2 = change_default_keymap(
+    #     'UV Editor','uv.select_circle',
+    #     [('active',False)],
+    #     )
+    # global key3
+    # key3 = change_default_keymap(
+    #     'Node Editor','node.select_circle',
+    #     [('active',False)],
+    #     )
+    # global key4
+    # key4 = change_default_keymap(
+    #     'Graph Editor','graph.select_circle',
+    #     [('active',False)],
+    #     )
 
 
 def unregister():
     restored_default_keymap(key1)
-    restored_default_keymap(key2)
-    restored_default_keymap(key3)
-    restored_default_keymap(key4)
+    # restored_default_keymap(key2)
+    # restored_default_keymap(key3)
+    # restored_default_keymap(key4)
 
     unregister_keymaps()
     # for cls in reversed(classes):

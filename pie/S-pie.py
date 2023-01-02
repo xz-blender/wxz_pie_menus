@@ -209,28 +209,28 @@ def register():
         '3D View','transform.resize',
         [('value','CLICK')]
         )
-    global key2 # UV视图s
-    key2 = change_default_keymap(
-        'UV Editor','transform.resize',
-        [('value','CLICK')]
-        )
-    global key3 # 曲线视图s
-    key3 = change_default_keymap(
-        'Graph Editor','transform.resize',
-        [('value','CLICK')]
-        )
-    global key4 # 节点视图s
-    key4 = change_default_keymap(
-        'Node Editor','transform.resize',
-        [('value','CLICK')]
-        )
+    # global key2 # UV视图s
+    # key2 = change_default_keymap(
+    #     'UV Editor','transform.resize',
+    #     [('value','CLICK')]
+    #     )
+    # global key3 # 曲线视图s
+    # key3 = change_default_keymap(
+    #     'Graph Editor','transform.resize',
+    #     [('value','CLICK')]
+    #     )
+    # global key4 # 节点视图s
+    # key4 = change_default_keymap(
+    #     'Node Editor','transform.resize',
+    #     [('value','CLICK')]
+    #     )
     
 
 def unregister():
     restored_default_keymap(key1)
-    restored_default_keymap(key2)
-    restored_default_keymap(key3)
-    restored_default_keymap(key4)
+    # restored_default_keymap(key2)
+    # restored_default_keymap(key3)
+    # restored_default_keymap(key4)
 
     unregister_keymaps()
     for cls in reversed(classes):

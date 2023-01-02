@@ -69,7 +69,7 @@ def pie_check_rely_addon_op(pie, addon_name):  # addon name & path name
 
 
 def change_default_keymap(keys_class,keys_idname,value_list,prop_list = None):
-    keys_config = bpy.context.window_manager.keyconfigs['Blender'].keymaps[keys_class].keymap_items
+    keys_config = bpy.context.window_manager.keyconfigs.default.keymaps[keys_class].keymap_items
 
     keys_list = []
 

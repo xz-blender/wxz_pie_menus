@@ -258,17 +258,17 @@ def register():
         '3D View','transform.rotate',
         [('value','CLICK')]
         )
-    global key2
-    key2 = change_default_keymap(
-        'UV Editor','transform.rotate',
-        [('value','CLICK')]
-        )
+    # global key2
+    # key2 = change_default_keymap(
+    #     'UV Editor','transform.rotate',
+    #     [('value','CLICK')]
+    #     )
     
 
 
 def unregister():
     restored_default_keymap(key1)
-    restored_default_keymap(key2)
+    # restored_default_keymap(key2)
 
     unregister_keymaps()
     for cls in reversed(classes):

@@ -189,17 +189,17 @@ def register():
         'Object Non-modal','view3d.object_mode_pie_or_toggle',
         [('value','CLICK_DRAG'),('type','TAB'),('ctrl',False)]
         )
-    global key2
-    key2 = change_default_keymap(
-        'Node Editor','wm.call_menu',
-        [('value','CLICK')]
-        )
+    # global key2
+    # key2 = change_default_keymap(
+    #     'Node Editor','wm.call_menu',
+    #     [('value','CLICK')]
+    #     )
 
 
 def unregister():
     restored_default_keymap(key0)
     restored_default_keymap(key1)
-    restored_default_keymap(key2)
+    # restored_default_keymap(key2)
 
     unregister_keymaps()
     for cls in reversed(classes):

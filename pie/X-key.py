@@ -101,17 +101,17 @@ def register():
         [('value','CLICK')]
         )
 
-    global key5 #  节点编辑器 删除
-    key5 = change_default_keymap(
-        'Node Editor','node.delete',
-        [('value','CLICK')]
-        )
+    # global key5 #  节点编辑器 删除
+    # key5 = change_default_keymap(
+    #     'Node Editor','node.delete',
+    #     [('value','CLICK')]
+    #     )
 
-    global key6 #  节点编辑器 删除
-    key6 = change_default_keymap(
-        'Node Editor','node.delete_reconnect',
-        [('value','CLICK')]
-        )
+    # global key6 #  节点编辑器 删除
+    # key6 = change_default_keymap(
+    #     'Node Editor','node.delete_reconnect',
+    #     [('value','CLICK')]
+    #     )
         
 def unregister():
     restored_default_keymap(key1)
@@ -119,8 +119,8 @@ def unregister():
     toggle_keymap(True)
     restored_default_keymap(key3)
     restored_default_keymap(key4)
-    restored_default_keymap(key5)
-    restored_default_keymap(key6)
+    # restored_default_keymap(key5)
+    # restored_default_keymap(key6)
 
     unregister_keymaps()
     for cls in reversed(classes):

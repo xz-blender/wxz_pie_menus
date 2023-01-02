@@ -216,20 +216,22 @@ def unregister_keymaps():
 def register():
     for cls in classes:
         bpy.utils.register_class(cls)
-    register_keymaps()
 
-    global key1
-    key1 = change_default_keymap(
-        '3D View','wm.tool_set_by_id',
-        [('value','CLICK')]
-        )
+    register_keymaps() 
+
+    # global key1
+    # key1 = change_default_keymap(
+    #     '3D View','wm.tool_set_by_id',
+    #     [('value','CLICK')]
+    #     )
 
 def unregister():
-    restored_default_keymap(key1)
+    # restored_default_keymap(key1)
 
     unregister_keymaps()
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
+
 
 # if __name__ == "__main__":
 #     register()

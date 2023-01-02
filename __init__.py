@@ -2,7 +2,9 @@ from bpy.types import PropertyGroup, AddonPreferences, Operator
 from bpy.props import BoolProperty, PointerProperty
 import bpy
 import os
-from .pie.utils import check_rely_addon, rely_addons
+from .pie.utils import check_rely_addon, rely_addons, change_default_keymap
+from . import change_keys
+
 
 
 bl_info = {
@@ -310,13 +312,9 @@ classes = (
     Enable_Addon,
 )
 
-
 def register():
     for cls in classes:
-        # try:
         bpy.utils.register_class(cls)
-        # except(ValueError):
-            # print(cls,"Subclass already registered!")
 
     prefs = get_addon_preferences()
     
@@ -326,10 +324,8 @@ def register():
         name = mod.__name__.split('.')[-1]
         if getattr(prefs, 'use_' + name):
             register_submodule(mod)
-
-    # if bpy.context.window_manager.keyconfigs.active.name == 'Blender':
-    #     bpy.ops.preferences.keyconfig_import(filepath=os.path.join(get_dirpath(), 'Stored_Keymaps.py'))
-    #     # bpy.ops.pie.apply_my_keymap(path = os.path.join(get_dirpath(), 'Stored_Keymaps.py'))
+    
+    change_keys.register()
 
 def unregister():
     for mod in sub_modules:
@@ -340,5 +336,7 @@ def unregister():
         bpy.utils.unregister_class(cls)
 
 
+
+    
 if __name__ == "__main__":
     register()

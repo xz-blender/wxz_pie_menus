@@ -292,24 +292,6 @@ def unregister_keymaps():
         # wm.keyconfigs.addon.keymaps.remove(km)
     addon_keymaps.clear()
 
-change_dir = [
-    'UV Editor','Pose','Object Mode','Curve','Mesh',
-    'Armature','Metaball','Lattice','Particle',
-    'Sculpt Curves','Graph Editor','Node Editor',
-    'NLA Editor','Sequencer','Clip Editor'
-    ] 
-
-def change_a_keys(change_dir,value):
-    for space_type in change_dir:
-        keymap_list =[]
-        items = bpy.context.window_manager.keyconfigs['Blender'].keymaps[space_type].keymap_items
-        data_name = space_type.lower().replace(' ','_').replace('_editor','').replace('_mode','')+'.select_all'
-        for name, datas in items.items():
-            if name == data_name and datas.value != 'DOUBLE_CLICK':
-                keymap_list.append(datas)
-        for data in keymap_list:
-            setattr(data, 'value', value)
-        keymap_list.clear()
 # ---------------------------------------------------------------------
 def register():
     for cls in classes:
@@ -318,8 +300,6 @@ def register():
         except:
             None
     register_keymaps()
-
-    change_a_keys(change_dir,'CLICK')
 
     global key1
     key1 = change_default_keymap(
@@ -334,7 +314,7 @@ def unregister():
 
     toggle_keymap('PRESS')
 
-    change_a_keys(change_dir,'PRESS')
+    # change_a_keys(change_dir,'PRESS')
 
     unregister_keymaps()
     for cls in reversed(classes):
