@@ -75,53 +75,7 @@ def register():
         bpy.utils.register_class(cls)
     register_keymaps()
 
-    global key1 # Object X delete
-    key1 = change_default_keymap(
-        'Object Mode','object.delete',
-        [('value','CLICK')],
-        [('use_global',False),('confirm',False)]
-        )
-
-    toggle_keymap(False)
-    # global key2 # Mesh X delete
-    # key2 = change_default_keymap(
-    #     'Mesh','wm.call_menu',
-    #     [('value','CLICK'),('active',False)]
-    #     )
-
-    global key3 # Curve X delete
-    key3 = change_default_keymap(
-        'Curve','wm.call_menu',
-        [('value','CLICK')]
-        )
-
-    global key4 # 大纲删除
-    key4 = change_default_keymap(
-        'Outliner','outliner.delete',
-        [('value','CLICK')]
-        )
-
-    # global key5 #  节点编辑器 删除
-    # key5 = change_default_keymap(
-    #     'Node Editor','node.delete',
-    #     [('value','CLICK')]
-    #     )
-
-    # global key6 #  节点编辑器 删除
-    # key6 = change_default_keymap(
-    #     'Node Editor','node.delete_reconnect',
-    #     [('value','CLICK')]
-    #     )
-        
 def unregister():
-    restored_default_keymap(key1)
-    # restored_default_keymap(key2)
-    toggle_keymap(True)
-    restored_default_keymap(key3)
-    restored_default_keymap(key4)
-    # restored_default_keymap(key5)
-    # restored_default_keymap(key6)
-
     unregister_keymaps()
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)

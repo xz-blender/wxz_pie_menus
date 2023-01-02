@@ -39,7 +39,7 @@ def change_key_value_2(change_dir):
                             try:
                                 setattr(data.properties,prop[0],prop[1])
                             except:
-                                print(data.name,'--error--',prop[0],':',prop[1])
+                                print(data.name,'--keys_prop_error--',prop[0],':',prop[1])
                 list_keymaps.clear()
     return (stored_value_list, stored_prop_list)
 
@@ -51,8 +51,15 @@ A_dir = [
 
 X_dir =[
     (['Object Mode','object.delete','Delete'],[('value','CLICK')],[('use_global',False),('confirm',False)]),
+    (['Mesh','wm.call_menu','Delete'],[('active',False)],[]),
     (['Curve','wm.call_menu','Delete'],[('value','CLICK')],[]),
     (['Outliner','outliner.delete','Delete'],[('value','CLICK')],[]),
+    (['Graph Editor','wm.call_menu','Delete'],[('value','CLICK')],[]),
+    (['Node Editor','node.delete','Delete'],[('value','CLICK')],[]),
+]
+Z_dir =[
+    (['3D View','wm.call_menu_pie','Shading'],[('value','CLICK')],[]),
+    (['3D View','view3d.toggle_shading','Toggle Shading Type'],[('active',False)],[]),
 ]
 
         
@@ -67,6 +74,7 @@ def changes_keys():
         )
     #---- X key ----
     change_key_value_2(X_dir)
+    #---- Z key ----
 
     print('"WXZ_Pie_Menu" changed keys!')
 
