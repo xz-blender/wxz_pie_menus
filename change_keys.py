@@ -79,7 +79,7 @@ F_dir =[
     (['Node Editor','node.link_make','Make Links'],[('value','CLICK')],[]), # ctrl F
 ]
 Outliner_dir =[
-    (['Outliner','outliner.select_all','Toggle Selected'],[('value','CLICK')],[]),  # A
+    (['Outliner','outliner.select_all','Toggle Selected'],[('active',False)],[]),  # A
     (['Outliner','outliner.collection_exclude_set','Disable from View Layer'],[('value','CLICK')],[]),  # E
     (['Outliner','outliner.collection_exclude_clear','Enable in View Layer'],[('value','CLICK')],[]),  # alt E
     (['Outliner','outliner.collection_new','New Collection'],[('value','CLICK')],[]),  # C
