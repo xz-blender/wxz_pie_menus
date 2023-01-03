@@ -27,11 +27,9 @@ def change_key_value_2(change_dir):
             if ks_name == dir_list[0][0]:
                 list_keymaps = []
                 for id_name , id_data in ks_data.keymap_items.items():
-                    if id_name == dir_list[0][1]:
-                        if id_data.name == dir_list[0][2]:
-                            list_keymaps.append(id_data)
-                        else:
-                            print('error_name----',dir_list[0][0],'---',dir_list[0][1],'-->',dir_list[0][2])
+                    if id_name == dir_list[0][1] and id_data.name == dir_list[0][2]:
+                        list_keymaps.append(id_data)
+                            # print('error_name----',dir_list[0][0],'---',dir_list[0][1],'-->',dir_list[0][2])
                 for data in list_keymaps:
                     for value in dir_list[1]:
                         stored_value_list[data] = [value[0],getattr(data, value[0])]
@@ -47,16 +45,15 @@ def change_key_value_2(change_dir):
     return (stored_value_list, stored_prop_list)
 
 A_select_dir = [
-    'Pose','Object Mode','Curve','Mesh','UV Editor','NLA Editor',
+    'Pose','Object Mode','Curve','Mesh','UV Editor','NLA Editor','Outliner'
     'Clip Editor','Node Editor','Graph Editor','Sequencer',
     'Armature','Metaball','Lattice','Particle','Sculpt Curves'
     ]
 
-
 A_dir =[
-    (['3D View','transform.skin_resize','Skin Resize'],[('value','CLICK')],[]), # ctrl A  -- mesh
-    (['Object Mode','wm.call_menu','Apply'],[('value','CLICK')],[]), # ctrl A  -- object
-    (['Object Mode','wm.call_menu','Add'],[('value','CLICK')],[]), # shift A  -- object
+    (['3D View','transform.skin_resize','Skin Resize'],[('value','CLICK')],[]), # ctrl A - mesh
+    (['Object Mode','wm.call_menu','Apply'],[('value','CLICK')],[]), # ctrl A - object
+    (['Object Mode','wm.call_menu','Add'],[('value','CLICK')],[]), # shift A - object
 ]
 Brush_dir =[
     (['Sculpt','wm.call_menu_pie','Mask Edit'],[('value','CLICK_DRAG')],[]), # A

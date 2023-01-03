@@ -260,10 +260,11 @@ def register_keymaps():
     km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
     kmi = km.keymap_items.new("wm.call_menu_pie", 'A', 'CLICK_DRAG')
     kmi.properties.name = "PIE_MT_Bottom_A"
-    addon_keymaps.append(km)
 
     kmi = km.keymap_items.new("wm.call_menu_pie", "A", "CLICK_DRAG", ctrl=True)
     kmi.properties.name = "PIE_MT_Bottom_A_Ctrl"
+
+    kmi = km.keymap_items.new("outliner.collection_objects_select", "A", "CLICK")
     addon_keymaps.append(km)
     
     km = addon.keymaps.new(name="UV Editor")
