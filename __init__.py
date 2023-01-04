@@ -3,9 +3,6 @@ from bpy.props import BoolProperty, PointerProperty
 import bpy
 import os
 from .pie.utils import check_rely_addon, rely_addons, change_default_keymap
-from . import change_keys
-
-
 
 bl_info = {
     "name": "WXZ Pie Menus Addon",
@@ -312,9 +309,18 @@ classes = (
     Enable_Addon,
 )
 
+from . import change_keys, change_settings
+extra_scripts = (
+    change_keys,
+    change_settings,
+)
+
 def register():
     for cls in classes:
         bpy.utils.register_class(cls)
+
+    for script in extra_scripts:
+        script.register()
 
     prefs = get_addon_preferences()
     
@@ -324,19 +330,17 @@ def register():
         name = mod.__name__.split('.')[-1]
         if getattr(prefs, 'use_' + name):
             register_submodule(mod)
-    
-    change_keys.register()
 
 def unregister():
     for mod in sub_modules:
         if mod.__addon_enabled__:
             unregister_submodule(mod)
 
+    for script in reversed(extra_scripts):
+        script.unregister()
+
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
 
-
-
-    
 if __name__ == "__main__":
     register()

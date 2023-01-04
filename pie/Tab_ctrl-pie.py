@@ -119,7 +119,12 @@ class PIE_WorkspaceSwapOperator(Operator):
 
         # Try local workspace swapping first
         # Last resort: try to import from the blender templates
-        path = bpy.utils.user_resource('CONFIG') + os.sep + "startup.blend"
+
+        # old path:
+        # path = bpy.utils.user_resource('CONFIG') + os.sep + "startup.blend"
+        
+        # new path: ('startup.blend' in addon files)
+        path = os.path.join(os.path.dirname(__file__), "startup.blend")
         if t_name not in bpy.data.workspaces:
             try:
                 bpy.ops.workspace.append_activate(idname=t_name, filepath=path)

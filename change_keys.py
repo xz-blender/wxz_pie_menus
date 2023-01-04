@@ -154,6 +154,9 @@ def changes_keys():
         change_key_value_2(_dir)
 
     print('"WXZ_Pie_Menu" changed keys!')
+    import os
+    name = os.path.dirname(__file__)
+    print(name)
 
 def register():
     if not bpy.app.timers.is_registered(changes_keys):
