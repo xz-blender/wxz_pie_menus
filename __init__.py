@@ -297,9 +297,6 @@ for mod in sub_modules:
         ),
     )
 
-    create_property(WXZ_PIE_Preferences, 'show_expanded_' +
-                    mod_name, BoolProperty())
-
 
 classes = (
     WXZ_PIE_Preferences,
