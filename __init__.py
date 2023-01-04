@@ -113,7 +113,7 @@ def unregister_submodule(mod):
                     del prefs[name]
 
 
-def get_dirpath():
+def get_keymap_dirpath():
     return os.path.join(os.path.dirname(os.path.realpath(__file__)), "keymap_presets")
 
 
@@ -204,16 +204,16 @@ class WXZ_PIE_Preferences(AddonPreferences):
         sub.label(text='自定义快捷键表:', icon='EVENT_SPACEKEY')
 
         sub.operator(Apply_My_Keymap.bl_idname, text='应用--默认快捷键表').path = os.path.join(
-            get_dirpath(), 'Default_Keymaps.py'
+            get_keymap_dirpath(), 'Default_Keymaps.py'
         )
         sub.operator(Apply_My_Keymap.bl_idname, text='应用--备份快捷键表').path = os.path.join(
-            get_dirpath(), 'Stored_Keymaps.py'
+            get_keymap_dirpath(), 'Stored_Keymaps.py'
         )
 
         row = row.box()
         row.alignment = "RIGHT"
         row.operator(Restore_My_Keymap.bl_idname, text="备份--当前快捷键表").path = os.path.join(
-            get_dirpath(), 'Stored_Keymaps.py'
+            get_keymap_dirpath(), 'Stored_Keymaps.py'
         )
 
         split = layout.split()
