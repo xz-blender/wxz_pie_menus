@@ -3,7 +3,7 @@ import sys
 
 def change_preferences_settings():
     C = bpy.context
-    pref = C.prefrences
+    pref = C.preferences
 
     # 界面
     view = pref.view
