@@ -147,6 +147,7 @@ Z_dir =[
 
         
 def changes_keys():
+    # 访问快捷键的名称会因翻译而改变
     bpy.context.preferences.view.use_translate_interface = False
 
     change_key_value(A_select_dir, "CLICK")
@@ -163,7 +164,7 @@ def changes_keys():
 
 def register():
     if not bpy.app.timers.is_registered(changes_keys):
-        bpy.app.timers.register(changes_keys, first_interval=5)
+        bpy.app.timers.register(changes_keys, first_interval=3)
 
 
 def unregister(): 
