@@ -13,7 +13,7 @@ def change_preferences_settings():
     view.show_statusbar_memory = True    # 内存使用量
     if sys.platform == "win32":
         view.show_statusbar_vram = True     # 显存使用量
-    view.statusbar_version = True    # 显示版本
+    view.show_statusbar_version = True    # 显示版本
     view.use_mouse_over_open = True     # 鼠标划过开启菜单
 
     # 动画
@@ -25,17 +25,27 @@ def change_preferences_settings():
     inputs = pref.inputs
     inputs.use_numeric_input_advanced = True    # 启用数学表达式输入
     
+    print('WXZ_Pie_Menu Changed The Settings!')
 
-    
+def change_context_settings():
+    context = bpy.context
+    scene = context.scene
+    # 渲染设置
+    scene.render.engine = 'CYCLES'
+    scene.cycles.device = 'GPU'
+
+def change_settings():
+    change_preferences_settings()
+    change_context_settings()
 
 def register():
-    if not bpy.app.timers.is_registered(change_preferences_settings):
-        bpy.app.timers.register(change_preferences_settings, first_interval=5)
+    if not bpy.app.timers.is_registered(change_settings):
+        bpy.app.timers.register(change_settings, first_interval=5)
 
 
 def unregister(): 
-    if bpy.app.timers.is_registered(change_preferences_settings):
-        bpy.app.timers.unregister(change_preferences_settings)
+    if bpy.app.timers.is_registered(change_settings):
+        bpy.app.timers.unregister(change_settings)
 
 if __name__ == "__main__":
     register()
