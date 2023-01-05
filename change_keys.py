@@ -145,7 +145,9 @@ Z_dir =[
     (['3D View','view3d.toggle_shading','Toggle Shading Type'],[('active',False)],[]), # shift Z
 ]
 
-        
+def change_thred_keymaps():
+    None
+
 def changes_keys():
     # 访问快捷键的名称会因翻译而改变
     bpy.context.preferences.view.use_translate_interface = False

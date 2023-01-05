@@ -24,6 +24,16 @@ def change_preferences_settings():
     # 输入
     inputs = pref.inputs
     inputs.use_numeric_input_advanced = True    # 启用数学表达式输入
+    inputs.walk_navigation.use_gravity = True   # 启用行走重力
+    inputs.use_mouse_depth_navigate = True      # 使用鼠标深度
+
+    view.smooth_view = 0    # 平滑视图 0
+    
+    # 系统
+    edit = pref.edit
+    pref.addons['cycles'].preferences.compute_device_type = 'OPTIX' # 设置渲染设备
+    edit.undo_steps = 128   # 撤销次数
+    
     
     print('WXZ_Pie_Menu Changed The Settings!')
 
@@ -40,7 +50,7 @@ def change_settings():
 
 def register():
     if not bpy.app.timers.is_registered(change_settings):
-        bpy.app.timers.register(change_settings, first_interval=5)
+        bpy.app.timers.register(change_settings, first_interval=1)
 
 
 def unregister(): 

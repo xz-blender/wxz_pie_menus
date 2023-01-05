@@ -51,10 +51,11 @@ class VIEW3D_PIE_MT_Bottom_Z_Overlay(Menu):
         pie.operator('view3d.toggle_shading', text='预览',
                      icon='SHADING_TEXTURE').type = 'MATERIAL'
         # 8 - TOP
-        if context.active_object and context.object.type == 'MESH':
-            auto_smooth = pie.operator('wm.call_panel', text='自动光滑', icon='RADIOBUT_ON', emboss=True)
-            auto_smooth.name = VIEW_PIE_PT_AutoSmooth.bl_idname
-            auto_smooth.keep_open = True
+        if context.active_object:
+            if context.object.type == 'MESH' or 'CURVE':
+                auto_smooth = pie.operator('wm.call_panel', text='自动光滑', icon='RADIOBUT_ON', emboss=True)
+                auto_smooth.name = VIEW_PIE_PT_AutoSmooth.bl_idname
+                auto_smooth.keep_open = True
         else:
             pie.separator()
         # 7 - TOP - LEFT    &     9 - TOP - RIGHT
