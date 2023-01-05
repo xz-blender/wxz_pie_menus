@@ -145,6 +145,11 @@ Z_dir =[
     (['3D View','view3d.toggle_shading','Toggle Shading Type'],[('active',False)],[]), # shift Z
 ]
 
+# other keymaps
+Other_dir = [
+    (['Object Mode','object.hide_collection','Hide Collection'],[('active',False)],[]),
+]
+
 def change_thred_keymaps():
     None
 
@@ -154,7 +159,10 @@ def changes_keys():
 
     change_key_value(A_select_dir, "CLICK")
 
-    for _dir in [A_dir,Brush_dir,C_dir,E_dir,F_dir,Outliner_dir,Q_dir,R_dir,S_dir,SPACE_dir,T_dir,TAB_dir,U_dir,V_dir,W_dir,X_dir,Z_dir]:
+    for _dir in [A_dir,Brush_dir,C_dir,E_dir,F_dir,Outliner_dir
+        ,Q_dir,R_dir,S_dir,SPACE_dir,T_dir,
+        TAB_dir,U_dir,V_dir,W_dir,X_dir,Z_dir,Other_dir
+        ]:
         change_key_value_2(_dir)
 
     bpy.context.preferences.view.use_translate_interface = True

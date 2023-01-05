@@ -31,8 +31,14 @@ def change_preferences_settings():
     
     # 系统
     edit = pref.edit
-    pref.addons['cycles'].preferences.compute_device_type = 'OPTIX' # 设置渲染设备
+    if sys.platform == "win32":
+        pref.addons['cycles'].preferences.compute_device_type = 'OPTIX' # 设置渲染设备
     edit.undo_steps = 128   # 撤销次数
+    
+    # 保存&加载
+    filepaths = pref.filepaths
+    filepaths.recent_files = 30     # 查看最近打开文件数量
+    filepaths.use_file_compression = True   # 使用文件压缩
     
     
     print('WXZ_Pie_Menu Changed The Settings!')
