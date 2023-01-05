@@ -3,9 +3,6 @@ from bpy.props import BoolProperty, PointerProperty
 import bpy
 import os
 from .pie.utils import check_rely_addon, rely_addons, change_default_keymap
-from . import change_keys
-
-
 
 bl_info = {
     "name": "WXZ Pie Menus Addon",
@@ -116,7 +113,7 @@ def unregister_submodule(mod):
                     del prefs[name]
 
 
-def get_dirpath():
+def get_keymap_dirpath():
     return os.path.join(os.path.dirname(os.path.realpath(__file__)), "keymap_presets")
 
 
@@ -207,16 +204,16 @@ class WXZ_PIE_Preferences(AddonPreferences):
         sub.label(text='自定义快捷键表:', icon='EVENT_SPACEKEY')
 
         sub.operator(Apply_My_Keymap.bl_idname, text='应用--默认快捷键表').path = os.path.join(
-            get_dirpath(), 'Default_Keymaps.py'
+            get_keymap_dirpath(), 'Default_Keymaps.py'
         )
         sub.operator(Apply_My_Keymap.bl_idname, text='应用--备份快捷键表').path = os.path.join(
-            get_dirpath(), 'Stored_Keymaps.py'
+            get_keymap_dirpath(), 'Stored_Keymaps.py'
         )
 
         row = row.box()
         row.alignment = "RIGHT"
         row.operator(Restore_My_Keymap.bl_idname, text="备份--当前快捷键表").path = os.path.join(
-            get_dirpath(), 'Stored_Keymaps.py'
+            get_keymap_dirpath(), 'Stored_Keymaps.py'
         )
 
         split = layout.split()
@@ -300,9 +297,6 @@ for mod in sub_modules:
         ),
     )
 
-    create_property(WXZ_PIE_Preferences, 'show_expanded_' +
-                    mod_name, BoolProperty())
-
 
 classes = (
     WXZ_PIE_Preferences,
@@ -312,9 +306,18 @@ classes = (
     Enable_Addon,
 )
 
+from . import change_keys, change_settings
+extra_scripts = (
+    change_keys,
+    change_settings,
+)
+
 def register():
     for cls in classes:
         bpy.utils.register_class(cls)
+
+    for script in extra_scripts:
+        script.register()
 
     prefs = get_addon_preferences()
     
@@ -324,19 +327,17 @@ def register():
         name = mod.__name__.split('.')[-1]
         if getattr(prefs, 'use_' + name):
             register_submodule(mod)
-    
-    change_keys.register()
 
 def unregister():
     for mod in sub_modules:
         if mod.__addon_enabled__:
             unregister_submodule(mod)
 
+    for script in reversed(extra_scripts):
+        script.unregister()
+
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
 
-
-
-    
 if __name__ == "__main__":
     register()

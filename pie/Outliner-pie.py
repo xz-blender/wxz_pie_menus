@@ -76,6 +76,7 @@ def register_keymaps():
     kmi.properties.name = "OUTLINER_PIE_MT_Bottom_A"
     kmi = km.keymap_items.new("outliner.show_active", 'F', 'CLICK')
     # kmi = km.keymap_items.new("pie.toggle_collection", 'E', 'CLICK')
+    kmi = km.keymap_items.new("outliner.collection_objects_select", "A", "CLICK")
     addon_keymaps.append(km)
 
 
