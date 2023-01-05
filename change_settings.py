@@ -10,7 +10,7 @@ def change_preferences_settings():
     view.show_developer_ui = True   # 开发者选项
     view.show_tooltips_python = True    # Python工具提示
     view.color_picker_type = 'SQUARE_SV'    # 拾色器类型
-    view.statusbar_memory = True    # 内存使用量
+    view.show_statusbar_memory = True    # 内存使用量
     if sys.platform == "win32":
         view.show_statusbar_vram = True     # 显存使用量
     view.statusbar_version = True    # 显示版本
