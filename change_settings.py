@@ -24,9 +24,11 @@ def change_preferences_settings():
     # 输入
     inputs = pref.inputs
     inputs.use_numeric_input_advanced = True    # 启用数学表达式输入
+
+    # 视图切换
     inputs.walk_navigation.use_gravity = True   # 启用行走重力
     inputs.use_mouse_depth_navigate = True      # 使用鼠标深度
-
+    inputs.use_zoom_to_mouse = True     # 缩放至鼠标位置
     view.smooth_view = 0    # 平滑视图 0
     
     # 系统
