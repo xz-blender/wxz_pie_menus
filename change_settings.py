@@ -39,6 +39,9 @@ def change_preferences_settings():
     filepaths = pref.filepaths
     filepaths.recent_files = 30     # 查看最近打开文件数量
     filepaths.use_file_compression = True   # 使用文件压缩
+
+    # 主题
+    pref.themes[0].node_editor.noodle_curving = 0 # 节点编辑器,曲线弯曲度
     
 
 def change_context_settings():
