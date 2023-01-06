@@ -4,6 +4,13 @@ import bpy
 import os
 from .pie.utils import check_rely_addon, rely_addons, change_default_keymap
 
+from . import change_keys, change_settings, enable_relay_addons
+extra_scripts = (
+    change_keys,
+    change_settings,
+    enable_relay_addons,
+)
+
 bl_info = {
     "name": "WXZ Pie Menus Addon",
     "author": "wxz",
@@ -215,6 +222,7 @@ class WXZ_PIE_Preferences(AddonPreferences):
         row.operator(Restore_My_Keymap.bl_idname, text="备份--当前快捷键表").path = os.path.join(
             get_keymap_dirpath(), 'Stored_Keymaps.py'
         )
+        row.operator('pie.enable_relay_addons',text = '打开常用插件')
 
         split = layout.split()
 
@@ -306,11 +314,7 @@ classes = (
     Enable_Addon,
 )
 
-from . import change_keys, change_settings
-extra_scripts = (
-    change_keys,
-    change_settings,
-)
+
 
 def register():
     for cls in classes:

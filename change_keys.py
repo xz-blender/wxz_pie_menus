@@ -18,7 +18,7 @@ def change_key_value(A_dir,value):
                     data.value = value
                 list_keymaps.clear()
 
-def change_key_value_2(change_dir):
+def change_key_value_base(change_dir):
     stored_value_list = {}
     stored_prop_list = {}
     for dir_list in change_dir:
@@ -54,7 +54,7 @@ def close_hide_collection_keys():
             for key_name ,key_data in keys_data.keymap_items.items():
                 if key_name == 'object.hide_collection' and  key_data.type != 'H':
                     key_data.active = False
-                    
+
 A_select_dir = [
     'Pose','Object Mode','Curve','Mesh','UV Editor','NLA Editor','Outliner'
     'Clip Editor','Node Editor','Graph Editor','Sequencer',
@@ -175,7 +175,7 @@ def changes_keys():
         ,Q_dir,R_dir,S_dir,SPACE_dir,T_dir,
         TAB_dir,U_dir,V_dir,W_dir,X_dir,Z_dir
         ]:
-        change_key_value_2(_dir)
+        change_key_value_base(_dir)
     # 更改完之后切换回中文翻译
     bpy.context.preferences.view.use_translate_interface = True
 
