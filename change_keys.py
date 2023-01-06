@@ -44,6 +44,14 @@ def change_key_value_2(change_dir):
                 list_keymaps.clear()
     return (stored_value_list, stored_prop_list)
 
+def close_hide_collection_keys():
+    keys = bpy.context.window_manager.keyconfigs.default.keymaps
+    for keys_name, keys_data in keys.items():
+        if keys_name == 'Object Mode' or 'Pose':
+            for key_name ,key_data in keys_data.keymap_items.items():
+                if key_name == 'object.hide_collection' and  key_data.type != 'H':
+                    key_data.active = False
+                    
 A_select_dir = [
     'Pose','Object Mode','Curve','Mesh','UV Editor','NLA Editor','Outliner'
     'Clip Editor','Node Editor','Graph Editor','Sequencer',
@@ -145,36 +153,33 @@ Z_dir =[
     (['3D View','view3d.toggle_shading','Toggle Shading Type'],[('active',False)],[]), # shift Z
 ]
 
-# other keymaps
-Other_dir = [
-    (['Object Mode','object.hide_collection','Hide Collection'],[('active',False)],[]),
-]
-
 def change_thred_keymaps():
     None
 
 def changes_keys():
     # 访问快捷键的名称会因翻译而改变
+    # 先改变为英文状态
     bpy.context.preferences.view.use_translate_interface = False
 
     change_key_value(A_select_dir, "CLICK")
 
     for _dir in [A_dir,Brush_dir,C_dir,E_dir,F_dir,Outliner_dir
         ,Q_dir,R_dir,S_dir,SPACE_dir,T_dir,
-        TAB_dir,U_dir,V_dir,W_dir,X_dir,Z_dir,Other_dir
+        TAB_dir,U_dir,V_dir,W_dir,X_dir,Z_dir
         ]:
         change_key_value_2(_dir)
-
+    # 更改完之后切换回中文翻译
     bpy.context.preferences.view.use_translate_interface = True
 
+    # 其他键位设置
+    close_hide_collection_keys()
+    
     print('"WXZ_Pie_Menu" changed keys!')
-    import os
-    name = os.path.dirname(__file__)
-    print(name)
+
 
 def register():
     if not bpy.app.timers.is_registered(changes_keys):
-        bpy.app.timers.register(changes_keys, first_interval=3)
+        bpy.app.timers.register(changes_keys, first_interval=2)
 
 
 def unregister(): 

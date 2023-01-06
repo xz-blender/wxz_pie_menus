@@ -23,7 +23,7 @@ class PIE_Bottom_W_alt(Operator):
 
     @classmethod
     def poll(cls, context):
-        return True
+        context.area.type == 'OUTLINER'
 
     def execute(self, context):
         if context.active_object:

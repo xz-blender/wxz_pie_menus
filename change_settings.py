@@ -40,19 +40,24 @@ def change_preferences_settings():
     filepaths.recent_files = 30     # 查看最近打开文件数量
     filepaths.use_file_compression = True   # 使用文件压缩
     
-    
-    print('WXZ_Pie_Menu Changed The Settings!')
 
 def change_context_settings():
     context = bpy.context
     scene = context.scene
-    # 渲染设置
+    # -------渲染设置-------
     scene.render.engine = 'CYCLES'
     scene.cycles.device = 'GPU'
+    scene.cycles.preview_samples = 16 # 预览采样
+    scene.render.film_transparent = True # 胶片透明
+    scene.cycles.use_auto_tile = False # 渲染使用平铺
 
+    # -------3D View-------
+    scene.tool_settings.snap_elements = {'VERTEX'} # 吸附到点模式
+    
 def change_settings():
     change_preferences_settings()
     change_context_settings()
+    print('"WXZ_Pie_Menu" changed settings!')
 
 def register():
     if not bpy.app.timers.is_registered(change_settings):

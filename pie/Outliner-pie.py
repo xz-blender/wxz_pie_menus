@@ -51,15 +51,21 @@ class Collection_Enable_Toggle(Operator):
 
     @classmethod
     def poll(cls, context):
-        return True
+        return context.area.type == 'OUTLINER'
 
     def execute(self, context):
-        active = context.view_layer.active_layer_collection.exclude
-        if active:
-            bpy.ops.outliner.collection_exclude_set('INVOKE_DEFAULT')
+        # if context.view_layer.active_layer_collection.name != 'Scene Collection':
+        if context.view_layer.active_layer_collection.exclude:
+            context.view_layer.active_layer_collection.exclude = False
+            # bpy.ops.outliner.collection_exclude_set()
         else:
-            bpy.ops.outliner.collection_exclude_clear('INVOKE_DEFAULT')
+            context.view_layer.active_layer_collection.exclude = True
+            # bpy.ops.outliner.collection_exclude_clear() #'INVOKE_DEFAULT'
         return {"FINISHED"}
+        # else:
+        #     self.report({'INFO'}, '没有选择集合')
+        #     return {"CANCELLED"}
+        
 
 classes = [
     OUTLINER_PIE_MT_Bottom_A,
@@ -75,8 +81,11 @@ def register_keymaps():
     kmi = km.keymap_items.new("wm.call_menu_pie", 'A', 'CLICK_DRAG')
     kmi.properties.name = "OUTLINER_PIE_MT_Bottom_A"
     kmi = km.keymap_items.new("outliner.show_active", 'F', 'CLICK')
-    # kmi = km.keymap_items.new("pie.toggle_collection", 'E', 'CLICK')
+    kmi = km.keymap_items.new("pie.toggle_collection", 'E', 'CLICK')
     kmi = km.keymap_items.new("outliner.collection_objects_select", "A", "CLICK")
+    kmi = km.keymap_items.new("outliner.collection_duplicate", "D", "CLICK",shift =True)
+    kmi = km.keymap_items.new("outliner.collection_duplicate_linked", "D", "CLICK",alt =True)
+
     addon_keymaps.append(km)
 
 
