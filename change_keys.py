@@ -31,7 +31,8 @@ def change_key_value_2(change_dir):
                         if id_data.name == dir_list[0][2]:
                             list_keymaps.append(id_data)
                         else:
-                            print('Not found ',dir_list[0][1],'in',dir_list[0][0],'|name:',dir_list[0][2])
+                            None
+                            # print('Not found ',dir_list[0][1],'in',dir_list[0][0],'|name:',dir_list[0][2])
                 for data in list_keymaps:
                     for value in dir_list[1]:
                         stored_value_list[data] = [value[0],getattr(data, value[0])]

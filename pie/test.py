@@ -25,8 +25,9 @@
 # print(bool(string))
 
 
-# a = {'a':'a',"b":True}
+a = {'a':'a',"b":True}
+b = {'c','d'}
 
-c = 'cc'
-test = 'AAA bbb' +c
+test = a + b
+test = a +b
 print(test)
