@@ -32,32 +32,52 @@ class VIEW3D_PIE_MT_Bottom_Q(Menu):
 
         set_pie_ridius(context, 100)
 
-        # 4 - LEFT
-        pie.operator(
-            "view3d.view_axis", text="左", icon_value=pcoll["A4"].icon_id
-        ).type = 'LEFT'
-        # 6 - RIGHT
-        pie.operator(
-            "view3d.view_axis", text="右", icon_value=pcoll["A6"].icon_id
-        ).type = 'RIGHT'
-        # 2 - BOTTOM
-        pie.operator("view3d.view_camera", text="摄像机", icon="VIEW_CAMERA")
-        # 8 - TOP
-        pie.operator(
-            "view3d.view_axis", text="顶", icon_value=pcoll["A8"].icon_id
-        ).type = 'TOP'
-        # 7 - TOP - LEFT
-        pie.operator(
-            "view3d.view_axis", text="后", icon_value=pcoll["A7"].icon_id
-        ).type = 'BACK'
-        # 9 - TOP - RIGHT
-        pie.operator(
-            "view3d.view_axis", text="前", icon_value=pcoll["A9"].icon_id
-        ).type = 'FRONT'
-        # 1 - BOTTOM - LEFT
-        pie.operator("view3d.view_all", text="全部")
-        # 3 - BOTTOM - RIGHT
-        pie.operator("view3d.view_selected", text="所选")
+        ui = context.area.ui_type
+
+        if ui == "VIEW_3D":
+            # 4 - LEFT
+            pie.operator(
+                "view3d.view_axis", text="左", icon_value=pcoll["A4"].icon_id
+            ).type = 'LEFT'
+            # 6 - RIGHT
+            pie.operator(
+                "view3d.view_axis", text="右", icon_value=pcoll["A6"].icon_id
+            ).type = 'RIGHT'
+            # 2 - BOTTOM
+            pie.operator("view3d.view_camera", text="摄像机", icon="VIEW_CAMERA")
+            # 8 - TOP
+            pie.operator(
+                "view3d.view_axis", text="顶", icon_value=pcoll["A8"].icon_id
+            ).type = 'TOP'
+            # 7 - TOP - LEFT
+            pie.operator(
+                "view3d.view_axis", text="后", icon_value=pcoll["A7"].icon_id
+            ).type = 'BACK'
+            # 9 - TOP - RIGHT
+            pie.operator(
+                "view3d.view_axis", text="前", icon_value=pcoll["A9"].icon_id
+            ).type = 'FRONT'
+            # 1 - BOTTOM - LEFT
+            pie.operator("view3d.view_all", text="全部")
+            # 3 - BOTTOM - RIGHT
+            pie.operator("view3d.view_selected", text="所选")
+        elif ui == "UV":
+            # 4 - LEFT
+            pie.separator()
+            # 6 - RIGHT
+            pie.separator()
+            # 2 - BOTTOM
+            pie.separator()
+            # 8 - TOP
+            pie.separator()
+            # 7 - TOP - LEFT
+            pie.separator()
+            # 9 - TOP - RIGHT
+            pie.separator()
+            # 1 - BOTTOM - LEFT
+            pie.operator("image.view_all", text="全部")
+            # 3 - BOTTOM - RIGHT
+            pie.operator("image.view_selected", text="所选")
 
 
 class NODE_PIE_MT_Bottom_Q(Menu):
@@ -171,6 +191,10 @@ def register_keymaps():
     addon_keymaps.append(km)
 
     km = addon.keymaps.new(name='Node Editor', space_type='NODE_EDITOR')
+    kmi = km.keymap_items.new("wm.call_menu_pie", 'Q', 'CLICK_DRAG')
+    kmi.properties.name = "VIEW3D_PIE_MT_Bottom_Q"
+
+    km = addon.keymaps.new(name='Image Editor', space_type='IMAGE_EDITOR')
     kmi = km.keymap_items.new("wm.call_menu_pie", 'Q', 'CLICK_DRAG')
     kmi.properties.name = "NODE_PIE_MT_Bottom_Q"
     addon_keymaps.append(km)
