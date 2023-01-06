@@ -21,51 +21,51 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
 
         addons_officials_list ={
             # 官方&社区      #  addon_name : [[addon_settings],[addon_keys]]
-            'curve_tools' : [],
-            'add_curve_extra_objects':[],
-            'curve_simplify':[],
-            'add_mesh_BoltFactory':[],
-            'add_mesh_extra_objects':[],
-            'development_edit_operator':[],
-            'development_icon_get':[],
+            'curve_tools' : [[],[]],
+            'add_curve_extra_objects':[[],[]],
+            'curve_simplify':[[],[]],
+            'add_mesh_BoltFactory':[[],[]],
+            'add_mesh_extra_objects':[[],[]],
+            'development_edit_operator':[[],[]],
+            'development_icon_get':[[],[]],
             'amaranth':[[('use_frame_current',False),
                         ('use_scene_refresh',False),
                         ('use_file_save_reload',False),
                         ('use_timeline_extra_info',False),
                         ('use_layers_for_render',False),
                         ],[]], 
-            'space_view3d_copy_attributes':[],
+            'space_view3d_copy_attributes':[[],[]],
             'materials_utils':[[],
-                        (['3D View','wm.call_menu','Material Utilities'],[('value','CLICK'),('ctrl',True)],[])
-                        ],  # key
-            'object_print3d_utils':[],
-            'mesh_f2':[], #key
-            'mesh_looptools':[],
-            'mesh_snap_utilities_line':[],
-            'mesh_tiny_cad':[],
-            'node_presets':[], # addon path
-            'node_wrangler':[],
-            'object_boolean_tools':[], # key
-            'magic_uv':[],
-            'io_import_images_as_planes':[]
+                        [(['3D View','wm.call_menu','Material Utilities'],[('value','CLICK'),('ctrl',True)],[]),]
+                        ],
+            'object_print3d_utils':[[],[]],
+            'mesh_f2':[[],[]], #key
+            'mesh_looptools':[[],[]],
+            'mesh_snap_utilities_line':[[],[]],
+            'mesh_tiny_cad':[[],[]],
+            'node_presets':[[],[]], # addon path
+            'node_wrangler':[[],[]],
+            'object_boolean_tools':[[],[]], # key
+            'magic_uv':[[],[]],
+            'io_import_images_as_planes':[[],[]]
         }
         addons_thirds_list =[
             # 第三方
             'Bagapie', # key alt N
             'slcad_transform',
         ]
-        for addon_name ,addon_change in addons_officials_list:
+        for addon_name ,addon_change in addons_officials_list.items():
             if addon_name in addons_list:
             # if addon_utils.check(addon_name)[0] == True: # check addon is enabled
                 try:
                     bpy.ops.preferences.addon_enable(module = addon_name)
                 except:
                     print(addon_name,'is enable error')
+                if addon_change[0]:
+                    for pref_change in addon_change[0]:
+                        setattr(context.preferences.addons[addon_name].preferences, pref_change[0], pref_change[1])
                 if addon_change[1]:
-                    try:
-                        change_key_value_base(addon_change[1])
-                    except:
-                        None
+                    change_key_value_base(addon_change[1])
                 # print('%s is already enabled'% addon_o)
                 # print('enabled addon:',addon_o)
 
