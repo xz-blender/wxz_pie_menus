@@ -195,7 +195,7 @@ def register_keymaps():
     kmi.properties.name = "NODE_PIE_MT_Bottom_Q"
     addon_keymaps.append(km)
 
-    km = addon.keymaps.new(name='UV Editor', space_type='IMAGE_EDITOR')
+    km = addon.keymaps.new(name='UV Editor', space_type='EMPTY')
     kmi = km.keymap_items.new("wm.call_menu_pie", 'Q', 'CLICK_DRAG')
     kmi.properties.name = "VIEW3D_PIE_MT_Bottom_Q"
     addon_keymaps.append(km)

@@ -27,9 +27,11 @@ def change_key_value_2(change_dir):
             if ks_name == dir_list[0][0]:
                 list_keymaps = []
                 for id_name , id_data in ks_data.keymap_items.items():
-                    if id_name == dir_list[0][1] and id_data.name == dir_list[0][2]:
-                        list_keymaps.append(id_data)
-                            # print('error_name----',dir_list[0][0],'---',dir_list[0][1],'-->',dir_list[0][2])
+                    if id_name == dir_list[0][1]:
+                        if id_data.name == dir_list[0][2]:
+                            list_keymaps.append(id_data)
+                        else:
+                            print('Not found ',dir_list[0][1],'in',dir_list[0][0],'|name:',dir_list[0][2])
                 for data in list_keymaps:
                     for value in dir_list[1]:
                         stored_value_list[data] = [value[0],getattr(data, value[0])]
@@ -95,7 +97,7 @@ Outliner_dir =[
 Q_dir =[
     (['Window','wm.call_menu','Quick Favorites'],[('active',False)],[]), # Q
     (['Window','wm.quit_blender','Quit Blender'],[('active',False)],[]), # ctrl Q
-    (['Object Non-modal','object.transfer_mode','Transfer Mode'],[('active',False)],[]), # alt Q
+    # (['Object Non-modal','object.transfer_mode','Transfer Mode'],[('active',False)],[]), # alt Q  和 alt w 设置冲突
 ]
 R_dir =[
     (['3D View','transform.rotate','Rotate'],[('value','CLICK')],[]),
@@ -138,7 +140,9 @@ V_dir =[
 ]
 W_dir =[
     (['3D View','wm.tool_set_by_id','Set Tool by Name'],[('value','CLICK')],[]), # W
-    (['Window','wm.toolbar_fallback_pie','Fallback Tool Pie Menu'],[('value','CLICK_DRAG')],[]), # alt W
+    (['Window','wm.toolbar_fallback_pie','Fallback Tool Pie Menu'],[('value','CLICK_DRAG')],[]), # alt W Pie
+    (['Object Non-modal','object.transfer_mode','Transfer Mode'],[('type','W'),('value','CLICK')],[]), # alt W Pie
+
 ]
 X_dir =[
     (['Object Mode','object.delete','Delete'],[('value','CLICK')],[('use_global',False),('confirm',False)]),
@@ -151,6 +155,9 @@ X_dir =[
 Z_dir =[
     (['3D View','wm.call_menu_pie','Shading'],[('value','CLICK')],[]), # Z
     (['3D View','view3d.toggle_shading','Toggle Shading Type'],[('active',False)],[]), # shift Z
+]
+other_dir=[
+    (['Object Mode','collection.objects_add_active','Add Selected to Active Collection'],[('active',False)],[]), # G ctrl shift
 ]
 
 def change_thred_keymaps():

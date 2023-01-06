@@ -23,9 +23,10 @@ class PIE_Bottom_W_alt(Operator):
 
     @classmethod
     def poll(cls, context):
-        context.area.type == 'OUTLINER'
+        return True
 
     def execute(self, context):
+        print('yes')
         if context.active_object:
             if context.object.mode in ['EDIT', 'SCULPT', 'POSE', 'WEIGHT_PAINT', 'VERTEX_PAINT', 'TEXTURE_PAINT']:
                 bpy.ops.object.transfer_mode('INVOKE_DEFAULT')
@@ -47,11 +48,11 @@ addon_keymaps = []
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
 
-    km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
-    kmi = km.keymap_items.new(
-        PIE_Bottom_W_alt.bl_idname, 'W', 'CLICK', alt=True
-    )
-    addon_keymaps.append(km)
+    # km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
+    # kmi = km.keymap_items.new(
+    #     PIE_Bottom_W_alt.bl_idname, 'W', 'CLICK', alt=True
+    # )
+    # addon_keymaps.append(km)
 
 
 def unregister_keymaps():
