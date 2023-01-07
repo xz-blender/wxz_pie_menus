@@ -158,12 +158,13 @@ Z_dir =[
     (['3D View','wm.call_menu_pie','Shading'],[('value','CLICK')],[]), # Z
     (['3D View','view3d.toggle_shading','Toggle Shading Type'],[('active',False)],[]), # shift Z
 ]
-other_dir=[
+G_dir =[
     (['Object Mode','collection.objects_add_active','Add Selected to Active Collection'],[('active',False)],[]), # G ctrl shift
+    (['Object Mode','collection.objects_remove_all','Remove from All Collections'],[('active',False)],[]), # G ctrl shift alt
+    (['Object Mode','collection.objects_remove','Remove from Collection'],[('active',False)],[]), # G ctrl alt
+    (['Object Mode','collection.create','Create New Collection'],[('active',False)],[]), # G ctrl
 ]
 
-def change_thred_keymaps():
-    None
 
 def changes_keys():
     # 访问快捷键的名称会因翻译而改变
@@ -174,7 +175,7 @@ def changes_keys():
 
     for _dir in [A_dir,Brush_dir,C_dir,E_dir,F_dir,Outliner_dir
         ,Q_dir,R_dir,S_dir,SPACE_dir,T_dir,
-        TAB_dir,U_dir,V_dir,W_dir,X_dir,Z_dir
+        TAB_dir,U_dir,V_dir,W_dir,X_dir,Z_dir,G_dir
         ]:
         change_key_value_base(_dir)
     # 更改完之后切换回中文翻译

@@ -92,7 +92,7 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             # QuickSnap
             'quicksnap': [[],[(['3D View','object.quicksnap','QuickSnap Tool'],[('value','CLICK'),('type','G')],[])]],
             # Simple Tabs
-            'slcad_transform': [[],[]], # 导入json设置
+            'slcad_transform': [[('startup_delay',1)],[]], # 导入json设置
             'extra_lights': [[],[]],
             # Photographer
             'photographer': [[('hdri_lib_path',join(assets_sync,'Custom HDRI'))],
@@ -159,8 +159,8 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             'distributeobjects': [[],[]],
             # Friendly Povit
             'scpo': [[],[
-                (['3D View','friendly.pivot','Friendly:SCPO'],[('value','CLICK'),('ctrl',True)],[]),
-                (['Image','friendly.pivot2d','Friendly:SCPO2D'],[('value','CLICK'),('ctrl',True)],[])]],
+                (['3D View','friendly.pivot','Friendly: SCPO'],[('value','CLICK'),('ctrl',True)],[]),
+                (['Image','friendly.pivot2d','Friendly: SCPO2D'],[('value','CLICK'),('ctrl',True)],[])]],
             'lattice_helper': [[],[]]
         }
 
