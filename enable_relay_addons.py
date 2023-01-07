@@ -174,17 +174,17 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
         # 打开插件并设置
         for addon_name ,addon_change in addons_thirds_list.items():
             if addon_name in addons_list:
+                if addon_utils.check(addon_name)[0] == False:
             #  # check addon is enabled
-                try:
-                    bpy.ops.preferences.addon_enable(module = addon_name)
-                    time.sleep(0.2)
-                except:
-                    print(addon_name,' is enable error')
+                    try:
+                        bpy.ops.preferences.addon_enable(module = addon_name)
+                        time.sleep(0.2)
+                    except:
+                        print(addon_name,'is enable error')
                 if addon_change[0]:
                     for pref_change in addon_change[0]:
                         setattr(context.preferences.addons[addon_name].preferences, pref_change[0], pref_change[1])
                 if addon_change[1]:
-                    print(addon_change)
                     change_addon_key_value(addon_change[1])
         # 关闭插件
         for disable in addon_disable_list:
@@ -192,11 +192,6 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
                 bpy.ops.preferences.addon_disable(module = disable)
 
         # 部分插件其他设置
-        # Simple Tabs
-        try:
-            bpy.ops.simpletabs.import_settings(join(config_path,'simpletabs_prefs.json'))
-        except:
-            None
 
         return {"FINISHED"}
 
