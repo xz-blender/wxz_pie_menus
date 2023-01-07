@@ -195,6 +195,9 @@ def register_keymaps():
         kmi.properties.name = "VIEW3D_PIE_MT_Bottom_D"
         addon_keymaps.append(km)
 
+        km = addon.keymaps.new(name='3D View', space_type='VIEW_3D')
+        kmi = km.keymap_items.new("mesh.snap_utilities_line", 'D', 'CLICK')
+        addon_keymaps.append(km)
 
 def unregister_keymaps():
     wm = bpy.context.window_manager

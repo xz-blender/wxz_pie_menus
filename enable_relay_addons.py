@@ -49,7 +49,7 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
         join = os.path.join
 
         addons_officials_list ={
-            # 官方&社区      #  addon_name : [[addon_settings],[addon_keys]]
+        # 官方&社区      #  addon_name : [[addon_settings],[addon_keys]]
             'curve_tools' : [[],[]],
             'add_curve_extra_objects':[[],[]],
             'curve_simplify':[[],[]],
@@ -77,10 +77,13 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             'io_import_images_as_planes':[[],[]],
             'space_view3d_modifier_tools':[[],[]],
             'sun_position':[[],[]],
-            'object_edit_linked':[[],[]]
-        }
-        addons_thirds_list ={
-            # 第三方
+            'object_edit_linked':[[],[]],
+            'mesh_tools':[[],[]],
+            'mesh_inset':[[],[]],
+            'io_import_dxf':[[],[]],
+            'io_export_dxf':[[],[]],
+
+        # 第三方
             'Bagapie': [[],[(['3D View','bagapie.duplicatelinkedgroup','Duplicate Linked Group'],[('active',False)],[]),
                             (['3D View','bagapie.duplicategroup','Duplicate Group'],[('active',False)],[]),
                             ]], # key alt N
@@ -90,7 +93,8 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             # HDRI
             'hdri_maker': [[('hdri_maker_library',join(assets_local,'HDRI MAKER LIBRARY'))],[]],
             # QuickSnap
-            'quicksnap': [[],[(['3D View','object.quicksnap','QuickSnap Tool'],[('value','CLICK'),('type','G')],[])]],
+            'quicksnap': [[('auto_check_update',False)],[
+                (['3D View','object.quicksnap','QuickSnap Tool'],[('value','CLICK'),('type','G'),('shift',False)],[])]],
             # Simple Tabs
             'slcad_transform': [[('startup_delay',1)],[]], # 导入json设置
             'extra_lights': [[],[]],
@@ -116,6 +120,8 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             'Synchronize Workspaces': [[],[]],
             'EasyPBR': [[('lib_path',join(assets_sync,'Easy_PBR_library'))],[]], # keys 未更改
             'EdgeFlow': [[],[]],
+            'slide_edge': [[],[]],
+            'straight_skeleton': [[],[]],
             'face_cutter': [[],[]],
             'bend_face': [[],[]],
             # Niche Loops
@@ -147,7 +153,7 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             'OCD': [[],[]],
             # IQ lib
             'botaniq_full': [[('botaniq_path',join(assets_local,'botaniq_full'))],[]],
-            'traffiq_full': [[('traffiq_path',join(assets_local,'traffiq_full'))],[]],
+            # 'traffiq_full': [[('traffiq_path',join(assets_local,'traffiq_full'))],[]],
             'leafig': [[],[]],
             'Text_input': [[],[]],
             'atomic_data_manager': [[('enable_missing_file_warning',False),('enable_support_me_popup',False),
@@ -172,13 +178,15 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
 
         # ads_lis_dir = addons_officials_list.update(addons_thirds_list)
         # 打开插件并设置
-        for addon_name ,addon_change in addons_thirds_list.items():
+        for addon_name ,addon_change in addons_officials_list.items():
             if addon_name in addons_list:
                 if addon_utils.check(addon_name)[0] == False:
             #  # check addon is enabled
                     try:
                         bpy.ops.preferences.addon_enable(module = addon_name)
-                        time.sleep(0.2)
+                        time.sleep(1)
+                        bpy.ops.preferences.addon_refresh()
+                        print(addon_name,'is enabled')
                     except:
                         print(addon_name,'is enable error')
                 if addon_change[0]:
