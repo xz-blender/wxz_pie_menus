@@ -19,8 +19,8 @@ def change_key_value(A_dir,value):
                 list_keymaps.clear()
 
 def change_key_value_base(change_dir):
-    stored_value_list = {}
-    stored_prop_list = {}
+    # stored_value_list = {}
+    # stored_prop_list = {}
     for dir_list in change_dir:
         keymaps = bpy.context.window_manager.keyconfigs.default.keymaps
         for ks_name , ks_data in keymaps.items():
@@ -35,17 +35,17 @@ def change_key_value_base(change_dir):
                             # print('Not found ',dir_list[0][1],'in',dir_list[0][0],'|name:',dir_list[0][2])
                 for data in list_keymaps:
                     for value in dir_list[1]:
-                        stored_value_list[data] = [value[0],getattr(data, value[0])]
+                        # stored_value_list[data] = [value[0],getattr(data, value[0])]
                         setattr(data, value[0], value[1]) 
                     if dir_list[2] != None:
                         for prop in dir_list[2]:
-                            stored_prop_list[data] = [prop[0],getattr(data.properties, prop[0])]
+                            # stored_prop_list[data] = [prop[0],getattr(data.properties, prop[0])]
                             try:
                                 setattr(data.properties,prop[0],prop[1])
                             except:
                                 print(data.name,'--keys_prop_error-->',prop[0],':',prop[1])
                 list_keymaps.clear()
-    return (stored_value_list, stored_prop_list)
+    # return (stored_value_list, stored_prop_list)
 
 def close_hide_collection_keys():
     keys = bpy.context.window_manager.keyconfigs.default.keymaps
@@ -65,6 +65,7 @@ A_dir =[
     (['3D View','transform.skin_resize','Skin Resize'],[('value','CLICK')],[]), # ctrl A - mesh
     (['Object Mode','wm.call_menu','Apply'],[('value','CLICK')],[]), # ctrl A - object
     (['Object Mode','wm.call_menu','Add'],[('value','CLICK')],[]), # shift A - object
+    (['Mesh','wm.call_menu','Mesh'],[('value','CLICK')],[]), # shift A - mesh
 ]
 Brush_dir =[
     (['Sculpt','wm.call_menu_pie','Mask Edit'],[('value','CLICK_DRAG')],[]), # A
@@ -85,7 +86,7 @@ E_dir =[
 ]
 F_dir =[
     (['Curve','curve.make_segment','Make Segment'],[('value','CLICK')],[]), 
-    (['Mesh','mesh.edge_face_add','Make Edge/Face'],[('value','CLICK')],[]), 
+    # (['Mesh','mesh.edge_face_add','Make Edge/Face'],[('value','CLICK')],[]), # config[Blender addon]
     (['Mesh','wm.call_menu','Face'],[('value','CLICK')],[]), # ctrl F
     (['Node Editor','node.link_make','Make Links'],[('value','CLICK')],[]), # ctrl F
 ]
