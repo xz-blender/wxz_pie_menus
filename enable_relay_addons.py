@@ -70,7 +70,7 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             'mesh_looptools':[[],[]],
             'mesh_snap_utilities_line':[[],[]],
             'mesh_tiny_cad':[[],[]],
-            'node_presets':[[('search_pat',join(assets_sync,'Nodes Presets'))],[]], # addon path
+            'node_presets':[[('search_path',join(assets_sync,'Nodes Presets'))],[]], # addon path
             'node_wrangler':[[],[]],
             'object_boolean_tools':[[],[(['Object Mode','wm.call_menu','Bool Tool'],[('value','CLICK')],[])]], # key
             'magic_uv':[[],[]],
