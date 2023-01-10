@@ -96,7 +96,8 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             'quicksnap': [[('auto_check_update',False)],[
                 (['3D View','object.quicksnap','QuickSnap Tool'],[('value','CLICK'),('type','G'),('shift',False)],[])]],
             # Simple Tabs
-            'slcad_transform': [[('startup_delay',1)],[]], # 导入json设置
+            'simple-tabs': [[('startup_delay',1)],[]], # 导入json设置
+            'slcad_transform': [[],[]],
             'extra_lights': [[],[]],
             # Photographer
             'photographer': [[('hdri_lib_path',join(assets_sync,'Custom HDRI'))],
@@ -167,7 +168,8 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             'scpo': [[],[
                 (['3D View','friendly.pivot','Friendly: SCPO'],[('value','CLICK'),('ctrl',True)],[]),
                 (['Image','friendly.pivot2d','Friendly: SCPO2D'],[('value','CLICK'),('ctrl',True)],[])]],
-            'lattice_helper': [[],[]]
+            'lattice_helper': [[],[]],
+            'viewport_timeline_scrub': [[],[]]
         }
 
         addon_disable_list = [
@@ -200,6 +202,7 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
                 bpy.ops.preferences.addon_disable(module = disable)
 
         # 部分插件其他设置
+        bpy.ops.simpletabs.import_settings(filepath="D:\\OneDrive\\Sync\\Blender\\Blender_Mapping\\config\\simpletabs_prefs.json")
 
         return {"FINISHED"}
 

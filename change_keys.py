@@ -19,6 +19,9 @@ def change_key_value(A_dir,value):
                 list_keymaps.clear()
 
 def change_key_value_base(change_dir):
+    # 访问快捷键的名称会因翻译而改变
+    # 先改变为英文状态
+    bpy.context.preferences.view.use_translate_interface = False
     # stored_value_list = {}
     # stored_prop_list = {}
     for dir_list in change_dir:
@@ -45,6 +48,8 @@ def change_key_value_base(change_dir):
                             except:
                                 print(data.name,'--keys_prop_error-->',prop[0],':',prop[1])
                 list_keymaps.clear()
+    # 更改完之后切换回中文翻译
+    bpy.context.preferences.view.use_translate_interface = True
     # return (stored_value_list, stored_prop_list)
 
 def close_hide_collection_keys():
@@ -167,9 +172,7 @@ G_dir =[
 
 
 def changes_keys():
-    # 访问快捷键的名称会因翻译而改变
-    # 先改变为英文状态
-    bpy.context.preferences.view.use_translate_interface = False
+
 
     change_key_value(A_select_dir, "CLICK")
 
@@ -178,12 +181,12 @@ def changes_keys():
         TAB_dir,U_dir,V_dir,W_dir,X_dir,Z_dir,G_dir
         ]:
         change_key_value_base(_dir)
-    # 更改完之后切换回中文翻译
-    bpy.context.preferences.view.use_translate_interface = True
 
     # 其他键位设置
     close_hide_collection_keys()
-    
+
+    bpy.ops.pie.enable_relay_addons()
+
     print('"WXZ_Pie_Menu" changed keys!')
 
 
