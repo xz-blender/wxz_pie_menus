@@ -149,7 +149,7 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
                 (['3D View','object.drop_it','Drop It'],[('value','CLICK')],[])
                 ]],
             'NGon Loop Select': [[],[
-                (['Mesh','ls.select','Loop Select'],[('active',False)],[]),
+                (['Mesh','ls.select','Loop Select'],[('value','CLICK')],[]),
                 ]],
             'OCD': [[],[]],
             # IQ lib
@@ -202,7 +202,7 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
                 bpy.ops.preferences.addon_disable(module = disable)
 
         # 部分插件其他设置
-        bpy.ops.simpletabs.import_settings(filepath="D:\\OneDrive\\Sync\\Blender\\Blender_Mapping\\config\\simpletabs_prefs.json")
+        bpy.ops.simpletabs.import_settings(filepath=r"D:/OneDrive/Sync/Blender/Blender_Mapping/config/simpletabs_prefs.json")
 
         return {"FINISHED"}
 

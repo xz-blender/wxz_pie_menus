@@ -193,13 +193,29 @@ class PIE_Image_usefaker(Operator):
                     if ob.data.type == "IMAGE":
                         ob.data.use_fake_user = True
             self.toggle = False
-            return {"FINISHED"}
         else:
             for ob in context.selected_objects:
                 if context.object.type == 'EMPTY':
                     if ob.data.type == "IMAGE":
                         ob.data.use_fake_user = False
             self.toggle = True
+        return {"FINISHED"}
+
+class PIE_Apply_MultiObjects_Scale(bpy.types.Operator):
+    bl_idname = "pie.apply_multi_objects_scale"
+    bl_label = "Apply Multi Objects Scale"
+    bl_description = "Apply multi objects scale that skip links objects"
+    bl_options = {"REGISTER"}
+
+    @classmethod
+    def poll(cls, context):
+        if context.selected_objects:
+            return True
+
+    def execute(self, context):
+        for ob in context.selected_objects:
+            None
+        return {"FINISHED"}
 
 
 class PIE_MT_Bottom_A_Ctrl(Menu):
@@ -249,6 +265,7 @@ classes = [
     PIE_MT_Bottom_A,
     PIE_MT_Bottom_A_Ctrl,
     PIE_Image_usefaker,
+    PIE_Apply_MultiObjects_Scale,
 ]
 
 
