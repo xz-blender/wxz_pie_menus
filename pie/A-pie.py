@@ -249,7 +249,7 @@ class PIE_Apply_MultiObjects_Scale(bpy.types.Operator):
                     if scale:
                         data.data.transform(S)
                         data.matrix_basis = T @ R
-                    elif rotation:
+                    if rotation:
                         data.data.transform(R)
                         data.matrix_basis = T @ S
 
