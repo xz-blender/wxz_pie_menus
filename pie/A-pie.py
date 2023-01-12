@@ -194,12 +194,15 @@ class PIE_Image_usefaker(Operator):
                 if context.object.type == 'EMPTY':
                     if ob.data.type == "IMAGE":
                         ob.data.use_fake_user = True
+            self.report("INFO","已设置伪用户")
             self.toggle = False
+
         else:
             for ob in context.selected_objects:
                 if context.object.type == 'EMPTY':
                     if ob.data.type == "IMAGE":
                         ob.data.use_fake_user = False
+            self.report("INFO","清除伪用户")
             self.toggle = True
         return {"FINISHED"}
 
