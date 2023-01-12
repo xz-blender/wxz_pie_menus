@@ -169,7 +169,8 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
                 (['3D View','friendly.pivot','Friendly: SCPO'],[('value','CLICK'),('ctrl',True)],[]),
                 (['Image','friendly.pivot2d','Friendly: SCPO2D'],[('value','CLICK'),('ctrl',True)],[])]],
             'lattice_helper': [[],[]],
-            'viewport_timeline_scrub': [[],[]]
+            'viewport_timeline_scrub': [[],[]],
+            'autoMaterial': [[],[]],
         }
 
         addon_disable_list = [
