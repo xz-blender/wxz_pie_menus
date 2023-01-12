@@ -169,10 +169,12 @@ G_dir =[
     (['Object Mode','collection.objects_remove','Remove from Collection'],[('active',False)],[]), # G ctrl alt
     (['Object Mode','collection.create','Create New Collection'],[('active',False)],[]), # G ctrl
 ]
+Text_dir =[
+    (['Text','text.move_lines','Move Lines'],[('shift',False),('ctrl',False),('alt',True)],[]),
+]
 
 
 def changes_keys():
-
 
     change_key_value(A_select_dir, "CLICK")
 

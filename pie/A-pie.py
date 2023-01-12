@@ -1,6 +1,8 @@
 import os
 import bpy
 from bpy.types import Menu, Operator
+from mathutils import Matrix
+from collections import defaultdict
 from .utils import check_rely_addon, rely_addons, set_pie_ridius, change_default_keymap, restored_default_keymap
 
 submoduname = __name__.split('.')[-1]
@@ -205,7 +207,10 @@ class PIE_Apply_MultiObjects_Scale(bpy.types.Operator):
     bl_idname = "pie.apply_multi_objects_scale"
     bl_label = "Apply Multi Objects Scale"
     bl_description = "Apply multi objects scale that skip links objects"
-    bl_options = {"REGISTER"}
+    bl_options = {"REGISTER","UNDO"}
+
+    scale: bpy.props.BoolProperty(default=False)
+    rotation: bpy.props.BoolProperty(default=False)
 
     @classmethod
     def poll(cls, context):
@@ -213,8 +218,44 @@ class PIE_Apply_MultiObjects_Scale(bpy.types.Operator):
             return True
 
     def execute(self, context):
-        for ob in context.selected_objects:
-            None
+        scale = self.scale
+        rotation = self.rotation
+        # how to apply tramsform with bpy and without ops
+        # https://blender.stackexchange.com/questions/159538/how-to-apply-all-transformations-to-an-object-at-low-level
+        se_objects = context.selected_objects
+
+        data_links = defaultdict(list)
+        for ob in se_objects:
+            # filter Mesh,Curve
+            if ob.type == 'MESH' or 'CURVE':
+                data_links[ob].append(ob)
+            
+        # filter is linked objects
+        for data, ob_list in data_links.items():
+            print(data, ob_list)
+            # skip parents & linked objects
+            if len(ob_list) == 1 and data.children_recursive == []:
+                mw = data.matrix_world
+                mb = data.matrix_basis
+
+                loc, rot, scale = mb.decompose()
+
+                # rotation
+                T = Matrix.Translation(loc)
+                R = rot.to_matrix().to_4x4()
+                S = Matrix.Diagonal(scale).to_4x4()
+
+                if hasattr(data.data, "transform"):
+                    if scale:
+                        data.data.transform(S)
+                        data.matrix_basis = T @ R
+                    elif rotation:
+                        data.data.transform(R)
+                        data.matrix_basis = T @ S
+
+                # for c in data.children:
+                #     c.matrix_local = S @ c.matrix_local
+                
         return {"FINISHED"}
 
 
@@ -232,8 +273,11 @@ class PIE_MT_Bottom_A_Ctrl(Menu):
             ob_mode = context.object.mode
 
             # 4 - LEFT
-            pie.separator()
+            rotation = pie.operator(PIE_Apply_MultiObjects_Scale.bl_idname,text = '旋转-跳过实例')
+            rotation.rotation = True
             # 6 - RIGHT
+            scale = pie.operator(PIE_Apply_MultiObjects_Scale.bl_idname,text = '缩放-跳过实例')
+            scale.scale = True
             pie.separator()
             # 2 - BOTTOM
             if ob_type in ['MESH', 'CURVE', 'SURFACE', 'FONT', 'GPENCIL', 'META']:
