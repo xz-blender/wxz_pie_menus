@@ -278,7 +278,6 @@ class PIE_MT_Bottom_A_Ctrl(Menu):
             # 6 - RIGHT
             scale = pie.operator(PIE_Apply_MultiObjects_Scale.bl_idname,text = '缩放-跳过实例')
             scale.scale = True
-            pie.separator()
             # 2 - BOTTOM
             if ob_type in ['MESH', 'CURVE', 'SURFACE', 'FONT', 'GPENCIL', 'META']:
                 pie.operator('object.convert', text='可视几何->网格').target = 'MESH'
