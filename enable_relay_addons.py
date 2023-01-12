@@ -119,7 +119,7 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
                         (['File Browser','wm.super_export','Super EXport'],[('value','CLICK'),('type','E')],[]),
                         ]],
             'Synchronize Workspaces': [[],[]],
-            'EasyPBR': [[('lib_path',join(assets_sync,'Easy_PBR_library'))],[]], # keys 未更改
+            'EasyPBR': [[],[]], # keys 未更改 ('lib_path',join(assets_sync,'Easy_PBR_library'))
             'EdgeFlow': [[],[]],
             'slide_edge': [[],[]],
             'straight_skeleton': [[],[]],
