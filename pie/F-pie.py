@@ -47,7 +47,6 @@ class VIEW3D_PIE_MT_Bottom_F(Menu):
         ]:
             # 4 - LEFT
             op = pie.operator('object.make_single_user',text='单一化', icon='UNLINKED')
-            op.operator_context = 'INVOKE_REGION_WIN'
             op.object = True
             op.obdata = True
             # 6 - RIGHT
