@@ -206,7 +206,7 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
         # Simple Tabs
         try:
             bpy.ops.simpletabs.import_settings(filepath=r"D:/OneDrive/Sync/Blender/Blender_Mapping/config/simpletabs_prefs.json")
-            bpy.ops.simpletabs.update()
+            bpy.ops.simpletabs.update('INVOKE_DEFAULT')
         except:
             print("Simple Tabs settings error")
 
