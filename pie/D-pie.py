@@ -104,7 +104,7 @@ class VIEW3D_PIE_MT_Bottom_D(Menu):
             pie.separator()
             # 2 - BOTTOM
             pie.operator(VIEW3D_PIE_MT_Transform_Pivot_UV.bl_idname,
-                         text='各自中心', icon='PIVOT_INDIVIDUAL').pivot = 'CENTER'
+                         text='各自中心', icon='PIVOT_INDIVIDUAL').pivot = 'INDIVIDUAL_ORIGINS'
             # 8 - TOP
             pie.separator()
             # 7 - TOP - LEFT
@@ -113,7 +113,7 @@ class VIEW3D_PIE_MT_Bottom_D(Menu):
             pie.separator()
             # 1 - BOTTOM - LEFT
             pie.operator(VIEW3D_PIE_MT_Transform_Pivot_UV.bl_idname,
-                         text='边界框', icon='PIVOT_BOUNDBOX').pivot = 'INDIVIDUAL_ORIGINS'
+                         text='边界框', icon='PIVOT_BOUNDBOX').pivot = 'CENTER'
             # 3 - BOTTOM - RIGHT
             pie.operator(VIEW3D_PIE_MT_Transform_Pivot_UV.bl_idname,
                          text='游标', icon='PIVOT_CURSOR').pivot = 'CURSOR'
