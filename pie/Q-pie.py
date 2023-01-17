@@ -78,6 +78,23 @@ class VIEW3D_PIE_MT_Bottom_Q(Menu):
             pie.operator("image.view_all", text="全部")
             # 3 - BOTTOM - RIGHT
             pie.operator("image.view_selected", text="所选")
+        elif ui == "GRAPH":
+            # 4 - LEFT
+            pie.separator()
+            # 6 - RIGHT
+            pie.separator()
+            # 2 - BOTTOM
+            pie.separator()
+            # 8 - TOP
+            pie.separator()
+            # 7 - TOP - LEFT
+            pie.separator()
+            # 9 - TOP - RIGHT
+            pie.separator()
+            # 1 - BOTTOM - LEFT
+            pie.operator("graph.view_all", text="全部")
+            # 3 - BOTTOM - RIGHT
+            pie.operator("graph.view_selected", text="所选")
 
 
 class NODE_PIE_MT_Bottom_Q(Menu):
