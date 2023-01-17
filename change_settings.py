@@ -57,6 +57,8 @@ def change_context_settings():
     scene.cycles.preview_samples = 16 # 预览采样
     scene.render.film_transparent = True # 胶片透明
     scene.cycles.use_auto_tile = False # 渲染使用平铺
+    scene.view_settings.look = 'Medium High Contrast'
+
 
     # -------3D View-------
     scene.tool_settings.snap_elements = {'VERTEX'} # 吸附到点模式
