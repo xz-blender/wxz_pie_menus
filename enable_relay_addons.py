@@ -46,6 +46,10 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
         if sys.platform == "win32":
             assets_sync = r'D:/OneDrive/Sync/Blender/Assets Sync'
             assets_local = r'F:/Assets/Blender Assets'
+        elif sys.platform == 'drawin':
+            assets_sync = r'/Users/wangxianzhi/Library/CloudStorage/OneDrive-个人/Sync/Blender/Assets Sync'
+            assets_local = ''
+
         join = os.path.join
 
         addons_officials_list ={
