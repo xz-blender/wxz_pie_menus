@@ -141,7 +141,7 @@ class PIE_WorkspaceSwapOperator(Operator):
                 print(index)
 
                 bpy.ops.workspace.append_activate(idname=t_name, filepath=path)
-                bpy.ops.workspace.reorder_to_front({"workspace": d_spaces[t_name]})
+                # bpy.ops.workspace.reorder_to_front({"workspace": d_spaces[t_name]})
                 # 重新排序
                 cut_spaces = list(d_spaces)
 
