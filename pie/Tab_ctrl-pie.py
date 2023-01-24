@@ -113,13 +113,15 @@ class PIE_WorkspaceSwapOperator(Operator):
     def execute(self, context):
         t_name = self.target_workspace
         d_name = self.default_workspace
+
+        d_spaces = bpy.data.workspaces
         # don't need to swap if already on there
         if context.workspace.name == t_name:
             self.report({'INFO'}, '已经为该工作空间！')
             return {'CANCELLED'}
 
-        if t_name in bpy.data.workspaces:
-            context.window.workspace = bpy.data.workspaces[t_name]
+        if t_name in d_spaces:
+            context.window.workspace = d_spaces[t_name]
             self.report({'INFO'}, '已切换工作空间:"%s"' % (t_name))
             return {'FINISHED'}
 
@@ -132,27 +134,30 @@ class PIE_WorkspaceSwapOperator(Operator):
         # new path: ('startup.blend' in addon files)
         # path = os.path.join(os.path.dirname(__file__), "startup.blend")
         path = str(Path(__file__).parent.parent / 'workspace.blend')
-        if t_name not in bpy.data.workspaces:
-            # try:
+        if t_name not in d_spaces:
+            try:
                 # 删除原始工作空间, 并获取所在index
                 index = del_wspace(d_name)
                 print(index)
 
                 bpy.ops.workspace.append_activate(idname=t_name, filepath=path)
-                # context.window.workspace = bpy.data.workspaces[t_name]
+                bpy.ops.workspace.reorder_to_front({"workspace": d_spaces[t_name]})
                 # 重新排序
-                bpy.ops.workspace.reorder_to_front({"workspace": bpy.data.workspaces[t_name]})
+                cut_spaces = list(d_spaces)
 
+                # for i in reversed(cut_spaces[0:index]):
+                #     print(i.name)
+                #     bpy.ops.workspace.reorder_to_front({"workspace": i})
 
                 self.report({'INFO'}, '已添加工作空间:"%s",并切换' % (t_name))
                 return {'FINISHED'}
 
-            # except:
-            #     context.window.workspace = bpy.data.workspaces[d_name]
-            #     self.report(
-            #         {'INFO'}, '没找到"{}"工作空间,已切换默认:"{}"'.format(t_name, d_name)
-            #     )
-                # return {'FINISHED'}
+            except:
+                context.window.workspace = bpy.data.workspaces[d_name]
+                self.report(
+                    {'INFO'}, '未找到"{}"工作空间,已切换默认:"{}"'.format(t_name, d_name)
+                )
+                return {'FINISHED'}
 
 
 # class PIE_Change_Active_WorkSpace(Operator):
@@ -195,22 +200,21 @@ def register_keymaps():
         kmi.properties.name = "VIEW3D_PIE_MT_Ctrl_Tab"
         addon_keymaps.append(km)
     
-    wspace_names = ['0-LIB','1-MOD','2-GN','3-UV','4-MAT','5-MOTION','6-RENDER','7-COMPO','8-SETTING']
-    for name in wspace_names:
-        km = addon.keymaps.new(name='Screen', space_type='EMPTY')
+    wspace_names = {'0-LIB':'ZERO','1-MOD':'ONE','2-GN':'TWO','3-UV':'THREE',
+                    '4-MAT':'FOUR','5-MOTION':'FIVE','6-RENDER':'SIX',
+                    '7-COMPO':'SEVEN','8-SETTING':'EIGHT'}
+    km = addon.keymaps.new(name='Screen', space_type='EMPTY')
+    for name, number in wspace_names.items():
         kmi = km.keymap_items.new(
             idname=PIE_WorkspaceSwapOperator.bl_idname,
-            type="NUMPAD_%s"%(name[0]),
+            type= number,
             value="CLICK",
             ctrl=False,
             shift=False,
             alt=True,
         )
         kmi.properties.target_workspace = name
-        addon_keymaps.append(km)
-
-
-
+    addon_keymaps.append(km)
 
 
 def unregister_keymaps():
