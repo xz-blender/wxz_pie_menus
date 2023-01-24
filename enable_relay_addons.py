@@ -46,7 +46,7 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
         if sys.platform == "win32":
             assets_sync = r'D:/OneDrive/Sync/Blender/Assets Sync'
             assets_local = r'F:/Assets/Blender Assets'
-        elif sys.platform == 'drawin':
+        elif sys.platform == 'darwin':
             assets_sync = r'/Users/wangxianzhi/Library/CloudStorage/OneDrive-个人/Sync/Blender/Assets Sync'
             assets_local = ''
 
@@ -78,7 +78,7 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             'node_wrangler':[[],[]],
             'object_boolean_tools':[[],[(['Object Mode','wm.call_menu','Bool Tool'],[('value','CLICK')],[])]], # key
             'magic_uv':[[],[]],
-            'io_import_images_as_planes':[[],[]],
+            # 'io_import_images_as_planes':[[],[]],
             'space_view3d_modifier_tools':[[],[]],
             'sun_position':[[],[]],
             'object_edit_linked':[[],[]],
