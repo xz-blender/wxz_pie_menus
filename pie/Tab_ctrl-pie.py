@@ -38,7 +38,7 @@ class VIEW3D_PIE_MT_Ctrl_Tab(Menu):
 
         # 4 - LEFT
         L = pie.operator('pie.workspaceswapper', text='UV', icon='UV_DATA')
-        L.target_workspace = '3-UV'
+        L.target_workspace = '4-UV'
         L.default_workspace = 'UV Editing'
         # 6 - RIGHT
         R = pie.operator('pie.workspaceswapper', text='MOD', icon='CUBE')
@@ -46,7 +46,7 @@ class VIEW3D_PIE_MT_Ctrl_Tab(Menu):
         R.default_workspace = 'Modeling'
         # 2 - BOTTOM
         B = pie.operator('pie.workspaceswapper', text='MAT', icon='MATERIAL')
-        B.target_workspace = '4-MAT'
+        B.target_workspace = '3-MAT'
         B.default_workspace = 'Shading'
         # 8 - TOP
         box = pie.column(align=True)
@@ -200,8 +200,8 @@ def register_keymaps():
         kmi.properties.name = "VIEW3D_PIE_MT_Ctrl_Tab"
         addon_keymaps.append(km)
     
-    wspace_names = {'0-LIB':'ZERO','1-MOD':'ONE','2-GN':'TWO','3-UV':'THREE',
-                    '4-MAT':'FOUR','5-MOTION':'FIVE','6-RENDER':'SIX',
+    wspace_names = {'0-LIB':'ZERO','1-MOD':'ONE','2-GN':'TWO','4-UV':'THREE',
+                    '3-MAT':'FOUR','5-MOTION':'FIVE','6-RENDER':'SIX',
                     '7-COMPO':'SEVEN','8-SETTING':'EIGHT'}
     km = addon.keymaps.new(name='Screen', space_type='EMPTY')
     for name, number in wspace_names.items():
