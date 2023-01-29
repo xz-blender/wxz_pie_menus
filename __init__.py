@@ -14,7 +14,7 @@ extra_scripts = (
 bl_info = {
     "name": "WXZ Pie Menus Addon",
     "author": "wxz",
-    "version": (0, 0, 4),
+    "version": (0, 0, 5),
     "blender": (2, 80, 0),
     "description": "Pie Menu",
     "category": "3D View",
