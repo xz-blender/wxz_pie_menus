@@ -1,6 +1,6 @@
 import bpy
 import addon_utils
-# import time
+from pathlib import Path
 import sys, os, time
 from bpy.types import Operator
 
@@ -209,7 +209,7 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
         # 部分插件其他设置
         # Simple Tabs
         try:
-            bpy.ops.simpletabs.import_settings(filepath=r"D:/OneDrive/Sync/Blender/Blender_Mapping/config/simpletabs_prefs.json")
+            bpy.ops.simpletabs.import_settings(filepath=Path(assets_sync).parent / "Blender_Mapping/config/simpletabs_prefs.json")
             bpy.ops.simpletabs.update('INVOKE_DEFAULT')
         except:
             print("Simple Tabs settings error")
