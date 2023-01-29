@@ -48,7 +48,7 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             assets_local = r'F:/Assets/Blender Assets'
         elif sys.platform == 'darwin':
             assets_sync = r'/Users/wangxianzhi/Library/CloudStorage/OneDrive-个人/Sync/Blender/Assets Sync'
-            assets_local = ''
+            assets_local = r'/Users/wangxianzhi/Blender Lib'
 
         join = os.path.join
 
