@@ -34,7 +34,7 @@ class VIEW3D_PIE_MT_Bottom_U(Menu):
                 # 6 - RIGHT
                 pie.operator('uv.cube_project', text='块面投影')
                 # 2 - BOTTOM
-                pie.separator()
+                pie.operator('uv.muv_uvw_box_map').assign_uvmap = True
                 # 8 - TOP
                 pie.operator('uv.project_from_view', text='视角投影')
                 # 7 - TOP - LEFT
@@ -79,7 +79,8 @@ def register():
     for cls in classes:
         bpy.utils.register_class(cls)
     register_keymaps()
-    
+
+
 def unregister():
     unregister_keymaps()
     for cls in reversed(classes):
