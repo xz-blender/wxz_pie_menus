@@ -93,7 +93,7 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
                             ]], # key alt N
             'slcad_transform': [[],[]],
             # EsayLight
-            'EsayLight': [[('ies_library_path',Path(assets_sync)/'IES')],[]], # ies lib path
+            'EasyLight': [[('ies_library_path',Path(assets_sync)/'IES')],[]], # ies lib path
             # HDRI
             'hdri_maker': [[('hdri_maker_library',Path(assets_local)/'HDRI MAKER LIBRARY')],[]],
             # QuickSnap
@@ -143,7 +143,7 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             'BB_Nodes': [[],[]],
             'colormate': [[],[]],
             'ETK_core': [[],[]],
-            'Node_kit': [[('nodes_path',join(assets_sync,'NodeKit_Library'))],[]],
+            'Node Kit': [[('nodes_path',Path(assets_sync)/'NodeKit')],[]],
             'node_pie': [[],[(['Node Editor','wm.call_menu_pie','Node pie'],[('value','CLICK_DRAG')],[])]],
             'uber_compositor': [[],[]],
             'b3dsdf': [[],[]],
