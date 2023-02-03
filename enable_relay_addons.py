@@ -45,7 +45,7 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
 
         if sys.platform == "win32":
             assets_sync = r'D:/OneDrive/Sync/Blender/Assets Sync'
-            assets_local = r'F:/Assets/Blender Assets'
+            assets_local = r'Q:/Blender Assets'
         elif sys.platform == 'darwin':
             assets_sync = r'/Users/wangxianzhi/Library/CloudStorage/OneDrive-个人/Sync/Blender/Assets Sync'
             assets_local = r'/Users/wangxianzhi/Blender Lib'
@@ -158,7 +158,10 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             'OCD': [[],[]],
             # IQ lib
             'botaniq_full': [[('botaniq_path',join(assets_local,'botaniq_full'))],[]],
-            # 'traffiq_full': [[('traffiq_path',join(assets_local,'traffiq_full'))],[]],
+            'aquatiq_full': [[('aquatiq_path',join(assets_local,'aquatiq_full'))],[]],
+            'materialiq_full': [[('materialiq5_path',join(assets_local,'materialiq_full'))],[]],
+            'traffiq_full': [[('traffiq_path',join(assets_local,'traffiq_full'))],[]],
+            # Leafig
             'leafig': [[],[]],
             'Text_input': [[],[]],
             'atomic_data_manager': [[('enable_missing_file_warning',False),('enable_support_me_popup',False),
