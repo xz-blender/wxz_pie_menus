@@ -93,9 +93,9 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
                             ]], # key alt N
             'slcad_transform': [[],[]],
             # EsayLight
-            'EsayLight': [[('ies_library_path',join(assets_sync,'IES'))],[]], # ies lib path
+            'EsayLight': [[('ies_library_path',Path(assets_sync)/'IES')],[]], # ies lib path
             # HDRI
-            'hdri_maker': [[('hdri_maker_library',join(assets_local,'HDRI MAKER LIBRARY'))],[]],
+            'hdri_maker': [[('hdri_maker_library',Path(assets_local)/'HDRI MAKER LIBRARY')],[]],
             # QuickSnap
             'quicksnap': [[('auto_check_update',False)],[
                 (['3D View','object.quicksnap','QuickSnap Tool'],[('value','CLICK'),('type','G'),('shift',False)],[])]],
