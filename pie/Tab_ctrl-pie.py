@@ -200,8 +200,8 @@ def register_keymaps():
         kmi.properties.name = "VIEW3D_PIE_MT_Ctrl_Tab"
         addon_keymaps.append(km)
     
-    wspace_names = {'0-LIB':'ZERO','1-MOD':'ONE','2-GN':'TWO','4-UV':'THREE',
-                    '3-MAT':'FOUR','5-MOTION':'FIVE','6-RENDER':'SIX',
+    wspace_names = {'0-LIB':'ZERO','1-MOD':'ONE','2-GN':'TWO','4-UV':'FOUR',
+                    '3-MAT':'THREE','5-MOTION':'FIVE','6-RENDER':'SIX',
                     '7-COMPO':'SEVEN','8-SETTING':'EIGHT'}
     km = addon.keymaps.new(name='Screen', space_type='EMPTY')
     for name, number in wspace_names.items():
