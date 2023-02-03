@@ -24,11 +24,20 @@ def change_addon_key_value(change_dir):
                 list_keymaps.clear()
     bpy.context.preferences.view.use_translate_interface = True
 
+
+if sys.platform == "win32":
+    sync = r'D:/OneDrive/Sync/Blender/Assets Sync'
+    local = r'Q:/Blender Assets'
+elif sys.platform == 'darwin':
+    sync = r'/Users/wangxianzhi/Library/CloudStorage/OneDrive-个人/Sync/Blender/Assets Sync'
+    local = r'/Users/wangxianzhi/Blender Lib'
+
+
 class Enable_Pie_Menu_Relay_Addons(Operator):
     bl_idname = "pie.enable_relay_addons"
     bl_label = "Enable Addons"
     bl_description = "一键打开常用内置插件"
-    bl_options = {"REGISTER","UNDO"}
+    bl_options = {"REGISTER"}
 
     @classmethod
     def poll(cls, context):
@@ -42,13 +51,6 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
 
         user_path = bpy.utils.resource_path('USER') 
         config_path = os.path.join(user_path, "config")
-
-        if sys.platform == "win32":
-            assets_sync = r'D:/OneDrive/Sync/Blender/Assets Sync'
-            assets_local = r'Q:/Blender Assets'
-        elif sys.platform == 'darwin':
-            assets_sync = r'/Users/wangxianzhi/Library/CloudStorage/OneDrive-个人/Sync/Blender/Assets Sync'
-            assets_local = r'/Users/wangxianzhi/Blender Lib'
 
         join = os.path.join
 
@@ -74,7 +76,7 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             'mesh_looptools':[[],[]],
             'mesh_snap_utilities_line':[[],[]],
             'mesh_tiny_cad':[[],[]],
-            'node_presets':[[('search_path',join(assets_sync,'Nodes Presets'))],[]], # addon path
+            'node_presets':[[('search_path',join(sync,'Nodes Presets'))],[]], # addon path
             'node_wrangler':[[],[]],
             'object_boolean_tools':[[],[(['Object Mode','wm.call_menu','Bool Tool'],[('value','CLICK')],[])]], # key
             'magic_uv':[[],[]],
@@ -93,9 +95,9 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
                             ]], # key alt N
             'slcad_transform': [[],[]],
             # EsayLight
-            'EasyLight': [[('ies_library_path',Path(assets_sync)/'IES')],[]], # ies lib path
+            'EasyLight': [[('ies_library_path',str(Path(sync)/'IES'))],[]], # ies lib path
             # HDRI
-            'hdri_maker': [[('hdri_maker_library',Path(assets_local)/'HDRI MAKER LIBRARY')],[]],
+            'hdri_maker': [[('hdri_maker_library',str(Path(local)/'HDRI MAKER LIBRARY'))],[]],
             # QuickSnap
             'quicksnap': [[('auto_check_update',False)],[
                 (['3D View','object.quicksnap','QuickSnap Tool'],[('value','CLICK'),('type','G'),('shift',False)],[])]],
@@ -104,10 +106,10 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             'slcad_transform': [[],[]],
             'extra_lights': [[],[]],
             # Photographer
-            'photographer': [[('hdri_lib_path',join(assets_sync,'Custom HDRI'))],
+            'photographer': [[('hdri_lib_path',str(Path(sync)/'Custom HDRI'))],
                             [(['3D View','wm.call_menu_pie','Photographer Camera Pie'],[('value','CLICK_DRAG')],[])]],
             # Object Asset Wizard
-            'object_asset_wizard': [[('root',join(assets_sync,'Blender Assets Wizard'))],[]],
+            'object_asset_wizard': [[('root',str(Path(sync)/'Blender Assets Wizard'))],[]],
             'BMAX_Connector': [[],[]],
             'sketchup_importer': [[],[]],
             # Super IO
@@ -123,12 +125,13 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
                         (['File Browser','wm.super_export','Super EXport'],[('value','CLICK'),('type','E')],[]),
                         ]],
             'Synchronize Workspaces': [[],[]],
-            'EasyPBR': [[],[]], # keys 未更改 ('lib_path',join(assets_sync,'Easy_PBR_library'))
+            'EasyPBR': [[],[]], # keys 未更改 ('lib_path',join(sync,'Easy_PBR_library'))
             'EdgeFlow': [[],[]],
             'slide_edge': [[],[]],
             'straight_skeleton': [[],[]],
             'face_cutter': [[],[]],
             'bend_face': [[],[]],
+            'simple_bend': [[],[]],
             # Niche Loops
             'niche-loops': [[],[]],
             'round_inset': [[],[]],
@@ -143,7 +146,7 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             'BB_Nodes': [[],[]],
             'colormate': [[],[]],
             'ETK_core': [[],[]],
-            'Node Kit': [[('old_nodes_path',Path(assets_sync)/'NodeKit')],[]],
+            'Node Kit': [[('nodes_path',str(Path(sync)/'NodeKit'))],[]],
             'node_pie': [[],[(['Node Editor','wm.call_menu_pie','Node pie'],[('value','CLICK_DRAG')],[])]],
             'uber_compositor': [[],[]],
             'b3dsdf': [[],[]],
@@ -157,12 +160,12 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
                 ]],
             'OCD': [[],[]],
             # IQ lib
-            'botaniq_full': [[('botaniq_path',join(assets_local,'botaniq_full'))],[]],
-            'aquatiq_full': [[('aquatiq_path',join(assets_local,'aquatiq_full'))],[]],
-            'materialiq_full': [[('materialiq5_path',join(assets_local,'materialiq_full'))],[]],
-            'traffiq_full': [[('traffiq_path',join(assets_local,'traffiq_full'))],[]],
+            'botaniq_full': [[('botaniq_path',str(Path(local)/'botaniq_full'))],[]],
+            'aquatiq_full': [[('aquatiq_path',str(Path(local)/'aquatiq_full'))],[]],
+            'materialiq_full': [[('materialiq5_path',str(Path(local)/'materialiq_full'))],[]],
+            'traffiq_full': [[('traffiq_path',str(Path(local)/'traffiq_full'))],[]],
             # Vegtation
-            'Vegetation': [[('assets_path',join(assets_local,'vegetation'))],[]],
+            'Vegetation': [[('assets_path',str(Path(local)/'vegetation'))],[]],
             # Leafig
             'leafig': [[],[]],
             'Text_input': [[],[]],
@@ -196,7 +199,7 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             #  # check addon is enabled
                     try:
                         bpy.ops.preferences.addon_enable(module = addon_name)
-                        time.sleep(1)
+                        time.sleep(0.1)
                         bpy.ops.preferences.addon_refresh()
                         print(addon_name,'is enabled')
                     except:
@@ -214,18 +217,59 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
         # 部分插件其他设置
         # Simple Tabs
         try:
-            bpy.ops.simpletabs.import_settings(filepath=Path(assets_sync).parent / "Blender_Mapping/config/simpletabs_prefs.json")
+            bpy.ops.simpletabs.import_settings(filepath=str(Path(sync).parent / "Blender_Mapping/config/simpletabs_prefs.json"))
             bpy.ops.simpletabs.update('INVOKE_DEFAULT')
         except:
             print("Simple Tabs settings error")
 
         return {"FINISHED"}
 
+user_lib_names = []
+for lib in bpy.context.preferences.filepaths.asset_libraries:
+    user_lib_names.append(lib.name)
+
+setting_lib = {
+    'Rig_Car' : str(Path(local)/'rig_cars'),
+    'Poly Haven' : str(Path(local)/'Poly Haven'),
+    '旧公司资产' : str(Path(local)/'company_old_lib'),
+    'Simple Cloth' : str(Path(sync)/'Blender Assets Browser'/'Simply Basic Cloth Library'),
+    'GN' : str(Path(sync)/'Blender Assets Browser'/'GN'),
+    'Material' : str(Path(sync)/'Blender Assets Browser'/'Material'),
+    '动画运动节点' : str(Path(sync)/'Blender Assets Browser'/'Motion Animate'),
+    '马路标志' : str(Path(sync)/'Blender Assets Browser'/'马路标志'),
+    'True Assets' : str(Path(sync)/'True Assets'),
+}
+
+def change_assets_library_path():
+    for name in user_lib_names:
+        df_name = 'User Library'
+        if name == df_name:
+            bpy.ops.preferences.asset_library_remove(index = user_lib_names.index(df_name))
+
+    sort_setting_lib = dict(sorted(setting_lib.items(),key = lambda x : x[0]))
+
+    for name, path in sort_setting_lib.items():
+        if name not in user_lib_names:
+            bpy.ops.preferences.asset_library_add(directory = path)
+            bpy.context.preferences.filepaths.asset_libraries[-1].name = name
+
+def change_addons():
+    bpy.ops.pie.enable_relay_addons()
+    print('"WXZ_Pie_Menu" Enable Relay Aaddons!')
+    change_assets_library_path()
+    print('"WXZ_Pie_Menu" Change Assets Library Items!')
+
 def register():
     bpy.utils.register_class(Enable_Pie_Menu_Relay_Addons)
 
-def unregister():
-    bpy.utils.unregister_class(Enable_Pie_Menu_Relay_Addons)
+    if not bpy.app.timers.is_registered(change_addons):
+        bpy.app.timers.register(change_addons, first_interval=2)
 
+def unregister():
+    if bpy.app.timers.is_registered(change_addons):
+        bpy.app.timers.unregister(change_addons)
+
+    bpy.utils.unregister_class(Enable_Pie_Menu_Relay_Addons)
+    
 if __name__ == "__main__":
     register()

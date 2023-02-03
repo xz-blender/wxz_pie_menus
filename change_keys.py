@@ -186,13 +186,7 @@ def changes_keys():
 
     # 其他键位设置
     close_hide_collection_keys()
-
     print('"WXZ_Pie_Menu" changed keys!')
-
-    bpy.ops.pie.enable_relay_addons()
-
-    print('"WXZ_Pie_Menu" Enable Relay Aaddons!')
-
 
 def register():
     if not bpy.app.timers.is_registered(changes_keys):

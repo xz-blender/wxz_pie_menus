@@ -59,10 +59,9 @@ def change_context_settings():
     scene.cycles.use_auto_tile = False # 渲染使用平铺
     scene.view_settings.look = 'Medium High Contrast'
 
-
     # -------3D View-------
     scene.tool_settings.snap_elements = {'VERTEX'} # 吸附到点模式
-    
+
 def change_settings():
     change_preferences_settings()
     change_context_settings()
@@ -71,7 +70,6 @@ def change_settings():
 def register():
     if not bpy.app.timers.is_registered(change_settings):
         bpy.app.timers.register(change_settings, first_interval=1)
-
 
 def unregister(): 
     if bpy.app.timers.is_registered(change_settings):
