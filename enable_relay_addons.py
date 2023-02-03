@@ -161,6 +161,8 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             'aquatiq_full': [[('aquatiq_path',join(assets_local,'aquatiq_full'))],[]],
             'materialiq_full': [[('materialiq5_path',join(assets_local,'materialiq_full'))],[]],
             'traffiq_full': [[('traffiq_path',join(assets_local,'traffiq_full'))],[]],
+            # Vegtation
+            'Vegetation': [[('assets_path',join(assets_local,'vegetation'))],[]],
             # Leafig
             'leafig': [[],[]],
             'Text_input': [[],[]],
