@@ -143,7 +143,7 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             'BB_Nodes': [[],[]],
             'colormate': [[],[]],
             'ETK_core': [[],[]],
-            'Node Kit': [[('nodes_path',Path(assets_sync)/'NodeKit')],[]],
+            'Node Kit': [[('old_nodes_path',Path(assets_sync)/'NodeKit')],[]],
             'node_pie': [[],[(['Node Editor','wm.call_menu_pie','Node pie'],[('value','CLICK_DRAG')],[])]],
             'uber_compositor': [[],[]],
             'b3dsdf': [[],[]],
