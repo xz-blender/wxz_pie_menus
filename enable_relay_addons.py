@@ -183,6 +183,9 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             'lattice_helper': [[],[]],
             'viewport_timeline_scrub': [[],[]],
             'autoMaterial': [[],[]],
+            'lattice_helper': [[],[]],
+            'True-Assets': [[('ta_directory',str(Path(sync)/'True Assets'))],
+                            [(['3D View','ta.saveassetsfromthisfile','Mark Assets and Quit'],[('active',False)],[])]],
         }
 
         addon_disable_list = [
