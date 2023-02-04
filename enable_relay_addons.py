@@ -173,7 +173,7 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
                                         ('enable_pie_menu_ui',False),('auto_check_update',False),],[]],
             'QOL_Select_Contiguous': [[],[]],
             # TexTools
-            'TexTools_1_5': [[],[]],
+            'TexTools': [[],[]],
             'UvSquares': [[],[]],
             'distributeobjects': [[],[]],
             # Friendly Povit
