@@ -109,7 +109,7 @@ def register_keymaps():
     kmi.properties.name = "VIEW3D_PIE_MT_Bottom_E"
     addon_keymaps.append(km)
 
-    km = addon.keymaps.new(name="Mesh", space_type="VIEW_3D")
+    km = addon.keymaps.new(name="Mesh")
     kmi = km.keymap_items.new("transform.edge_bevelweight", 'E', 'CLICK',ctrl = True, shift = True)
     addon_keymaps.append(km)
 
