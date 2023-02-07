@@ -116,16 +116,7 @@ class VIEW3D_PIE_MT_Bottom_F(Menu):
                 # 4 - LEFT
                 pie.operator('curve.smooth', text='光滑')
                 # 6 - RIGHT
-                if addon3 == '2':
-                    pie.operator('pie.empty_operator',
-                                 text='未找到"Straight Skeleton"插件!')
-                elif addon3 == '0':
-                    pie.operator('pie.empty_operator',
-                                 text='启用"Straight Skeleton"插件!')
-                elif addon3 == '1':
-                    pie.operator(
-                        'curvetools.add_toolpath_offset_curve', text='曲线偏移')
-                pie.separator()
+                pie.operator('curvetools.add_toolpath_offset_curve', text='曲线偏移')
                 # 2 - BOTTOM
                 pie.operator('curve.subdivide', text='细分')
                 # 8 - TOP
@@ -133,11 +124,10 @@ class VIEW3D_PIE_MT_Bottom_F(Menu):
                 # 7 - TOP - LEFT
                 pie.operator('curve.switch_direction', text='切换方向')
                 # 9 - TOP - RIGHT
-                pie.separator()
+
                 # 1 - BOTTOM - LEFT
-                pie.separator()
+
                 # 3 - BOTTOM - RIGHT
-                pie.separator()
 
 
 class Clean_Custom_Normal(Operator):

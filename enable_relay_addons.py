@@ -240,7 +240,6 @@ setting_lib = {
     'Material' : str(Path(sync)/'Blender Assets Browser'/'Material'),
     '动画运动节点' : str(Path(sync)/'Blender Assets Browser'/'Motion Animate'),
     '马路标志' : str(Path(sync)/'Blender Assets Browser'/'马路标志'),
-    'True Assets' : str(Path(sync)/'True Assets'),
 }
 
 def change_assets_library_path():
