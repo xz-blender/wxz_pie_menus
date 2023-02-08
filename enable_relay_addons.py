@@ -26,11 +26,11 @@ def change_addon_key_value(change_dir):
 
 
 if sys.platform == "win32":
-    sync = r'D:/OneDrive/Sync/Blender/Assets Sync'
-    local = r'Q:/Blender Assets'
+    sync_path = r'D:/OneDrive/Sync/Blender/Assets Sync'
+    local_path = r'Q:/Blender Assets'
 elif sys.platform == 'darwin':
-    sync = r'/Users/wangxianzhi/Library/CloudStorage/OneDrive-个人/Sync/Blender/Assets Sync'
-    local = r'/Users/wangxianzhi/Blender Lib'
+    sync_path = r'/Users/wangxianzhi/Library/CloudStorage/OneDrive-个人/Sync/Blender/Assets Sync'
+    local_path = r'/Users/wangxianzhi/Blender Lib'
 
 
 class Enable_Pie_Menu_Relay_Addons(Operator):
@@ -76,7 +76,7 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             'mesh_looptools':[[],[]],
             'mesh_snap_utilities_line':[[],[]],
             'mesh_tiny_cad':[[],[]],
-            'node_presets':[[('search_path',join(sync,'Nodes Presets'))],[]], # addon path
+            'node_presets':[[('search_path',join(sync_path,'Nodes Presets'))],[]], # addon path
             'node_wrangler':[[],[]],
             'object_boolean_tools':[[],[(['Object Mode','wm.call_menu','Bool Tool'],[('value','CLICK')],[])]], # key
             'magic_uv':[[],[]],
@@ -95,9 +95,9 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
                             ]], # key alt N
             'slcad_transform': [[],[]],
             # EsayLight
-            'EasyLight': [[('ies_library_path',str(Path(sync)/'IES'))],[]], # ies lib path
+            'EasyLight': [[('ies_library_path',str(Path(sync_path)/'IES'))],[]], # ies lib path
             # HDRI
-            'hdri_maker': [[('hdri_maker_library',str(Path(local)/'HDRI MAKER LIBRARY'))],[]],
+            'hdri_maker': [[('hdri_maker_library',str(Path(local_path)/'HDRI MAKER LIBRARY'))],[]],
             # QuickSnap
             'quicksnap': [[('auto_check_update',False)],[
                 (['3D View','object.quicksnap','QuickSnap Tool'],[('value','CLICK'),('type','G'),('shift',False)],[])]],
@@ -106,10 +106,10 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             'slcad_transform': [[],[]],
             'extra_lights': [[],[]],
             # Photographer
-            'photographer': [[('hdri_lib_path',str(Path(sync)/'Custom HDRI'))],
+            'photographer': [[('hdri_lib_path',str(Path(sync_path)/'Custom HDRI'))],
                             [(['3D View','wm.call_menu_pie','Photographer Camera Pie'],[('value','CLICK_DRAG')],[])]],
             # Object Asset Wizard
-            'object_asset_wizard': [[('root',str(Path(sync)/'Blender Assets Wizard'))],[]],
+            'object_asset_wizard': [[('root',str(Path(sync_path)/'Blender Assets Wizard'))],[]],
             'BMAX_Connector': [[],[]],
             'sketchup_importer': [[],[]],
             # Super IO
@@ -125,7 +125,7 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
                         (['File Browser','wm.super_export','Super EXport'],[('value','CLICK'),('type','E')],[]),
                         ]],
             'Synchronize Workspaces': [[],[]],
-            'EasyPBR': [[],[]], # keys 未更改 ('lib_path',join(sync,'Easy_PBR_library'))
+            'EasyPBR': [[],[]], # keys 未更改 ('lib_path',join(sync_path,'Easy_PBR_library'))
             'EdgeFlow': [[],[]],
             'slide_edge': [[],[]],
             'straight_skeleton': [[],[]],
@@ -146,7 +146,7 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             'BB_Nodes': [[],[]],
             'colormate': [[],[]],
             'ETK_core': [[],[]],
-            'Node Kit': [[('nodes_path',str(Path(sync)/'NodeKit'))],[]],
+            'Node Kit': [[('nodes_path',str(Path(sync_path)/'NodeKit'))],[]],
             'node_pie': [[],[(['Node Editor','wm.call_menu_pie','Node pie'],[('value','CLICK_DRAG')],[])]],
             'uber_compositor': [[],[]],
             'b3dsdf': [[],[]],
@@ -160,12 +160,12 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
                 ]],
             'OCD': [[],[]],
             # IQ lib
-            'botaniq_full': [[('botaniq_path',str(Path(local)/'botaniq_full'))],[]],
-            'aquatiq_full': [[('aquatiq_path',str(Path(local)/'aquatiq_full'))],[]],
-            'materialiq_full': [[('materialiq5_path',str(Path(local)/'materialiq_full'))],[]],
-            'traffiq_full': [[('traffiq_path',str(Path(local)/'traffiq_full'))],[]],
+            'botaniq_full': [[('botaniq_path',str(Path(local_path)/'botaniq_full'))],[]],
+            'aquatiq_full': [[('aquatiq_path',str(Path(local_path)/'aquatiq_full'))],[]],
+            'materialiq_full': [[('materialiq5_path',str(Path(local_path)/'materialiq_full'))],[]],
+            'traffiq_full': [[('traffiq_path',str(Path(local_path)/'traffiq_full'))],[]],
             # Vegtation
-            'Vegetation': [[('assets_path',str(Path(local)/'vegetation'))],[]],
+            'Vegetation': [[('assets_path',str(Path(local_path)/'vegetation'))],[]],
             # Leafig
             'leafig': [[],[]],
             'Text_input': [[],[]],
@@ -184,7 +184,7 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             'viewport_timeline_scrub': [[],[]],
             'autoMaterial': [[],[]],
             'lattice_helper': [[],[]],
-            'True-Assets': [[('ta_directory',str(Path(sync)/'True Assets'))],
+            'True-Assets': [[('ta_directory',str(Path(sync_path)/'True Assets'))],
                             [(['3D View','ta.saveassetsfromthisfile','Mark Assets and Quit'],[('active',False)],[])]],
         }
 
@@ -218,12 +218,6 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
                 bpy.ops.preferences.addon_disable(module = disable)
 
         # 部分插件其他设置
-        # Simple Tabs
-        try:
-            bpy.ops.simpletabs.import_settings(filepath=str(Path(sync).parent / "Blender_Mapping/config/simpletabs_prefs.json"))
-            bpy.ops.simpletabs.update('INVOKE_DEFAULT')
-        except:
-            print("Simple Tabs settings error")
 
         return {"FINISHED"}
 
@@ -232,14 +226,15 @@ for lib in bpy.context.preferences.filepaths.asset_libraries:
     user_lib_names.append(lib.name)
 
 setting_lib = {
-    'Rig_Car' : str(Path(local)/'rig_cars'),
-    'Poly Haven' : str(Path(local)/'Poly Haven'),
-    '旧公司资产' : str(Path(local)/'company_old_lib'),
-    'Simple Cloth' : str(Path(sync)/'Blender Assets Browser'/'Simply Basic Cloth Library'),
-    'GN' : str(Path(sync)/'Blender Assets Browser'/'GN'),
-    'Material' : str(Path(sync)/'Blender Assets Browser'/'Material'),
-    '动画运动节点' : str(Path(sync)/'Blender Assets Browser'/'Motion Animate'),
-    '马路标志' : str(Path(sync)/'Blender Assets Browser'/'马路标志'),
+    'Rig_Car' : str(Path(local_path)/'rig_cars'),
+    'Poly Haven' : str(Path(local_path)/'Poly Haven'),
+    '旧公司资产' : str(Path(local_path)/'company_old_lib'),
+    'Simple Cloth' : str(Path(sync_path)/'Blender Assets Browser'/'Simply Basic Cloth Library'),
+    'GN' : str(Path(sync_path)/'Blender Assets Browser'/'GN'),
+    'Material' : str(Path(sync_path)/'Blender Assets Browser'/'Material'),
+    '动画运动节点' : str(Path(sync_path)/'Blender Assets Browser'/'Motion Animate'),
+    '马路标志' : str(Path(sync_path)/'Blender Assets Browser'/'马路标志'),
+    'Abionic' : str(Path(local_path)/'Abionic'),
 }
 
 def change_assets_library_path():
@@ -256,8 +251,11 @@ def change_assets_library_path():
             bpy.context.preferences.filepaths.asset_libraries[-1].name = name
 
 def change_addons():
+    bpy.context.preferences.filepaths.texture_directory = str(Path(sync_path).parent.parent/'Texture')
+    bpy.context.preferences.filepaths.font_directory = str(Path(sync_path).parent.parent/'Fonts')
+
     bpy.ops.pie.enable_relay_addons()
-    print('"WXZ_Pie_Menu" Enable Relay Aaddons!')
+    print('"WXZ_Pie_Menu" Enable Relay Addons!')
     change_assets_library_path()
     print('"WXZ_Pie_Menu" Change Assets Library Items!')
 
