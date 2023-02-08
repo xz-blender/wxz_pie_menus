@@ -208,7 +208,7 @@ def register_keymaps():
         kmi = km.keymap_items.new(
             idname=PIE_WorkspaceSwapOperator.bl_idname,
             type= number,
-            value="CLICK",
+            value="PRESS",
             ctrl=False,
             shift=False,
             alt=True,
