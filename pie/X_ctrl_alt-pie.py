@@ -354,17 +354,17 @@ addon_keymaps = []
 
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
-
-    km = addon.keymaps.new(name="Object Mode")
-    kmi = km.keymap_items.new("wm.call_menu_pie", "X", "CLICK_DRAG", ctrl=True, alt=True)
-    kmi.properties.name = "VIEW3D_PIE_MT_Bottom_X_ctrl_shift"
-    addon_keymaps.append(km)
-
-    km = addon.keymaps.new(name="Mesh")
-    kmi = km.keymap_items.new("wm.call_menu_pie", "X", "CLICK_DRAG", ctrl=True, alt=True)
-    kmi.properties.name = "VIEW3D_PIE_MT_Bottom_X_ctrl_shift"
-    addon_keymaps.append(km)
-
+    
+    space_name = [
+        'Object Mode',
+        'Mesh',
+        'Curve',
+    ]
+    for name in space_name:
+        km = addon.keymaps.new(name=name)
+        kmi = km.keymap_items.new("wm.call_menu_pie", "X", "CLICK_DRAG", ctrl=True, alt=True)
+        kmi.properties.name = "VIEW3D_PIE_MT_Bottom_X_ctrl_shift"
+        addon_keymaps.append(km)
 
 def unregister_keymaps():
     wm = bpy.context.window_manager
