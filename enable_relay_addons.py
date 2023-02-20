@@ -141,7 +141,7 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
                 (['Mesh','mesh.mesh.smart_fill_popup','Smart Fill Popup'],[('value','CLICK')],[]),
                 (['Mesh','mesh.edge_face_add','Make Edge/Face'],[('value','CLICK')],[]),
             ]],
-            'smart_loop_toolkit': [[],[]],
+            'smart_loops_toolkit': [[],[]],
             #----Nodes----
             'BB_Nodes': [[],[]],
             'colormate': [[],[]],
@@ -180,10 +180,15 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             'scpo': [[],[
                 (['3D View','friendly.pivot','Friendly: SCPO'],[('value','CLICK'),('ctrl',True)],[]),
                 (['Image','friendly.pivot2d','Friendly: SCPO2D'],[('value','CLICK'),('ctrl',True)],[])]],
+            # 辣椒酱
             'lattice_helper': [[],[]],
+            'popoti_align_helper': [[],[]],
+            'PlaceHelper': [[],[]],
+            # 时间线
             'viewport_timeline_scrub': [[],[]],
             'autoMaterial': [[],[]],
             'lattice_helper': [[],[]],
+            # True Assets
             'True-Assets': [[('ta_directory',str(Path(sync_path)/'True Assets'))],
                             [(['3D View','ta.saveassetsfromthisfile','Mark Assets and Quit'],[('active',False)],[])]],
         }
