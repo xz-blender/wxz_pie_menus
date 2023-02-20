@@ -43,6 +43,7 @@ def change_preferences_settings():
     filepaths.save_version = 0  # 保存版本0
     filepaths.recent_files = 30     # 查看最近打开文件数量
     filepaths.use_file_compression = True   # 使用文件压缩
+    # bpy.data.use_autopack = True
 
     # 主题
     pref.themes[0].node_editor.noodle_curving = 0 # 节点编辑器,曲线弯曲度
@@ -55,6 +56,7 @@ def change_context_settings():
     scene.render.engine = 'CYCLES'
     scene.cycles.device = 'GPU'
     scene.cycles.preview_samples = 16 # 预览采样
+    scene.cycles.samples = 1024 # 预览采样
     scene.render.film_transparent = True # 胶片透明
     scene.cycles.use_auto_tile = False # 渲染使用平铺
     scene.view_settings.look = 'Medium High Contrast'
