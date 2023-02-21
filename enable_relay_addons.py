@@ -240,6 +240,7 @@ setting_lib = {
     '动画运动节点' : str(Path(sync_path)/'Blender Assets Browser'/'Motion Animate'),
     '马路标志' : str(Path(sync_path)/'Blender Assets Browser'/'马路标志'),
     'Abionic' : str(Path(local_path)/'Abionic'),
+    'BagaPie Assets' : str(Path(local_path)/'BagaPie Assets'),
 }
 
 def change_assets_library_path():
