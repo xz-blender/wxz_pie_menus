@@ -244,10 +244,10 @@ setting_lib = {
 }
 
 def change_assets_library_path():
-    for name in user_lib_names:
-        df_name = 'User Library'
-        if name == df_name:
-            bpy.ops.preferences.asset_library_remove(index = user_lib_names.index(df_name))
+    # for name in user_lib_names:
+    #     df_name = 'User Library'
+    #     if name == df_name:
+    #         bpy.ops.preferences.asset_library_remove(index = user_lib_names.index(df_name))
 
     sort_setting_lib = dict(sorted(setting_lib.items(),key = lambda x : x[0]))
 
