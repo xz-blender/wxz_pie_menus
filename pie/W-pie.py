@@ -188,6 +188,11 @@ def register_keymaps():
     kmi.properties.name = "VIEW3D_PIE_MT_Bottom_W"
     addon_keymaps.append(km)
 
+    km = addon.keymaps.new(name="Mesh")
+    kmi = km.keymap_items.new("wm.call_menu", 'W', 'CLICK')
+    kmi.properties.name = "PIE_MT_Bottom_Q_favorite"
+    addon_keymaps.append(km)
+
     km = addon.keymaps.new(name='UV Editor', space_type="IMAGE_EDITOR")
     kmi = km.keymap_items.new("wm.call_menu_pie", 'W', 'CLICK_DRAG')
     kmi.properties.name = "VIEW3D_PIE_MT_Bottom_W"

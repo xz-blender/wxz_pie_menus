@@ -146,7 +146,7 @@ V_dir =[
     (['3D View','view3d.pastebuffer','Paste Objects'],[('value','CLICK')],[]), # ctrl V
 ]
 W_dir =[
-    (['3D View','wm.tool_set_by_id','Set Tool by Name'],[('value','CLICK')],[]), # W
+    (['3D View','wm.tool_set_by_id','Set Tool by Name'],[('active',False)],[]), # W
     (['Window','wm.toolbar_fallback_pie','Fallback Tool Pie Menu'],[('value','CLICK_DRAG')],[]), # alt W Pie
     (['Object Non-modal','object.transfer_mode','Transfer Mode'],[('type','W'),('value','CLICK')],[]), # alt W Pie
 
