@@ -187,7 +187,7 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             # 时间线
             'viewport_timeline_scrub': [[],[]],
             'autoMaterial': [[],[]],
-            'lattice_helper': [[],[]],
+            'Inset_Outset': [[],[]],
             # True Assets
             'True-Assets': [[('ta_directory',str(Path(sync_path)/'True Assets'))],
                             [(['3D View','ta.saveassetsfromthisfile','Mark Assets and Quit'],[('active',False)],[])]],
