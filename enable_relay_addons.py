@@ -241,6 +241,7 @@ setting_lib = {
     '马路标志' : str(Path(sync_path)/'Blender Assets Browser'/'马路标志'),
     'Abionic' : str(Path(local_path)/'Abionic'),
     'BagaPie Assets' : str(Path(local_path)/'BagaPie Assets'),
+    '室内家具模型' : str(Path(local_path)/'室内家具模型'),
 }
 
 def change_assets_library_path():
