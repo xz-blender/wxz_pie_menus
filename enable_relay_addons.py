@@ -242,6 +242,7 @@ setting_lib = {
     'Abionic' : str(Path(local_path)/'Abionic'),
     'BagaPie Assets' : str(Path(local_path)/'BagaPie Assets'),
     '室内家具模型' : str(Path(local_path)/'室内家具模型'),
+    'Geo-Scatter_library' : str(Path(local_path)/'Geo-Scatter_library'),
 }
 
 def change_assets_library_path():
