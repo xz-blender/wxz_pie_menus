@@ -35,13 +35,21 @@ elif sys.platform == 'darwin':
 
 class Enable_Pie_Menu_Relay_Addons(Operator):
     bl_idname = "pie.enable_relay_addons"
-    bl_label = "Enable Addons"
+    bl_label = "一次性打开多个常用插件,会非常耗时!"
     bl_description = "一键打开常用内置插件"
     bl_options = {"REGISTER"}
 
     @classmethod
     def poll(cls, context):
         return True
+
+    def invoke(self, context, event):
+        return context.window_manager.invoke_confirm(self, event)
+        # return self.execute(context)
+        
+    # def draw(self, context):
+    #     layout = self.layout
+    #     layout.label(text="一次性打开多个常用插件,会非常耗时!", icon="ERROR")
 
     def execute(self, context):
         addon_utils.modules_refresh()
@@ -223,7 +231,7 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
                 bpy.ops.preferences.addon_disable(module = disable)
 
         # 部分插件其他设置
-
+        self.report({'INFO'}, '已开启预设插件')
         return {"FINISHED"}
 
 user_lib_names = []

@@ -145,7 +145,7 @@ class Apply_My_Keymap(Operator):
         return True
 
     def execute(self, context):
-        print(self.path)
+        # print(self.path)
         if os.path.exists(self.path):
             bpy.ops.preferences.keyconfig_import(filepath=self.path)
             self.report({'INFO'}, '已应用快捷键配置:"%s"' %
@@ -207,22 +207,26 @@ class WXZ_PIE_Preferences(AddonPreferences):
         row = layout.box().row()
 
         box = row.box()
+
         sub = box.row(align=True)
         sub.label(text='自定义快捷键表:', icon='EVENT_SPACEKEY')
-
         sub.operator(Apply_My_Keymap.bl_idname, text='应用--默认快捷键表').path = os.path.join(
             get_keymap_dirpath(), 'Default_Keymaps.py'
         )
         sub.operator(Apply_My_Keymap.bl_idname, text='应用--备份快捷键表').path = os.path.join(
             get_keymap_dirpath(), 'Stored_Keymaps.py'
         )
+        # row1 = box.row()
+        # row1.operator('pie.enable_relay_addons',text = '打开常用插件')
 
-        row = row.box()
-        row.alignment = "RIGHT"
-        row.operator(Restore_My_Keymap.bl_idname, text="备份--当前快捷键表").path = os.path.join(
+        row_r = row.box()
+        row_r.alignment = "RIGHT"
+        row_r.operator(Restore_My_Keymap.bl_idname, text="备份--当前快捷键表").path = os.path.join(
             get_keymap_dirpath(), 'Stored_Keymaps.py'
         )
-        row.operator('pie.enable_relay_addons',text = '打开常用插件')
+        # row_r = box.row()
+        row_r.operator('pie.enable_relay_addons',text = '打开常用插件')
+
 
         split = layout.split()
 
