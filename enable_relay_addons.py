@@ -239,18 +239,18 @@ for lib in bpy.context.preferences.filepaths.asset_libraries:
     user_lib_names.append(lib.name)
 
 setting_lib = {
-    'Rig_Car' : str(Path(local_path)/'rig_cars'),
-    'Poly Haven' : str(Path(local_path)/'Poly Haven'),
-    '旧公司资产' : str(Path(local_path)/'company_old_lib'),
-    'Simple Cloth' : str(Path(sync_path)/'Blender Assets Browser'/'Simply Basic Cloth Library'),
-    'GN' : str(Path(sync_path)/'Blender Assets Browser'/'GN'),
-    'Material' : str(Path(sync_path)/'Blender Assets Browser'/'Material'),
-    '动画运动节点' : str(Path(sync_path)/'Blender Assets Browser'/'Motion Animate'),
-    '马路标志' : str(Path(sync_path)/'Blender Assets Browser'/'马路标志'),
-    'Abionic' : str(Path(local_path)/'Abionic'),
-    'BagaPie Assets' : str(Path(local_path)/'BagaPie Assets'),
-    '室内家具模型' : str(Path(local_path)/'室内家具模型'),
-    'Geo-Scatter_library' : str(Path(local_path)/'Geo-Scatter_library'),
+    'Rig_Car' : (tr(Path(local_path)/'rig_cars'), 'LINK'),
+    'Poly Haven' : (str(Path(local_path)/'Poly Haven'), 'LINK'),
+    '旧公司资产' : (str(Path(local_path)/'company_old_lib'), 'APPEND_REUSE'),
+    'Simple Cloth' : (str(Path(sync_path)/'Blender Assets Browser'/'Simply Basic Cloth Library'), 'APPEND'),
+    'GN' : (str(Path(sync_path)/'Blender Assets Browser'/'GN'), 'APPEND_REUSE'),
+    'Material' : (str(Path(sync_path)/'Blender Assets Browser'/'Material'), 'APPEND_REUSE'),
+    '动画运动节点' : (str(Path(sync_path)/'Blender Assets Browser'/'Motion Animate'), 'APPEND_REUSE'),
+    '马路标志' : (str(Path(sync_path)/'Blender Assets Browser'/'马路标志'), 'LINK'),
+    'Abionic' : (str(Path(local_path)/'Abionic'), 'LINK'),
+    'BagaPie Assets' : (str(Path(local_path)/'BagaPie Assets'), 'LINK'),
+    '室内家具模型' : (str(Path(local_path)/'室内家具模型'), 'LINK'),
+    'Geo-Scatter_library' : (str(Path(local_path)/'Geo-Scatter_library'), 'LINK'),
 }
 
 def change_assets_library_path():
@@ -261,10 +261,11 @@ def change_assets_library_path():
 
     sort_setting_lib = dict(sorted(setting_lib.items(),key = lambda x : x[0]))
 
-    for name, path in sort_setting_lib.items():
+    for name, data in sort_setting_lib.items():
         if name not in user_lib_names:
-            bpy.ops.preferences.asset_library_add(directory = path)
+            bpy.ops.preferences.asset_library_add(directory = data[0])
             bpy.context.preferences.filepaths.asset_libraries[-1].name = name
+            bpy.context.preferences.filepaths.asset_libraries[-1].import_method = data[1]
 
 def change_addons():
     bpy.context.preferences.filepaths.texture_directory = str(Path(sync_path).parent.parent/'Texture')
