@@ -239,7 +239,7 @@ for lib in bpy.context.preferences.filepaths.asset_libraries:
     user_lib_names.append(lib.name)
 
 setting_lib = {
-    'Rig_Car' : (tr(Path(local_path)/'rig_cars'), 'LINK'),
+    'Rig_Car' : (str(Path(local_path)/'rig_cars'), 'LINK'),
     'Poly Haven' : (str(Path(local_path)/'Poly Haven'), 'LINK'),
     '旧公司资产' : (str(Path(local_path)/'company_old_lib'), 'APPEND_REUSE'),
     'Simple Cloth' : (str(Path(sync_path)/'Blender Assets Browser'/'Simply Basic Cloth Library'), 'APPEND'),
