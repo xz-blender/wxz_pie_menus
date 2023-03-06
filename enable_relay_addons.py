@@ -251,6 +251,7 @@ setting_lib = {
     'BagaPie Assets' : (str(Path(local_path)/'BagaPie Assets'), 'LINK'),
     '室内家具模型' : (str(Path(local_path)/'室内家具模型'), 'LINK'),
     'Geo-Scatter_library' : (str(Path(local_path)/'Geo-Scatter_library'), 'LINK'),
+    'Trash_kit' : (str(Path(local_path)/'Trash_kit'), 'LINK'),
 }
 
 def change_assets_library_path():
