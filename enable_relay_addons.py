@@ -252,6 +252,9 @@ setting_lib = {
     '室内家具模型' : (str(Path(local_path)/'室内家具模型'), 'LINK'),
     'Geo-Scatter_library' : (str(Path(local_path)/'Geo-Scatter_library'), 'LINK'),
     'Trash_kit' : (str(Path(local_path)/'Trash_kit'), 'LINK'),
+    'kit_bash' : (str(Path(local_path)/'kit_bash'), 'LINK'),
+    'kit_building' : (str(Path(local_path)/'kit_building'), 'LINK'),
+    '其他' : (str(Path(local_path)/'其他'), 'LINK'),
 }
 
 def change_assets_library_path():

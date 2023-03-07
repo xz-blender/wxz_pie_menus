@@ -48,13 +48,13 @@ class VIEW3D_PIE_MT_Bottom_R(Menu):
                     PIE_Transform_Rotate_XY.bl_idname, text='向后转')
                 TL.x = True
                 TL.y = False
-                TL.degree = -pi / 2
+                TL.degree = pi / 2
                 # 9 - TOP - RIGHT
                 TR = pie.operator(
                     PIE_Transform_Rotate_XY.bl_idname, text='向前转')
                 TR.x = True
                 TR.y = False
-                TR.degree = pi / 2
+                TR.degree = -pi / 2
                 # 1 - BOTTOM - LEFT
                 TR = pie.operator(
                     PIE_Transform_Rotate_XY.bl_idname, text='向左转')
