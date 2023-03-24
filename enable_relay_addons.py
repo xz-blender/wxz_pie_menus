@@ -196,6 +196,7 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             'viewport_timeline_scrub': [[],[]],
             'autoMaterial': [[],[]],
             'Inset_Outset': [[],[]],
+            'camera_shakify': [[],[]],
             # True Assets
             'True-Assets': [[('ta_directory',str(Path(sync_path)/'True Assets'))],
                             [(['3D View','ta.saveassetsfromthisfile','Mark Assets and Quit'],[('active',False)],[])]],
@@ -245,7 +246,8 @@ setting_lib = {
     'Simple Cloth' : (str(Path(sync_path)/'Blender Assets Browser'/'Simply Basic Cloth Library'), 'APPEND'),
     'GN' : (str(Path(sync_path)/'Blender Assets Browser'/'GN'), 'APPEND_REUSE'),
     'Material' : (str(Path(sync_path)/'Blender Assets Browser'/'Material'), 'APPEND_REUSE'),
-    '动画运动节点' : (str(Path(sync_path)/'Blender Assets Browser'/'Motion Animate'), 'APPEND_REUSE'),
+    'Lights' : (str(Path(sync_path)/'Blender Assets Browser'/'Lights'), 'APPEND_REUSE'),
+    # '动画运动节点' : (str(Path(sync_path)/'Blender Assets Browser'/'Motion Animate'), 'APPEND_REUSE'),
     '马路标志' : (str(Path(sync_path)/'Blender Assets Browser'/'马路标志'), 'LINK'),
     'Abionic' : (str(Path(local_path)/'Abionic'), 'LINK'),
     'BagaPie Assets' : (str(Path(local_path)/'BagaPie Assets'), 'LINK'),

@@ -203,7 +203,7 @@ def register_keymaps():
     wspace_names = {'0-LIB':'ZERO','1-MOD':'ONE','2-GN':'TWO','4-UV':'FOUR',
                     '3-MAT':'THREE','5-MOTION':'FIVE','6-RENDER':'SIX',
                     '7-COMPO':'SEVEN','8-SETTING':'EIGHT'}
-    km = addon.keymaps.new(name='Screen', space_type='EMPTY')
+    km = addon.keymaps.new(name='Window')#, space_type='EMPTY'
     for name, number in wspace_names.items():
         kmi = km.keymap_items.new(
             idname=PIE_WorkspaceSwapOperator.bl_idname,

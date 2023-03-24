@@ -172,6 +172,9 @@ G_dir =[
 Text_dir =[
     (['Text','text.move_lines','Move Lines'],[('shift',False),('ctrl',False),('alt',True)],[]),
 ]
+Others_dir =[
+    (['Curves','curves.disable_selection','CURVES_OT_disable_selection'],[('active',False)],[]),
+]
 
 
 def changes_keys():
@@ -180,7 +183,7 @@ def changes_keys():
 
     for _dir in [A_dir,Brush_dir,C_dir,E_dir,F_dir,Outliner_dir
         ,Q_dir,R_dir,S_dir,SPACE_dir,T_dir,
-        TAB_dir,U_dir,V_dir,W_dir,X_dir,Z_dir,G_dir
+        TAB_dir,U_dir,V_dir,W_dir,X_dir,Z_dir,G_dir,Text_dir,
         ]:
         change_key_value_base(_dir)
 
