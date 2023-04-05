@@ -119,7 +119,7 @@ class NODE_PIE_MT_Bottom_Q(Menu):
                 pie.operator(Node_Change_Image_ColorSpace.bl_idname,
                              text='图像-非彩色').colorspace = 'Non-Color'
             else:
-                pie.separator()
+                pie.operator("node.nw_reset_nodes")
                 pie.separator()
 
             # 2 - BOTTOM
