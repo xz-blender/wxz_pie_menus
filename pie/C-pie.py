@@ -41,11 +41,11 @@ class VIEW3D_PIE_MT_Bottom_C(Menu):
         else:
             pie.separator()
         # 8 - TOP
-        pie.operator("mesh.select_mode").type='EDGE'
+        pie.operator("mesh.select_mode",text = '边').type='EDGE'
         # 7 - TOP - LEFT
-        pie.operator("mesh.select_mode").type='VERT'
+        pie.operator("mesh.select_mode", text = '点').type='VERT'
         # 9 - TOP - RIGHT
-        pie.operator("mesh.select_mode").type='FACE'
+        pie.operator("mesh.select_mode",text = '面').type='FACE'
         # 1 - BOTTOM - LEFT
         pie.operator("view3d.camera_to_view", text="对齐相机至视图")
         # 3 - BOTTOM - RIGHT
