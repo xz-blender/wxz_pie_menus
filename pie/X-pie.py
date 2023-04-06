@@ -102,7 +102,23 @@ class VIEW3D_PIE_MT_Bottom_X(Menu):
             pie.separator()
             # 3 - BOTTOM - RIGHT
             pie.separator()
-
+        elif ob_mode == 'EDIT':
+                # 4 - LEFT
+                pie.operator('object.move_to_collection')
+                # 6 - RIGHT
+                pie.separator()
+                # 2 - BOTTOM
+                pie.separator()
+                # 8 - TOP
+                pie.separator()
+                # 7 - TOP - LEFT
+                pie.separator()
+                # 9 - TOP - RIGHT
+                pie.separator()
+                # 1 - BOTTOM - LEFT
+                pie.separator()
+                # 3 - BOTTOM - RIGHT
+                pie.separator()
 
 classes = [
     VIEW3D_PIE_MT_Bottom_X,
