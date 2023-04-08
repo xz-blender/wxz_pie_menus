@@ -33,7 +33,7 @@ class VIEW3D_PIE_MT_Bottom_Q(Menu):
         set_pie_ridius(context, 100)
 
         ui = context.area.ui_type
-        print(ui)
+        # print(ui)
         if ui == "VIEW_3D":
             # 4 - LEFT
             pie.operator(
@@ -105,7 +105,7 @@ class VIEW3D_PIE_MT_Bottom_Q(Menu):
                 pie.operator(Node_Change_Image_ColorSpace.bl_idname,
                              text='图像-非彩色').colorspace = 'Non-Color'
             else:
-                pie.operator("node.nw_reset_nodes")
+                pie.operator("node.nw_reset_nodes",text="重置所选")
                 pie.separator()
 
             # 2 - BOTTOM

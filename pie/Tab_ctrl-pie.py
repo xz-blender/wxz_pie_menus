@@ -34,7 +34,7 @@ class VIEW3D_PIE_MT_Ctrl_Tab(Menu):
 
         set_pie_ridius(context, 100)
 
-        # print(context.area.type, context.area.ui_type)
+        print(context.area.type, context.area.ui_type)
 
         # 4 - LEFT
         L = pie.operator('pie.workspaceswapper', text='UV', icon='UV_DATA')
@@ -186,6 +186,8 @@ def register_keymaps():
         '3D View': 'VIEW_3D',
         'Node Editor': 'NODE_EDITOR',
         'Image': 'IMAGE_EDITOR',
+        'Graph Editor': 'GRAPH_EDITOR',
+        'Window': 'EMPTY',
     }
     for name, space in keymap_items.items():
         km = addon.keymaps.new(name=name, space_type=space)

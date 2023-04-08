@@ -171,6 +171,8 @@ TAB_dir =[
     (['Object Non-modal','object.mode_set','Set Object Mode'],[('value','CLICK')],[]), 
     (['Object Non-modal','view3d.object_mode_pie_or_toggle','Object Mode Menu'],[('value','CLICK_DRAG'),('type','TAB'),('ctrl',False)],[]), 
     (['Node Editor','wm.call_menu','Edit Group'],[('value','CLICK')],[]), 
+    (['UV Editor','wm.call_menu','UV Select Mode'],[('value','CLICK')],[]), 
+    (['Screen','screen.space_context_cycle','Cycle Space Context'],[('active',False)],[]), 
 ]
 U_dir =[
     (['Mesh','wm.call_menu','UV Mapping'],[('value','CLICK')],[]), 
