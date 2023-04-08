@@ -197,6 +197,7 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             'autoMaterial': [[],[]],
             'Inset_Outset': [[],[]],
             'camera_shakify': [[],[]],
+            'rotate_face': [[],[]],
             # True Assets
             'True-Assets': [[('ta_directory',str(Path(sync_path)/'True Assets'))],
                             [(['3D View','ta.saveassetsfromthisfile','Mark Assets and Quit'],[('active',False)],[])]],

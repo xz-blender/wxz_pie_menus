@@ -58,7 +58,7 @@ class VIEW3D_PIE_MT_Bottom_E(Menu):
                 row.operator('mesh.set_edge_linear')
 
             # 2 - BOTTOM
-            pie.separator()
+            pie.operator("mesh.normals_make_consistent")
             # 8 - TOP
             pie.operator('mesh.extrude_manifold', text='挤出流形')
             # 7 - TOP - LEFT
