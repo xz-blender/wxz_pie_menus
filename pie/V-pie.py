@@ -75,6 +75,24 @@ class VIEW3D_PIE_MT_Bottom_V(Menu):
                 # 3 - BOTTOM - RIGHT
                 pie.separator()
 
+            elif ob_type == 'MESH':
+                # 4 - LEFT
+                pie.separator()
+                # 6 - RIGHT
+                pie.operator('uv.cube_project', text='块面投影')
+                # 2 - BOTTOM
+                pie.operator('uv.muv_uvw_box_map').assign_uvmap = True
+                # 8 - TOP
+                pie.operator('uv.project_from_view', text='视角投影')
+                # 7 - TOP - LEFT
+                pie.separator()
+                # 9 - TOP - RIGHT
+                pie.separator()
+                # 1 - BOTTOM - LEFT
+                pie.separator()
+                # 3 - BOTTOM - RIGHT
+                pie.separator()
+
 
 classes = [
     VIEW3D_PIE_MT_Bottom_V,
@@ -85,9 +103,6 @@ addon_keymaps = []
 
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
-    km = addon.keymaps.new(name="Curve")  # space_type="VIEW_3D"
-    kmi = km.keymap_items.new("wm.call_menu_pie", 'V', 'CLICK_DRAG')
-    kmi.properties.name = 'VIEW3D_PIE_MT_Bottom_V'
     km = addon.keymaps.new(name="3D View",space_type="VIEW_3D")
     kmi = km.keymap_items.new("wm.call_menu_pie", 'V', 'CLICK_DRAG')
     kmi.properties.name = 'VIEW3D_PIE_MT_Bottom_V'

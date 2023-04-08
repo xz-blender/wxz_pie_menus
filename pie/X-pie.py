@@ -94,7 +94,8 @@ class VIEW3D_PIE_MT_Bottom_X(Menu):
             pie.operator(
                 'mesh.delete', text='仅面', icon='SNAP_FACE_CENTER'
             ).type = 'ONLY_FACE'
-            # 7 - TOP - LEFT
+            # 7 - TOP - LEFT 
+            
             pie.separator()
             # 9 - TOP - RIGHT
             pie.separator()
@@ -104,11 +105,11 @@ class VIEW3D_PIE_MT_Bottom_X(Menu):
             pie.separator()
         elif ob_mode == 'OBJECT':
                 # 4 - LEFT
-                pie.operator('object.move_to_collection')
+                pie.separator()
                 # 6 - RIGHT
                 pie.separator()
                 # 2 - BOTTOM
-                pie.separator()
+                pie.operator('object.move_to_collection')
                 # 8 - TOP
                 pie.separator()
                 # 7 - TOP - LEFT

@@ -1,7 +1,7 @@
 import bpy
+from bpy.types import Menu, Operator
 import os
 import sys
-from bpy.types import Menu, Operator
 from .utils import check_rely_addon, rely_addons, set_pie_ridius, change_default_keymap, restored_default_keymap
 
 submoduname = __name__.split('.')[-1]
@@ -54,7 +54,7 @@ class VIEW3D_PIE_MT_Bottom_F(Menu):
             # 2 - BOTTOM
             pie.operator('object.join', text='合并', icon='SELECT_EXTEND')
             # 8 - TOP
-            pie.separator()
+            pie.operator('wm.call_menu_pie', text='BagaPie').name = "BAGAPIE_MT_pie_menu"
             # 7 - TOP - LEFT
             if ob_type == "MESH":
                 pie.operator('object.parent_clear')

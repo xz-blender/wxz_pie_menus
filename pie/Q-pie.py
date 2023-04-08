@@ -33,7 +33,7 @@ class VIEW3D_PIE_MT_Bottom_Q(Menu):
         set_pie_ridius(context, 100)
 
         ui = context.area.ui_type
-
+        print(ui)
         if ui == "VIEW_3D":
             # 4 - LEFT
             pie.operator(
@@ -78,13 +78,13 @@ class VIEW3D_PIE_MT_Bottom_Q(Menu):
             pie.operator("image.view_all", text="全部")
             # 3 - BOTTOM - RIGHT
             pie.operator("image.view_selected", text="所选")
-        elif ui == "GRAPH":
+        elif ui == "FCURVES":
             # 4 - LEFT
             pie.separator()
             # 6 - RIGHT
             pie.separator()
             # 2 - BOTTOM
-            pie.separator()
+            pie.operator("graph.view_frame", text="当前帧")
             # 8 - TOP
             pie.separator()
             # 7 - TOP - LEFT
@@ -96,21 +96,7 @@ class VIEW3D_PIE_MT_Bottom_Q(Menu):
             # 3 - BOTTOM - RIGHT
             pie.operator("graph.view_selected", text="所选")
 
-
-class NODE_PIE_MT_Bottom_Q(Menu):
-    bl_label = submoduname
-
-    def draw(self, context):
-        layout = self.layout
-        pie = layout.menu_pie()
-
-        set_pie_ridius(context, 100)
-
-        def common_pie():
-            pie.operator('node.view_all', text='全部')
-            pie.operator('node.view_selected', text='所选')
-
-        if context.area.ui_type == 'ShaderNodeTree':
+        elif ui == 'ShaderNodeTree':
             active_node = context.active_object.active_material.node_tree.nodes.active
             # 4 - LEFT # 6 - RIGHT
             if active_node.type == 'TEX_IMAGE':
@@ -132,10 +118,11 @@ class NODE_PIE_MT_Bottom_Q(Menu):
             box = pie.box()
             box.props_enum(context.object.active_material, 'blend_method')
             # 1 - BOTTOM - LEFT
-            common_pie()
+            pie.operator("node.view_all", text="全部")
             # 3 - BOTTOM - RIGHT
+            pie.operator("node.view_selected", text="所选")
             
-        elif context.area.ui_type == 'GeometryNodeTree':
+        elif ui == 'GeometryNodeTree':
             # 4 - LEFT
             pie.separator()
             # 6 - RIGHT
@@ -149,10 +136,12 @@ class NODE_PIE_MT_Bottom_Q(Menu):
             # 9 - TOP - RIGHT
             pie.separator()
             # 1 - BOTTOM - LEFT
-            common_pie()
+            pie.operator("node.view_all", text="全部")
             # 3 - BOTTOM - RIGHT
+            pie.operator("node.view_selected", text="所选")
 
-        elif context.area.ui_type == 'CompositorNodeTree':
+
+        elif ui == 'CompositorNodeTree':
             # 4 - LEFT
             pie.separator()
             # 6 - RIGHT
@@ -166,9 +155,9 @@ class NODE_PIE_MT_Bottom_Q(Menu):
             # 9 - TOP - RIGHT
             pie.separator()
             # 1 - BOTTOM - LEFT
-            common_pie()
+            pie.separator()
             # 3 - BOTTOM - RIGHT
-
+            pie.separator()
 
 class Node_Change_Image_ColorSpace(Operator):
     bl_idname = "pie.node_change_image_colorspace"
@@ -192,7 +181,6 @@ class Node_Change_Image_ColorSpace(Operator):
 
 
 classes = [VIEW3D_PIE_MT_Bottom_Q,
-           NODE_PIE_MT_Bottom_Q,
            Node_Change_Image_ColorSpace,
            ]
 
@@ -202,25 +190,17 @@ addon_keymaps = []
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
 
-    km = addon.keymaps.new(name='3D View', space_type='VIEW_3D')
-    kmi = km.keymap_items.new("wm.call_menu_pie", 'Q', 'CLICK_DRAG')
-    kmi.properties.name = "VIEW3D_PIE_MT_Bottom_Q"
-    addon_keymaps.append(km)
-
-    km = addon.keymaps.new(name='Node Editor', space_type='NODE_EDITOR')
-    kmi = km.keymap_items.new("wm.call_menu_pie", 'Q', 'CLICK_DRAG')
-    kmi.properties.name = "NODE_PIE_MT_Bottom_Q"
-    addon_keymaps.append(km)
-
-    km = addon.keymaps.new(name='UV Editor', space_type='EMPTY')
-    kmi = km.keymap_items.new("wm.call_menu_pie", 'Q', 'CLICK_DRAG')
-    kmi.properties.name = "VIEW3D_PIE_MT_Bottom_Q"
-    addon_keymaps.append(km)
-
-    km = addon.keymaps.new(name='Graph Editor', space_type='EMPTY')
-    kmi = km.keymap_items.new("wm.call_menu_pie", 'Q', 'CLICK_DRAG')
-    kmi.properties.name = "VIEW3D_PIE_MT_Bottom_Q"
-    addon_keymaps.append(km)
+    space_name = [
+        ('3D View', 'VIEW_3D'),
+        ('UV Editor', 'EMPTY'),
+        ('Node Editor', 'NODE_EDITOR'),
+        ('Graph Editor', 'GRAPH_EDITOR'),
+    ]
+    for space in space_name:
+        km = addon.keymaps.new(name=space[0], space_type=space[1])
+        kmi = km.keymap_items.new("wm.call_menu_pie", 'Q', 'CLICK_DRAG')
+        kmi.properties.name = "VIEW3D_PIE_MT_Bottom_Q"
+        addon_keymaps.append(km)
 
 
 def unregister_keymaps():

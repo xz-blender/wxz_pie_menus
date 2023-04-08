@@ -72,6 +72,17 @@ A_dir =[
     (['Object Mode','wm.call_menu','Add'],[('value','CLICK')],[]), # shift A - object
     (['Mesh','wm.call_menu','Mesh'],[('value','CLICK')],[]), # shift A - mesh
 ]
+B_dir =[
+    (['3D View','view3d.select_box','Box Select'],[('active',False)],[]), 
+    (['3D View','view3d.clip_border','Clipping Region'],[('active',False)],[]), 
+    (['3D View','view3d.zoom_border','Zoom to Border'],[('active',False)],[]), 
+    (['UV Editor','uv.select_box','Box Select'],[('active',False)],[]), 
+    (['Node Editor','node.select_box','Box Select'],[('active',False)],[]), 
+    (['Node Editor','node.viewer_border','Viewer Region'],[('active',False)],[]), 
+    (['Node Editor','node.clear_viewer_border','Clear Viewer Region'],[('active',False)],[]), 
+    (['Outliner','outliner.select_box','Box Select'],[('active',False)],[]), 
+    (['NLA Editor','nla.select_box','Box Select'],[('active',False)],[]), 
+]
 Brush_dir =[
     (['Sculpt','wm.call_menu_pie','Mask Edit'],[('value','CLICK_DRAG')],[]), # A
 ]
@@ -91,9 +102,36 @@ E_dir =[
 ]
 F_dir =[
     (['Curve','curve.make_segment','Make Segment'],[('value','CLICK')],[]), 
-    # (['Mesh','mesh.edge_face_add','Make Edge/Face'],[('value','CLICK')],[]), # config[Blender addon]
+    (['Mesh','mesh.edge_face_add','Make Edge/Face'],[('value','CLICK')],[]), # config[Blender addon]
     (['Mesh','wm.call_menu','Face'],[('value','CLICK')],[]), # ctrl F
     (['Node Editor','node.link_make','Make Links'],[('value','CLICK')],[]), # ctrl F
+]
+H_dir = [
+    (['Outliner','outliner.hide','Hide'],[('type','B')],[]), 
+    (['Outliner','outliner.unhide_all','Unhide All'],[('type','B')],[]), 
+    (['Object Mode','object.hide_view_clear','Show Hidden Objects'],[('type','B')],[]), 
+    (['Object Mode','object.hide_view_set','Hide Objects'],[('type','B')],[]), 
+    (['Object Mode','object.hide_collection','Hide Collection'],[('type','B')],[]), 
+    (['Curve','curve.reveal','Reveal Hidden'],[('type','B')],[]), 
+    (['Curve','curve.hide','Hide Selected'],[('type','B')],[]), 
+    (['Curve','wm.call_menu','Hooks'],[('type','B')],[]), 
+    (['Sculpt','sculpt.face_set_change_visibility','Face Sets Visibility'],[('type','B')],[]), 
+    (['Mesh','mesh.reveal','Reveal Hidden'],[('type','B')],[]), 
+    (['Mesh','mesh.hide','Hide Selected'],[('type','B')],[]), 
+    (['Mesh','wm.call_menu','Hooks'],[('type','B')],[]), 
+    (['Lattice','wm.call_menu','Hooks'],[('type','B')],[]), 
+    (['Armature','armature.reveal','Reveal Hidden'],[('type','B')],[]), 
+    (['Armature','armature.hide','Hide Selected'],[('type','B')],[]), 
+    (['Metaball','mball.reveal_metaelems','Reveal Hidden'],[('type','B')],[]), 
+    (['Metaball','mball.hide_metaelems','Hide Selected'],[('type','B')],[]), 
+    (['UV Editor','uv.reveal','Reveal Hidden'],[('type','B')],[]), 
+    (['UV Editor','uv.hide','Hide Selected'],[('type','B')],[]), 
+    (['Graph Editor Generic','graph.reveal','Reveal Curves'],[('type','B')],[]), 
+    (['Graph Editor Generic','graph.hide','Hide Selected'],[('type','B')],[]), 
+    (['Node Editor','node.hide_toggle','Hide'],[('type','B')],[]), 
+    (['Node Editor','node.preview_toggle','Toggle Node Preview'],[('type','B')],[]), 
+    (['Node Editor','node.hide_socket_toggle','Toggle Hidden Node Sockets'],[('type','B')],[]), 
+    (['NLA Editor','nla.mute_toggle','Toggle Muting'],[('type','B')],[]), 
 ]
 Outliner_dir =[
     (['Outliner','outliner.select_all','Toggle Selected'],[('active',False)],[]),  # A
@@ -181,7 +219,7 @@ def changes_keys():
 
     change_key_value(A_select_dir, "CLICK")
 
-    for _dir in [A_dir,Brush_dir,C_dir,E_dir,F_dir,Outliner_dir
+    for _dir in [A_dir,B_dir,Brush_dir,C_dir,E_dir,F_dir,H_dir,Outliner_dir
         ,Q_dir,R_dir,S_dir,SPACE_dir,T_dir,
         TAB_dir,U_dir,V_dir,W_dir,X_dir,Z_dir,G_dir,Text_dir,
         ]:
