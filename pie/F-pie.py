@@ -52,7 +52,7 @@ class VIEW3D_PIE_MT_Bottom_F(Menu):
             # 6 - RIGHT
             pie.separator()
             # 2 - BOTTOM
-            pie.operator('object.join', text='合并', icon='SELECT_EXTEND')
+            pie.operator(Merge_Objects_WithoutActive.bl_idname, text='合并', icon='SELECT_EXTEND')
             # 8 - TOP
             pie.operator('wm.call_menu_pie', text='BagaPie').name = "BAGAPIE_MT_pie_menu"
             # 7 - TOP - LEFT
@@ -146,10 +146,27 @@ class Clean_Custom_Normal(Operator):
                 None
         return {'FINISHED'}
 
+class Merge_Objects_WithoutActive(Operator):
+    bl_idname = "pie.merge_objects_without_active"
+    bl_label = "Merge Objects"
+    bl_description = "Merge Objects Without Active Objects"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        selection_ob = context.selected_objects
+        active_ob = context.active_object
+        if active_ob in selection_ob:
+            bpy.ops.object.join()
+        else:
+            context.view_layer.objects.active = selection_ob[0]
+            bpy.ops.object.join()
+        return {'FINISHED'}
+
 
 classes = [
     VIEW3D_PIE_MT_Bottom_F,
     Clean_Custom_Normal,
+    Merge_Objects_WithoutActive,
 ]
 
 addon_keymaps = []
