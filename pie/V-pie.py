@@ -77,7 +77,7 @@ class VIEW3D_PIE_MT_Bottom_V(Menu):
 
             elif ob_type == 'MESH':
                 # 4 - LEFT
-                pie.separator()
+                pie.operator('mesh.inset', text='内插面')
                 # 6 - RIGHT
                 pie.operator('uv.cube_project', text='块面投影')
                 # 2 - BOTTOM
