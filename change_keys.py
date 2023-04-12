@@ -52,6 +52,7 @@ def change_key_value_base(change_dir):
     bpy.context.preferences.view.use_translate_interface = True
     # return (stored_value_list, stored_prop_list)
 
+# 其他键位设置
 def close_hide_collection_keys():
     keys = bpy.context.window_manager.keyconfigs.default.keymaps
     for keys_name, keys_data in keys.items():
@@ -59,6 +60,14 @@ def close_hide_collection_keys():
             for key_name ,key_data in keys_data.keymap_items.items():
                 if key_name == 'object.hide_collection' and  key_data.type != 'H':
                     key_data.active = False
+
+def change_transform_G_key_value():
+    keys = bpy.context.window_manager.keyconfigs.default.keymaps
+    for keys_name, keys_data in keys.items():
+        if keys_name == '3D View':
+            for key_name ,key_data in keys_data.keymap_items.items():
+                if key_name == 'transform.translate' and key_data.name == 'Move' and key_data.type == 'G':
+                    key_data.value = 'CLICK'
 
 A_select_dir = [
     'Pose','Object Mode','Curve','Mesh','UV Editor','NLA Editor','Outliner'
@@ -105,6 +114,12 @@ F_dir =[
     (['Mesh','mesh.edge_face_add','Make Edge/Face'],[('value','CLICK')],[]), # config[Blender addon]
     (['Mesh','wm.call_menu','Face'],[('value','CLICK')],[]), # ctrl F
     (['Node Editor','node.link_make','Make Links'],[('value','CLICK')],[]), # ctrl F
+]
+G_dir =[
+    (['Object Mode','collection.objects_add_active','Add Selected to Active Collection'],[('active',False)],[]), # G ctrl shift
+    (['Object Mode','collection.objects_remove_all','Remove from All Collections'],[('active',False)],[]), # G ctrl shift alt
+    (['Object Mode','collection.objects_remove','Remove from Collection'],[('active',False)],[]), # G ctrl alt
+    (['Object Mode','collection.create','Create New Collection'],[('active',False)],[]), # G ctrl
 ]
 H_dir = [
     (['Outliner','outliner.hide','Hide'],[('type','B')],[]), 
@@ -203,12 +218,6 @@ Z_dir =[
     (['3D View','wm.call_menu_pie','Shading'],[('value','CLICK')],[]), # Z
     (['3D View','view3d.toggle_shading','Toggle Shading Type'],[('active',False)],[]), # shift Z
 ]
-G_dir =[
-    (['Object Mode','collection.objects_add_active','Add Selected to Active Collection'],[('active',False)],[]), # G ctrl shift
-    (['Object Mode','collection.objects_remove_all','Remove from All Collections'],[('active',False)],[]), # G ctrl shift alt
-    (['Object Mode','collection.objects_remove','Remove from Collection'],[('active',False)],[]), # G ctrl alt
-    (['Object Mode','collection.create','Create New Collection'],[('active',False)],[]), # G ctrl
-]
 Text_dir =[
     (['Text','text.move_lines','Move Lines'],[('shift',False),('ctrl',False),('alt',True)],[]),
 ]
@@ -229,6 +238,7 @@ def changes_keys():
 
     # 其他键位设置
     close_hide_collection_keys()
+    change_transform_G_key_value()
     print('"WXZ_Pie_Menu" changed keys!')
 
 def register():

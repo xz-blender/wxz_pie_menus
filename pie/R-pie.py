@@ -30,6 +30,8 @@ class VIEW3D_PIE_MT_Bottom_R(Menu):
 
             set_pie_ridius(context, 100)
 
+            get_orient = context.scene.transform_orientation_slots[0].type
+
             if ob_mode == 'OBJECT':
                 # 4 - LEFT
                 pie.operator(
@@ -42,7 +44,9 @@ class VIEW3D_PIE_MT_Bottom_R(Menu):
                 # 2 - BOTTOM
                 pie.separator()
                 # 8 - TOP
-                pie.separator()
+                rotate_Y = pie.operator('transform.rotate', text='Y',icon='EVENT_Y')
+                rotate_Y.orient_type = get_orient
+                rotate_Y.orient_axis = 'Y'
                 # 7 - TOP - LEFT
                 TL = pie.operator(
                     PIE_Transform_Rotate_XY.bl_idname, text='向后转')
@@ -77,17 +81,13 @@ class VIEW3D_PIE_MT_Bottom_R(Menu):
                 pie.operator(
                     PIE_Transform_Rotate_Z.bl_idname, text='Z轴+90°', icon='TRIA_RIGHT_BAR'
                 ).degree = (pi / 2)
-
-                # 2 - BOTTOM # 8 - TOP
-                if ob_type == 'MESH':
-                    pie.operator('mesh.edge_rotate', text='边-逆时针',
-                                 icon='FRAME_PREV').use_ccw = True
-                    pie.operator(
-                        'mesh.edge_rotate', text='边-顺时针', icon='FRAME_NEXT'
-                    ).use_ccw = False
-                else:
-                    pie.separator()
-                    pie.separator()
+                # 2 - BOTTOM
+                pie.separator()
+                # 8 - TOP
+                rotate_Y = pie.operator('transform.rotate', text='Y',icon='EVENT_Y')
+                rotate_Y.orient_type = get_orient
+                rotate_Y.orient_axis = 'Y'
+                pie.separator()
                 # 7 - TOP - LEFT
                 TR = pie.operator(
                     PIE_Transform_Rotate_XY.bl_idname, text='向前转')
@@ -226,7 +226,7 @@ addon_keymaps = []
 
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
-
+    
     space_name = [
         ('3D View', 'VIEW_3D'),
         ('UV Editor', 'EMPTY'),
