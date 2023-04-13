@@ -132,7 +132,7 @@ class VIEW3D_PIE_MT_Bottom_Q(Menu):
             # 8 - TOP
             pie.separator()
             # 7 - TOP - LEFT
-            pie.separator()
+            pie.operator("node.nw_reset_nodes",text="重置所选")
             # 9 - TOP - RIGHT
             pie.separator()
             # 1 - BOTTOM - LEFT
