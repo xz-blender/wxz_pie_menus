@@ -124,13 +124,13 @@ class VIEW3D_PIE_MT_Bottom_Q(Menu):
             
         elif ui == 'GeometryNodeTree':
             # 4 - LEFT
-            pie.separator()
+            pie.operator("node.nw_reset_nodes",text="重置所选")
             # 6 - RIGHT
             pie.separator()
             # 2 - BOTTOM
             pie.operator("node.mute_toggle",text="停用")
             # 8 - TOP
-            pie.operator("node.nw_reset_nodesqqqqq",text="重置所选")
+            pie.separator()
             # 7 - TOP - LEFT
             pie.separator()
             # 9 - TOP - RIGHT

@@ -1,6 +1,8 @@
-from bpy.types import Menu, Panel, Operator
-import bpy
 import os
+
+import bpy
+from bpy.types import Menu, Operator, Panel
+
 from .utils import set_pie_ridius
 
 submoduname = __name__.split('.')[-1]
@@ -133,6 +135,7 @@ class VIEW3D_PIE_MT_Bottom_Z_Shift(Menu):
         # 6 - RIGHT
         pie.prop(bpy.context.space_data.overlay, 'show_overlays')
         # 2 - BOTTOM
+        pie.operator('ops.wm.window_fullscreen_toggle')
         # 8 - TOP
         # 7 - TOP - LEFT
         # 9 - TOP - RIGHT
