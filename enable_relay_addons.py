@@ -273,7 +273,10 @@ def change_assets_library_path():
         if name not in user_lib_names:
             bpy.ops.preferences.asset_library_add(directory = data[0])
             bpy.context.preferences.filepaths.asset_libraries[-1].name = name
-            bpy.context.preferences.filepaths.asset_libraries[-1].import_method = data[1]
+
+            version = bpy.app.version
+            if version[0] >= 3 and version[1] >= 5 :
+                bpy.context.preferences.filepaths.asset_libraries[-1].import_method = data[1]
 
 def change_addons():
     bpy.context.preferences.filepaths.texture_directory = str(Path(sync_path).parent.parent/'Texture')

@@ -131,14 +131,18 @@ class VIEW3D_PIE_MT_Bottom_Z_Shift(Menu):
         # addon1 = check_rely_addon(rely_addons[2][0], rely_addons[2][1])
 
         # 4 - LEFT
-        pie.prop(bpy.context.space_data, 'show_gizmo')
+        split = pie.split()
+        col = split.column()
+        row = col.row()
+        row.props_enum(context.space_data.shading,'color_type')
         # 6 - RIGHT
-        pie.prop(bpy.context.space_data.overlay, 'show_overlays')
         # 2 - BOTTOM
-        pie.operator('ops.wm.window_fullscreen_toggle')
+        pie.operator('wm.window_fullscreen_toggle')
         # 8 - TOP
         # 7 - TOP - LEFT
+        pie.prop(bpy.context.space_data, 'show_gizmo')
         # 9 - TOP - RIGHT
+        pie.prop(bpy.context.space_data.overlay, 'show_overlays')
         # 1 - BOTTOM - LEFT
         # 3 - BOTTOM - RIGHT
 

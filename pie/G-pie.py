@@ -50,6 +50,9 @@ class VIEW3D_PIE_MT_Bottom_G(Menu):
                 # 6 - RIGHT
                 # 2 - BOTTOM 
                 # 8 - TOP
+                rotate_Y = pie.operator('transform.translate', text='Y',icon='EVENT_Y')
+                rotate_Y.orient_type = get_orient
+                rotate_Y.constraint_axis = (False,True,False)
                 # 7 - TOP - LEFT
                 # 9 - TOP - RIGHT
                 # 1 - BOTTOM - LEFT
