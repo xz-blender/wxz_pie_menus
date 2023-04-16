@@ -40,7 +40,7 @@ class VIEW3D_PIE_MT_Bottom_E(Menu):
 
         if ob_mode == 'EDIT' and ob_type == 'MESH':
             # 4 - LEFT
-            pie.separator()
+            pie.operator("mesh.flip_normals")
             # 6 - RIGHT
             col = pie.split().box().column()
             if ef_check == '2':

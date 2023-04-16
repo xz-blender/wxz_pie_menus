@@ -77,8 +77,7 @@ class VIEW3D_PIE_MT_Bottom_F(Menu):
         if ob_mode == 'EDIT':
             if ob_type == 'MESH':
                 # 4 - LEFT
-                pie.operator('wm.tool_set_by_id',
-                             text='切刀工具').name = "builtin.knife"
+                pie.operator('mesh.inset', text='内插面')
                 # 6 - RIGHT
                 if addon1 == '0':
                     pie.operator('pie.empty_operator',
@@ -98,14 +97,8 @@ class VIEW3D_PIE_MT_Bottom_F(Menu):
                 elif addon1 == '1':
                     pie.operator('mesh.edgetools_extend', text='延伸边')
                 # 1 - BOTTOM - LEFT
-                if addon2 == '2':
-                    pie.operator('pie.empty_operator',
-                                 text='未找到"Straight Skeleton"插件!')
-                elif addon2 == '0':
-                    pie.operator('pie.empty_operator',
-                                 text='启用"Straight Skeleton"插件!')
-                elif addon2 == '1':
-                    pie.operator('mesh.inset_polygon', text='连续偏移')
+                pie.operator('wm.tool_set_by_id',
+                             text='切刀工具').name = "builtin.knife"
                 # 3 - BOTTOM - RIGHT
                 if addon1 == '0':
                     pie.operator('pie.empty_operator',

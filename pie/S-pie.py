@@ -26,6 +26,8 @@ class VIEW3D_PIE_MT_Bottom_S(Menu):
 
         ui = context.area.ui_type
 
+        get_orient = context.scene.transform_orientation_slots[0].type
+
         if ui == "VIEW_3D":
             ob_type = context.object.type
             ob_mode = context.object.mode
@@ -45,11 +47,14 @@ class VIEW3D_PIE_MT_Bottom_S(Menu):
                 X.Y = False
                 X.Z = True
                 # 8 - TOP
+                rotate_Y = pie.operator('transform.resize', text='Y',icon='EVENT_Y')
+                rotate_Y.orient_type = get_orient
+                rotate_Y.constraint_axis = (False,True,False)
+                # 7 - TOP - LEFT
                 X = pie.operator(PIE_S_Flat_Object.bl_idname, text='Y对齐')
                 X.X = False
                 X.Y = True
                 X.Z = False
-                # 7 - TOP - LEFT
                 pie.separator()
                 # 9 - TOP - RIGHT
                 pie.separator()
