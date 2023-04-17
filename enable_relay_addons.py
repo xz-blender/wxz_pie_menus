@@ -105,7 +105,8 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             # EsayLight
             'EasyLight': [[('ies_library_path',str(Path(sync_path)/'IES'))],[]], # ies lib path
             # HDRI
-            'hdri_maker': [[('hdri_maker_library',str(Path(local_path)/'HDRI MAKER LIBRARY'))],[]],
+            'hdri_maker': [[('addon_default_library',str(Path(local_path)/'HDRI MAKER LIBRARY'/'HDRI_MAKER_DEFAULT_LIB'))],[]],
+            'hdri_maker': [[('addon_user_library',str(Path(local_path)/'HDRI MAKER LIBRARY'/'HDRI_MAKER_USER_LIB'))],[]],
             # QuickSnap
             'quicksnap': [[('auto_check_update',False)],[
                 (['3D View','object.quicksnap','QuickSnap Tool'],[('value','CLICK'),('type','G'),('shift',False)],[])]],

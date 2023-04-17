@@ -130,15 +130,17 @@ class VIEW3D_PIE_MT_Bottom_Z_Shift(Menu):
         # addon1:"LoopTools"
         # addon1 = check_rely_addon(rely_addons[2][0], rely_addons[2][1])
 
-        # 4 - LEFT
         split = pie.split()
-        col = split.column()
+        col = split.column(align=True)
         row = col.row()
+        # 4 - LEFT
         row.props_enum(context.space_data.shading,'color_type')
         # 6 - RIGHT
+        pie.separator()
         # 2 - BOTTOM
         pie.operator('wm.window_fullscreen_toggle')
         # 8 - TOP
+        pie.separator()
         # 7 - TOP - LEFT
         pie.prop(bpy.context.space_data, 'show_gizmo')
         # 9 - TOP - RIGHT
