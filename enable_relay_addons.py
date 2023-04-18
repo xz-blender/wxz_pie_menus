@@ -105,8 +105,10 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             # EsayLight
             'EasyLight': [[('ies_library_path',str(Path(sync_path)/'IES'))],[]], # ies lib path
             # HDRI
-            'hdri_maker': [[('addon_default_library',str(Path(local_path)/'HDRI MAKER LIBRARY'/'HDRI_MAKER_DEFAULT_LIB'))],[]],
-            'hdri_maker': [[('addon_user_library',str(Path(local_path)/'HDRI MAKER LIBRARY'/'HDRI_MAKER_USER_LIB'))],[]],
+            'hdri_maker': [[
+                            ('addon_default_library',str(Path(local_path)/'HDRI MAKER LIBRARY'/'HDRI_MAKER_DEFAULT_LIB')),
+                            ('addon_user_library',str(Path(local_path)/'HDRI MAKER LIBRARY'/'HDRI_MAKER_USER_LIB'))
+                            ],[]],
             # QuickSnap
             'quicksnap': [[('auto_check_update',False)],[
                 (['3D View','object.quicksnap','QuickSnap Tool'],[('value','CLICK'),('type','G'),('shift',False)],[])]],
@@ -115,7 +117,9 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             'slcad_transform': [[],[]],
             'extra_lights': [[],[]],
             # Photographer
-            'photographer': [[('hdri_lib_path',str(Path(sync_path)/'Custom HDRI'))],
+            'photographer': [[
+                            #('hdri_lib_path',str(Path(sync_path)/'Custom HDRI'))
+                              ],
                             [(['3D View','wm.call_menu_pie','Photographer Camera Pie'],[('value','CLICK_DRAG')],[])]],
             # Object Asset Wizard
             'object_asset_wizard': [[('root',str(Path(sync_path)/'Blender Assets Wizard'))],[]],
@@ -187,8 +191,8 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             'distributeobjects': [[],[]],
             # Friendly Povit
             'scpo': [[],[
-                (['3D View','friendly.pivot','Friendly: SCPO'],[('value','CLICK'),('ctrl',True)],[]),
-                (['Image','friendly.pivot2d','Friendly: SCPO2D'],[('value','CLICK'),('ctrl',True)],[])]],
+                (['3D View','friendly.pivot','Friendly:SCPO'],[('value','CLICK'),('ctrl',True)],[]),
+                (['Image','friendly.pivot2d','Friendly:SCPO2D'],[('value','CLICK'),('ctrl',True)],[])]],
             # 辣椒酱
             'lattice_helper': [[],[]],
             'popoti_align_helper': [[],[]],

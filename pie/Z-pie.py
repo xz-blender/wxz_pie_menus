@@ -132,9 +132,9 @@ class VIEW3D_PIE_MT_Bottom_Z_Shift(Menu):
 
         split = pie.split()
         col = split.column(align=True)
-        row = col.row()
+        row = col#.row(align=True)
         # 4 - LEFT
-        row.props_enum(context.space_data.shading,'color_type')
+        row.prop(context.space_data.shading,'color_type',expand=True)
         # 6 - RIGHT
         pie.separator()
         # 2 - BOTTOM
@@ -142,9 +142,9 @@ class VIEW3D_PIE_MT_Bottom_Z_Shift(Menu):
         # 8 - TOP
         pie.separator()
         # 7 - TOP - LEFT
-        pie.prop(bpy.context.space_data, 'show_gizmo')
+        pie.prop(bpy.context.space_data, 'show_gizmo',text='控件层')
         # 9 - TOP - RIGHT
-        pie.prop(bpy.context.space_data.overlay, 'show_overlays')
+        pie.prop(bpy.context.space_data.overlay, 'show_overlays',text='叠加层')
         # 1 - BOTTOM - LEFT
         # 3 - BOTTOM - RIGHT
 
