@@ -169,7 +169,7 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
                 (['3D View','object.drop_it','Drop It'],[('value','CLICK')],[])
                 ]],
             'NGon Loop Select': [[],[
-                (['Mesh','ls.select','Loop Select'],[('value','CLICK')],[]),
+                #(['Mesh','ls.select','Loop Select'],[('value','CLICK')],[]),
                 ]],
             'OCD': [[],[]],
             # IQ lib

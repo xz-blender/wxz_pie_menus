@@ -21,6 +21,8 @@ class PIE_MT_Bottom_A_shift(Menu):
         layout = self.layout
         pie = layout.menu_pie()
 
+        set_pie_ridius(context, 100)
+
         # ob_type = context.object.type
         # ob_mode = context.object.mode
 
