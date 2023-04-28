@@ -1,5 +1,5 @@
 import bpy
-from .pie.utils import change_default_keymap
+from ..pie.utils import change_default_keymap
 from bpy.app.handlers import persistent
 
 #### def ####

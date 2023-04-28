@@ -4,11 +4,12 @@ import bpy
 import os
 from .pie.utils import check_rely_addon, rely_addons, change_default_keymap
 
-from . import change_keys, change_settings, enable_relay_addons
+from .operator import change_keys, change_settings, enable_relay_addons, memory_useage
 extra_scripts = (
     change_keys,
     change_settings,
     enable_relay_addons,
+    memory_useage,
 )
 
 bl_info = {
