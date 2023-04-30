@@ -70,10 +70,33 @@ class VIEW3D_PIE_MT_Bottom_F(Menu):
             # 3 - BOTTOM - RIGHT
             pie.operator(
                 Clean_Custom_Normal.bl_idname,
-                text='批量删自定法线',
-                icon='NORMALS_VERTEX_FACE',
-            )
-
+                text='批量删自定法线',icon='NORMALS_VERTEX_FACE',)
+        else:
+            # 4 - LEFT
+            op = pie.operator('object.make_single_user',text='单一化', icon='UNLINKED')
+            op.object = True
+            op.obdata = True
+            # 6 - RIGHT
+            pie.separator()
+            # 2 - BOTTOM
+            pie.separator()
+            # 8 - TOP
+            pie.operator('wm.call_menu_pie', text='BagaPie').name = "BAGAPIE_MT_pie_menu"
+            # 7 - TOP - LEFT
+            if ob_type == "MESH":
+                pie.operator('object.parent_clear')
+            elif ob_type == 'ARMATURE':
+                pie.operator('armature.parent_clear')
+            # 9 - TOP - RIGHT
+            if ob_type == "MESH":
+                pie.operator('object.parent_set')
+            elif ob_type == 'ARMATURE':
+                pie.operator('armature.parent_set')
+            # 1 - BOTTOM - LEFT
+            pie.separator()
+            # 3 - BOTTOM - RIGHT
+            pie.separator()
+            
         if ob_mode == 'EDIT':
             if ob_type == 'MESH':
                 # 4 - LEFT
