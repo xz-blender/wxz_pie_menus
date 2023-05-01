@@ -13,4 +13,4 @@
 
 # wxz_pie_menus
 
-![D-pie](wxz_pie_menus\README_img\D-pie.jpg)
+![D-pie](/wxz_pie_menus/img/D-pie.png)
