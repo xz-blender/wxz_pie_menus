@@ -163,6 +163,7 @@ R_dir =[
     (['3D View','transform.rotate','Rotate'],[('value','CLICK')],[]),
     (['UV Editor','transform.rotate','Rotate'],[('value','CLICK')],[]),
     (['Node Editor','transform.rotate','Rotate'],[('value','CLICK')],[]),
+    (['Screen','screen.repeat_last','Repeat Last'],[('value','CLICK')],[]),
 ]
 S_dir =[
     (['Window','wm.save_mainfile','Save Blender File'],[('value','CLICK')],[]), # ctrl S -- save file

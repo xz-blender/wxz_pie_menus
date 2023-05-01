@@ -1,4 +1,5 @@
 import os
+import random
 import bpy
 from bpy.types import Menu, Operator
 from mathutils import Matrix
@@ -65,13 +66,14 @@ class PIE_MT_Bottom_A(Menu):
                     pie.separator()
                 # 9 - TOP - RIGHT
                 col = pie.split().box().column(align=True)
-                col.scale_x = 1.3
+                col.scale_x = 1
                 col.scale_y = 1.2
                 row = col.row()
-                row.operator("asset.mark", text="标记资产", icon="ASSET_MANAGER")
+                row.label(text='资产')
+                row.operator("asset.mark", text="标记", icon="ASSET_MANAGER")
+                row.operator('asset.clear', text='抹除',icon='REMOVE').set_fake_user = False
                 row = col.row()
-                row.operator('asset.clear', text='抹除资产',
-                            icon='REMOVE').set_fake_user = False
+                row.operator('pie.creat_costom_asset_preview',text='创建视图预览',icon='IMAGE_PLANE')
 
                 # 1 - BOTTOM - LEFT
                 pie.separator()
@@ -306,12 +308,97 @@ class PIE_MT_Bottom_A_Ctrl(Menu):
             # 3 - BOTTOM - RIGHT
             pie.operator('object.duplicates_make_real', text='实例独立化')
 
+class Creat_Costom_Asset_Preview(Operator):
+    """创建自定义预览图"""
+    bl_idname="pie.creat_costom_asset_preview"
+    bl_label="视图自定义资产预览"
+    bl_options={'REGISTER','UNDO'}
+
+    resolution : bpy.props.IntProperty(
+            name = "设置预览精度",
+            min =64,
+            soft_max = 512,
+            default = 256,
+            step=64
+            )
+
+    @classmethod
+    def poll(cls, context):
+        if context.object is not None:
+            if  context.active_object.type != 'CAMERA' and context.mode == 'OBJECT':
+                return True
+
+    def execute(self, context):
+        scene=context.scene
+        act_obj = context.active_object
+        space = bpy.context.space_data
+
+        #保存现有场景信息
+        save_render_X = scene.render.resolution_x
+        save_render_y = scene.render.resolution_y 
+        save_percentage = scene.render.resolution_percentage
+        save_filepath = scene.render.filepath
+        save_file_format = scene.render.image_settings.file_format
+        save_file_color_mode = scene.render.image_settings.color_mode
+        save_file_compression = scene.render.image_settings.compression
+
+        #孤立模式
+        for area in bpy.context.screen.areas:
+            if area.type == 'VIEW_3D':
+                space = area.spaces[0]
+                if space.local_view == None: #check if not using local view
+                    bpy.ops.view3d.localview(frame_selected=False)
+                    change_local = True
+                else:
+                    change_local = False
+        #隐藏叠加层
+        context.space_data.overlay.show_overlays = False
+
+        #更改预览大小
+        scene.render.resolution_y = self.resolution
+        scene.render.resolution_x = self.resolution
+        scene.render.resolution_percentage = 100
+        #设置图像格式
+        scene.render.image_settings.file_format = "PNG"
+        scene.render.image_settings.compression = 50
+        scene.render.image_settings.color_mode = "RGBA" 
+
+        #设置图像缓存位置
+        temp_filename = str(random.randint(0,999999))+".png"
+        temp_filepath = os.path.join(os.getenv('LOCALAPPDATA'),'temp', temp_filename)
+        bpy.context.scene.render.filepath = temp_filepath
+
+        #设置资产设置自定义图像
+        bpy.ops.render.opengl(write_still = True)
+
+        act_obj.asset_mark()
+        override = bpy.context.copy()
+        override['id'] = act_obj
+        bpy.ops.ed.lib_id_load_custom_preview(override,filepath=temp_filepath)
+        
+        #隐藏叠加层
+        context.space_data.overlay.show_overlays = True
+
+        #返回原有场景信息
+        if change_local:
+            bpy.ops.view3d.localview(frame_selected=False)
+        os.unlink(temp_filepath)
+        bpy.context.scene.render.resolution_y = save_render_y
+        bpy.context.scene.render.resolution_x = save_render_X
+        scene.render.resolution_percentage = save_percentage
+        bpy.context.scene.render.filepath = save_filepath
+        scene.render.image_settings.file_format = save_file_format
+        scene.render.image_settings.color_mode = save_file_color_mode
+        scene.render.image_settings.compression = save_file_compression
+        
+        return {'FINISHED'}
 
 classes = [
     PIE_MT_Bottom_A,
     PIE_MT_Bottom_A_Ctrl,
     PIE_Image_usefaker,
     PIE_Apply_MultiObjects_Scale,
+    Creat_Costom_Asset_Preview,
 ]
 
 
