@@ -20,7 +20,6 @@ class VIEW3D_PIE_MT_Bottom_F(Menu):
 
     def draw(self, context):
         layout = self.layout
-        layout.emboss = 'PULLDOWN_MENU'
         pie = layout.menu_pie()
 
         ob_type = context.object.type
@@ -35,67 +34,32 @@ class VIEW3D_PIE_MT_Bottom_F(Menu):
         # addon3:"Curve Tools"
         addon3 = check_rely_addon(rely_addons[10][0], rely_addons[10][1])
 
-        if ob_mode == 'OBJECT' and ob_type in [
-            'MESH',
-            'CURVE',
-            'SURFACE',
-            'FONT',
-            'GPENCIL',
-            'ARMATURE',
-            'LATTICE',
-            'LIGHT',
-        ]:
+        if ob_mode == 'OBJECT':
             # 4 - LEFT
-            op = pie.operator('object.make_single_user',text='单一化', icon='UNLINKED')
-            op.object = True
-            op.obdata = True
+            op = pie.operator(PIE_Make_Sigle_User.bl_idname,text='单一化', icon='UNLINKED')
             # 6 - RIGHT
             pie.separator()
             # 2 - BOTTOM
             pie.operator(Merge_Objects_WithoutActive.bl_idname, text='合并', icon='SELECT_EXTEND')
             # 8 - TOP
-            pie.operator('wm.call_menu_pie', text='BagaPie').name = "BAGAPIE_MT_pie_menu"
+            pie.operator('object.parent_to_empty')
+            # pie.operator('wm.call_menu_pie', text='BagaPie').name = "BAGAPIE_MT_pie_menu"
             # 7 - TOP - LEFT
-            if ob_type == "MESH":
-                pie.operator('object.parent_clear')
-            elif ob_type == 'ARMATURE':
+            if ob_type == 'ARMATURE':
                 pie.operator('armature.parent_clear')
+            else :
+                pie.operator('object.parent_clear')
             # 9 - TOP - RIGHT
-            if ob_type == "MESH":
-                pie.operator('object.parent_set')
-            elif ob_type == 'ARMATURE':
+            if ob_type == 'ARMATURE':
                 pie.operator('armature.parent_set')
+            else:
+                pie.operator('object.parent_set')
             # 1 - BOTTOM - LEFT
             pie.separator()
             # 3 - BOTTOM - RIGHT
             pie.operator(
-                Clean_Custom_Normal.bl_idname,
-                text='批量删自定法线',icon='NORMALS_VERTEX_FACE',)
-        else:
-            # 4 - LEFT
-            op = pie.operator('object.make_single_user',text='单一化', icon='UNLINKED')
-            op.object = True
-            op.obdata = True
-            # 6 - RIGHT
-            pie.separator()
-            # 2 - BOTTOM
-            pie.separator()
-            # 8 - TOP
-            pie.operator('wm.call_menu_pie', text='BagaPie').name = "BAGAPIE_MT_pie_menu"
-            # 7 - TOP - LEFT
-            if ob_type == "MESH":
-                pie.operator('object.parent_clear')
-            elif ob_type == 'ARMATURE':
-                pie.operator('armature.parent_clear')
-            # 9 - TOP - RIGHT
-            if ob_type == "MESH":
-                pie.operator('object.parent_set')
-            elif ob_type == 'ARMATURE':
-                pie.operator('armature.parent_set')
-            # 1 - BOTTOM - LEFT
-            pie.separator()
-            # 3 - BOTTOM - RIGHT
-            pie.separator()
+                Clean_Custom_Normal.bl_idname,text='批量删自定法线',icon='NORMALS_VERTEX_FACE')
+
             
         if ob_mode == 'EDIT':
             if ob_type == 'MESH':
@@ -152,6 +116,11 @@ class Clean_Custom_Normal(Operator):
     bl_description = "Clear Custom Data"
     bl_options = {'REGISTER', 'UNDO'}
 
+    @classmethod
+    def poll(cls, context):
+        if context.object != None and context.object.type == 'MESH':
+            return True
+
     def execute(self, context):
         selection = bpy.context.selected_objects
         for o in selection:
@@ -161,6 +130,19 @@ class Clean_Custom_Normal(Operator):
             except:
                 None
         return {'FINISHED'}
+    
+
+class PIE_Make_Sigle_User(Operator):
+    bl_idname = "pie.make_sigle_user"
+    bl_label = "Make_Sigle_User"
+    bl_description = "Make_Sigle_User Only for selected"
+    bl_options = {'REGISTER', 'UNDO'}
+
+
+    def execute(self, context):
+        bpy.ops.object.make_single_user(object=True,obdata=True)
+        return {'FINISHED'}
+
 
 class Merge_Objects_WithoutActive(Operator):
     bl_idname = "pie.merge_objects_without_active"
@@ -168,6 +150,12 @@ class Merge_Objects_WithoutActive(Operator):
     bl_description = "Merge Objects Without Active Objects"
     bl_options = {'REGISTER', 'UNDO'}
 
+    @classmethod
+    def poll(cls, context):
+        if context.object != None:
+            if context.object.type in ['MESH','CURVE','SURFACE','GPENCIL','ARMATURE']:
+                return True
+    
     def execute(self, context):
         selection_ob = context.selected_objects
         active_ob = context.active_object
@@ -183,6 +171,7 @@ classes = [
     VIEW3D_PIE_MT_Bottom_F,
     Clean_Custom_Normal,
     Merge_Objects_WithoutActive,
+    PIE_Make_Sigle_User,
 ]
 
 addon_keymaps = []
