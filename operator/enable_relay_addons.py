@@ -27,7 +27,7 @@ def change_addon_key_value(change_dir):
 
 if sys.platform == "win32":
     sync_path = r'D:/OneDrive/Sync/Blender/Assets Sync'
-    local_path = r'Q:/Blender Assets'
+    local_path = r'F:/Blender Assets'
 elif sys.platform == 'darwin':
     sync_path = r'/Users/wangxianzhi/Library/CloudStorage/OneDrive-个人/Sync/Blender/Assets Sync'
     local_path = r'/Users/wangxianzhi/Blender Lib'
@@ -254,7 +254,6 @@ setting_lib = {
     'GN' : (str(Path(sync_path)/'Blender Assets Browser'/'GN'), 'APPEND_REUSE'),
     'Material' : (str(Path(sync_path)/'Blender Assets Browser'/'Material'), 'APPEND_REUSE'),
     'Lights' : (str(Path(sync_path)/'Blender Assets Browser'/'Lights'), 'APPEND_REUSE'),
-    # '动画运动节点' : (str(Path(sync_path)/'Blender Assets Browser'/'Motion Animate'), 'APPEND_REUSE'),
     '马路标志' : (str(Path(sync_path)/'Blender Assets Browser'/'马路标志'), 'LINK'),
     'Abionic' : (str(Path(local_path)/'Abionic'), 'LINK'),
     'BagaPie Assets' : (str(Path(local_path)/'BagaPie Assets'), 'LINK'),
@@ -263,6 +262,8 @@ setting_lib = {
     'Trash_kit' : (str(Path(local_path)/'Trash_kit'), 'LINK'),
     'kit_bash' : (str(Path(local_path)/'kit_bash'), 'LINK'),
     'kit_building' : (str(Path(local_path)/'kit_building'), 'LINK'),
+    'Tree Assets' : (str(Path(local_path)/'Tree Assets'), 'LINK'),
+    'Motion Animate' : (str(Path(local_path)/'Motion Animate'), 'APPEND'),
     '其他' : (str(Path(local_path)/'其他'), 'LINK'),
 }
 
