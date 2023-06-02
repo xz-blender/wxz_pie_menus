@@ -264,6 +264,7 @@ setting_lib = {
     'kit_building' : (str(Path(local_path)/'kit_building'), 'LINK'),
     'Tree Assets' : (str(Path(local_path)/'Tree Assets'), 'LINK'),
     'Motion Animate' : (str(Path(local_path)/'Motion Animate'), 'APPEND'),
+    '图案光阴影贴图' : (str(Path(local_path)/'图案光阴影贴图'), 'LINK'),
     '其他' : (str(Path(local_path)/'其他'), 'LINK'),
 }
 
