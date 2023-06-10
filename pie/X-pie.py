@@ -91,9 +91,11 @@ class VIEW3D_PIE_MT_Bottom_X(Menu):
             # 2 - BOTTOM
             pie.operator('mesh.edge_collapse', text='塌陷边面')
             # 8 - TOP
-            pie.operator(
-                'mesh.delete', text='仅面', icon='SNAP_FACE_CENTER'
-            ).type = 'ONLY_FACE'
+            box = pie.split().box()
+            box.scale_y = 1.4
+            col = box.column(align=True)
+            col.operator('mesh.delete', text='仅面',icon='SNAP_FACE_CENTER').type='ONLY_FACE'
+            col.operator('mesh.delete', text='仅边',icon='MOD_EDGESPLIT').type='EDGE_FACE'
             # 7 - TOP - LEFT 
             
             pie.separator()
