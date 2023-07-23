@@ -37,10 +37,12 @@ class PIE_Space_KEY(Operator):
         elif context.area.ui_type == 'IMAGE_EDITOR':
             if bpy.context.space_data.ui_mode == 'VIEW':
                 bpy.ops.wm.tool_set_by_index(index=1)
-            # elif bpy.context.space_data.ui_mode == 'PAINT':
-            #     bpy.ops.wm.tool_set_by_id(name="builtin_brush.Draw")
             elif bpy.context.space_data.ui_mode == 'MASK':
                 bpy.ops.screen.animation_play()
+        elif context.area.ui_type == 'NODE_EDITOR':
+            bpy.ops.wm.tool_set_by_id(name='builtin.select_box')
+            # elif bpy.context.space_data.ui_mode == 'PAINT':
+            #     bpy.ops.wm.tool_set_by_id(name="builtin_brush.Draw")
         # 动画类
         elif context.area.ui_type in [
             'SEQUENCE_EDITOR',
