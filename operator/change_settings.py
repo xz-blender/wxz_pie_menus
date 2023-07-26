@@ -66,9 +66,12 @@ def change_context_settings():
     scene.tool_settings.snap_elements = {'VERTEX'} # 吸附到点模式
 
 def change_settings():
-    change_preferences_settings()
-    change_context_settings()
-    print('"WXZ_Pie_Menu" changed settings!')
+    try:
+        change_preferences_settings()
+        change_context_settings()
+        print('"WXZ_Pie_Menu" changed settings!')
+    except:
+        pass
 
 def register():
     if not bpy.app.timers.is_registered(change_settings):

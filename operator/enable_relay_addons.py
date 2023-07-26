@@ -190,9 +190,11 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             'UvSquares': [[],[]],
             'distributeobjects': [[],[]],
             # Friendly Povit
-            'scpo': [[],[
+            ''''
+                scpo': [[],[
                 (['3D View','friendly.pivot','Friendly:SCPO'],[('value','CLICK'),('ctrl',True)],[]),
                 (['Image','friendly.pivot2d','Friendly:SCPO2D'],[('value','CLICK'),('ctrl',True)],[])]],
+                '''
             # 辣椒酱
             'lattice_helper': [[],[]],
             'popoti_align_helper': [[],[]],
@@ -295,10 +297,12 @@ def change_addons():
     print('"WXZ_Pie_Menu" Change Assets Library Items!')
 
 def register():
-    bpy.utils.register_class(Enable_Pie_Menu_Relay_Addons)
-
-    if not bpy.app.timers.is_registered(change_addons):
-        bpy.app.timers.register(change_addons, first_interval=2)
+    try:
+        bpy.utils.register_class(Enable_Pie_Menu_Relay_Addons)
+    except:
+        pass
+        if not bpy.app.timers.is_registered(change_addons):
+            bpy.app.timers.register(change_addons, first_interval=2)
 
 def unregister():
     if bpy.app.timers.is_registered(change_addons):

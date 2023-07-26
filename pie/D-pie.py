@@ -44,15 +44,13 @@ class VIEW3D_PIE_MT_Bottom_D(Menu):
             col = sp.box().column()
             row = col.row()
             row.operator(
-                "pie.transform_orientation", text="万象", icon='ORIENTATION_GIMBAL'
-            ).axis = 'GIMBAL'
+                "pie.transform_orientation", text="万象", icon='ORIENTATION_GIMBAL').axis = 'GIMBAL'
             row = col.row()
             row.operator("pie.transform_orientation", text="视图",
                          icon='ORIENTATION_VIEW').axis = 'VIEW'
             row = col.row()
             row.operator(
-                "pie.transform_orientation", text="游标", icon='ORIENTATION_CURSOR'
-            ).axis = 'CURSOR'
+                "pie.transform_orientation", text="游标", icon='ORIENTATION_CURSOR').axis = 'CURSOR'
             # 6 - RIGHT
             sp = pie.split()
 
@@ -63,8 +61,7 @@ class VIEW3D_PIE_MT_Bottom_D(Menu):
                          icon='PIVOT_MEDIAN').pivot = 'MEDIAN_POINT'
             row = col.row()
             row.operator(
-                "pie.transform_pivot", text="活动项", icon='PIVOT_ACTIVE'
-            ).pivot = 'ACTIVE_ELEMENT'
+                "pie.transform_pivot", text="活动项", icon='PIVOT_ACTIVE').pivot = 'ACTIVE_ELEMENT'
 
             col_r = sp.column()
             row = col_r.row()
@@ -75,8 +72,7 @@ class VIEW3D_PIE_MT_Bottom_D(Menu):
             row.label(text='点')
             # 2 - BOTTOM
             pie.operator(
-                "pie.transform_pivot", text="各自原点", icon='PIVOT_INDIVIDUAL'
-            ).pivot = 'INDIVIDUAL_ORIGINS'
+                "pie.transform_pivot", text="各自原点", icon='PIVOT_INDIVIDUAL').pivot = 'INDIVIDUAL_ORIGINS'
             # 8 - TOP
             pie.operator(
                 "pie.transform_orientation", text="法向", icon='ORIENTATION_NORMAL'
@@ -195,9 +191,14 @@ def register_keymaps():
         kmi.properties.name = "VIEW3D_PIE_MT_Bottom_D"
         addon_keymaps.append(km)
 
-        km = addon.keymaps.new(name='Mesh', space_type='VIEW_3D')
-        kmi = km.keymap_items.new("mesh.snap_utilities_line", 'D', 'CLICK')
-        addon_keymaps.append(km)
+    km = addon.keymaps.new(name='Mesh', space_type='VIEW_3D')
+    kmi = km.keymap_items.new("mesh.snap_utilities_line", 'D', 'CLICK')
+    addon_keymaps.append(km)
+
+    km = addon.keymaps.new(name='3D View', space_type='VIEW_3D')
+    kmi = km.keymap_items.new("object.origin_set", 'D', 'DOUBLE_CLICK')
+    kmi.properties.type = 'ORIGIN_GEOMETRY'
+    addon_keymaps.append(km)
 
 def unregister_keymaps():
     wm = bpy.context.window_manager
