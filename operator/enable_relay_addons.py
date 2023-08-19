@@ -206,6 +206,10 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             'camera_shakify': [[],[]],
             'rotate_face': [[],[]],
             'VoronoiLinker': [[],[]],
+            #Kushiro Addons
+            'cut_corner': [[],[]],
+            'safe_ngon': [[],[]],
+            'select_sim': [[],[]],
             # True Assets
             'True-Assets': [[('ta_directory',str(Path(sync_path)/'True Assets'))],
                             [(['3D View','ta.saveassetsfromthisfile','Mark Assets and Quit'],[('active',False)],[])]],
