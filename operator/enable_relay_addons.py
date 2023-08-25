@@ -100,6 +100,7 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
         # 第三方
             'Bagapie': [[],[(['3D View','bagapie.duplicatelinkedgroup','Duplicate Linked Group'],[('active',False)],[]),
                             (['3D View','bagapie.duplicategroup','Duplicate Group'],[('active',False)],[]),
+                            (['3D View','wm.call_menu_pie','BagaPie GeoPack'],[('active',False)],[]),
                             ]], # key alt N
             'slcad_transform': [[],[]],
             # EsayLight

@@ -14,13 +14,6 @@ bl_info = {
     "location": "View3D",
     "category": "PIE",
 }
-def del_wspace(d_name):
-    # 删除原始工作空间                                           
-    for i_index, i_data in enumerate(bpy.data.workspaces): 
-        if i_data.name == d_name:
-            w = bpy.data.workspaces[d_name]
-            bpy.ops.workspace.delete({"workspace": w})
-            return i_index
 
 class VIEW3D_PIE_MT_Ctrl_Tab(Menu):
     bl_label = "Tab-ctrl"
@@ -113,63 +106,47 @@ class PIE_WorkspaceSwapOperator(Operator):
     def execute(self, context):
         t_name = self.target_workspace
         d_name = self.default_workspace
-
         d_spaces = bpy.data.workspaces
-        # don't need to swap if already on there
+
+        path = str(Path(__file__).parent.parent / 'workspace.blend')
+        workspaces_dir = {
+            '0-LIB': 'Layout',
+            '1-MOD': 'Modeling',
+            '2-GN': 'Geometry Nodes',
+            '3-MAT': 'Shading', 
+            '4-UV': 'UV Editing',
+            '5-MOTION': 'Animation',
+            '6-RENDER': 'Rendering',
+            '7-COMPO': 'Compositing',
+            '8-SETTING': 'Scripting',
+        }
+
         if context.workspace.name == t_name:
             self.report({'INFO'}, '已经为该工作空间！')
             return {'CANCELLED'}
 
-        if t_name in d_spaces:
+        elif t_name in d_spaces:
             context.window.workspace = d_spaces[t_name]
             self.report({'INFO'}, '已切换工作空间:"%s"' % (t_name))
             return {'FINISHED'}
-
-        # Try local workspace swapping first
-        # Last resort: try to import from the blender templates
-
-        # old path:
-        # path = bpy.utils.user_resource('CONFIG') + os.sep + "startup.blend"
         
-        # new path: ('startup.blend' in addon files)
-        # path = os.path.join(os.path.dirname(__file__), "startup.blend")
-        path = str(Path(__file__).parent.parent / 'workspace.blend')
-        if t_name not in d_spaces:
-            try:
-                # 删除原始工作空间, 并获取所在index
-                index = del_wspace(d_name)
-                print(index)
-
-                bpy.ops.workspace.append_activate(idname=t_name, filepath=path)
-                # bpy.ops.workspace.reorder_to_front({"workspace": d_spaces[t_name]})
-                # 重新排序
-                cut_spaces = list(d_spaces)
-
-                # for i in reversed(cut_spaces[0:index]):
-                #     print(i.name)
-                #     bpy.ops.workspace.reorder_to_front({"workspace": i})
-
-                self.report({'INFO'}, '已添加工作空间:"%s",并切换' % (t_name))
-                return {'FINISHED'}
-
-            except:
-                context.window.workspace = bpy.data.workspaces[d_name]
-                self.report(
-                    {'INFO'}, '未找到"{}"工作空间,已切换默认:"{}"'.format(t_name, d_name)
-                )
-                return {'FINISHED'}
-
-
-# class PIE_Change_Active_WorkSpace(Operator):
-#     bl_idname = "pie.workspaces_active"
-#     bl_label = "Change Workspace"
-#     bl_options = {'REGISTER','UNDO'}
-
-#     ws_name : bpy.props.StringProperty(name='Active Workspace')
-
-#     def execute(self, context):
-#         context.workspace = bpy.data.workspaces[self.ws_name]
-#         return {'FINISHED'}
+        elif t_name not in d_spaces:
+            # 删除原始工作空间
+            w = bpy.data.workspaces[workspaces_dir[t_name]]
+            bpy.ops.workspace.delete({"workspace": w},'INVOKE_DEFAULT')
+            # 添加指定工作空间
+            bpy.ops.workspace.append_activate(idname=t_name, filepath=path)
+            # 重排序工作空间
+                # 获取工作空间列表(固定)
+            wk_list = [workspace.name for workspace in bpy.data.workspaces]
+            for name in wk_list:
+                bpy.context.window.workspace = bpy.data.workspaces[name]
+                w = bpy.data.workspaces[name]
+                # 重排序到最前
+                bpy.ops.workspace.reorder_to_front({"workspace": w})
+            # 提示
+            self.report({'INFO'}, '已添加工作空间:"%s"' % (t_name))
+            return {'FINISHED'}
 
 classes = [
     VIEW3D_PIE_MT_Ctrl_Tab,
