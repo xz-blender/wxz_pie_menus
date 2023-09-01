@@ -146,6 +146,8 @@ class PIE_WorkspaceSwapOperator(Operator):
                 bpy.ops.workspace.reorder_to_front({"workspace": w})
             # 提示
             self.report({'INFO'}, '已添加工作空间:"%s"' % (t_name))
+            context.window.workspace = d_spaces[t_name]
+            
             return {'FINISHED'}
 
 classes = [
