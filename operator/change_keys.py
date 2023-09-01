@@ -111,7 +111,8 @@ E_dir =[
 ]
 F_dir =[
     (['Curve','curve.make_segment','Make Segment'],[('value','CLICK')],[]), 
-    (['Mesh','mesh.edge_face_add','Make Edge/Face'],[('value','CLICK')],[]), # config[Blender addon]
+    (['Mesh','mesh.edge_face_add','Make Edge/Face'],[('value','DOUBLE_CLICK')],[]), # config[Blender addon]
+    (['Mesh','mesh.fill','Fill'],[('value','CLICK')],[]), # default fill
     (['Mesh','wm.call_menu','Face'],[('value','CLICK')],[]), # ctrl F
     (['Node Editor','node.link_make','Make Links'],[('value','CLICK')],[]), # ctrl F
 ]

@@ -151,10 +151,10 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             'round_inset': [[],[]],
             'Seer Adjacent Selection': [[],[]],
             # Smart Fill
-            'smart_fill': [[('mouse_wheel',True)],[
+            'smart_fill': [[('mouse_wheel',False)],[
                 (['Mesh','mesh.mesh.smart_fill_popup','Smart Fill Popup'],[('value','CLICK')],[]),
                 (['Mesh','mesh.edge_face_add','Make Edge/Face'],[('value','CLICK')],[]),
-            ]],
+                ]],
             'smart_loops_toolkit': [[],[]],
             #----Nodes----
             'BB_Nodes': [[],[]],
@@ -170,7 +170,7 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
                 (['3D View','object.drop_it','Drop It'],[('value','CLICK')],[])
                 ]],
             'NGon Loop Select': [[],[
-                #(['Mesh','ls.select','Loop Select'],[('value','CLICK')],[]),
+                (['Mesh','ls.select','Loop Select'],[('value','CLICK')],[]),
                 ]],
             'OCD': [[],[]],
             # IQ lib
