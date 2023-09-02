@@ -170,7 +170,7 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
                 (['3D View','object.drop_it','Drop It'],[('value','CLICK')],[])
                 ]],
             'NGon Loop Select': [[],[
-                (['Mesh','ls.select','Loop Select'],[('value','CLICK')],[]),
+                # (['Mesh','ls.select','Loop Select'],[('value','CLICK')],[]),
                 ]],
             'OCD': [[],[]],
             # IQ lib
@@ -302,12 +302,12 @@ def change_addons():
     print('"WXZ_Pie_Menu" Change Assets Library Items!')
 
 def register():
-    try:
-        bpy.utils.register_class(Enable_Pie_Menu_Relay_Addons)
-    except:
-        pass
-        if not bpy.app.timers.is_registered(change_addons):
-            bpy.app.timers.register(change_addons, first_interval=2)
+    # try:
+    bpy.utils.register_class(Enable_Pie_Menu_Relay_Addons)
+    # except:
+    #     pass
+    if not bpy.app.timers.is_registered(change_addons):
+        bpy.app.timers.register(change_addons, first_interval=2)
 
 def unregister():
     if bpy.app.timers.is_registered(change_addons):
