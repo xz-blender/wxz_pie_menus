@@ -133,7 +133,7 @@ class PIE_WorkspaceSwapOperator(Operator):
         elif t_name not in d_spaces:
             # 删除原始工作空间
             w = bpy.data.workspaces[workspaces_dir[t_name]]
-            bpy.ops.workspace.delete({"workspace": w},'INVOKE_DEFAULT')
+            bpy.ops.workspace.delete({"workspace": w})
             # 添加指定工作空间
             bpy.ops.workspace.append_activate(idname=t_name, filepath=path)
             # 重排序工作空间
