@@ -118,6 +118,8 @@ F_dir =[
     (['Node Editor','node.link_make','Make Links'],[('value','CLICK')],[]), # ctrl F
 ]
 G_dir =[
+    (['Object Mode','transform.translate','Move'],[('value','CLICK')],[]),
+    (['Mesh','transform.translate','Move'],[('value','CLICK')],[]),
     (['Object Mode','collection.objects_add_active','Add Selected to Active Collection'],[('active',False)],[]), # G ctrl shift
     (['Object Mode','collection.objects_remove_all','Remove from All Collections'],[('active',False)],[]), # G ctrl shift alt
     (['Object Mode','collection.objects_remove','Remove from Collection'],[('active',False)],[]), # G ctrl alt
@@ -163,6 +165,8 @@ Q_dir =[
 ]
 R_dir =[
     (['3D View','transform.rotate','Rotate'],[('value','CLICK')],[]),
+    (['Object Mode','transform.rotate','Rotate'],[('value','CLICK')],[]),
+    (['Mesh','transform.rotate','Rotate'],[('value','CLICK')],[]),
     (['UV Editor','transform.rotate','Rotate'],[('value','CLICK')],[]),
     (['Node Editor','transform.rotate','Rotate'],[('value','CLICK')],[]),
     (['Screen','screen.repeat_last','Repeat Last'],[('value','CLICK')],[]),
@@ -171,6 +175,8 @@ S_dir =[
     (['Window','wm.save_mainfile','Save Blender File'],[('value','CLICK')],[]), # ctrl S -- save file
     (['Window','wm.save_as_mainfile','Save As'],[('value','CLICK')],[]), # ctrl shift S -- save file
     (['3D View','transform.resize','Resize'],[('value','CLICK')],[]),
+    (['Object Mode','transform.resize','Resize'],[('value','CLICK')],[]),
+    (['Mesh','transform.resize','Resize'],[('value','CLICK')],[]),
     (['UV Editor','transform.resize','Resize'],[('value','CLICK')],[]),
     (['Graph Editor','transform.resize','Resize'],[('value','CLICK')],[]),
     (['Node Editor','transform.resize','Resize'],[('value','CLICK')],[]),
