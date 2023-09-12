@@ -28,6 +28,7 @@ def change_addon_key_value(change_dir):
 if sys.platform == "win32":
     sync_path = r'D:/OneDrive/Sync/Blender/Assets Sync'
     local_path = r'F:/Blender Assets'
+    addon_path = Path(bpy.utils.user_resource("SCRIPTS"))/'addons'
 elif sys.platform == 'darwin':
     sync_path = r'/Users/wangxianzhi/Library/CloudStorage/OneDrive-个人/Sync/Blender/Assets Sync'
     local_path = r'/Users/wangxianzhi/Blender Lib'
@@ -273,6 +274,7 @@ setting_lib = {
     'Motion Animate' : (str(Path(local_path)/'Motion Animate'), 'APPEND'),
     '图案光阴影贴图' : (str(Path(local_path)/'图案光阴影贴图'), 'LINK'),
     '其他' : (str(Path(local_path)/'其他'), 'LINK'),
+    'HIG_Nodes' : (str(Path(addon_path)/'Higgsas_Groups'), 'APPEND'),
 }
 
 def change_assets_library_path():
