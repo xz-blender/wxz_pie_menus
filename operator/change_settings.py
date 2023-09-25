@@ -17,10 +17,14 @@ def change_preferences_settings():
     view.show_statusbar_version = True    # 显示版本
     view.use_mouse_over_open = True     # 鼠标划过开启菜单
 
+    from pathlib import Path
+    font_path = Path(__file__).parent.parent/'ui_font.TTC'
+    view.font_path_ui = str(font_path)   # 界面字体
+
     # 动画
     edit = pref.edit
-    edit.use_visual_keying = True       # 可视化插帧
-    edit.use_keyframe_insert_needed = True      # 仅在需要处插入关键帧
+    # edit.use_visual_keying = True       # 可视化插帧
+    # edit.use_keyframe_insert_needed = True      # 仅在需要处插入关键帧
 
     # 输入
     inputs = pref.inputs
@@ -47,7 +51,13 @@ def change_preferences_settings():
     # bpy.data.use_autopack = True
 
     # 主题
-    pref.themes[0].node_editor.noodle_curving = 0 # 节点编辑器,曲线弯曲度
+    theme = pref.themes[0]
+    theme.node_editor.noodle_curving = 0 # 节点编辑器,曲线弯曲度
+
+    theme.view_3d.edge_width = 3 # 3D视图,边缘宽度
+    theme.view_3d.outline_width = 3 # 3D视图,轮廓宽度
+    theme.view_3d.object_origin_size = 4 # 3D视图,对象原点大小
+
     
 
 def change_context_settings():

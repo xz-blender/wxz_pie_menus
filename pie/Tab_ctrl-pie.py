@@ -125,28 +125,28 @@ class PIE_WorkspaceSwapOperator(Operator):
             self.report({'INFO'}, '已经为该工作空间！')
             return {'CANCELLED'}
 
-        elif t_name in d_spaces:
+        if t_name in d_spaces:
             context.window.workspace = d_spaces[t_name]
             self.report({'INFO'}, '已切换工作空间:"%s"' % (t_name))
             return {'FINISHED'}
         
-        elif t_name not in d_spaces:
+        if t_name not in d_spaces:
             # 删除原始工作空间
-            w = bpy.data.workspaces[workspaces_dir[t_name]]
-            bpy.ops.workspace.delete({"workspace": w})
+            # w = bpy.data.workspaces[workspaces_dir[t_name]]
+            # bpy.ops.workspace.delete({"workspace": w})
             # 添加指定工作空间
             bpy.ops.workspace.append_activate(idname=t_name, filepath=path)
             # 重排序工作空间
                 # 获取工作空间列表(固定)
-            wk_list = [workspace.name for workspace in bpy.data.workspaces]
-            for name in wk_list:
-                bpy.context.window.workspace = bpy.data.workspaces[name]
-                w = bpy.data.workspaces[name]
-                # 重排序到最前
-                bpy.ops.workspace.reorder_to_front({"workspace": w})
-            # 提示
-            self.report({'INFO'}, '已添加工作空间:"%s"' % (t_name))
+            # wk_list = [workspace.name for workspace in bpy.data.workspaces]
+            # for name in wk_list:
+            #     bpy.context.window.workspace = bpy.data.workspaces[name]
+            #     w = bpy.data.workspaces[name]
+            #     # 重排序到最前
+            #     bpy.ops.workspace.reorder_to_front({"workspace": w})
+            # # 提示
             context.window.workspace = d_spaces[t_name]
+            self.report({'INFO'}, '已添加工作空间:"%s"' % (t_name))
             
             return {'FINISHED'}
 
