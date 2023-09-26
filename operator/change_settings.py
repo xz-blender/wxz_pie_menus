@@ -76,7 +76,8 @@ def change_context_settings():
     # -------3D View-------
     scene.transform_orientation_slots[0].type = 'GLOBAL' # 变换轴方向
     scene.tool_settings.transform_pivot_point = 'BOUNDING_BOX_CENTER' # 变换中心点
-    scene.tool_settings.snap_elements_base = {'FACE', 'EDGE_MIDPOINT', 'VERTEX', 'EDGE'} # 吸附到点模式
+    # 吸附到点模式
+    scene.tool_settings.snap_elements_base = {'FACE', 'EDGE_MIDPOINT', 'VERTEX', 'EDGE', 'EDGE_PERPENDICULAR'}
 
 def change_settings():
     try:
