@@ -32,8 +32,8 @@ if sys.platform == "win32":
 elif sys.platform == 'darwin':
     sync_path = r'/Users/wangxianzhi/Library/CloudStorage/OneDrive-个人/Sync/Blender/Assets Sync'
     local_path = r'/Users/wangxianzhi/Blender Lib'
-
-
+    addon_path = Path(bpy.utils.user_resource("SCRIPTS"))/'addons'
+    
 class Enable_Pie_Menu_Relay_Addons(Operator):
     bl_idname = "pie.enable_relay_addons"
     bl_label = "一次性打开多个常用插件,会非常耗时!"
