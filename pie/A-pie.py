@@ -1,5 +1,6 @@
 import os
 import random
+import tempfile
 import bpy
 from bpy.types import Menu, Operator
 from mathutils import Matrix
@@ -364,8 +365,16 @@ class Creat_Costom_Asset_Preview(Operator):
         scene.render.image_settings.color_mode = "RGBA" 
 
         #设置图像缓存位置
-        temp_filename = str(random.randint(0,999999))+".png"
-        temp_filepath = os.path.join(os.getenv('LOCALAPPDATA'),'temp', temp_filename)
+
+        # 创建临时文件夹
+        temp_dir = tempfile.mkdtemp()
+        # 在临时文件夹中创建一个示例文件
+        temp_filepath = os.path.join(temp_dir, str(random.randint(0,999999))+".png")
+        print(temp_filepath)
+
+        # temp_filename = str(random.randint(0,999999))+".png"
+        # temp_filepath = os.path.join(str(os.getenv('LOCALAPPDATA')),'temp', temp_filename)
+
         bpy.context.scene.render.filepath = temp_filepath
 
         #设置资产设置自定义图像
@@ -374,7 +383,7 @@ class Creat_Costom_Asset_Preview(Operator):
         act_obj.asset_mark()
         override = bpy.context.copy()
         override['id'] = act_obj
-        bpy.ops.ed.lib_id_load_custom_preview(override,filepath=temp_filepath)
+        bpy.ops.ed.lib_id_load_custom_preview(filepath=temp_filepath)
         
         #隐藏叠加层
         context.space_data.overlay.show_overlays = True
