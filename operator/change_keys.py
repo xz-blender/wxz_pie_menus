@@ -118,7 +118,7 @@ F_dir =[
     (['Node Editor','node.link_make','Make Links'],[('value','CLICK')],[]), # ctrl F
 ]
 G_dir =[
-    (['Object Mode','transform.translate','Move'],[('value','CLICK')],[]),
+    # (['Object Mode','transform.translate','Move'],[('value','CLICK')],[]),
     (['Mesh','transform.translate','Move'],[('value','CLICK')],[]),
     (['Object Mode','collection.objects_add_active','Add Selected to Active Collection'],[('active',False)],[]), # G ctrl shift
     (['Object Mode','collection.objects_remove_all','Remove from All Collections'],[('active',False)],[]), # G ctrl shift alt
