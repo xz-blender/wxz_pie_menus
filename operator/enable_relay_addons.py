@@ -81,7 +81,8 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             'space_view3d_copy_attributes':[[],[]],
             'materials_utils':[[],[(['3D View','wm.call_menu','Material Utilities'],[('value','CLICK'),('ctrl',True)],[])]],
             'object_print3d_utils':[[],[]],
-            'mesh_f2':[[],[(['Mesh','mesh.f2','Make Edge/Face'],[('value','CLICK')],[])]],
+            'mesh_f2':[[('ajustuv',True)],
+                       [(['Mesh','mesh.f2','Make Edge/Face'],[('value','CLICK')],[])]],
             'mesh_looptools':[[],[]],
             'mesh_snap_utilities_line':[[],[]],
             'mesh_tiny_cad':[[],[]],
@@ -97,6 +98,7 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             'mesh_inset':[[],[]],
             'io_import_dxf':[[],[]],
             'io_export_dxf':[[],[]],
+
 
         # 第三方
             'Bagapie': [[],[(['3D View','bagapie.duplicatelinkedgroup','Duplicate Linked Group'],[('active',False)],[]),
@@ -212,6 +214,10 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             'cut_corner': [[],[]],
             'safe_ngon': [[],[]],
             'select_sim': [[],[]],
+            'VoronoiLinker': [[],
+                              [(['Node Editor','node.voronoi_preview','Voronoi Preview'],[('active',False)],
+                                ['Node Editor','node.voronoi_mixer','Voronoi Mixer'],[('active',False)],
+                                )]],
             # True Assets
             'True-Assets': [[('ta_directory',str(Path(sync_path)/'True Assets'))],
                             [(['3D View','ta.saveassetsfromthisfile','Mark Assets and Quit'],[('active',False)],[])]],
@@ -249,6 +255,7 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
         # 部分插件其他设置
         self.report({'INFO'}, '已开启预设插件')
         return {"FINISHED"}
+        
 
 user_lib_names = []
 for lib in bpy.context.preferences.filepaths.asset_libraries:
