@@ -94,9 +94,9 @@ class VIEW3D_PIE_MT_Bottom_S(Menu):
             # 6 - RIGHT
             pie.separator()
             # 2 - BOTTOM
-            pie.operator('uv.align', text='对齐到 Y 轴').axis = 'ALIGN_Y'
-            # 8 - TOP
             pie.separator()
+            # 8 - TOP
+            pie.operator('uv.align', text='对齐到 Y 轴').axis = 'ALIGN_Y'
             # 7 - TOP - LEFT
             pie.separator()
             # 9 - TOP - RIGHT
@@ -105,7 +105,23 @@ class VIEW3D_PIE_MT_Bottom_S(Menu):
             pie.separator()
             # 3 - BOTTOM - RIGHT
             pie.separator()
-
+        elif ui == 'ShaderNodeTree' or 'GeometryNodeTree':
+            # 4 - LEFT
+            pie.operator('transform.resize', text='对齐到 X 轴').value=(0,1,1)
+            # 6 - RIGHT
+            pie.separator()
+            # 2 - BOTTOM
+            pie.separator()
+            # 8 - TOP
+            pie.operator('transform.resize', text='对齐到 Y 轴').value=(1,0,1)
+            # 7 - TOP - LEFT
+            pie.separator()
+            # 9 - TOP - RIGHT
+            pie.separator()
+            # 1 - BOTTOM - LEFT
+            pie.separator()
+            # 3 - BOTTOM - RIGHT
+            pie.separator()
 
 class PIE_S_Flat_Mesh(Operator):
     bl_idname = "pie.view_s_flat_mesh"
@@ -183,10 +199,11 @@ addon_keymaps = []
 
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
-
     space_name = [
         ('3D View', 'VIEW_3D'),
         ('UV Editor', 'EMPTY'),
+        ('Node Editor', 'NODE_EDITOR'),
+        ('Graph Editor', 'GRAPH_EDITOR'),
     ]
     for space in space_name:
         km = addon.keymaps.new(name=space[0], space_type=space[1])
