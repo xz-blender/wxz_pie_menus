@@ -1,5 +1,5 @@
 <h2 align="center">
-    own blender pie menus<br>
+    Owner blender pie menus<br>
     and more quick operators... <br>
 </h2>
 

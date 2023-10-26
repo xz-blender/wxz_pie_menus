@@ -35,12 +35,10 @@ class VIEW3D_PIE_MT_Bottom_R(Menu):
             if ob_mode == 'OBJECT':
                 # 4 - LEFT
                 pie.operator(
-                    PIE_Transform_Rotate_Z.bl_idname, text='Z轴-90°', icon='TRIA_LEFT_BAR'
-                ).degree = (-pi / 2)
+                    PIE_Transform_Rotate_Z.bl_idname, text='Z轴-90°').degree = (-pi / 2)
                 # 6 - RIGHT
                 pie.operator(
-                    PIE_Transform_Rotate_Z.bl_idname, text='Z轴+90°', icon='TRIA_RIGHT_BAR'
-                ).degree = (pi / 2)
+                    PIE_Transform_Rotate_Z.bl_idname, text='Z轴+90°').degree = (pi / 2)
                 # 2 - BOTTOM
                 pie.separator()
                 # 8 - TOP
@@ -75,12 +73,10 @@ class VIEW3D_PIE_MT_Bottom_R(Menu):
             elif ob_mode == 'EDIT':
                 # 4 - LEFT
                 pie.operator(
-                    PIE_Transform_Rotate_Z.bl_idname, text='Z轴-90°', icon='TRIA_LEFT_BAR'
-                ).degree = (-pi / 2)
+                    PIE_Transform_Rotate_Z.bl_idname, text='Z轴-90°').degree = (-pi / 2)
                 # 6 - RIGHT
                 pie.operator(
-                    PIE_Transform_Rotate_Z.bl_idname, text='Z轴+90°', icon='TRIA_RIGHT_BAR'
-                ).degree = (pi / 2)
+                    PIE_Transform_Rotate_Z.bl_idname, text='Z轴+90°').degree = (pi / 2)
                 # 2 - BOTTOM
                 pie.separator()
                 # 8 - TOP
