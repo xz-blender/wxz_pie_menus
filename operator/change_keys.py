@@ -176,6 +176,7 @@ S_dir =[
     (['3D View','transform.resize','Resize'],[('value','CLICK')],[]),
     (['Object Mode','transform.resize','Resize'],[('value','CLICK')],[]),
     (['Mesh','transform.resize','Resize'],[('value','CLICK')],[]),
+    (['Curve','transform.resize','Resize'],[('value','CLICK')],[]),
     (['UV Editor','transform.resize','Resize'],[('value','CLICK')],[]),
     (['Graph Editor','transform.resize','Resize'],[('value','CLICK')],[]),
     (['Node Editor','transform.resize','Resize'],[('value','CLICK')],[]),
@@ -217,7 +218,7 @@ W_dir =[
 X_dir =[
     (['Object Mode','object.delete','Delete'],[('value','CLICK')],[('use_global',False),('confirm',False)]),
     (['Mesh','wm.call_menu','Delete'],[('active',False)],[]),
-    (['Curve','wm.call_menu','Delete'],[('value','CLICK')],[]),
+    (['Curve','wm.call_menu','Delete'],[('active',False)],[]),
     (['Outliner','outliner.delete','Delete'],[('value','CLICK')],[]),
     (['Graph Editor','wm.call_menu','Delete'],[('value','CLICK')],[]),
     (['Node Editor','node.delete','Delete'],[('value','CLICK')],[]),

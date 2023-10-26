@@ -19,24 +19,41 @@ class Mesh_Delete_By_mode(Operator):
 
     @classmethod
     def poll(cls, context):
-        ob_mode = context.object.mode
-        ob_type = context.object.type
-        if ob_type == "MESH" and ob_mode == "EDIT":
+        if context.object.mode == "EDIT":
             return True
         else:
             return False
 
     def execute(self, context):
-        mode = context.tool_settings.mesh_select_mode
-        #选择模式 [点,线,面]
-        if mode[0] == True:
-            bpy.ops.mesh.delete(type='VERT')
-        elif mode[1] == True:
-            bpy.ops.mesh.delete(type='EDGE')
-        elif mode[2] == True:
-            bpy.ops.mesh.delete(type='FACE')
-
-        return {"FINISHED"}
+        ob_type = context.object.type
+        if ob_type == "MESH":
+            mode = context.tool_settings.mesh_select_mode
+            #选择模式 [点,线,面]
+            if mode[0] == True:
+                bpy.ops.mesh.delete(type='VERT')
+            elif mode[1] == True:
+                bpy.ops.mesh.delete(type='EDGE')
+            elif mode[2] == True:
+                bpy.ops.mesh.delete(type='FACE')
+            return {"FINISHED"}
+        
+        obj = context.active_object
+        if obj.type == "CURVE":
+            # 获取当前编辑模式下的选中顶点
+            curve = obj.data
+            spline = curve.splines.active
+            try:
+                selected_verts = [p for p in spline.bezier_points if p.select_control_point]
+            except(AttributeError):
+                bpy.ops.curve.delete(type='VERT')
+                return {"CANCELLED"}
+            # print(len(selected_verts))
+            if len(selected_verts) == 1:
+                bpy.ops.curve.delete(type='VERT')
+            elif len(selected_verts) > 1:
+                bpy.ops.curve.delete(type='SEGMENT')
+                bpy.ops.curvetools.operatorsplinesremovezerosegment()
+            return {"FINISHED"}
 
 
 classes = [

@@ -35,76 +35,94 @@ class VIEW3D_PIE_MT_Bottom_X(Menu):
         set_pie_ridius(context, 100)
 
         if ob_mode == 'EDIT':
-            ed_mode = context.tool_settings.mesh_select_mode
-            col = pie.split().box().column(align=True)
+            if ob_type == "MESH":
+                ed_mode = context.tool_settings.mesh_select_mode
+                col = pie.split().box().column(align=True)
 
-            row = col.row(align=True)
-            if ed_mode[0] == True:
-                try:
-                    row.operator(
-                        'mesh.merge', text='首点', icon='DOT'
-                    ).type = 'FIRST'
-                    row.separator(factor=0.1)
-                    row.operator('mesh.merge', text='中心').type = 'CENTER'
-                    row.separator(factor=0.1)
-                    row.operator(
-                        'mesh.merge', text='末点', icon='DOT'
-                    ).type = 'LAST'
-                except TypeError:
-                    row.operator('mesh.merge', text='中心').type = 'CENTER'
-            else:
-                sub = row.row()
-                # sub.alignment = 'CENTER'
-                sub.operator('mesh.merge', text='中心').type = 'CENTER'
+                row = col.row(align=True)
+                if ed_mode[0] == True:
+                    try:
+                        row.operator(
+                            'mesh.merge', text='首点', icon='DOT'
+                        ).type = 'FIRST'
+                        row.separator(factor=0.1)
+                        row.operator('mesh.merge', text='中心').type = 'CENTER'
+                        row.separator(factor=0.1)
+                        row.operator(
+                            'mesh.merge', text='末点', icon='DOT'
+                        ).type = 'LAST'
+                    except TypeError:
+                        row.operator('mesh.merge', text='中心').type = 'CENTER'
+                else:
+                    sub = row.row()
+                    # sub.alignment = 'CENTER'
+                    sub.operator('mesh.merge', text='中心').type = 'CENTER'
 
-            col.separator(factor=0.4)
-            row = col.row()
-            row.operator('mesh.merge', text='游标').type = 'CURSOR'
-            row.operator('mesh.merge', text='塌陷').type = 'COLLAPSE'
+                col.separator(factor=0.4)
+                row = col.row()
+                row.operator('mesh.merge', text='游标').type = 'CURSOR'
+                row.operator('mesh.merge', text='塌陷').type = 'COLLAPSE'
 
-            col.separator(factor=0.4)
-            row = col.row()
-            row.operator('mesh.remove_doubles', text='按间距合并')
-            # 6 - RIGHT
-            col = pie.split().box().column(align=True)
-            col.scale_x = 0.8
+                col.separator(factor=0.4)
+                row = col.row()
+                row.operator('mesh.remove_doubles', text='按间距合并')
+                # 6 - RIGHT
+                col = pie.split().box().column(align=True)
+                col.scale_x = 0.8
 
-            row = col.row()
-            row.operator('mesh.delete_loose')
+                row = col.row()
+                row.operator('mesh.delete_loose')
 
-            col.separator(factor=0.4)
-            row = col.row()
-            row.operator('mesh.decimate', text='精简几何体')
-            row.operator('mesh.dissolve_degenerate', text='简并融并')
-            row.operator('mesh.face_make_planar', text='平整表面')
+                col.separator(factor=0.4)
+                row = col.row()
+                row.operator('mesh.decimate', text='精简几何体')
+                row.operator('mesh.dissolve_degenerate', text='简并融并')
+                row.operator('mesh.face_make_planar', text='平整表面')
 
-            col.separator(factor=0.4)
-            row = col.row()
-            row.operator('mesh.vert_connect_nonplanar', text='拆分非平面')
-            row.operator('mesh.vert_connect_concave', text='拆分凹面')
-            row.operator('mesh.fill_holes', text='填充洞面')
+                col.separator(factor=0.4)
+                row = col.row()
+                row.operator('mesh.vert_connect_nonplanar', text='拆分非平面')
+                row.operator('mesh.vert_connect_concave', text='拆分凹面')
+                row.operator('mesh.fill_holes', text='填充洞面')
 
-            col.separator(factor=0.4)
-            row = col.row()
-            row.operator('mesh.dissolve_limited', text='有限融并')
+                col.separator(factor=0.4)
+                row = col.row()
+                row.operator('mesh.dissolve_limited', text='有限融并')
 
-            # 2 - BOTTOM
-            pie.operator('mesh.edge_collapse', text='塌陷边面')
-            # 8 - TOP
-            box = pie.split().box()
-            box.scale_y = 1.4
-            col = box.column(align=True)
-            col.operator('mesh.delete', text='仅面',icon='SNAP_FACE_CENTER').type='ONLY_FACE'
-            col.operator('mesh.delete', text='仅边',icon='MOD_EDGESPLIT').type='EDGE_FACE'
-            # 7 - TOP - LEFT 
-            
-            pie.separator()
-            # 9 - TOP - RIGHT
-            pie.separator()
-            # 1 - BOTTOM - LEFT
-            pie.separator()
-            # 3 - BOTTOM - RIGHT
-            pie.separator()
+                # 2 - BOTTOM
+                pie.operator('mesh.edge_collapse', text='塌陷边面')
+                # 8 - TOP
+                box = pie.split().box()
+                box.scale_y = 1.4
+                col = box.column(align=True)
+                col.operator('mesh.delete', text='仅面',icon='SNAP_FACE_CENTER').type='ONLY_FACE'
+                col.operator('mesh.delete', text='仅边',icon='MOD_EDGESPLIT').type='EDGE_FACE'
+                # 7 - TOP - LEFT 
+                
+                pie.separator()
+                # 9 - TOP - RIGHT
+                pie.separator()
+                # 1 - BOTTOM - LEFT
+                pie.separator()
+                # 3 - BOTTOM - RIGHT
+                pie.separator()
+            if ob_type == "CURVE":
+                # 4 - LEFT
+                pie.separator()
+                # 6 - RIGHT
+                pie.separator()
+                # 2 - BOTTOM
+                pie.operator('curve.decimate')
+                # 8 - TOP
+                pie.separator()
+                # 7 - TOP - LEFT
+                pie.separator()
+                # 9 - TOP - RIGHT
+                pie.separator()
+                # 1 - BOTTOM - LEFT
+                pie.separator()
+                # 3 - BOTTOM - RIGHT
+                pie.separator()
         elif ob_mode == 'OBJECT':
                 # 4 - LEFT
                 pie.separator()
