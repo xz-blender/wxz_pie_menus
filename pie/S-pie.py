@@ -1,6 +1,7 @@
+import typing
 import bpy
 import os
-from bpy.types import Menu, Panel, Operator
+from bpy.types import Context, Menu, Panel, Operator
 from .utils import check_rely_addon, rely_addons, set_pie_ridius, pie_op_check
 from .utils import change_default_keymap, restored_default_keymap
 
@@ -107,13 +108,13 @@ class VIEW3D_PIE_MT_Bottom_S(Menu):
             pie.separator()
         elif ui == 'ShaderNodeTree' or 'GeometryNodeTree':
             # 4 - LEFT
-            pie.operator('transform.resize', text='对齐到 X 轴').value=(0,1,1)
+            pie.operator('pie.s_flat_nodes', text='对齐到 X 轴').value=(0,1,1)
             # 6 - RIGHT
             pie.separator()
             # 2 - BOTTOM
             pie.separator()
             # 8 - TOP
-            pie.operator('transform.resize', text='对齐到 Y 轴').value=(1,0,1)
+            pie.operator('pie.s_flat_nodes', text='对齐到 Y 轴').value=(1,0,1)
             # 7 - TOP - LEFT
             pie.separator()
             # 9 - TOP - RIGHT
@@ -122,6 +123,21 @@ class VIEW3D_PIE_MT_Bottom_S(Menu):
             pie.separator()
             # 3 - BOTTOM - RIGHT
             pie.separator()
+
+class PIE_S_Flat_NOdes(Operator):
+    bl_idname = "pie.s_flat_nodes"
+    bl_label = ""
+    bl_options = {"REGISTER", "UNDO"}
+
+    value : bpy.props.IntVectorProperty()
+
+    @classmethod
+    def poll(cls, context: Context):
+        return True
+    def execute(self, context):
+        value = self.value
+        bpy.ops.transform.resize(value=value)
+        return {"FINISHED"}
 
 class PIE_S_Flat_Mesh(Operator):
     bl_idname = "pie.view_s_flat_mesh"
@@ -191,7 +207,8 @@ class PIE_S_Flat_Object(Operator):
 
 classes = [VIEW3D_PIE_MT_Bottom_S, 
         PIE_S_Flat_Mesh,
-        PIE_S_Flat_Object
+        PIE_S_Flat_Object,
+        PIE_S_Flat_NOdes,
         ]
 
 addon_keymaps = []
