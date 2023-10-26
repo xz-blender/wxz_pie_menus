@@ -166,6 +166,7 @@ R_dir =[
     (['3D View','transform.rotate','Rotate'],[('value','CLICK')],[]),
     (['Object Mode','transform.rotate','Rotate'],[('value','CLICK')],[]),
     (['Mesh','transform.rotate','Rotate'],[('value','CLICK')],[]),
+    (['Curve','transform.rotate','Rotate'],[('value','CLICK')],[]),
     (['UV Editor','transform.rotate','Rotate'],[('value','CLICK')],[]),
     (['Node Editor','transform.rotate','Rotate'],[('value','CLICK')],[]),
     (['Screen','screen.repeat_last','Repeat Last'],[('value','CLICK')],[]),
