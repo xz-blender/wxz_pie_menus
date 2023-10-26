@@ -19,8 +19,7 @@ def change_key_value(A_dir,value):
                 list_keymaps.clear()
 
 def change_key_value_base(change_dir):
-    # 访问快捷键的名称会因翻译而改变
-    # 先改变为英文状态
+    # 访问快捷键的名称会因翻译而改变,先改变为英文状态
     bpy.context.preferences.view.use_translate_interface = False
     # stored_value_list = {}
     # stored_prop_list = {}
@@ -118,7 +117,7 @@ F_dir =[
     (['Node Editor','node.link_make','Make Links'],[('value','CLICK')],[]), # ctrl F
 ]
 G_dir =[
-    # (['Object Mode','transform.translate','Move'],[('value','CLICK')],[]),
+    (['Object Mode','transform.translate','Move'],[('value','CLICK')],[]),
     (['Mesh','transform.translate','Move'],[('value','CLICK')],[]),
     (['Object Mode','collection.objects_add_active','Add Selected to Active Collection'],[('active',False)],[]), # G ctrl shift
     (['Object Mode','collection.objects_remove_all','Remove from All Collections'],[('active',False)],[]), # G ctrl shift alt

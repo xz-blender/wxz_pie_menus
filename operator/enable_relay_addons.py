@@ -209,7 +209,6 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             'Inset_Outset': [[],[]],
             'camera_shakify': [[],[]],
             'rotate_face': [[],[]],
-            'VoronoiLinker': [[],[]],
             #Kushiro Addons
             'cut_corner': [[],[]],
             'safe_ngon': [[],[]],
@@ -217,6 +216,7 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             'VoronoiLinker': [[],
                               [(['Node Editor','node.voronoi_preview','Voronoi Preview'],[('active',False)],
                                 ['Node Editor','node.voronoi_mixer','Voronoi Mixer'],[('active',False)],
+                                ['Node Editor','node.voronoi_swaper','Voronoi Swaper'],[('active',False)],
                                 )]],
             # True Assets
             'True-Assets': [[('ta_directory',str(Path(sync_path)/'True Assets'))],
