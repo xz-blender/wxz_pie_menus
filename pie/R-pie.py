@@ -78,7 +78,7 @@ class VIEW3D_PIE_MT_Bottom_R(Menu):
                 pie.operator(
                     PIE_Transform_Rotate_Z.bl_idname, text='Z轴+90°').degree = (pi / 2)
                 # 2 - BOTTOM
-                pie.separator()
+                pie.operator('mesh.sort_elements', text='顶点编号排序反转').type='REVERSE'
                 # 8 - TOP
                 rotate_Y = pie.operator('transform.rotate', text='Y',icon='EVENT_Y')
                 rotate_Y.orient_type = get_orient
