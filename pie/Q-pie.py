@@ -109,7 +109,7 @@ class VIEW3D_PIE_MT_Bottom_Q(Menu):
                 pie.separator()
 
             # 2 - BOTTOM
-            pie.separator()
+            pie.operator("node.mute_toggle",text="停用")
             # 8 - TOP
             pie.separator()
             # 7 - TOP - LEFT
@@ -147,7 +147,7 @@ class VIEW3D_PIE_MT_Bottom_Q(Menu):
             # 6 - RIGHT
             pie.separator()
             # 2 - BOTTOM
-            pie.separator()
+            pie.operator("node.mute_toggle",text="停用")
             # 8 - TOP
             pie.separator()
             # 7 - TOP - LEFT

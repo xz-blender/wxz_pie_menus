@@ -27,106 +27,158 @@ class VIEW3D_PIE_MT_Bottom_R(Menu):
 
             ob_type = context.object.type
             ob_mode = context.object.mode
-
+            ui = context.area.ui_type
             set_pie_ridius(context, 100)
 
             get_orient = context.scene.transform_orientation_slots[0].type
+            if ui == "VIEW_3D":
+                if ob_mode == 'OBJECT':
+                    # 4 - LEFT
+                    pie.operator(
+                        PIE_Transform_Rotate_Z.bl_idname, text='Z轴-90°').degree = (-pi / 2)
+                    # 6 - RIGHT
+                    pie.operator(
+                        PIE_Transform_Rotate_Z.bl_idname, text='Z轴+90°').degree = (pi / 2)
+                    # 2 - BOTTOM
+                    pie.separator()
+                    # 8 - TOP
+                    rotate_Y = pie.operator('transform.rotate', text='Y',icon='EVENT_Y')
+                    rotate_Y.orient_type = get_orient
+                    rotate_Y.orient_axis = 'Y'
+                    # 7 - TOP - LEFT
+                    TL = pie.operator(
+                        PIE_Transform_Rotate_XY.bl_idname, text='向后转')
+                    TL.x = True
+                    TL.y = False
+                    TL.degree = pi / 2
+                    # 9 - TOP - RIGHT
+                    TR = pie.operator(
+                        PIE_Transform_Rotate_XY.bl_idname, text='向前转')
+                    TR.x = True
+                    TR.y = False
+                    TR.degree = -pi / 2
+                    # 1 - BOTTOM - LEFT
+                    TR = pie.operator(
+                        PIE_Transform_Rotate_XY.bl_idname, text='向左转')
+                    TR.x = False
+                    TR.y = True
+                    TR.degree = pi / 2
+                    # 3 - BOTTOM - RIGHT
+                    TR = pie.operator(
+                        PIE_Transform_Rotate_XY.bl_idname, text='向右转')
+                    TR.x = False
+                    TR.y = True
+                    TR.degree = -pi / 2
 
-            if ob_mode == 'OBJECT':
+                elif ob_mode == 'EDIT':
+                    # 4 - LEFT
+                    pie.operator(
+                        PIE_Transform_Rotate_Z.bl_idname, text='Z轴-90°').degree = (-pi / 2)
+                    # 6 - RIGHT
+                    pie.operator(
+                        PIE_Transform_Rotate_Z.bl_idname, text='Z轴+90°').degree = (pi / 2)
+                    # 2 - BOTTOM
+                    pie.operator('mesh.sort_elements', text='顶点编号排序反转').type='REVERSE'
+                    # 8 - TOP
+                    rotate_Y = pie.operator('transform.rotate', text='Y',icon='EVENT_Y')
+                    rotate_Y.orient_type = get_orient
+                    rotate_Y.orient_axis = 'Y'
+                    pie.separator()
+                    # 7 - TOP - LEFT
+                    TR = pie.operator(
+                        PIE_Transform_Rotate_XY.bl_idname, text='向前转')
+                    TR.x = True
+                    TR.y = False
+                    TR.degree = -pi / 2
+                    # 9 - TOP - RIGHT
+                    TL = pie.operator(
+                        PIE_Transform_Rotate_XY.bl_idname, text='向后转')
+                    TL.x = True
+                    TL.y = False
+                    TL.degree = pi / 2
+                    # 1 - BOTTOM - LEFT
+                    TR = pie.operator(
+                        PIE_Transform_Rotate_XY.bl_idname, text='向左转')
+                    TR.x = False
+                    TR.y = True
+                    TR.degree = pi / 2
+                    # 3 - BOTTOM - RIGHT
+                    TR = pie.operator(
+                        PIE_Transform_Rotate_XY.bl_idname, text='向右转')
+                    TR.x = False
+                    TR.y = True
+                    TR.degree = -pi / 2
+
+            elif ui == 'UV':
+                set_pie_ridius(context, 100)
                 # 4 - LEFT
                 pie.operator(
-                    PIE_Transform_Rotate_Z.bl_idname, text='Z轴-90°').degree = (-pi / 2)
+                    PIE_Transform_Rotate_Z.bl_idname, text='Z轴-90°', icon='TRIA_LEFT_BAR'
+                ).degree = (-pi / 2)
                 # 6 - RIGHT
                 pie.operator(
-                    PIE_Transform_Rotate_Z.bl_idname, text='Z轴+90°').degree = (pi / 2)
+                    PIE_Transform_Rotate_Z.bl_idname, text='Z轴+90°', icon='TRIA_RIGHT_BAR'
+                ).degree = (pi / 2)
+                # 2 - BOTTOM
+                # 8 - TOP
+                # 7 - TOP - LEFT
+                # 9 - TOP - RIGHT
+
+                # 1 - BOTTOM - LEFT
+                # 3 - BOTTOM - RIGHT
+                
+            elif ui == 'ShaderNodeTree':
+                 # 4 - LEFT
+                pie.separator()
+                # 6 - RIGHT
+                pie.separator()
                 # 2 - BOTTOM
                 pie.separator()
                 # 8 - TOP
-                rotate_Y = pie.operator('transform.rotate', text='Y',icon='EVENT_Y')
-                rotate_Y.orient_type = get_orient
-                rotate_Y.orient_axis = 'Y'
-                # 7 - TOP - LEFT
-                TL = pie.operator(
-                    PIE_Transform_Rotate_XY.bl_idname, text='向后转')
-                TL.x = True
-                TL.y = False
-                TL.degree = pi / 2
-                # 9 - TOP - RIGHT
-                TR = pie.operator(
-                    PIE_Transform_Rotate_XY.bl_idname, text='向前转')
-                TR.x = True
-                TR.y = False
-                TR.degree = -pi / 2
-                # 1 - BOTTOM - LEFT
-                TR = pie.operator(
-                    PIE_Transform_Rotate_XY.bl_idname, text='向左转')
-                TR.x = False
-                TR.y = True
-                TR.degree = pi / 2
-                # 3 - BOTTOM - RIGHT
-                TR = pie.operator(
-                    PIE_Transform_Rotate_XY.bl_idname, text='向右转')
-                TR.x = False
-                TR.y = True
-                TR.degree = -pi / 2
-
-            elif ob_mode == 'EDIT':
-                # 4 - LEFT
-                pie.operator(
-                    PIE_Transform_Rotate_Z.bl_idname, text='Z轴-90°').degree = (-pi / 2)
-                # 6 - RIGHT
-                pie.operator(
-                    PIE_Transform_Rotate_Z.bl_idname, text='Z轴+90°').degree = (pi / 2)
-                # 2 - BOTTOM
-                pie.operator('mesh.sort_elements', text='顶点编号排序反转').type='REVERSE'
-                # 8 - TOP
-                rotate_Y = pie.operator('transform.rotate', text='Y',icon='EVENT_Y')
-                rotate_Y.orient_type = get_orient
-                rotate_Y.orient_axis = 'Y'
                 pie.separator()
                 # 7 - TOP - LEFT
-                TR = pie.operator(
-                    PIE_Transform_Rotate_XY.bl_idname, text='向前转')
-                TR.x = True
-                TR.y = False
-                TR.degree = -pi / 2
+                pie.separator()
                 # 9 - TOP - RIGHT
-                TL = pie.operator(
-                    PIE_Transform_Rotate_XY.bl_idname, text='向后转')
-                TL.x = True
-                TL.y = False
-                TL.degree = pi / 2
+                pie.separator()
                 # 1 - BOTTOM - LEFT
-                TR = pie.operator(
-                    PIE_Transform_Rotate_XY.bl_idname, text='向左转')
-                TR.x = False
-                TR.y = True
-                TR.degree = pi / 2
+                pie.separator()
                 # 3 - BOTTOM - RIGHT
-                TR = pie.operator(
-                    PIE_Transform_Rotate_XY.bl_idname, text='向右转')
-                TR.x = False
-                TR.y = True
-                TR.degree = -pi / 2
+                pie.separator()
 
-        elif context.area.ui_type == 'UV':
-
-            set_pie_ridius(context, 100)
-            # 4 - LEFT
-            pie.operator(
-                PIE_Transform_Rotate_Z.bl_idname, text='Z轴-90°', icon='TRIA_LEFT_BAR'
-            ).degree = (-pi / 2)
-            # 6 - RIGHT
-            pie.operator(
-                PIE_Transform_Rotate_Z.bl_idname, text='Z轴+90°', icon='TRIA_RIGHT_BAR'
-            ).degree = (pi / 2)
-            # 2 - BOTTOM
-            # 8 - TOP
-            # 7 - TOP - LEFT
-            # 9 - TOP - RIGHT
-
-            # 1 - BOTTOM - LEFT
-            # 3 - BOTTOM - RIGHT
+            elif ui == 'GeometryNodeTree':
+                  # 4 - LEFT
+                pie.separator()
+                # 6 - RIGHT
+                pie.separator()
+                # 2 - BOTTOM
+                pie.separator()
+                # 8 - TOP
+                pie.separator()
+                # 7 - TOP - LEFT
+                pie.separator()
+                # 9 - TOP - RIGHT
+                pie.separator()
+                # 1 - BOTTOM - LEFT
+                pie.separator()
+                # 3 - BOTTOM - RIGHT
+                pie.separator()
+            elif ui == 'CompositorNodeTree':
+                  # 4 - LEFT
+                pie.separator()
+                # 6 - RIGHT
+                pie.separator()
+                # 2 - BOTTOM
+                pie.separator()
+                # 8 - TOP
+                pie.separator()
+                # 7 - TOP - LEFT
+                pie.separator()
+                # 9 - TOP - RIGHT
+                pie.separator()
+                # 1 - BOTTOM - LEFT
+                pie.separator()
+                # 3 - BOTTOM - RIGHT
+                pie.separator()
 
 
 class PIE_Transform_Rotate_Z(Operator):
