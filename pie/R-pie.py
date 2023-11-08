@@ -278,6 +278,8 @@ def register_keymaps():
     space_name = [
         ('3D View', 'VIEW_3D'),
         ('UV Editor', 'EMPTY'),
+        ('Node Editor', 'NODE_EDITOR'),
+        ('Graph Editor', 'GRAPH_EDITOR'),
     ]
     for space in space_name:
         km = addon.keymaps.new(name=space[0], space_type=space[1])
