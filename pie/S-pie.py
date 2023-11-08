@@ -106,7 +106,7 @@ class VIEW3D_PIE_MT_Bottom_S(Menu):
             pie.separator()
             # 3 - BOTTOM - RIGHT
             pie.separator()
-        elif ui == 'ShaderNodeTree' or 'GeometryNodeTree':
+        elif ui == 'ShaderNodeTree' or 'GeometryNodeTree' or 'CompositorNodeTree':
             # 4 - LEFT
             pie.operator('pie.s_flat_nodes', text='对齐到 X 轴').value=(0,1,1)
             # 6 - RIGHT
@@ -122,7 +122,7 @@ class VIEW3D_PIE_MT_Bottom_S(Menu):
             # 1 - BOTTOM - LEFT
             pie.separator()
             # 3 - BOTTOM - RIGHT
-            pie.separator('node_relax.arrange')
+            pie.operator('node_relax.arrange')
 
 class PIE_S_Flat_NOdes(Operator):
     bl_idname = "pie.s_flat_nodes"
