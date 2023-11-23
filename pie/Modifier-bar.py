@@ -112,7 +112,9 @@ class Bar_Quick_Decimate(Operator):
     bl_label = submoduname
     bl_options = {"REGISTER", "UNDO"}
 
-    ratio: bpy.props.FloatProperty(name='decimate', min=0, max=1)
+    ratio: bpy.props.FloatProperty(name='Decimate Ratio', min=0, max=1,default=1)
+    iterations: bpy.props.IntProperty(name= 'Unsubdiv Iterations',default=2)
+    de_type: bpy.props.StringProperty(name='Decimate Type',default="COLLAPSE")
 
     @classmethod
     def poll(cls, context):
@@ -120,15 +122,20 @@ class Bar_Quick_Decimate(Operator):
 
     def execute(self, context):
         ratio = self.ratio
+        de_type = self.de_type
+        iterations = self.iterations
 
         if context.selected_objects:
             for obj in context.selected_objects:
                 context.view_layer.objects.active = obj
 
                 md_name = "精简-%.3s" % ratio
-
-                obj.modifiers.new(name=md_name, type='DECIMATE')
-                obj.modifiers[md_name].ratio = ratio
+                md = obj.modifiers.new(name=md_name, type='DECIMATE')
+                md.decimate_type = de_type
+                if de_type  == "UNSUBDIV":
+                    md.iterations = iterations
+                else:
+                    md.ratio = ratio
 
             self.report({"INFO"}, md_name)
             return {"FINISHED"}
@@ -146,15 +153,34 @@ def menu(self, context):
 
     split = row.split(factor = 0.2)
     
-    split_1 = split.operator('object.modifier_add', icon='MOD_TRIANGULATE',
-                 text='三角化').type = 'TRIANGULATE'
+    split_1 = split.operator('object.modifier_add', icon='MOD_TRIANGULATE',text='三角化').type = 'TRIANGULATE'
     #------
     split_2 = split.row()
 
-    split_2.operator(Bar_Quick_Decimate.bl_idname, text="0.1").ratio = 0.1
-    split_2.operator(Bar_Quick_Decimate.bl_idname, text="0.3").ratio = 0.3
-    split_2.operator(Bar_Quick_Decimate.bl_idname, text="0.5").ratio = 0.5
-    split_2.operator(Bar_Quick_Decimate.bl_idname, text="1").ratio = 1.0
+    L1 =  split_2.operator(Bar_Quick_Decimate.bl_idname, text="0.1")
+    L1.de_type = "COLLAPSE"
+    L1.ratio = 0.1
+
+    L2 = split_2.operator(Bar_Quick_Decimate.bl_idname, text="0.2")
+    L2.de_type = "COLLAPSE"
+    L2.ratio = 0.2
+
+    L3 = split_2.operator(Bar_Quick_Decimate.bl_idname, text="0.3")
+    L3.de_type = "COLLAPSE"
+    L3.ratio = 0.3
+
+    L4 = split_2.operator(Bar_Quick_Decimate.bl_idname, text="0.4")
+    L4.de_type = "COLLAPSE"
+    L4.ratio = 0.4
+   
+    L5 = split_2.operator(Bar_Quick_Decimate.bl_idname, text="0.5")
+    L5.de_type = "COLLAPSE"
+    L5.ratio = 0.5
+    
+    L0 = split_2.operator(Bar_Quick_Decimate.bl_idname, text="反细分")
+    L0.de_type = "UNSUBDIV"
+    L0.iterations = 2
+    
 
 # Modifier Bar
 def costom_modifier_bar(self, context):

@@ -53,10 +53,13 @@ def change_preferences_settings():
     # 主题
     theme = pref.themes[0]
     theme.node_editor.noodle_curving = 3 # 节点编辑器,曲线弯曲度
-
-    theme.view_3d.edge_width = 3 # 3D视图,边缘宽度
-    theme.view_3d.outline_width = 3 # 3D视图,轮廓宽度
-    theme.view_3d.object_origin_size = 5 # 3D视图,对象原点大小
+    #  ----3D视图
+    theme.view_3d.edge_width = 5 # 边缘宽度
+    theme.view_3d.gp_vertex_size = 6 # 蜡笔顶点尺寸
+    theme.view_3d.vertex_size = 5 # 顶点尺寸
+    theme.view_3d.edge_width = 5 # 面的点尺寸
+    theme.view_3d.outline_width = 3 # 轮廓宽度
+    theme.view_3d.object_origin_size = 5 #对象原点大小
 
     
 
