@@ -213,11 +213,11 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             'cut_corner': [[],[]],
             'safe_ngon': [[],[]],
             'select_sim': [[],[]],
-            'VoronoiLinker': [[],
-                              [(['Node Editor','node.voronoi_preview','Voronoi Preview'],[('active',False)],
-                                ['Node Editor','node.voronoi_mixer','Voronoi Mixer'],[('active',False)],
-                                ['Node Editor','node.voronoi_swaper','Voronoi Swaper'],[('active',False)],
-                                )]],
+            'VoronoiLinker': 
+            [[],[(['Node Editor','node.voronoi_preview','Voronoi Preview'],[('active',False)],[]),
+                            (['Node Editor','node.voronoi_mixer','Voronoi Mixer'],[('active',False)],[]),
+                            (['Node Editor','node.voronoi_swaper','Voronoi Swaper'],[('active',False)],[]),
+                            ]],
             # True Assets
             'True-Assets': [[('ta_directory',str(Path(sync_path)/'True Assets'))],
                             [(['3D View','ta.saveassetsfromthisfile','Mark Assets and Quit'],[('active',False)],[])]],
