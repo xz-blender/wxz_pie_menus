@@ -45,10 +45,16 @@ class VIEW3D_PIE_MT_Translate_Interface_Key(Operator):
         return True
 
     def execute(self, context):
+        import sys
+        if sys.platform.startswith('win'):
+            lang_name = 'zh_CN'
+        elif sys.platform.startswith('darwin'):
+            lang_name = 'zh_HANS'
+
         # # 设置切换语言为中文
         lang = context.preferences.view.language
-        if lang != 'zh_CN':
-            context.preferences.view.language = 'zh_CN'
+        if lang != lang_name:
+            context.preferences.view.language = lang_name
         # # 新建数据不翻译
         context.preferences.view.use_translate_new_dataname = False
 
