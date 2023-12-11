@@ -59,7 +59,7 @@ def change_preferences_settings():
     theme.view_3d.vertex_size = 5 # 顶点尺寸
     theme.view_3d.edge_width = 5 # 面的点尺寸
     theme.view_3d.outline_width = 3 # 轮廓宽度
-    theme.view_3d.object_origin_size = 5 #对象原点大小
+    theme.view_3d.object_origin_size = 7 #对象原点大小
 
     
 
@@ -75,6 +75,16 @@ def change_context_settings():
     scene.cycles.use_auto_tile = False # 渲染使用平铺
     scene.view_settings.view_transform = 'AgX'
     scene.view_settings.look = 'None'
+
+    scene.cycles.max_bounces = 16
+    scene.cycles.diffuse_bounces = 16
+    scene.cycles.diffuse_bounces = 16
+    scene.cycles.glossy_bounces = 16
+    scene.cycles.transmission_bounces = 16
+    scene.cycles.volume_bounces = 0
+    scene.cycles.transparent_max_bounces = 16
+    scene.cycles.caustics_reflective = False
+    scene.cycles.caustics_refractive = False
 
     # -------3D View-------
     scene.transform_orientation_slots[0].type = 'GLOBAL' # 变换轴方向
