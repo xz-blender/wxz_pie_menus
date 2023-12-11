@@ -63,10 +63,13 @@ def close_hide_collection_keys():
 def change_transform_G_key_value():
     keys = bpy.context.window_manager.keyconfigs.default.keymaps
     for keys_name, keys_data in keys.items():
-        if keys_name == '3D View':
+        if keys_name in ['Object Mode','Mesh','Curve','Curves','Pose','Armatrue','Littice']:
             for key_name ,key_data in keys_data.keymap_items.items():
-                if key_name == 'transform.translate' and key_data.name == 'Move' and key_data.type == 'G':
-                    key_data.value = 'CLICK'
+                if key_data.name == 'Move'and key_name == 'transform.translate':
+                    if key_data.type == 'G':
+                        key_data.value = 'CLICK'
+                    
+
 
 A_select_dir = [
     'Pose','Object Mode','Curve','Mesh','UV Editor','NLA Editor','Outliner'
@@ -117,8 +120,6 @@ F_dir =[
     (['Node Editor','node.link_make','Make Links'],[('value','CLICK')],[]), # ctrl F
 ]
 G_dir =[
-    (['Object Mode','transform.translate','Move'],[('value','CLICK')],[]),
-    (['Mesh','transform.translate','Move'],[('value','CLICK')],[]),
     (['Object Mode','collection.objects_add_active','Add Selected to Active Collection'],[('active',False)],[]), # G ctrl shift
     (['Object Mode','collection.objects_remove_all','Remove from All Collections'],[('active',False)],[]), # G ctrl shift alt
     (['Object Mode','collection.objects_remove','Remove from Collection'],[('active',False)],[]), # G ctrl alt
@@ -240,9 +241,9 @@ def changes_keys():
 
     change_key_value(A_select_dir, "CLICK")
 
-    for _dir in [A_dir,B_dir,Brush_dir,C_dir,E_dir,F_dir,H_dir,Outliner_dir
-        ,Q_dir,R_dir,S_dir,SPACE_dir,T_dir,
-        TAB_dir,U_dir,V_dir,W_dir,X_dir,Z_dir,G_dir,Text_dir,
+    for _dir in [A_dir,B_dir,Brush_dir,C_dir,E_dir,F_dir,G_dir,H_dir,Outliner_dir,
+        Q_dir,R_dir,S_dir,SPACE_dir,T_dir,
+        TAB_dir,U_dir,V_dir,W_dir,X_dir,Z_dir,Text_dir,
         ]:
         change_key_value_base(_dir)
 
