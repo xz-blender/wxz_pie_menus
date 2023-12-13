@@ -155,9 +155,9 @@ class VIEW3D_PIE_MT_Bottom_Q(Menu):
             # 9 - TOP - RIGHT
             pie.separator()
             # 1 - BOTTOM - LEFT
-            pie.separator()
+            pie.operator("node.view_all", text="全部")
             # 3 - BOTTOM - RIGHT
-            pie.separator()
+            pie.operator("node.view_selected", text="所选")
 
 class Node_Change_Image_ColorSpace(Operator):
     bl_idname = "pie.node_change_image_colorspace"
