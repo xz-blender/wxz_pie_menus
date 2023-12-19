@@ -39,7 +39,7 @@ class Mesh_Delete_By_mode(Operator):
         
         obj = context.active_object
         if obj.type == "CURVE":
-            '''
+
             # 获取当前编辑模式下的选中顶点
             curve = obj.data
             spline = curve.splines.active
@@ -54,8 +54,8 @@ class Mesh_Delete_By_mode(Operator):
             elif len(selected_verts) > 1:
                 bpy.ops.curve.delete(type='SEGMENT')
                 bpy.ops.curvetools.operatorsplinesremovezerosegment()
-            '''
-            bpy.ops.curve.delete(type='VERT')
+
+            # bpy.ops.curve.delete(type='VERT')
             return {"FINISHED"}
 
 
