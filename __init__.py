@@ -52,7 +52,7 @@ sub_modules_names = [
     "A_shift-pie",
     "B-pie",
     "G-pie",
-    "Board",
+    "Lock_View",
 ]
 sub_modules_names.sort()
 
