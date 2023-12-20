@@ -40,32 +40,29 @@ class VIEW3D_PIE_MT_Translate_Interface_Key(Operator):
     bl_description = ""
     bl_options = {"REGISTER"}
 
+    lang_en: bpy.props.StringProperty(default="en_US")
+    lang_ch: bpy.props.StringProperty(default="zh_CN")
+
     @classmethod
     def poll(cls, context):
         return True
-
+    
     def execute(self, context):
-        import sys
-        if sys.platform.startswith('win'):
-            lang_name = 'zh_CN'
-        elif sys.platform.startswith('darwin'):
-            lang_name = 'zh_HANS'
-
         # # 设置切换语言为中文
-        lang = context.preferences.view.language
-        if lang != lang_name:
-            context.preferences.view.language = lang_name
-        # # 新建数据不翻译
-        context.preferences.view.use_translate_new_dataname = False
-
-        inter = context.preferences.view.use_translate_interface
-        if inter == True:
-            # 操作必须访问原始数据
-            context.preferences.view.use_translate_interface = False
+        language=bpy.context.preferences.view.language
+        if language in ('zh_CN', 'zh_HANS'):
+            bpy.context.preferences.view.language = 'en_US'
             self.report({'INFO'}, "英文")
         else:
+            if bpy.app.version < (4, 0, 0):
+                bpy.context.preferences.view.language = 'zh_CN'
+            else:
+                bpy.context.preferences.view.language = 'zh_HANS'
             context.preferences.view.use_translate_interface = True
             self.report({'INFO'}, "中文")
+        # # 新建数据不翻译
+        bpy.context.preferences.view.use_translate_new_dataname = False
+
         return {"FINISHED"}
 
 
