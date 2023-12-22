@@ -267,6 +267,7 @@ setting_lib = {
     '旧公司资产' : (str(Path(local_path)/'company_old_lib'), 'APPEND_REUSE'),
     'Simple Cloth' : (str(Path(sync_path)/'Blender Assets Browser'/'Simply Basic Cloth Library'), 'APPEND'),
     'GN' : (str(Path(sync_path)/'Blender Assets Browser'/'GN'), 'APPEND_REUSE'),
+    'GN_Assets' : (str(Path(sync_path)/'Blender Assets Browser'/'GN_Assets'), 'APPEND_REUSE'),
     'Material' : (str(Path(sync_path)/'Blender Assets Browser'/'Material'), 'APPEND_REUSE'),
     'Lights' : (str(Path(sync_path)/'Blender Assets Browser'/'Lights'), 'APPEND_REUSE'),
     '马路标志' : (str(Path(sync_path)/'Blender Assets Browser'/'马路标志'), 'LINK'),
