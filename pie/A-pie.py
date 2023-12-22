@@ -5,9 +5,15 @@ import bpy
 from bpy.types import Menu, Operator
 from mathutils import Matrix
 from collections import defaultdict
-from .utils import check_rely_addon, rely_addons, set_pie_ridius, change_default_keymap, restored_default_keymap
+from .utils import (
+    check_rely_addon,
+    rely_addons,
+    set_pie_ridius,
+    change_default_keymap,
+    restored_default_keymap,
+)
 
-submoduname = __name__.split('.')[-1]
+submoduname = __name__.split(".")[-1]
 bl_info = {
     "name": submoduname,
     "author": "wxz",
@@ -34,32 +40,32 @@ class PIE_MT_Bottom_A(Menu):
         # addon1:"DPFR Distribute Objects"
         addon1 = check_rely_addon(rely_addons[4][0], rely_addons[4][1])
 
-        if context.area.ui_type == 'VIEW_3D':
-            if ob_mode == 'OBJECT':
+        if context.area.ui_type == "VIEW_3D":
+            if ob_mode == "OBJECT":
                 # 4 - LEFT
-                if addon1 == '2':
-                    pie.operator('pie.empty_operator',
-                                text='未找到"Distribute Objects"插件!')
-                elif addon1 == '0':
-                    pie.operator('pie.empty_operator',
-                                text='启用"Distribute Objects"插件!')
-                elif addon1 == '1':
-                    pie.operator('object.distribute',
-                                text='排列物体', icon='MOD_ARRAY')
+                if addon1 == "2":
+                    pie.operator(
+                        "pie.empty_operator", text='未找到"Distribute Objects"插件!'
+                    )
+                elif addon1 == "0":
+                    pie.operator("pie.empty_operator", text='启用"Distribute Objects"插件!')
+                elif addon1 == "1":
+                    pie.operator("object.distribute", text="排列物体", icon="MOD_ARRAY")
                 # 6 - RIGHT
                 pie.separator()
                 # 2 - BOTTOM
                 pie.separator()
                 # 8 - TOP
-                pie.operator("object.select_all", text="反选",
-                            icon='DECORATE_OVERRIDE').action = 'INVERT'
+                pie.operator(
+                    "object.select_all", text="反选", icon="DECORATE_OVERRIDE"
+                ).action = "INVERT"
                 # 7 - TOP - LEFT
-                if ob_type == 'EMPTY':
-                    if context.active_object.data.type == 'IMAGE':
+                if ob_type == "EMPTY":
+                    if context.active_object.data.type == "IMAGE":
                         pie.operator(
                             PIE_Image_usefaker.bl_idname,
-                            text='设置参考伪用户',
-                            icon='FAKE_USER_ON',
+                            text="设置参考伪用户",
+                            icon="FAKE_USER_ON",
                         )
                     else:
                         pie.separator()
@@ -70,33 +76,37 @@ class PIE_MT_Bottom_A(Menu):
                 col.scale_x = 1
                 col.scale_y = 1.2
                 row = col.row()
-                row.label(text='资产')
+                row.label(text="资产")
                 row.operator("asset.mark", text="标记", icon="ASSET_MANAGER")
-                row.operator('asset.clear', text='抹除',icon='REMOVE').set_fake_user = False
+                row.operator(
+                    "asset.clear", text="抹除", icon="REMOVE"
+                ).set_fake_user = False
                 row = col.row()
-                row.operator('pie.creat_costom_asset_preview',text='创建视图预览',icon='IMAGE_PLANE')
+
+                # row.operator("pie.creat_costom_asset_preview", text="创建视图预览", icon="IMAGE_PLANE")
+                row.separator()
 
                 # 1 - BOTTOM - LEFT
                 pie.separator()
                 # 3 - BOTTOM - RIGHT
                 if ob_type in [
-                    'ARMATURE',
-                    'LIGHT',
-                    'EMPTY',
-                    'LATTICE',
-                    'GPENCIL',
-                    'LIGHT_PROBE',
-                    'EMPTY',
+                    "ARMATURE",
+                    "LIGHT",
+                    "EMPTY",
+                    "LATTICE",
+                    "GPENCIL",
+                    "LIGHT_PROBE",
+                    "EMPTY",
                 ]:
                     pie.separator()
                 else:
                     pie.menu("VIEW3D_MT_object_convert", text="转换物体")
 
             # 编辑模式
-            if context.object.mode == 'EDIT':
-                if ob_type == 'MESH':
+            if context.object.mode == "EDIT":
+                if ob_type == "MESH":
                     # 4 - LEFT
-                    pie.operator("mesh.select_less", text="缩减选择", icon='REMOVE')
+                    pie.operator("mesh.select_less", text="缩减选择", icon="REMOVE")
                     # 6 - RIGHT
                     pie.operator("mesh.select_more", text="扩展选择", icon="ADD")
                     # 2 - BOTTOM
@@ -112,11 +122,10 @@ class PIE_MT_Bottom_A(Menu):
                     row.operator("mesh.select_axis", text="按轴选点")
                     # 8 - TOP
                     pie.operator(
-                        "mesh.select_all", text="反选", icon='EMPTY_SINGLE_ARROW'
-                    ).action = 'INVERT'
+                        "mesh.select_all", text="反选", icon="EMPTY_SINGLE_ARROW"
+                    ).action = "INVERT"
                     # 7 - TOP - LEFT
-                    pie.operator("mesh.select_prev_item",
-                                text="上一个元素", icon="REMOVE")
+                    pie.operator("mesh.select_prev_item", text="上一个元素", icon="REMOVE")
                     # 9 - TOP - RIGHT
                     pie.operator("mesh.select_next_item", text="下一个元素", icon="ADD")
                     # 1 - BOTTOM - LEFT
@@ -138,41 +147,45 @@ class PIE_MT_Bottom_A(Menu):
                     row.operator("mesh.select_loose", text="选松散元素")
                     row.operator("mesh.select_non_manifold", text="选择非流形")
 
-                if ob_type in ['CURVE', 'SURFACE']:
+                if ob_type in ["CURVE", "SURFACE"]:
                     # 4 - LEFT
-                    pie.operator("curve.select_less", text="缩减选择", icon='REMOVE')
+                    pie.operator("curve.select_less", text="缩减选择", icon="REMOVE")
                     # 6 - RIGHT
-                    pie.operator("curve.select_more", text="扩展选择", icon='ADD')
+                    pie.operator("curve.select_more", text="扩展选择", icon="ADD")
                     # 2 - BOTTOM
                     pie.separator()
                     # 8 - TOP
                     pie.operator(
-                        "curve.select_all", text="反选", icon='EMPTY_SINGLE_ARROW'
-                    ).action = 'INVERT'
+                        "curve.select_all", text="反选", icon="EMPTY_SINGLE_ARROW"
+                    ).action = "INVERT"
                     # 7 - TOP - LEFT
-                    pie.operator("curve.de_select_last",
-                                text="选首端点", icon='FORCE_CURVE')
+                    pie.operator(
+                        "curve.de_select_last", text="选首端点", icon="FORCE_CURVE"
+                    )
                     # 9 - TOP - RIGHT
-                    pie.operator("curve.de_select_last",
-                                text="选尾端点", icon='FORCE_CURVE')
+                    pie.operator(
+                        "curve.de_select_last", text="选尾端点", icon="FORCE_CURVE"
+                    )
                     # 1 - BOTTOM - LEFT
                     pie.separator()
                     # 3 - BOTTOM - RIGHT
                     pie.menu(
                         "VIEW3D_MT_object_convert",
                         text="转换物体",
-                        icon='MOD_DATA_TRANSFER',
+                        icon="MOD_DATA_TRANSFER",
                     )
 
-        elif context.area.ui_type == 'UV':
+        elif context.area.ui_type == "UV":
             # 4 - LEFT
-            pie.operator("uv.select_less", text="缩减选择", icon='REMOVE')
+            pie.operator("uv.select_less", text="缩减选择", icon="REMOVE")
             # 6 - RIGHT
             pie.operator("uv.select_more", text="扩展选择", icon="ADD")
             # 2 - BOTTOM
             pie.separator()
             # 8 - TOP
-            pie.operator("uv.select_all", text="反选", icon='EMPTY_SINGLE_ARROW').action = 'INVERT'
+            pie.operator(
+                "uv.select_all", text="反选", icon="EMPTY_SINGLE_ARROW"
+            ).action = "INVERT"
             # 7 - TOP - LEFT
             # 9 - TOP - RIGHT
             # 1 - BOTTOM - LEFT
@@ -194,26 +207,27 @@ class PIE_Image_usefaker(Operator):
     def execute(self, context):
         if self.toggle == True:
             for ob in context.selected_objects:
-                if context.object.type == 'EMPTY':
+                if context.object.type == "EMPTY":
                     if ob.data.type == "IMAGE":
                         ob.data.use_fake_user = True
-            self.report({'INFO'},"已设置伪用户")
+            self.report({"INFO"}, "已设置伪用户")
             self.toggle = False
 
         else:
             for ob in context.selected_objects:
-                if context.object.type == 'EMPTY':
+                if context.object.type == "EMPTY":
                     if ob.data.type == "IMAGE":
                         ob.data.use_fake_user = False
-            self.report({'INFO'},"清除伪用户")
+            self.report({"INFO"}, "清除伪用户")
             self.toggle = True
         return {"FINISHED"}
+
 
 class PIE_Apply_MultiObjects_Scale(bpy.types.Operator):
     bl_idname = "pie.apply_multi_objects_scale"
     bl_label = "Apply Multi Objects Scale"
     bl_description = "Apply multi objects scale that skip links objects"
-    bl_options = {"REGISTER","UNDO"}
+    bl_options = {"REGISTER", "UNDO"}
 
     scale: bpy.props.BoolProperty(default=False)
     rotation: bpy.props.BoolProperty(default=False)
@@ -233,9 +247,9 @@ class PIE_Apply_MultiObjects_Scale(bpy.types.Operator):
         data_links = defaultdict(list)
         for ob in se_objects:
             # filter Mesh,Curve
-            if ob.type == 'MESH' or 'CURVE':
+            if ob.type == "MESH" or "CURVE":
                 data_links[ob].append(ob)
-            
+
         # filter is linked objects
         for data, ob_list in data_links.items():
             print(data, ob_list)
@@ -261,7 +275,7 @@ class PIE_Apply_MultiObjects_Scale(bpy.types.Operator):
 
                 # for c in data.children:
                 #     c.matrix_local = S @ c.matrix_local
-                
+
         return {"FINISHED"}
 
 
@@ -279,97 +293,97 @@ class PIE_MT_Bottom_A_Ctrl(Menu):
             ob_mode = context.object.mode
 
             # 4 - LEFT
-            rotation = pie.operator(PIE_Apply_MultiObjects_Scale.bl_idname,text = '旋转-跳过实例')
+            rotation = pie.operator(
+                PIE_Apply_MultiObjects_Scale.bl_idname, text="旋转-跳过实例"
+            )
             rotation.rotation = True
             # 6 - RIGHT
-            scale = pie.operator(PIE_Apply_MultiObjects_Scale.bl_idname,text = '缩放-跳过实例')
+            scale = pie.operator(PIE_Apply_MultiObjects_Scale.bl_idname, text="缩放-跳过实例")
             scale.scale = True
             # 2 - BOTTOM
-            if ob_type in ['MESH', 'CURVE', 'SURFACE', 'FONT', 'GPENCIL', 'META']:
-                pie.operator('object.convert', text='可视几何->网格').target = 'MESH'
+            if ob_type in ["MESH", "CURVE", "SURFACE", "FONT", "GPENCIL", "META"]:
+                pie.operator("object.convert", text="可视几何->网格").target = "MESH"
             else:
                 pie.separate()
             # 8 - TOP
-            lrs1 = pie.operator('object.transform_apply', text='旋转&缩放')
+            lrs1 = pie.operator("object.transform_apply", text="旋转&缩放")
             lrs1.location = False
             lrs1.rotation = True
             lrs1.scale = True
             # 7 - TOP - LEFT
-            lrs2 = pie.operator('object.transform_apply', text='旋转')
+            lrs2 = pie.operator("object.transform_apply", text="旋转")
             lrs2.location = False
             lrs2.rotation = True
             lrs2.scale = False
             # 9 - TOP - RIGHT
-            lrs3 = pie.operator('object.transform_apply', text='缩放')
+            lrs3 = pie.operator("object.transform_apply", text="缩放")
             lrs3.location = False
             lrs3.rotation = False
             lrs3.scale = True
             # 1 - BOTTOM - LEFT
-            pie.operator('object.visual_transform_apply', text='可视变换')
+            pie.operator("object.visual_transform_apply", text="可视变换")
             # 3 - BOTTOM - RIGHT
-            pie.operator('object.duplicates_make_real', text='实例独立化')
+            pie.operator("object.duplicates_make_real", text="实例独立化")
+
 
 class Creat_Costom_Asset_Preview(Operator):
     """创建自定义预览图"""
-    bl_idname="pie.creat_costom_asset_preview"
-    bl_label="视图自定义资产预览"
-    bl_options={'REGISTER','UNDO'}
 
-    resolution : bpy.props.IntProperty(
-            name = "设置预览精度",
-            min =64,
-            soft_max = 512,
-            default = 256,
-            step=64
-            )
+    bl_idname = "pie.creat_costom_asset_preview"
+    bl_label = "视图自定义资产预览"
+    bl_options = {"REGISTER", "UNDO"}
+
+    resolution: bpy.props.IntProperty(
+        name="设置预览精度", min=64, soft_max=512, default=256, step=64
+    )
 
     @classmethod
     def poll(cls, context):
         if context.object is not None:
-            if  context.active_object.type != 'CAMERA' and context.mode == 'OBJECT':
+            if context.active_object.type != "CAMERA" and context.mode == "OBJECT":
                 return True
 
     def execute(self, context):
-        scene=context.scene
+        scene = context.scene
         act_obj = context.active_object
         space = bpy.context.space_data
 
-        #保存现有场景信息
+        # 保存现有场景信息
         save_render_X = scene.render.resolution_x
-        save_render_y = scene.render.resolution_y 
+        save_render_y = scene.render.resolution_y
         save_percentage = scene.render.resolution_percentage
         save_filepath = scene.render.filepath
         save_file_format = scene.render.image_settings.file_format
         save_file_color_mode = scene.render.image_settings.color_mode
         save_file_compression = scene.render.image_settings.compression
 
-        #孤立模式
+        # 孤立模式
         for area in bpy.context.screen.areas:
-            if area.type == 'VIEW_3D':
+            if area.type == "VIEW_3D":
                 space = area.spaces[0]
-                if space.local_view == None: #check if not using local view
+                if space.local_view == None:  # check if not using local view
                     bpy.ops.view3d.localview(frame_selected=False)
                     change_local = True
                 else:
                     change_local = False
-        #隐藏叠加层
+        # 隐藏叠加层
         context.space_data.overlay.show_overlays = False
 
-        #更改预览大小
+        # 更改预览大小
         scene.render.resolution_y = self.resolution
         scene.render.resolution_x = self.resolution
         scene.render.resolution_percentage = 100
-        #设置图像格式
+        # 设置图像格式
         scene.render.image_settings.file_format = "PNG"
         scene.render.image_settings.compression = 50
-        scene.render.image_settings.color_mode = "RGBA" 
+        scene.render.image_settings.color_mode = "RGBA"
 
-        #设置图像缓存位置
+        # 设置图像缓存位置
 
         # 创建临时文件夹
         temp_dir = tempfile.mkdtemp()
         # 在临时文件夹中创建一个示例文件
-        temp_filepath = os.path.join(temp_dir, str(random.randint(0,999999))+".png")
+        temp_filepath = os.path.join(temp_dir, str(random.randint(0, 999999)) + ".png")
         print(temp_filepath)
 
         # temp_filename = str(random.randint(0,999999))+".png"
@@ -377,18 +391,18 @@ class Creat_Costom_Asset_Preview(Operator):
 
         bpy.context.scene.render.filepath = temp_filepath
 
-        #设置资产设置自定义图像
-        bpy.ops.render.opengl(write_still = True)
+        # 设置资产设置自定义图像
+        bpy.ops.render.opengl(write_still=True)
 
         act_obj.asset_mark()
         override = bpy.context.copy()
-        override['id'] = act_obj
-        bpy.ops.ed.lib_id_load_custom_preview(filepath=temp_filepath)
-        
-        #隐藏叠加层
+        override["id"] = act_obj
+        bpy.ops.ed.lib_id_load_custom_preview("EXEC_DEFAULT", filepath=temp_filepath)
+
+        # 隐藏叠加层
         context.space_data.overlay.show_overlays = True
 
-        #返回原有场景信息
+        # 返回原有场景信息
         if change_local:
             bpy.ops.view3d.localview(frame_selected=False)
         os.unlink(temp_filepath)
@@ -399,34 +413,37 @@ class Creat_Costom_Asset_Preview(Operator):
         scene.render.image_settings.file_format = save_file_format
         scene.render.image_settings.color_mode = save_file_color_mode
         scene.render.image_settings.compression = save_file_compression
-        
-        return {'FINISHED'}
+
+        return {"FINISHED"}
+
 
 classes = [
     PIE_MT_Bottom_A,
     PIE_MT_Bottom_A_Ctrl,
     PIE_Image_usefaker,
     PIE_Apply_MultiObjects_Scale,
-    Creat_Costom_Asset_Preview,
+    # Creat_Costom_Asset_Preview,
 ]
 
 
 addon_keymaps = []
 
+
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
 
     km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
-    kmi = km.keymap_items.new("wm.call_menu_pie", 'A', 'CLICK_DRAG')
+    kmi = km.keymap_items.new("wm.call_menu_pie", "A", "CLICK_DRAG")
     kmi.properties.name = "PIE_MT_Bottom_A"
 
     kmi = km.keymap_items.new("wm.call_menu_pie", "A", "CLICK_DRAG", ctrl=True)
     kmi.properties.name = "PIE_MT_Bottom_A_Ctrl"
-    
+
     km = addon.keymaps.new(name="UV Editor")
-    kmi = km.keymap_items.new("wm.call_menu_pie", 'A', 'CLICK_DRAG')
+    kmi = km.keymap_items.new("wm.call_menu_pie", "A", "CLICK_DRAG")
     kmi.properties.name = "PIE_MT_Bottom_A"
     addon_keymaps.append(km)
+
 
 def unregister_keymaps():
     wm = bpy.context.window_manager
@@ -436,6 +453,7 @@ def unregister_keymaps():
         # wm.keyconfigs.addon.keymaps.remove(km)
     addon_keymaps.clear()
 
+
 def register():
     for cls in classes:
         try:
@@ -443,6 +461,7 @@ def register():
         except:
             None
     register_keymaps()
+
 
 def unregister():
     unregister_keymaps()
