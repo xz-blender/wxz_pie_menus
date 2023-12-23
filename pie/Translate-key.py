@@ -49,15 +49,23 @@ class VIEW3D_PIE_MT_Translate_Interface_Key(Operator):
     
     def execute(self, context):
         # # 设置切换语言为中文
+        lang = ['zh_CN', 'zh_HANS']
         language=bpy.context.preferences.view.language
-        if language in ('zh_CN', 'zh_HANS'):
+        if language in lang:
             bpy.context.preferences.view.language = 'en_US'
             self.report({'INFO'}, "英文")
         else:
-            if bpy.app.version < (4, 0, 0) or (4, 0, 1):
-                bpy.context.preferences.view.language = 'zh_CN'
-            else:
-                bpy.context.preferences.view.language = 'zh_HANS'
+            import re
+            try:
+                bpy.context.preferences.view.language = ''
+            except TypeError as e:
+                # 解析错误信息来获取所有可用的语言
+                match = re.search(r"enum \"(.*)\" not found in \('(.*)'\)", str(e))
+                if match:
+                    all_languages = match.group(2).split("', '")
+            
+            zh_lang = [item for item in lang if item in all_languages]
+            bpy.context.preferences.view.language = zh_lang[0]
             context.preferences.view.use_translate_interface = True
             self.report({'INFO'}, "中文")
         # # 新建数据不翻译

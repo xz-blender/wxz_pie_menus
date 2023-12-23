@@ -97,15 +97,18 @@ class VIEW3D_PIE_MT_Bottom_Q(Menu):
             pie.operator("graph.view_selected", text="所选")
 
         elif ui == 'ShaderNodeTree':
-            active_node = context.active_object.active_material.node_tree.nodes.active
             # 4 - LEFT # 6 - RIGHT
-            if active_node.type == 'TEX_IMAGE':
-                pie.operator(Node_Change_Image_ColorSpace.bl_idname,
-                             text='图像-sRGB').colorspace = 'sRGB'
-                pie.operator(Node_Change_Image_ColorSpace.bl_idname,
-                             text='图像-非彩色').colorspace = 'Non-Color'
+            if context.active_object.active_material.node_tree.nodes.active != None:
+                if context.active_object.active_material.node_tree.nodes.active.type == 'TEX_IMAGE':
+                    pie.operator(Node_Change_Image_ColorSpace.bl_idname,
+                                text='图像-sRGB').colorspace = 'sRGB'
+                    pie.operator(Node_Change_Image_ColorSpace.bl_idname,
+                                text='图像-非彩色').colorspace = 'Non-Color'
+                else:
+                    pie.operator("node.nw_reset_nodes",text="重置所选")
+                    pie.separator()
             else:
-                pie.operator("node.nw_reset_nodes",text="重置所选")
+                pie.separator()
                 pie.separator()
 
             # 2 - BOTTOM
@@ -113,7 +116,21 @@ class VIEW3D_PIE_MT_Bottom_Q(Menu):
             # 8 - TOP
             pie.separator()
             # 7 - TOP - LEFT
-            pie.separator()
+            if context.active_object.active_material.node_tree.nodes.active != None:
+                if context.active_object.active_material.node_tree.nodes.active.type == 'TEX_IMAGE':
+                    new = pie.split()
+                    sp1 = new.split().box().column()
+                    sp1.label(text="纹理插值")
+                    sp1.operator(Node_Change_Image_Interpolation.bl_idname,text="线性").interpolation = 'LINEAR'
+                    sp1.operator(Node_Change_Image_Interpolation.bl_idname,text="智能").interpolation = 'SMART'
+                    sp2 = new.split().box().column()
+                    sp2.label(text="投射方法")
+                    sp2.operator(Node_Change_Image_Projection.bl_idname,text="平直").projection = 'FLAT'
+                    sp2.operator(Node_Change_Image_Projection.bl_idname,text="立方体").projection = 'BOX'
+                else:
+                    pie.separator()
+            else:
+                pie.separator()
             # 9 - TOP - RIGHT
             box = pie.box()
             box.props_enum(context.object.active_material, 'blend_method')
@@ -179,9 +196,51 @@ class Node_Change_Image_ColorSpace(Operator):
             node.image.colorspace_settings.name = self.colorspace
         return {"FINISHED"}
 
+class Node_Change_Image_Projection(Operator):
+    bl_idname = "pie.node_change_image_projection"
+    bl_label = __qualname__
+    bl_description = ""
+    bl_options = {"REGISTER", "UNDO"}
+
+    projection: bpy.props.StringProperty(name='projection')
+
+    @classmethod
+    def poll(cls, context):
+        return True
+
+    def execute(self, context):
+        nodes = context.active_object.active_material.node_tree.nodes
+        selected_nodes = [
+            x for x in nodes if x.select and x.type == 'TEX_IMAGE']
+        for node in selected_nodes:
+            node.image.projection = self.projection
+        return {"FINISHED"}
+
+class Node_Change_Image_Interpolation(Operator):
+    bl_idname = "pie.node_change_image_interpolation"
+    bl_label = __qualname__
+    bl_description = ""
+    bl_options = {"REGISTER", "UNDO"}
+
+    interpolation: bpy.props.StringProperty(name='interpolation')
+
+    @classmethod
+    def poll(cls, context):
+        return True
+
+    def execute(self, context):
+        nodes = context.active_object.active_material.node_tree.nodes
+        selected_nodes = [
+            x for x in nodes if x.select and x.type == 'TEX_IMAGE']
+        for node in selected_nodes:
+            node.image.interpolation = self.interpolation
+        return {"FINISHED"}
+
 
 classes = [VIEW3D_PIE_MT_Bottom_Q,
            Node_Change_Image_ColorSpace,
+           Node_Change_Image_Projection,
+           Node_Change_Image_Interpolation,
            ]
 
 addon_keymaps = []
