@@ -54,7 +54,7 @@ class VIEW3D_PIE_MT_Translate_Interface_Key(Operator):
             bpy.context.preferences.view.language = 'en_US'
             self.report({'INFO'}, "英文")
         else:
-            if bpy.app.version < (4, 0, 0):
+            if bpy.app.version < (4, 0, 0) or (4, 0, 1):
                 bpy.context.preferences.view.language = 'zh_CN'
             else:
                 bpy.context.preferences.view.language = 'zh_HANS'
