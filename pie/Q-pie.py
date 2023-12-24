@@ -121,8 +121,8 @@ class VIEW3D_PIE_MT_Bottom_Q(Menu):
                     new = pie.split()
                     sp1 = new.split().box().column()
                     sp1.label(text="纹理插值")
-                    sp1.operator(Node_Change_Image_Interpolation.bl_idname,text="线性").interpolation = 'LINEAR'
-                    sp1.operator(Node_Change_Image_Interpolation.bl_idname,text="智能").interpolation = 'SMART'
+                    sp1.operator(Node_Change_Image_Interpolation.bl_idname,text="线性").interpolation = 'Linear'
+                    sp1.operator(Node_Change_Image_Interpolation.bl_idname,text="智能").interpolation = 'Smart'
                     sp2 = new.split().box().column()
                     sp2.label(text="投射方法")
                     sp2.operator(Node_Change_Image_Projection.bl_idname,text="平直").projection = 'FLAT'
