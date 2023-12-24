@@ -162,6 +162,8 @@ Q_dir =[
     (['Window','wm.call_menu','Quick Favorites'],[('active',False)],[]), # Q
     (['Window','wm.quit_blender','Quit Blender'],[('active',False)],[]), # ctrl Q
     # (['Object Non-modal','object.transfer_mode','Transfer Mode'],[('active',False)],[]), # alt Q  和 alt w 设置冲突
+    (['Screen','screen.region_quadview','Toggle Quad View'],[('active',False)],[]), # ctrl alt Q - 四窗格
+    # (['Screen','screen.region_quadview','Toggle Quad View'],[('value',"CLICK")],[]), # ctrl alt Q - 四窗格
 ]
 R_dir =[
     (['3D View','transform.rotate','Rotate'],[('value','CLICK')],[]),
