@@ -244,7 +244,7 @@ class Node_Change_Image_Projection(Operator):
         selected_nodes = [
             x for x in nodes if x.select and x.type == 'TEX_IMAGE']
         for node in selected_nodes:
-            node.image.projection = self.projection
+            node.projection = self.projection
         return {"FINISHED"}
 
 class Node_Change_Image_Interpolation(Operator):
@@ -264,7 +264,7 @@ class Node_Change_Image_Interpolation(Operator):
         selected_nodes = [
             x for x in nodes if x.select and x.type == 'TEX_IMAGE']
         for node in selected_nodes:
-            node.image.interpolation = self.interpolation
+            node.interpolation = self.interpolation
         return {"FINISHED"}
 
 
