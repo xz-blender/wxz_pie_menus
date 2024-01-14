@@ -1,5 +1,5 @@
 import bpy
-import os
+import re
 from bpy.types import Menu, Panel, Operator
 
 bl_info = {
@@ -55,7 +55,6 @@ class VIEW3D_PIE_MT_Translate_Interface_Key(Operator):
             bpy.context.preferences.view.language = 'en_US'
             self.report({'INFO'}, "英文")
         else:
-            import re
             try:
                 bpy.context.preferences.view.language = ''
             except TypeError as e:
@@ -107,14 +106,14 @@ addon_keymaps = []
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
     km = addon.keymaps.new(name="Window", space_type="EMPTY")
-    kmi = km.keymap_items.new(
+    km.keymap_items.new(
         idname=VIEW3D_PIE_MT_Translate_Interface_Key.bl_idname,
         type="T",
         value="CLICK",
         shift=True,
         alt=True,
     )
-    kmi = km.keymap_items.new(
+    km.keymap_items.new(
         idname=VIEW3D_PIE_MT_Translate_Tooltips_Key.bl_idname,
         type="T",
         value="CLICK",

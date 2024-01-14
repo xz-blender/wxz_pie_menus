@@ -178,8 +178,8 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             'OCD': [[],[]],
             # IQ lib
             'botaniq_full': [[('botaniq_path',str(Path(local_path)/'botaniq_full'))],[]],
-            # 'aquatiq_full': [[('aquatiq_path',str(Path(local_path)/'aquatiq_full'))],[]],
-            'materialiq_full': [[('materialiq5_path',str(Path(local_path)/'materialiq_full'))],[]],
+            'aquatiq_full': [[('aquatiq_path',str(Path(local_path)/'aquatiq_full'))],[]],
+            # 'materialiq_full': [[('materialiq5_path',str(Path(local_path)/'materialiq_full'))],[]],
             'traffiq_full': [[('traffiq_path',str(Path(local_path)/'traffiq_full'))],[]],
             # Vegtation
             'Vegetation': [[('assets_path',str(Path(local_path)/'vegetation'))],[]],
