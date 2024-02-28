@@ -235,9 +235,6 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
         return {"FINISHED"}
         
 
-user_lib_names = []
-for lib in bpy.context.preferences.filepaths.asset_libraries:
-    user_lib_names.append(lib.name)
 
 setting_lib = {
     'Rig_Car' : (str(Path(local_path)/'rig_cars'), 'LINK'),
@@ -265,23 +262,29 @@ setting_lib = {
     'RealCloud' : (str(Path(local_path)/'RealCloud'), 'LINK'),
     'DeepTree' : (str(Path(local_path)/'DeepTree'), 'LINK'),
 }
+app_lib_data = {}
+for lib in bpy.context.preferences.filepaths.asset_libraries:
+    app_lib_data[lib.name]=lib.path
 
 def change_assets_library_path():
-    # for name in user_lib_names:
+    # for name in app_lib_data:
     #     df_name = 'User Library'
     #     if name == df_name:
-    #         bpy.ops.preferences.asset_library_remove(index = user_lib_names.index(df_name))
+    #         bpy.ops.preferences.asset_library_remove(index = app_lib_data.index(df_name))
 
     sort_setting_lib = dict(sorted(setting_lib.items(),key = lambda x : x[0]))
 
     for name, data in sort_setting_lib.items():
-        if name not in user_lib_names:
+        asset_libraries = bpy.context.preferences.filepaths.asset_libraries
+        if name not in app_lib_data:
             bpy.ops.preferences.asset_library_add(directory = data[0])
-            bpy.context.preferences.filepaths.asset_libraries[-1].name = name
+            asset_libraries[-1].name = name
 
             version = bpy.app.version
             if version[0] >= 3 and version[1] >= 5 :
-                bpy.context.preferences.filepaths.asset_libraries[-1].import_method = data[1]
+                asset_libraries[-1].import_method = data[1]
+        else:
+            asset_libraries[name].path = data[0]
 
 def change_addons():
     bpy.context.preferences.filepaths.texture_directory = str(Path(sync_path).parent.parent/'Texture')
