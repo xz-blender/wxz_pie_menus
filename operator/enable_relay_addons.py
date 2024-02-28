@@ -64,7 +64,8 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
         join = os.path.join
 
         addons_officials_list ={
-        # 官方&社区      #  addon_name : [[addon_settings],[addon_keys]]
+        ####官方&自有####      
+        #   addon_name : [[addon_settings],[addon_keys]]
             'curve_tools' : [[],[]],
             'add_curve_extra_objects':[[],[]],
             'curve_simplify':[[],[]],
@@ -99,128 +100,105 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             'io_import_dxf':[[],[]],
             'io_export_dxf':[[],[]],
 
-
-        # 第三方
-            'Bagapie': [[],[(['3D View','bagapie.duplicatelinkedgroup','Duplicate Linked Group'],[('active',False)],[]),
-                            (['3D View','bagapie.duplicategroup','Duplicate Group'],[('active',False)],[]),
-                            (['3D View','wm.call_menu_pie','BagaPie GeoPack'],[('active',False)],[]),
-                            ]], # key alt N
-            'slcad_transform': [[],[]],
-            # EsayLight
-            'EasyLight': [[('ies_library_path',str(Path(sync_path)/'IES'))],[]], # ies lib path
+        ####第三方####
+        # ————资产类————
             # HDRI
             'hdri_maker': [[
                             ('addon_default_library',str(Path(local_path)/'HDRI MAKER LIBRARY'/'HDRI_MAKER_DEFAULT_LIB')),
                             ('addon_user_library',str(Path(local_path)/'HDRI MAKER LIBRARY'/'HDRI_MAKER_USER_LIB'))
                             ],[]],
-            # QuickSnap
-            'quicksnap': [[('auto_check_update',False)],[
-                (['3D View','object.quicksnap','QuickSnap Tool'],[('value','CLICK'),('type','G'),('shift',False)],[])]],
-            # Simple Tabs
-            'simple-tabs': [[('startup_delay',1)],[]], # 导入json设置
-            'slcad_transform': [[],[]],
-            'extra_lights': [[],[]],
             # Photographer
             'photographer': [[
-                            #('hdri_lib_path',str(Path(sync_path)/'Custom HDRI'))
+                            ('hdri_lib_path',str(Path(sync_path)/'Custom HDRI'))
                               ],
                             [(['3D View','wm.call_menu_pie','Photographer Camera Pie'],[('value','CLICK_DRAG')],[])]],
             # Object Asset Wizard
             'object_asset_wizard': [[('root',str(Path(sync_path)/'Blender Assets Wizard'))],[]],
-            'BMAX_Connector': [[],[]],
+            # Vegtation
+            'Vegetation': [[('assets_path',str(Path(local_path)/'vegetation'))],[]],
+            # Engon
+            'engon': [[('auto_check_update',False)],
+                      [(['Window','engon.browser_toggle_area','Toggle Engon Browser'],[('type','BACK_SLASH')],[]),]],
+            'True-Assets': [[('ta_directory',str(Path(sync_path)/'True Assets'))],
+                            [(['3D View','ta.saveassetsfromthisfile','Mark Assets and Quit'],[('active',False)],[])]],
+            
+        # ————导入导出————
+            # sketchup 导入导出
             'sketchup_importer': [[],[]],
             # Super IO
-            'super_io': [[('force_unicode',True),('cpp_obj_importer',True),
-                            ('cpp_obj_exporter',True),('extend_export_menu',True)],
-                        [
-                        (['3D View','wm.super_import','Super Import'],[('value','CLICK')],[]),
-                        (['3D View','wm.super_export','Super Export'],[('value','CLICK'),('type','E')],[]),
-                        (['Node Editor','wm.super_import','Super Import'],[('value','CLICK')],[]),
-                        (['Node Editor','wm.super_export','Super Export'],[('value','CLICK'),('type','E')],[]),
-                        (['Image Generic','wm.super_export','Super Export'],[('value','CLICK'),('type','E')],[]),
-                        (['File Browser','wm.super_import','Super Import'],[('value','CLICK')],[]),
-                        (['File Browser','wm.super_export','Super EXport'],[('value','CLICK'),('type','E')],[]),
+            'super_io': [[
+                            ('force_unicode',True),('cpp_obj_importer',True),
+                            ('cpp_obj_exporter',True),('extend_export_menu',True)
+                         ],
+                        [   (['3D View','wm.super_import','Super Import'],[('value','CLICK')],[]),
+                            (['3D View','wm.super_export','Super Export'],[('value','CLICK'),('type','E')],[]),
+                            (['Node Editor','wm.super_import','Super Import'],[('value','CLICK')],[]),
+                            (['Node Editor','wm.super_export','Super Export'],[('value','CLICK'),('type','E')],[]),
+                            (['Image Generic','wm.super_export','Super Export'],[('value','CLICK'),('type','E')],[]),
+                            (['File Browser','wm.super_import','Super Import'],[('value','CLICK')],[]),
+                            (['File Browser','wm.super_export','Super EXport'],[('value','CLICK'),('type','E')],[]),
                         ]],
-            'Synchronize Workspaces': [[],[]],
-            'EasyPBR': [[],[]], # keys 未更改 ('lib_path',join(sync_path,'Easy_PBR_library'))
+        # ————建模工具————编辑模式————
             'EdgeFlow': [[],[]],
             'slide_edge': [[],[]],
             'straight_skeleton': [[],[]],
             'face_cutter': [[],[]],
             'bend_face': [[],[]],
             'simple_bend': [[],[]],
-            # Niche Loops
+            'kushiro_tools': [[],[]],
             'niche-loops': [[],[]],
-            'round_inset': [[],[]],
-            'Seer Adjacent Selection': [[],[]],
-            # Smart Fill
+            'smart_loops_toolkit': [[],[]],
+            'Inset_Outset': [[],[]],
+            'NGon Loop Select': [[],[
+                # (['Mesh','ls.select','Loop Select'],[('value','CLICK')],[]),
+                ]],
             'smart_fill': [[('mouse_wheel',False)],[
                 (['Mesh','mesh.mesh.smart_fill_popup','Smart Fill Popup'],[('value','CLICK')],[]),
                 (['Mesh','mesh.edge_face_add','Make Edge/Face'],[('value','CLICK')],[]),
                 ]],
-            'smart_loops_toolkit': [[],[]],
-            #----Nodes----
+        # ————建模工具————物体模式————
+            'drop_it': [[],[
+                (['3D View','object.drop_it','Drop It'],[('value','CLICK')],[])
+                ]],
+            'Bagapie': [[],[(['3D View','bagapie.duplicatelinkedgroup','Duplicate Linked Group'],[('active',False)],[]),
+                            (['3D View','bagapie.duplicategroup','Duplicate Group'],[('active',False)],[]),
+                            (['3D View','wm.call_menu_pie','BagaPie GeoPack'],[('active',False)],[]),
+                            ]], # key alt N
+            'leafig': [[],[]],
+            'Text_input': [[],[]],
+            'distributeobjects': [[],[]],
+            'autoMaterial': [[],[]],
+            'Auto_Reload': [[('update_check_launch',False)],[]],
+
+        
+        # ————生成类工具————
+            'FenceMaker': [[],[]],
+            'PoleMaker': [[],[]],
+            'ocd_addon': [[],[]],
+
+
+
+        # ————界面工具————
+            'simple-tabs': [[('startup_delay',1)],[]], # 导入json设置
+            'Synchronize Workspaces': [[],[]],
+            'viewport_timeline_scrub': [[],[]],
+
+        # ————节点类工具————
             'BB_Nodes': [[],[]],
-            'colormate': [[],[]],
             'ETK_core': [[],[]],
             'Node Kit': [[('nodes_path',str(Path(sync_path)/'NodeKit'))],[]],
             'node_pie': [[],[(['Node Editor','wm.call_menu_pie','Node pie'],[('value','CLICK_DRAG')],[])]],
             'uber_compositor': [[],[]],
             'b3dsdf': [[],[]],
             'wxz_nodes_presets': [[],[]],
-            # Drop It
-            'drop_it': [[],[
-                (['3D View','object.drop_it','Drop It'],[('value','CLICK')],[])
-                ]],
-            'NGon Loop Select': [[],[
-                # (['Mesh','ls.select','Loop Select'],[('value','CLICK')],[]),
-                ]],
-            'OCD': [[],[]],
-            # IQ lib
-            'botaniq_full': [[('botaniq_path',str(Path(local_path)/'botaniq_full'))],[]],
-            'aquatiq_full': [[('aquatiq_path',str(Path(local_path)/'aquatiq_full'))],[]],
-            # 'materialiq_full': [[('materialiq5_path',str(Path(local_path)/'materialiq_full'))],[]],
-            'traffiq_full': [[('traffiq_path',str(Path(local_path)/'traffiq_full'))],[]],
-            # Vegtation
-            'Vegetation': [[('assets_path',str(Path(local_path)/'vegetation'))],[]],
-            # Leafig
-            'leafig': [[],[]],
-            'Text_input': [[],[]],
-            'atomic_data_manager': [[('enable_missing_file_warning',False),('enable_support_me_popup',False),
-                                        ('enable_pie_menu_ui',False),('auto_check_update',False),],[]],
-            'QOL_Select_Contiguous': [[],[]],
-            # TexTools
+        # ————UV编辑器————
             'TexTools': [[],[]],
             'UvSquares': [[],[]],
-            'distributeobjects': [[],[]],
-            # Friendly Povit
-            ''''
-                scpo': [[],[
-                (['3D View','friendly.pivot','Friendly:SCPO'],[('value','CLICK'),('ctrl',True)],[]),
-                (['Image','friendly.pivot2d','Friendly:SCPO2D'],[('value','CLICK'),('ctrl',True)],[])]],
-                '''
-            # 辣椒酱
-            'lattice_helper': [[],[]],
+
+        # ————辣椒酱插件集————
             'popoti_align_helper': [[],[]],
-            'PlaceHelper': [[],[]],
-            # 时间线
-            'viewport_timeline_scrub': [[],[]],
-            'autoMaterial': [[],[]],
-            'Inset_Outset': [[],[]],
-            'camera_shakify': [[],[]],
-            'rotate_face': [[],[]],
-            #Kushiro Addons
-            'cut_corner': [[],[]],
-            'safe_ngon': [[],[]],
-            'select_sim': [[],[]],
-            'VoronoiLinker': 
-            [[],[(['Node Editor','node.voronoi_preview','Voronoi Preview'],[('active',False)],[]),
-                            (['Node Editor','node.voronoi_mixer','Voronoi Mixer'],[('active',False)],[]),
-                            (['Node Editor','node.voronoi_swaper','Voronoi Swaper'],[('active',False)],[]),
-                            ]],
-            # True Assets
-            'True-Assets': [[('ta_directory',str(Path(sync_path)/'True Assets'))],
-                            [(['3D View','ta.saveassetsfromthisfile','Mark Assets and Quit'],[('active',False)],[])]],
+            'lattice_helper': [[],[]],
+
         }
 
         addon_disable_list = [
@@ -282,7 +260,10 @@ setting_lib = {
     'Motion Animate' : (str(Path(local_path)/'Motion Animate'), 'APPEND'),
     '图案光阴影贴图' : (str(Path(local_path)/'图案光阴影贴图'), 'LINK'),
     '其他' : (str(Path(local_path)/'其他'), 'LINK'),
-    'HIG_Nodes' : (str(Path(addon_path)/'Higgsas_Groups'), 'APPEND'),
+    'Higssas Nodes' : (str(Path(sync_path)/'Blender Assets Browser'/'Higssas Nodes'), 'APPEND'),
+    'BMS-东京后街' : (str(Path(local_path)/'BMS-东京后街'), 'LINK'),
+    'RealCloud' : (str(Path(local_path)/'RealCloud'), 'LINK'),
+    'DeepTree' : (str(Path(local_path)/'DeepTree'), 'LINK'),
 }
 
 def change_assets_library_path():
