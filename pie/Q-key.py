@@ -35,6 +35,7 @@ class PIE_MT_Bottom_Q_favorite(Menu):
         col = split.column()
         # col.label(text="自定工具集")
         col.operator('pie.q_render_viewport')
+        col.operator('redhalo.maxfilebrower')
 
         # col.separator()
 

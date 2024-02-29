@@ -125,6 +125,7 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
         # ————导入导出————
             # sketchup 导入导出
             'sketchup_importer': [[],[]],
+            'RedHalo_M2B': [[],[]],
             # Super IO
             'super_io': [[
                             ('force_unicode',True),('cpp_obj_importer',True),
@@ -138,6 +139,7 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
                             (['File Browser','wm.super_import','Super Import'],[('value','CLICK')],[]),
                             (['File Browser','wm.super_export','Super EXport'],[('value','CLICK'),('type','E')],[]),
                         ]],
+            
         # ————建模工具————编辑模式————
             'EdgeFlow': [[],[]],
             'slide_edge': [[],[]],
