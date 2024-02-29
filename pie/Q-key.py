@@ -67,25 +67,28 @@ class PIE_Q_key(Operator):
         return True
 
     def execute(self, context):
-        ob_mode = context.object.mode
-        ob_type = context.object.type
-        area_type = context.area.type
+        if context.object != None:
+            ob_mode = context.object.mode
+            ob_type = context.object.type
+            area_type = context.area.type
 
-        if area_type == 'VIEW_3D':
-            if ob_mode == 'OBJECT':
-                bpy.ops.wm.call_menu(name='PIE_MT_Bottom_Q_favorite')
-            elif ob_mode == 'EDIT':
-                if ob_type == 'MESH':
-                    bpy.ops.mesh.select_linked_pick('INVOKE_DEFAULT')
-                elif ob_type == 'CURVE':
-                    bpy.ops.curve.select_linked_pick('INVOKE_DEFAULT')
-                elif ob_type == 'ARMATURE':
-                    bpy.ops.armature.select_linked_pick('INVOKE_DEFAULT')
-            elif ob_mode == 'EDIT_GPENCIL':
-                bpy.ops.gpencil.select_linked('INVOKE_DEFAULT')
-                #     bpy.ops.gpencil.select_alternate('INVOKE_DEFAULT')   shift
-        elif area_type == 'IMAGE_EDITOR':
-            bpy.ops.uv.select_linked_pick('INVOKE_DEFAULT', extend=True)
+            if area_type == 'VIEW_3D':
+                if ob_mode == 'OBJECT':
+                    bpy.ops.wm.call_menu(name='PIE_MT_Bottom_Q_favorite')
+                elif ob_mode == 'EDIT':
+                    if ob_type == 'MESH':
+                        bpy.ops.mesh.select_linked_pick('INVOKE_DEFAULT')
+                    elif ob_type == 'CURVE':
+                        bpy.ops.curve.select_linked_pick('INVOKE_DEFAULT')
+                    elif ob_type == 'ARMATURE':
+                        bpy.ops.armature.select_linked_pick('INVOKE_DEFAULT')
+                elif ob_mode == 'EDIT_GPENCIL':
+                    bpy.ops.gpencil.select_linked('INVOKE_DEFAULT')
+                    #     bpy.ops.gpencil.select_alternate('INVOKE_DEFAULT')   shift
+            elif area_type == 'IMAGE_EDITOR':
+                bpy.ops.uv.select_linked_pick('INVOKE_DEFAULT', extend=True)
+        else:
+            bpy.ops.wm.call_menu(name='PIE_MT_Bottom_Q_favorite')
 
         return {"FINISHED"}
 
