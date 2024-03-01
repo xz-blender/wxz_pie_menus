@@ -121,6 +121,7 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
                       [(['Window','engon.browser_toggle_area','Toggle Engon Browser'],[('type','BACK_SLASH')],[]),]],
             'True-Assets': [[('ta_directory',str(Path(sync_path)/'True Assets'))],
                             [(['3D View','ta.saveassetsfromthisfile','Mark Assets and Quit'],[('active',False)],[])]],
+            'BagaBatch': [[('render_exposition',-1),('render_resolution',512),('sun_orientation',30),('camera_orientation',0)],[]],
             
         # ————导入导出————
             # sketchup 导入导出
