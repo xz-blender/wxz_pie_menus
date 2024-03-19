@@ -18,7 +18,7 @@ def change_preferences_settings():
     view.use_mouse_over_open = True     # 鼠标划过开启菜单
 
     from pathlib import Path
-    font_path = Path(__file__).parent.parent/'ui_font.TTC'
+    font_path = Path(__file__).parent.parent/'ui_font.ttf'
     view.font_path_ui = str(font_path)   # 界面字体
 
     # 动画
