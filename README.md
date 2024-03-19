@@ -13,4 +13,9 @@
 
 # wxz_pie_menus
 
-![D-pie](/img/D-pie.png)
+<!-- ![D-pie](/img/D-pie.jpg)
+![ctrl-S-pie.png](/img/ctrl-S-pie.jpg) -->
+
+<img src=./img/ctrl-S-pie.jpg style="width:100%;">
+<img src=./img/D-pie.jpg style="width:100%;">
+<img src=./img/X-pie.jpg style="width:100%;">
