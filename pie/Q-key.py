@@ -33,14 +33,16 @@ class PIE_MT_Bottom_Q_favorite(Menu):
 
         split = layout.split()
         col = split.column()
-        # col.label(text="自定工具集")
+        
+        col.label(text="自定工具集")
         col.operator('pie.q_render_viewport')
-        col.operator('redhalo.maxfilebrower')
+        col.operator('pie.quick_redhalom2b')
 
-        # col.separator()
+        col.separator()
 
-        # col.label(text="工具集二")
-        # col.operator("view3d.view_axis", text="2").type = 'FRONT'
+        # col.label(text="自定脚本集")
+        col.operator("pie.empty_to_collection")
+        col.operator("pie.clean_same_material_texture")
 
 class Render_Viewport_OpenGL(Operator):
     bl_idname = "pie.q_render_viewport"

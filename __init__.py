@@ -27,14 +27,6 @@ import bpy
 import os
 from .pie.utils import check_rely_addon, rely_addons, change_default_keymap
 
-from .operator import change_keys, change_settings, enable_relay_addons, memory_useage
-extra_scripts = (
-    change_keys,
-    change_settings,
-    enable_relay_addons,
-    memory_useage,
-)
-
 bl_info = {
     "name": "WXZ Pie Menus Addon",
     "author": "wxz",
@@ -43,6 +35,14 @@ bl_info = {
     "description": "Pie Menu",
     "category": "3D View",
 }
+
+extra_scripts_modules = [
+    "change_keys",
+    "change_settings",
+    "enable_relay_addons",
+    "memory_useage",
+    "xz_scripts",
+]
 
 sub_modules_names = [
     "X-key",
@@ -87,6 +87,11 @@ sub_modules.sort(key=lambda mod: (
     mod.bl_info['name'], mod.bl_info['category']))
 
 
+operator_modules = [
+    __import__(__package__ + "." + "operator" + "." + submod, {}, {}, submod)
+    for submod in extra_scripts_modules
+]
+
 def _get_pref_class(mod):
     import inspect
 
@@ -128,8 +133,11 @@ def register_submodule(mod):
         mod.register()
     except(ValueError):
         pass
-    mod.__addon_enabled__ = True
-
+    try:
+    # if hasattr(mod.bl_info):
+        mod.__addon_enabled__ = True
+    except:
+        pass
 
 def unregister_submodule(mod):
     if mod.__addon_enabled__:
@@ -351,9 +359,6 @@ def register():
     for cls in classes:
         bpy.utils.register_class(cls)
 
-    for script in extra_scripts:
-        script.register()
-
     prefs = get_addon_preferences()
     
     for mod in sub_modules:
@@ -363,13 +368,17 @@ def register():
         if getattr(prefs, 'use_' + name):
             register_submodule(mod)
 
+    for mod in operator_modules:
+        register_submodule(mod)
+
 def unregister():
     for mod in sub_modules:
         if mod.__addon_enabled__:
             unregister_submodule(mod)
 
-    for script in reversed(extra_scripts):
-        script.unregister()
+    for mod in operator_modules:
+        if mod.__addon_enabled__:
+            unregister_submodule(mod)
 
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
