@@ -1,5 +1,4 @@
-import os
-
+import re
 import bpy
 from bpy.types import Menu, Operator, Panel
 
@@ -55,9 +54,11 @@ class VIEW3D_PIE_MT_Bottom_Z_Overlay(Menu):
         # 8 - TOP
         if context.active_object:
             if context.object.type == 'MESH' or 'CURVE':
-                auto_smooth = pie.operator('wm.call_panel', text='自动光滑', icon='RADIOBUT_ON', emboss=True)
-                auto_smooth.name = VIEW_PIE_PT_AutoSmooth.bl_idname
-                auto_smooth.keep_open = True
+                pie.operator("pie.gn_autosmooth",icon='RADIOBUT_ON')
+                # auto_smooth = pie.operator('wm.call_panel', text='自动光滑', icon='RADIOBUT_ON', emboss=True)
+                # auto_smooth.name = VIEW_PIE_PT_AutoSmooth.bl_idname
+                # auto_smooth.keep_open = True
+        # pie.operator("pie.gn_autosmooth",icon="RADIOBUT_ON")
         else:
             pie.separator()
         # 7 - TOP - LEFT    &     9 - TOP - RIGHT
@@ -90,7 +91,7 @@ class VIEW3D_PIE_MT_Bottom_Z_Overlay(Menu):
             toggle=False,
         )
 
-
+'''
 class VIEW_PIE_PT_AutoSmooth(Panel):
     bl_idname = __qualname__
     bl_label = ""
@@ -114,6 +115,112 @@ class VIEW_PIE_PT_AutoSmooth(Panel):
             expand=True,
             invert_checkbox=True,
         )
+'''
+
+class VIEW_PIE_PT_AutoSmooth(Panel):
+    bl_idname = __qualname__
+    bl_label = ""
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'WINDOW'
+
+    def draw(self, context):
+        layout = self.layout
+
+        # 创建界面元素以调整属性
+        row = layout.row()
+        row.scale_y = 1.4
+        op = row.operator("pie.gn_autosmooth",icon='RADIOBUT_ON')
+        # 显示操作符的属性供编辑
+
+        layout.prop(op, "angle",emboss=True,event=True)
+        layout.prop(op, "ignore")
+
+        # row = layout.row()
+        # row.scale_y = 1.1
+        # row.prop(
+        #     context.object.data,
+        #     'auto_smooth_angle',
+        #     text='角度',
+        #     slider=True,
+        #     expand=True,
+        #     invert_checkbox=True,
+        # )
+        
+    
+class PIE_GN_AutoSmooth(Operator):
+    bl_idname = "pie.gn_autosmooth"
+    bl_label = "按角度光滑"
+    bl_description = "添加自动光滑几何节点"
+    bl_options = {"REGISTER","UNDO"}
+
+    angle: bpy.props.FloatProperty(default=0.52359,min=0,soft_max=3.14159,subtype="ANGLE")
+    ignore: bpy.props.BoolProperty(default=False,name="Ignore Sharpness")
+
+    @classmethod
+    def poll(cls, context):
+        return True
+    def execute(self, context):
+        for obj in context.selected_objects:
+            modifiers = obj.modifiers   # 获取该物体修改器属性
+                # 遍历每个选定物体的修改器
+            if bool(modifiers) == False: # 没有修改器情况下
+                bpy.ops.object.modifier_add_node_group(asset_library_type='ESSENTIALS',
+                                        asset_library_identifier="",
+                                        relative_asset_identifier="geometry_nodes\\smooth_by_angle.blend\\NodeTree\Smooth by Angle")
+            elif len(modifiers)==1 and modifiers[0].name == "Smooth by Angle":
+                try:
+                    modifiers['Smooth by Angle']["Input_1"] = self.angle
+                    modifiers['Smooth by Angle']["Socket_1"] = self.ignore
+                except KeyError:
+                    pass
+            else:
+                # 编译一个正则表达式来匹配以“Smooth by Angle”开头的所有修改器名称
+                pattern = re.compile(r"^Smooth by Angle(\.\d+)?$")
+
+                # 初始化变量以保留找到的第一个“Smooth by Angle”修改器
+                primary_modifier = None
+
+                # 遍历所有修改器的副本列表（使用列表副本以避免在遍历时修改列表）
+                for modifier in obj.modifiers[:]:
+                    # 检查修改器名称是否完全匹配“Smooth by Angle”q
+                    if modifier.name == "Smooth by Angle":
+                        if primary_modifier is None:
+                            # 如果找到第一个“Smooth by Angle”修改器，保留它
+                            primary_modifier = modifier
+                        else:
+                            # 如果已经找到一个“Smooth by Angle”，则删除当前这个
+                            obj.modifiers.remove(modifier)
+                    # 对于其他匹配正则表达式的修改器（即以“Smooth by Angle.”开头的），直接删除
+                    elif pattern.match(modifier.name):
+                        obj.modifiers.remove(modifier)
+
+                # 如果找到了“Smooth by Angle”修改器，将其移动到堆栈底部
+                if primary_modifier:
+                    # 计算需要下移的次数
+                    move_down_steps = len(obj.modifiers) - list(obj.modifiers).index(primary_modifier) - 1
+                    # 通过多次下移来将修改器移动到堆栈底部
+                    for _ in range(move_down_steps):
+                        bpy.ops.object.modifier_move_down(modifier=primary_modifier.name)
+
+                # 更新视图，确保修改生效
+                bpy.context.view_layer.update()
+        return {"FINISHED"}
+
+class PIE_Update_AutoSmooth_Angle(bpy.types.Operator):
+    """更新选定物体的'Smooth by Angle'修改器中的角度参数"""
+    bl_idname = "pie.update_smooth_angle"
+    bl_label = "Update AutoSmooth Angle"
+    bl_options = {'REGISTER', 'UNDO'}
+    
+    
+
+    @classmethod
+    def poll(cls, context):
+        return True
+
+    def execute(self, context):
+        
+        return {'FINISHED'}
 
 
 class VIEW3D_PIE_MT_Bottom_Z_Shift(Menu):
@@ -152,6 +259,8 @@ class VIEW3D_PIE_MT_Bottom_Z_Shift(Menu):
 classes = [
     VIEW3D_PIE_MT_Bottom_Z_Overlay,
     VIEW_PIE_PT_AutoSmooth,
+    PIE_GN_AutoSmooth,
+    PIE_Update_AutoSmooth_Angle,
     VIEW3D_PIE_MT_Bottom_Z_Shift,
 ]
 
@@ -184,17 +293,18 @@ def unregister_keymaps():
 
 
 def register():
+    bpy.types.Scene.pie_smooth_prop = bpy.props.FloatProperty(name="angle")
     for cls in classes:
         bpy.utils.register_class(cls)
     register_keymaps()
 
 
 def unregister():
-    unregister_keymaps()
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
+    unregister_keymaps()
+    del bpy.types.Scene.pie_smooth_prop
 
+if __name__ == "__main__":
+    register()
 
-# if __name__ == "__main__":
-#     register()
-#     bpy.ops.wm.call_menu_pie(name="VIEW3D_PIE_MT_Bottom_Z_Overlay")

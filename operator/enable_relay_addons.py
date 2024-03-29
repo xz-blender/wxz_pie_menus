@@ -155,10 +155,6 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             'NGon Loop Select': [[],[
                 # (['Mesh','ls.select','Loop Select'],[('value','CLICK')],[]),
                 ]],
-            'smart_fill': [[('mouse_wheel',False)],[
-                (['Mesh','mesh.mesh.smart_fill_popup','Smart Fill Popup'],[('value','CLICK')],[]),
-                (['Mesh','mesh.edge_face_add','Make Edge/Face'],[('value','CLICK')],[]),
-                ]],
         # ————建模工具————物体模式————
             'drop_it': [[],[
                 (['3D View','object.drop_it','Drop It'],[('value','CLICK')],[])

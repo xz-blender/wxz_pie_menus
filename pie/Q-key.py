@@ -170,7 +170,6 @@ addon_keymaps = []
 
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
-
     km = addon.keymaps.new(name="3D View", space_type = 'VIEW_3D')
     kmi = km.keymap_items.new("pie.q_key", 'Q', 'CLICK')
     kmi = km.keymap_items.new("pie.q_key_shift", 'Q', 'CLICK', shift=True)
