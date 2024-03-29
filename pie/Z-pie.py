@@ -153,7 +153,7 @@ class PIE_GN_AutoSmooth(Operator):
     bl_description = "添加自动光滑几何节点"
     bl_options = {"REGISTER","UNDO"}
 
-    angle: bpy.props.FloatProperty(default=0.52359,min=0,soft_max=3.14159,subtype="ANGLE")
+    angle: bpy.props.FloatProperty(default=0.52359,name="Angle",min=0,soft_max=3.14159,subtype="ANGLE")
     ignore: bpy.props.BoolProperty(default=False,name="Ignore Sharpness")
 
     @classmethod
