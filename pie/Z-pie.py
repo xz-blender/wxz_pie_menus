@@ -173,7 +173,7 @@ class PIE_GN_AutoSmooth(Operator):
                     modifiers['Smooth by Angle']["Socket_1"] = self.ignore
                 except KeyError:
                     pass
-            else:
+            elif len(modifiers)>1:
                 # 编译一个正则表达式来匹配以“Smooth by Angle”开头的所有修改器名称
                 pattern = re.compile(r"^Smooth by Angle(\.\d+)?$")
 
@@ -200,8 +200,10 @@ class PIE_GN_AutoSmooth(Operator):
                     move_down_steps = len(obj.modifiers) - list(obj.modifiers).index(primary_modifier) - 1
                     # 通过多次下移来将修改器移动到堆栈底部
                     for _ in range(move_down_steps):
-                        bpy.ops.object.modifier_move_down(modifier=primary_modifier.name)
-
+                        try:
+                            bpy.ops.object.modifier_move_down(modifier=primary_modifier.name)
+                        except:
+                            pass
                 # 更新视图，确保修改生效
                 bpy.context.view_layer.update()
         return {"FINISHED"}
