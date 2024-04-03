@@ -146,6 +146,10 @@ class VIEW_PIE_PT_AutoSmooth(Panel):
         #     invert_checkbox=True,
         # )
         
+def add_sm():
+    bpy.ops.object.modifier_add_node_group(asset_library_type='ESSENTIALS',
+                                    asset_library_identifier="",
+                                    relative_asset_identifier="geometry_nodes\\smooth_by_angle.blend\\NodeTree\Smooth by Angle")
     
 class PIE_GN_AutoSmooth(Operator):
     bl_idname = "pie.gn_autosmooth"
@@ -155,25 +159,18 @@ class PIE_GN_AutoSmooth(Operator):
 
     angle: bpy.props.FloatProperty(default=0.52359,name="Angle",min=0,soft_max=3.14159,subtype="ANGLE")
     ignore: bpy.props.BoolProperty(default=False,name="Ignore Sharpness")
-
+    
     @classmethod
     def poll(cls, context):
         return True
     def execute(self, context):
+        store_active_ob = context.active_object
         for obj in context.selected_objects:
+            context.view_layer.objects.active = obj
             modifiers = obj.modifiers   # 获取该物体修改器属性
                 # 遍历每个选定物体的修改器
-            if bool(modifiers) == False: # 没有修改器情况下
-                bpy.ops.object.modifier_add_node_group(asset_library_type='ESSENTIALS',
-                                        asset_library_identifier="",
-                                        relative_asset_identifier="geometry_nodes\\smooth_by_angle.blend\\NodeTree\Smooth by Angle")
-            elif len(modifiers)==1 and modifiers[0].name == "Smooth by Angle":
-                try:
-                    modifiers['Smooth by Angle']["Input_1"] = self.angle
-                    modifiers['Smooth by Angle']["Socket_1"] = self.ignore
-                except KeyError:
-                    pass
-            elif len(modifiers)>1:
+            
+            if bool(modifiers) == True:
                 # 编译一个正则表达式来匹配以“Smooth by Angle”开头的所有修改器名称
                 pattern = re.compile(r"^Smooth by Angle(\.\d+)?$")
 
@@ -204,8 +201,25 @@ class PIE_GN_AutoSmooth(Operator):
                             bpy.ops.object.modifier_move_down(modifier=primary_modifier.name)
                         except:
                             pass
+                else:
+                    if bpy.data.node_groups.get("Smooth by Angle"):
+                        new_modifier = obj.modifiers.new(name="GeometryNodes", type='NODES')
+                        new_modifier.node_group = bpy.data.node_groups.get("Smooth by Angle")
+                        new_modifier.name = "Smooth by Angle"
+                        new_modifier.show_group_selector = False
+                    else:
+                        add_sm()
+
+                try:
+                    modifiers['Smooth by Angle']["Input_1"] = self.angle
+                    modifiers['Smooth by Angle']["Socket_1"] = self.ignore
+                except KeyError:
+                    pass
                 # 更新视图，确保修改生效
-                bpy.context.view_layer.update()
+            else:
+                add_sm()
+            bpy.context.view_layer.update()
+        context.view_layer.objects.active = store_active_ob
         return {"FINISHED"}
 
 class PIE_Update_AutoSmooth_Angle(bpy.types.Operator):
