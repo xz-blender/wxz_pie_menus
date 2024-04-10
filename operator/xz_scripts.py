@@ -92,12 +92,12 @@ class PIE_Quick_RedHaloM2B(bpy.types.Operator):
         except:
             pass
         return {"FINISHED"}
-    
-global API_KEY, SECRET_KEY
-# API_KEY = "CE3ANxCcgsUaZKUKNn5y2yYi"
-# SECRET_KEY = "QHbZsyLPBdIBZT3M0uO2Ec09fnBdxJih"
-API_KEY = ""
-SECRET_KEY = ""
+
+# ———————————— #
+
+# 检查文本是否包含中文字符
+def contains_chinese(text):
+    return re.search("[\u4e00-\u9fff]", text)
 
 def get_access_token(api,secret):
     """
@@ -147,7 +147,7 @@ class PIE_Custom_Scripts_Context_Translate(bpy.types.Operator):
     bl_options = {"REGISTER","UNDO"}
 
     trans_ob_text: bpy.props.BoolProperty(name="文本物体")
-    trans_collection: bpy.props.BoolProperty(name="集合")
+    trans_collection: bpy.props.BoolProperty(name="集合名称")
     baidu_api_key : bpy.props.StringProperty(name="百度API")
     baidu_secret_key : bpy.props.StringProperty(name="百度SECRET")
 
@@ -172,11 +172,16 @@ class PIE_Custom_Scripts_Context_Translate(bpy.types.Operator):
                     # 获取当前文本内容
                     original_text = obj.data.body
                     print(f"原始文本: {original_text}")
+                    # 如果文本包含中文，则跳过
+                    if contains_chinese(original_text):
+                        print("文本包含中文，跳过翻译")
+                        continue
                     # 翻译文本
-                    translated_text = translate_text(access_token,original_text)
+                    translated_text = translate_text(access_token, original_text)
                     print(f"翻译文本: {translated_text}")
                     # 更新文本对象的内容
                     obj.data.body = translated_text
+
         if self.trans_collection:
             # 遍历所有集合
             for collection in bpy.data.collections:
@@ -215,9 +220,6 @@ class PIE_Custom_Scripts_Context_Translate(bpy.types.Operator):
         row.prop(self,"trans_ob_text")
         row.prop(self,"trans_collection")
         
-
-
-
 
 classes = [
     PIE_Custom_Scripts_EmptyToCollection,
