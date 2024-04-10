@@ -20,6 +20,7 @@ class PIE_MT_Bottom_Q_favorite(Menu):
 
     def draw(self, context):
         layout = self.layout
+        layout.operator_context = 'INVOKE_DEFAULT'
         layout.alignment = 'CENTER'
         layout.use_property_decorate = True
         layout.use_property_split = True
@@ -43,6 +44,8 @@ class PIE_MT_Bottom_Q_favorite(Menu):
         # col.label(text="自定脚本集")
         col.operator("pie.empty_to_collection")
         col.operator("pie.clean_same_material_texture")
+        col.operator("pie.context_translate",icon="FILE_TEXT")
+        
 
 class Render_Viewport_OpenGL(Operator):
     bl_idname = "pie.q_render_viewport"
