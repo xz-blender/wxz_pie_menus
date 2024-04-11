@@ -3,6 +3,7 @@ from bpy.types import Operator
 import requests
 import json
 import os
+import re
 
 
 class PIE_Custom_Scripts_EmptyToCollection(bpy.types.Operator):
@@ -150,6 +151,10 @@ class PIE_Custom_Scripts_Context_Translate(bpy.types.Operator):
     trans_collection: bpy.props.BoolProperty(name="集合名称")
     baidu_api_key : bpy.props.StringProperty(name="百度API")
     baidu_secret_key : bpy.props.StringProperty(name="百度SECRET")
+    
+    @classmethod
+    def poll(cls, context):
+        return True
 
     def execute(self, context):
         api = self.baidu_api_key
@@ -196,7 +201,7 @@ class PIE_Custom_Scripts_Context_Translate(bpy.types.Operator):
                     print(f"翻译后的集合名称: {translated_name}")
                     # 更新集合的名称
                     collection.name = translated_name
-                    return {"FINISHED"}
+        return {"FINISHED"}
         
     def invoke(self, context, event):
         # 从JSON文件加载属性值（如果文件存在）
