@@ -6,6 +6,48 @@ import os
 import re
 
 
+class PIE_Custom_Scripts_OriginTOParent(bpy.types.Operator):
+    bl_idname = "pie.origin_to_parent"
+    bl_label = "设空物体原点为单物体原点"
+    bl_description = "将选择的空物体的子级的原点移动到父级的原点上,并应用变换删除父级"
+    bl_options = {"REGISTER","UNDO"}
+
+    @classmethod
+    def poll(cls, context):
+        return True
+
+    def execute(self, context):
+        # 存储游标信息
+        cursor_location = bpy.context.scene.cursor.location.copy()
+
+        for ob in bpy.context.selected_objects:
+            if ob.type == "EMPTY":
+                ac_name  = ob.name
+                bpy.context.view_layer.objects.active = ob
+                bpy.ops.object.select_grouped(type='CHILDREN_RECURSIVE')
+                selected_objects = context.selected_objects
+                if len(selected_objects) == 1 :
+                    se_name = selected_objects[0].name
+
+                    # 清空父级并保持变换结果
+                    bpy.ops.object.parent_clear(type='CLEAR_KEEP_TRANSFORM')
+                
+                    bpy.data.objects[ac_name].select_set(True)
+                    bpy.data.objects[se_name].select_set(False)
+                    # 游标到激活物体
+                    bpy.ops.view3d.snap_cursor_to_selected()
+                    # 删除激活物体
+                    bpy.ops.object.delete(use_global=True)
+
+                    bpy.context.view_layer.objects.active = selected_objects[0]
+                    bpy.data.objects[se_name].select_set(True)
+                    # 原点到游标
+                    bpy.ops.object.origin_set(type='ORIGIN_CURSOR')
+            # 还原游标信息        
+        bpy.context.scene.cursor.location = cursor_location
+           
+        return {"FINISHED"}
+
 class PIE_Custom_Scripts_EmptyToCollection(bpy.types.Operator):
     bl_idname = "pie.empty_to_collection"
     bl_label = "选择父子级到集合"
@@ -231,6 +273,7 @@ classes = [
     PIE_Custom_Scripts_CleanSameMatTex,
     PIE_Quick_RedHaloM2B,
     PIE_Custom_Scripts_Context_Translate,
+    PIE_Custom_Scripts_OriginTOParent,
 ]
 
 def register():
