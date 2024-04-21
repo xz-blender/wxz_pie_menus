@@ -67,6 +67,33 @@ class PIE_Custom_Scripts_EmptyToCollection(bpy.types.Operator):
             bpy.ops.object.move_to_collection(collection_index=0, is_new=True, new_collection_name=name)
         return {"FINISHED"}
 
+class PIE_Custom_Scripts_ExportFiles(bpy.types.Operator):
+    bl_idname = "pie.parents_to_file"
+    bl_label = "导出父子级到单文件"
+    bl_description = "将选择的空物体绑定的父子级分别到处到单个文件,使用superIO插件"
+    bl_options = {"REGISTER","UNDO"}
+
+    @classmethod
+    def poll(cls, context):
+        return True
+    
+    def invoke(self, context, event):
+        return context.window_manager.invoke_confirm(self, event)
+        # return self.execute(context)
+        
+    def draw(self, context):
+        layout = self.layout
+        layout.raw().label(text="SuperIO插件已配置好?", icon="QUESTION")
+
+    def execute(self, context):
+        for ob in bpy.context.selected_objects:
+            name  = ob.name
+            bpy.context.view_layer.objects.active = ob
+            bpy.ops.object.select_grouped(type='CHILDREN_RECURSIVE')
+            bpy.data.objects[name].select_set(True)
+            bpy.ops.wm.spio_config_0()
+        return {"FINISHED"}
+
 class PIE_Custom_Scripts_CleanSameMatTex(bpy.types.Operator):
     bl_idname = "pie.clean_same_material_texture"
     bl_label = "清理同名材质槽贴图"
@@ -274,6 +301,7 @@ classes = [
     PIE_Quick_RedHaloM2B,
     PIE_Custom_Scripts_Context_Translate,
     PIE_Custom_Scripts_OriginTOParent,
+    PIE_Custom_Scripts_ExportFiles,
 ]
 
 def register():
