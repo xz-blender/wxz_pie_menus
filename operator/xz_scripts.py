@@ -8,7 +8,7 @@ import re
 
 class PIE_Custom_Scripts_OriginTOParent(bpy.types.Operator):
     bl_idname = "pie.origin_to_parent"
-    bl_label = "设空物体原点为单物体原点"
+    bl_label = "设空物体原点为空物体原点"
     bl_description = "将选择的空物体的子级的原点移动到父级的原点上,并应用变换删除父级"
     bl_options = {"REGISTER","UNDO"}
 
