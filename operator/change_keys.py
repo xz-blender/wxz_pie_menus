@@ -107,7 +107,7 @@ C_dir =[
 E_dir =[
     (['Curve','curve.extrude_move','Extrude Curve and Move'],[('value','CLICK')],[]), 
     (['Mesh','view3d.edit_mesh_extrude_move_normal','Extrude and Move on Normals'],[('value','CLICK')],[]), 
-    (['Mesh','transform.edge_crease','Edge Crease'],[('value','CLICK')],[]), # shift E
+    (['Mesh','transform.edge_crease','Edge Crease'],[('active',False)],[]), # shift E
     (['Graph Editor','transform.transform','Transform'],[('value','CLICK')],[]),
     (['Armature','armature.extrude_move','Extrude'],[('value','CLICK')],[]),
 ]
@@ -212,6 +212,7 @@ V_dir =[
     (['UV Editor','uv.stitch','Stitch'],[('value','CLICK')],[]), # alt V
     (['UV Editor','uv.rip_move','UV Rip Move'],[('value','CLICK')],[]), 
     (['3D View','view3d.pastebuffer','Paste Objects'],[('value','CLICK')],[]), # ctrl V
+    (['3D View','object.fl_paste_in_place','Paste in place'],[('active',False)],[]), # ctrl shift V
 ]
 W_dir =[
     (['3D View','wm.tool_set_by_id','Set Tool by Name'],[('active',False)],[]), # W

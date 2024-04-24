@@ -104,7 +104,7 @@ class PIE_Q_key_shift(Operator):
     bl_idname = "pie.q_key_shift"
     bl_label = submoduname
     bl_description = ""
-    bl_options = {"REGISTER"}
+    bl_options = {"REGISTER","UNDO"}
 
     @classmethod
     def poll(cls, context):
