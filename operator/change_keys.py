@@ -104,6 +104,9 @@ C_dir =[
     (['Node Editor','node.select_circle','Circle Select'],[('active',False)],[]),
     (['3D View','view3d.copybuffer','Copy Objects'],[('value','CLICK')],[]), # ctrl C
 ]
+D_dir =[
+    (['3D View','ls.select','Loop Select'],[('active',False)],[]), 
+]
 E_dir =[
     (['Curve','curve.extrude_move','Extrude Curve and Move'],[('value','CLICK')],[]), 
     (['Mesh','view3d.edit_mesh_extrude_move_normal','Extrude and Move on Normals'],[('value','CLICK')],[]), 
@@ -244,7 +247,7 @@ def changes_keys():
 
     change_key_value(A_select_dir, "CLICK")
 
-    for _dir in [A_dir,B_dir,Brush_dir,C_dir,E_dir,F_dir,G_dir,H_dir,Outliner_dir,
+    for _dir in [A_dir,B_dir,Brush_dir,C_dir,D_dir,E_dir,F_dir,G_dir,H_dir,Outliner_dir,
         Q_dir,R_dir,S_dir,SPACE_dir,T_dir,
         TAB_dir,U_dir,V_dir,W_dir,X_dir,Z_dir,Text_dir,
         ]:
