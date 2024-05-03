@@ -3,6 +3,8 @@ import bmesh
 import math
 from math import radians
 from math import pi
+import numpy as np
+from bpy.props import IntProperty, FloatProperty
 from bpy.types import Menu, Operator
 from mathutils import Quaternion
 from mathutils import Matrix
@@ -196,7 +198,7 @@ class VIEW3D_PIE_MT_Ctrl_Alt_R(Menu):
         # 2 - BOTTOM
         pie.separator()
         # 8 - TOP
-        pie.separator()
+        pie.operator("pie.uv_rotate_test",text = "test")
         # 7 - TOP - LEFT
         pie.separator()
         # 9 - TOP - RIGHT
@@ -289,20 +291,14 @@ class PIE_Transform_Rotate_XY(Operator):
         return {"FINISHED"}
 
 
-
 class PIE_Mesh_UV_Rotate(Operator):
     """旋转UV"""
     bl_idname = "pie.mesh_uv_rotate"
     bl_label = "简单 UV 旋转"
     bl_options = {'REGISTER', 'UNDO'}
 
-    angle: bpy.props.FloatProperty(
-        name="Angle",
-        description="旋转角度",
-        default=90.0,
-        min=-360.0,
-        max=360.0
-    )
+    angle: bpy.props.FloatProperty(name="Angle",description="旋转角度",default=90.0,min=-360.0,max=360.0)
+
     @classmethod
     def poll(cls, context):
         return (context.active_object is not None and
@@ -339,53 +335,77 @@ class PIE_Mesh_UV_Rotate(Operator):
         bmesh.update_edit_mesh(mesh, loop_triangles=False, destructive=False)
         return {'FINISHED'}
     
+class PIE_Mesh_UV_Rotate_Modal(Operator):
+    """旋转UV"""
+    bl_idname = "pie.mesh_uv_rotate_modal"
+    bl_label = "简单 UV 旋转"
+    bl_options = {'REGISTER', 'UNDO'}
 
-class Mesh_UVScaleModalOperator(Operator):
-    """通过鼠标左右移动来调整UV缩放的大小"""
-    bl_idname = "pie.uv_modal_scale_operator"
-    bl_label = "调整 UV 缩放"
+    initial_mouse_x: bpy.props.IntProperty()
+    rotation_angle: bpy.props.FloatProperty(default=0.0)
 
-    initial_mouse_x = None
-    scale_factor = 1.0
+    @classmethod
+    def poll(cls, context):
+        return (context.active_object is not None and
+                context.active_object.type == 'MESH' and
+                context.active_object.mode == 'EDIT')
+
+    def execute(self, context):
+        self.rotate_uv(context, self.rotation_angle)
+        return {'FINISHED'}
 
     def modal(self, context, event):
         if event.type == 'MOUSEMOVE':
             delta = self.initial_mouse_x - event.mouse_x
-            self.scale_factor = 1.0 - delta * 0.01
-            self.scale_uv(context)
-        elif event.type == 'LEFTMOUSE':
-            return {'FINISHED'}
+            # 更新旋转角度，并应用-180到180度的限制
+            self.rotation_angle = max(-180.0, min(180.0, self.rotation_angle - delta * 0.01))
+            self.rotate_uv(context, self.rotation_angle)
+            self.initial_mouse_x = event.mouse_x
         elif event.type in {'RIGHTMOUSE', 'ESC'}:
             return {'CANCELLED'}
-
         return {'RUNNING_MODAL'}
-
+    
     def invoke(self, context, event):
-        if context.object.mode == 'EDIT':
+        if context.object:
             self.initial_mouse_x = event.mouse_x
+            self.rotation_angle = 0.0
             context.window_manager.modal_handler_add(self)
             return {'RUNNING_MODAL'}
         else:
-            self.report({'WARNING'}, "必须在编辑模式下")
+            self.report({'WARNING'}, "没有激活的对象")
             return {'CANCELLED'}
-
-    def scale_uv(self, context):
-        obj = bpy.context.edit_object
+        
+    def rotate_uv(self, context, angle_degrees):
+        obj = context.edit_object
         me = obj.data
         bm = bmesh.from_edit_mesh(me)
-        uv_layer = bm.loops.layers.uv.verify()
-
-        # 缩放UV
+        uv_layer = bm.loops.layers.uv.verify()  # 获取或确保有 UV 层
+        # 初始化变量以计算所选UV面的中心
+        uv_center = [0, 0]
+        total_loops = 0
+        # 计算所选UV面的中心
         for face in bm.faces:
-            for loop in face.loops:
-                loop_uv = loop[uv_layer]
-                # 这里简单地根据scale_factor来缩放UV，你可以根据需要调整缩放逻辑
-                loop_uv.uv = (loop_uv.uv - Vector((0.5, 0.5))) * self.scale_factor + Vector((0.5, 0.5))
+            if face.select:
+                for loop in face.loops:
+                    uv = loop[uv_layer].uv
+                    uv_center[0] += uv.x
+                    uv_center[1] += uv.y
+                    total_loops += 1
+        uv_center[0] /= total_loops
+        uv_center[1] /= total_loops
+        # 计算旋转矩阵，改为顺时针旋转
+        angle_rad = -math.radians(angle_degrees)  # 注意这里的负号
+        cos_angle, sin_angle = math.cos(angle_rad), math.sin(angle_rad)
+        # 以所选UV面的中心为旋转中心旋转UV坐标
+        for face in bm.faces:
+            if face.select:
+                for loop in face.loops:
+                    uv = loop[uv_layer].uv
+                    x, y = uv.x - uv_center[0], uv.y - uv_center[1]
+                    uv.x = x * cos_angle - y * sin_angle + uv_center[0]
+                    uv.y = x * sin_angle + y * cos_angle + uv_center[1]
+        # 更新 bmesh
         bmesh.update_edit_mesh(me)
-
-
-def uv_menu_func(self, context):
-    self.layout.operator(PIE_Mesh_UV_Rotate.bl_idname)
 
 classes = [
     VIEW3D_PIE_MT_Bottom_R,
@@ -393,7 +413,7 @@ classes = [
     PIE_Transform_Rotate_XY,
     PIE_Mesh_UV_Rotate,
     VIEW3D_PIE_MT_Ctrl_Alt_R,
-    Mesh_UVScaleModalOperator,
+    PIE_Mesh_UV_Rotate_Modal,
 ]
 addon_keymaps = []
 
@@ -421,7 +441,7 @@ def register_keymaps():
     
     km = addon.keymaps.new(name='Mesh')
     kmi = km.keymap_items.new(
-    idname='pie.uv_modal_scale_operator', type="S", value="CLICK",ctrl = True,alt = True)
+    idname='pie.mesh_uv_rotate_modal', type="R", value="CLICK",ctrl = True,alt = True)
 
 
 def unregister_keymaps():
@@ -434,7 +454,6 @@ def unregister_keymaps():
 
 
 def register():
-    bpy.types.VIEW3D_MT_uv_map.append(uv_menu_func)
     for cls in classes:
         bpy.utils.register_class(cls)
     register_keymaps()
@@ -443,4 +462,3 @@ def unregister():
     unregister_keymaps()
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
-    bpy.types.VIEW3D_MT_uv_map.remove(uv_menu_func)

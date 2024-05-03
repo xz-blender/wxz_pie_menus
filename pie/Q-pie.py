@@ -267,65 +267,36 @@ class Node_Change_Image_Interpolation(Operator):
             node.interpolation = self.interpolation
         return {"FINISHED"}
 
-
-class PIE_Swap_Editor_Type(Operator):
-    bl_idname = "pie.swap_editor_type"
-    bl_label = "Swap Editor Type"
-
-    E = ["VIEW_3D","IMAGE_EDITOR","NODE_EDITOR","SEQUENCE_EDITOR","CLIP_EDITOR"]
-    B = [
-        # General
-        ("3D_VIEW", "3D视图", ""),                     # 0
-        ("IMAGE_EDITOR", "图像编辑器", ""),            # 1
-        ("UV", "UV编辑器", ""),                        # 2
-        ("CompositorNodeTree", "合成器", ""),          # 3
-        ("TextureNodeTree", "纹理节点编辑器", ""),      # 4
-        ("GeometryNodeTree", "几何节点编辑器", ""),     # 5
-        ("ShaderNodeTree", "着色器编辑器", ""),         # 6
-        ("SEQUENCE_EDITOR", "视频序列编辑器", ""),      # 7
-        ("CLIP_EDITOR", "影片剪辑编辑器", ""),          # 8
-        # Animation
-        ("DOPESHEET", "动画摄影表", ""),                # 9
-        ("TIMELINE", "时间线", ""),                     # 10
-        ("FCURVES", "曲线编辑器", ""),                  # 11    
-        ("DRIVERS", "驱动器", ""),                      # 12
-        ("NLA_EDITOR", "非线性动画", ""),               # 13
-        # Scripting
-        ("TEXT_EDITOR", "文本编辑器", ""),              # 14
-        ("CONSOLE", "Python 控制台", ""),               # 15
-        ("INFO", "信息", ""),
-        # Scripting
-        ("OUTLINER", "大纲视图", ""),                   # 16
-        ("PROPERTIES", "属性", ""),                    # 17
-        ("FILES", "文件浏览器", ""),                    # 18
-        ("ASSETS", "资产浏览器", ""),                   # 19
-        ("SPREADSHEET", "电子表格", ""),                # 20
-        ("PREFERENCES", "偏好设置", ""),                # 21
-        ]
-    
-    editors_ls: bpy.props.EnumProperty(name="Editor Name",description="选择切换的编辑器名称",
-                                       items=[E[0:7]])
-    index : bpy.props.IntProperty(name="Index",default=0)
-
-    @classmethod
-    def poll(cls, context):
-        return True
-
-    #def invoke(self, context, event):
-    #   wm = context.window_manager
-    #    return wm.invoke_props_dialog(self)
-    
-    def execute(self, context):
-        ls = self.E
-        index = self.index
-        ui = context.area.ui_type
-        #if ui == "VIEW_3D":
-        #   bpy.ops.screen.region_quadview()
-        index = (index + 1) % len(ls)
-        context.area.type = ls[index]
-        self.report({"INFO"}, '已切换到:"%s"' % (ls[index]))
-        return {'FINISHED'}
-    
+E = ["VIEW_3D","IMAGE_EDITOR","NODE_EDITOR","SEQUENCE_EDITOR","CLIP_EDITOR"]
+B = [
+    # General
+    ("3D_VIEW", "3D视图", ""),                     # 0
+    ("IMAGE_EDITOR", "图像编辑器", ""),            # 1
+    ("UV", "UV编辑器", ""),                        # 2
+    ("CompositorNodeTree", "合成器", ""),          # 3
+    ("TextureNodeTree", "纹理节点编辑器", ""),      # 4
+    ("GeometryNodeTree", "几何节点编辑器", ""),     # 5
+    ("ShaderNodeTree", "着色器编辑器", ""),         # 6
+    ("SEQUENCE_EDITOR", "视频序列编辑器", ""),      # 7
+    ("CLIP_EDITOR", "影片剪辑编辑器", ""),          # 8
+    # Animation
+    ("DOPESHEET", "动画摄影表", ""),                # 9
+    ("TIMELINE", "时间线", ""),                     # 10
+    ("FCURVES", "曲线编辑器", ""),                  # 11    
+    ("DRIVERS", "驱动器", ""),                      # 12
+    ("NLA_EDITOR", "非线性动画", ""),               # 13
+    # Scripting
+    ("TEXT_EDITOR", "文本编辑器", ""),              # 14
+    ("CONSOLE", "Python 控制台", ""),               # 15
+    ("INFO", "信息", ""),
+    # Scripting
+    ("OUTLINER", "大纲视图", ""),                   # 16
+    ("PROPERTIES", "属性", ""),                    # 17
+    ("FILES", "文件浏览器", ""),                    # 18
+    ("ASSETS", "资产浏览器", ""),                   # 19
+    ("SPREADSHEET", "电子表格", ""),                # 20
+    ("PREFERENCES", "偏好设置", ""),                # 21
+    ]
 
 
 classes = [VIEW3D_PIE_MT_Bottom_Q,
@@ -333,7 +304,6 @@ classes = [VIEW3D_PIE_MT_Bottom_Q,
            Node_Change_Image_Projection,
            Node_Change_Image_Interpolation,
            VIEW3D_PIE_MT_Bottom_Ctrl_Alt_Q,
-           PIE_Swap_Editor_Type,
            ]
 
 addon_keymaps = []
@@ -354,15 +324,6 @@ def register_keymaps():
         kmi.properties.name = "VIEW3D_PIE_MT_Bottom_Q"
         addon_keymaps.append(km)
 
-    km = addon.keymaps.new(name = "Window", space_type = "EMPTY")
-    kmi = km.keymap_items.new(
-            idname="pie.swap_editor_type", 
-            type='Q',
-            value= 'CLICK',
-            shift=False,
-            ctrl=True,
-            alt = True,
-            oskey=False)
     addon_keymaps.append(km)
 
     km = addon.keymaps.new(name = "Window", space_type = "EMPTY")
