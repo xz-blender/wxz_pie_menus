@@ -167,11 +167,27 @@ class VIEW3D_PIE_MT_Transform_Pivot_UV(Operator):
         return {"FINISHED"}
 
 
+class PIE_Mesh_OriginToGeometry(Operator):
+    bl_idname = "pie.mesh_origin_to_geometry"
+    bl_label = ""
+    bl_options = {"REGISTER","UNDO"}
+    @classmethod
+    def poll(cls, context):
+        return True
+
+    def execute(self, context):
+        bpy.ops.object.mode_set(mode='OBJECT')
+        bpy.ops.object.origin_set(type="ORIGIN_GEOMETRY")
+        bpy.ops.object.mode_set(mode='EDIT')
+        return {"FINISHED"}
+
+
 classes = [
     VIEW3D_PIE_MT_Bottom_D,
     VIEW3D_PIE_MT_Transform_Orientation,
     VIEW3D_PIE_MT_Transform_Pivot,
-    VIEW3D_PIE_MT_Transform_Pivot_UV
+    VIEW3D_PIE_MT_Transform_Pivot_UV,
+    PIE_Mesh_OriginToGeometry,
 ]
 
 
@@ -191,11 +207,15 @@ def register_keymaps():
         kmi.properties.name = "VIEW3D_PIE_MT_Bottom_D"
         addon_keymaps.append(km)
 
-    km = addon.keymaps.new(name='Mesh', space_type='VIEW_3D')
+    km = addon.keymaps.new(name='Mesh')
     kmi = km.keymap_items.new("mesh.snap_utilities_line", 'D', 'CLICK')
     addon_keymaps.append(km)
+    
+    km = addon.keymaps.new(name='Mesh')
+    kmi = km.keymap_items.new("pie.mesh_origin_to_geometry", 'D', 'DOUBLE_CLICK')
+    addon_keymaps.append(km)
 
-    km = addon.keymaps.new(name='3D View', space_type='VIEW_3D')
+    km = addon.keymaps.new(name='Object Mode')
     kmi = km.keymap_items.new("object.origin_set", 'D', 'DOUBLE_CLICK')
     kmi.properties.type = 'ORIGIN_GEOMETRY'
     addon_keymaps.append(km)

@@ -1,31 +1,8 @@
-'''
-Copyright (C) 2020-2023 Orange Turbine
-https://orangeturbine.com
-orangeturbine@cgcookie.com
-
-This file is part of Orient to Selection, created by Jonathan Lampel. 
-
-All code distributed with this add-on is open source as described below. 
-
-Orient to Selection is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 3
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, see <https://www.gnu.org/licenses/>.
-'''
-
-from bpy.types import PropertyGroup, AddonPreferences, Operator
-from bpy.props import BoolProperty, PointerProperty
 import bpy
 import os
 from .pie.utils import check_rely_addon, rely_addons, change_default_keymap
+from bpy.types import PropertyGroup, AddonPreferences, Operator
+from bpy.props import BoolProperty, PointerProperty
 
 bl_info = {
     "name": "WXZ Pie Menus Addon",
@@ -42,6 +19,7 @@ extra_scripts_modules = [
     "enable_relay_addons",
     "memory_useage",
     "xz_scripts",
+    "orient_origin_to_selection",
 ]
 
 sub_modules_names = [

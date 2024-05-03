@@ -1,8 +1,8 @@
 import bpy
+import numpy as np
 import os
 from bpy.types import Menu, Panel, Operator
 from mathutils import Matrix, Vector
-import numpy as np
 from .utils import set_pie_ridius
 
 submoduname = __name__.split(".")[-1]
@@ -30,23 +30,13 @@ class VIEW3D_PIE_MT_Bottom_X_ctrl_shift(Menu):
 
         if ob_mode == "OBJECT":
             # 4 - LEFT
-            col = pie.split().box().column(align=True)
-            col.scale_y = 1.2
-            row = col.row()
-            L_op = row.operator('object.origin_set', text='原点 -> 质心(表面)')
-            L_op.type = 'ORIGIN_CENTER_OF_MASS'
-            L_op.center = 'MEDIAN'
-            col.separator(factor=0.2)
-            row = col.row()
-            L_op = row.operator('object.origin_set', text='原点 -> 质心(体积)')
-            L_op.type = 'ORIGIN_CENTER_OF_VOLUME'
-            L_op.center = 'MEDIAN'
+            pie.separator()
             # 6 - RIGHT
             TR_op = pie.operator('object.origin_set', text='原点 -> 游标')
             TR_op.type = 'ORIGIN_CURSOR'
             TR_op.center = 'BOUNDS'
             # # 2 - BOTTOM
-            pie.operator(PIE_Origin_TO_Bottom_Apply_Object.bl_idname, text='原点 -> 底部')
+            pie.operator(PIE_Origin_TO_Bottom_No_Apply.bl_idname, text='原点 -> 底部(不应用)')
             # # 8 - TOP
             pie.operator(PIE_Origin_To_Selection_Object.bl_idname, text='原点 -> 选择')
             # # 7 - TOP - LEFT
@@ -59,12 +49,34 @@ class VIEW3D_PIE_MT_Bottom_X_ctrl_shift(Menu):
             TR_op.type = 'ORIGIN_GEOMETRY'
             TR_op.center = 'BOUNDS'
             # # 1 - BOTTOM - LEFT
-            pie.separator()
+            col = pie.split().box().column(align=True)
+            col.scale_y = 1.2
+            row = col.row()
+            L_op = row.operator('object.origin_set', text='原点 -> 质心(表面)')
+            L_op.type = 'ORIGIN_CENTER_OF_MASS'
+            L_op.center = 'MEDIAN'
+            col.separator(factor=0.2)
+            row = col.row()
+            L_op = row.operator('object.origin_set', text='原点 -> 质心(体积)')
+            L_op.type = 'ORIGIN_CENTER_OF_VOLUME'
+            L_op.center = 'MEDIAN'
             # # 3 - BOTTOM - RIGHT
-            pie.operator(PIE_Origin_TO_Bottom_No_Apply.bl_idname, text='原点 -> 底部(不应用)')
+            pie.operator(PIE_Origin_TO_Bottom_Apply_Object.bl_idname, text='原点 -> 底部')
 
         elif ob_mode == "EDIT":
             # 4 - LEFT
+            pie.operator("pie.orient_origin_to_selection", text='旋转原点 -> 选择')
+            # 6 - RIGHT
+            pie.operator(PIE_Origin_To_Cursor_Edit.bl_idname, text='原点 -> 游标')
+            # 2 - BOTTOM
+            pie.operator(PIE_Origin_TO_Bottom_No_Apply.bl_idname, text='原点 -> 底部(不应用)')
+            # 8 - TOP
+            pie.operator(PIE_Origin_To_Selection_Edit.bl_idname, text='原点 -> 选择')
+            # 7 - TOP - LEFT
+            pie.operator(PIE_Geometry_To_Origin_Edit.bl_idname, text='几何中心 -> 原点')
+            # 9 - TOP - RIGHT
+            pie.operator(PIE_Origin_To_Geometry_Edit.bl_idname, text='原点 -> 几何中心')
+            # 1 - BOTTOM - LEFT
             col = pie.split().box().column(align=True)
             col.scale_y = 1.2
             row = col.row()
@@ -74,20 +86,8 @@ class VIEW3D_PIE_MT_Bottom_X_ctrl_shift(Menu):
             row = col.row()
             L_op = row.operator(PIE_Origin_To_Mass_Edit.bl_idname, text='原点 -> 质心(体积)')
             L_op.mass_type = 'ORIGIN_CENTER_OF_VOLUME'
-            # 6 - RIGHT
-            pie.operator(PIE_Origin_To_Cursor_Edit.bl_idname, text='原点 -> 游标')
-            # 2 - BOTTOM
-            pie.operator(PIE_Origin_TO_Bottom_Apply_Edit.bl_idname, text='原点 -> 底部')
-            # 8 - TOP
-            pie.operator(PIE_Origin_To_Selection_Edit.bl_idname, text='原点 -> 选择')
-            # 7 - TOP - LEFT
-            pie.operator(PIE_Geometry_To_Origin_Edit.bl_idname, text='几何中心 -> 原点')
-            # 9 - TOP - RIGHT
-            pie.operator(PIE_Origin_To_Geometry_Edit.bl_idname, text='原点 -> 几何中心')
-            # 1 - BOTTOM - LEFT
-            pie.separator()
             # 3 - BOTTOM - RIGHT
-            pie.operator(PIE_Origin_TO_Bottom_No_Apply.bl_idname, text='原点 -> 底部(不应用)')
+            pie.operator(PIE_Origin_TO_Bottom_Apply_Edit.bl_idname, text='原点 -> 底部')
 
 
 # --------Operator---------

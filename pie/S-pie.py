@@ -122,7 +122,10 @@ class VIEW3D_PIE_MT_Bottom_S(Menu):
             # 1 - BOTTOM - LEFT
             pie.separator()
             # 3 - BOTTOM - RIGHT
-            pie.operator('node_relax.arrange')
+            try:
+                pie.operator('node_relax.arrange')
+            except:
+                pie.separator()
 
 class PIE_S_Flat_NOdes(Operator):
     bl_idname = "pie.s_flat_nodes"

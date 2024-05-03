@@ -60,6 +60,17 @@ def close_hide_collection_keys():
                 if key_name == 'object.hide_collection' and  key_data.type != 'H':
                     key_data.active = False
 
+def deactive_save_files_key():
+    keys = bpy.context.window_manager.keyconfigs.default.keymaps
+    for keys_name, keys_data in keys.items():
+        if keys_name == 'Window':
+            for key_name ,key_data in keys_data.keymap_items.items():
+                if key_name == 'wm.save_mainfile' and key_data.name == "Save Blender File" \
+                    and key_data.type == 'S'\
+                    and key_data.ctrl == True \
+                    and key_data.alt == True :
+                    key_data.active = False
+
 def change_transform_G_key_value():
     keys = bpy.context.window_manager.keyconfigs.default.keymaps
     for keys_name, keys_data in keys.items():
@@ -69,7 +80,6 @@ def change_transform_G_key_value():
                     if key_data.type == 'G':
                         key_data.value = 'CLICK'
                     
-
 
 A_select_dir = [
     'Pose','Object Mode','Curve','Mesh','UV Editor','NLA Editor','Outliner'
@@ -256,6 +266,7 @@ def changes_keys():
     # 其他键位设置
     close_hide_collection_keys()
     change_transform_G_key_value()
+    deactive_save_files_key()
     print('"WXZ_Pie_Menu" changed keys!')
 
 def register():

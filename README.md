@@ -8,8 +8,12 @@
     This plugin contains some setting presets for personal use, 
     and shortcut configurations that may change the way you are familiar with blender operation, 
     please backup your personal configuration before installation<br>
-    !!! 
+    !!!<br>
 </h5>
+<h4 align="center">
+    <b>请打开此插件前保存好您的个人config文件夹!!!<b><br>
+    <h5>该插件会自动配置偏好设置和场景设置!!!</h5>
+</h4>
 
 # wxz_pie_menus
 ## -Object Mode-
