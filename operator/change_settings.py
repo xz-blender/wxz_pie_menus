@@ -4,6 +4,7 @@ import sys
 def change_preferences_settings():
     C = bpy.context
     pref = C.preferences
+    cycles = C.scene.cycles
 
     # 界面
     view = pref.view
@@ -38,11 +39,18 @@ def change_preferences_settings():
     view.smooth_view = 0    # 平滑视图 0
     
     # 系统
-    edit = pref.edit
     if sys.platform == "win32":
         pref.addons['cycles'].preferences.compute_device_type = 'OPTIX' # 设置渲染设备
+        cycles.preview_denoiser = "OPTIX"   # 预览降噪设备
+        cycles.denoiser = "OPTIX"   # 渲染降噪设备
+    elif sys.platform == "darwin":
+        pref.addons['cycles'].preferences.compute_device_type = 'METAL' # 设置渲染设备
+        cycles.preview_denoiser = "AUTO"   # 预览降噪设备
+        cycles.denoiser = 'OPENIMAGEDENOISE'   # 渲染降噪设备
+        
+    edit = pref.edit
     edit.undo_steps = 128   # 撤销次数
-    
+
     # 保存&加载
     filepaths = pref.filepaths
     filepaths.save_version = 0  # 保存版本0
@@ -66,15 +74,31 @@ def change_preferences_settings():
 def change_context_settings():
     context = bpy.context
     scene = context.scene
+    cycles = scene.cycles
+    render = scene.render
+    v_sets = scene.view_settings
     # -------渲染设置-------
-    scene.render.engine = 'CYCLES'
-    scene.cycles.device = 'GPU'
-    scene.cycles.preview_samples = 16 # 预览采样
-    scene.cycles.samples = 1024 # 预览采样
-    scene.render.film_transparent = True # 胶片透明
-    scene.cycles.use_auto_tile = False # 渲染使用平铺
-    scene.view_settings.view_transform = 'AgX'
-    scene.view_settings.look = 'None'
+
+    render.engine = 'CYCLES'
+    cycles.device = 'GPU'
+
+    cycles.use_preview_denoising = True #预览采样开关
+    cycles.use_denoising = True #渲染采样开关
+    cycles.use_guiding = True #灯光树开关
+    cycles.use_light_tree = True #灯光树
+    cycles.use_volume_guiding = True #灯光树-体积采样开关
+    cycles.preview_denoising_start_sample = 4 # 预览降噪-起始采样
+    cycles.preview_denoising_input_passes = "RGB_ALBEDO_NORMAL" # 预览降噪-通道选择
+    cycles.denoising_input_passes = "RGB_ALBEDO_NORMAL" # 渲染降噪-通道选择
+    cycles.preview_denoising_use_gpu = True # 预览降噪-使用GPU
+    cycles.denoising_use_gpu = True # 渲染降噪-使用GPU
+
+    cycles.preview_samples = 16 # 预览采样
+    cycles.samples = 1024 # 预览采样
+    cycles.use_auto_tile = False # 渲染使用平铺
+    v_sets.view_transform = 'AgX'
+    v_sets.look = 'None'
+    render.film_transparent = True # 胶片透明
 
     scene.cycles.max_bounces = 16
     scene.cycles.diffuse_bounces = 16

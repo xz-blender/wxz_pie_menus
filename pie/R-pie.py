@@ -192,13 +192,13 @@ class VIEW3D_PIE_MT_Ctrl_Alt_R(Menu):
         pie = layout.menu_pie()
         set_pie_ridius(context, 100)
         # 4 - LEFT
-        pie.operator("pie.mesh_uv_rotate",text = "UV左转90°").angle = -90
+        pie.operator("pie.mesh_uv_rotate",text = "UV左转90°").angle = 90
         # 6 - RIGHT
-        pie.operator("pie.mesh_uv_rotate",text = "UV右转90°").angle = 90
+        pie.operator("pie.mesh_uv_rotate",text = "UV右转90°").angle = -90
         # 2 - BOTTOM
         pie.separator()
         # 8 - TOP
-        pie.operator("pie.uv_rotate_test",text = "test")
+        pie.separator()
         # 7 - TOP - LEFT
         pie.separator()
         # 9 - TOP - RIGHT
@@ -361,7 +361,7 @@ class PIE_Mesh_UV_Rotate_Modal(Operator):
             self.rotation_angle = max(-180.0, min(180.0, self.rotation_angle - delta * 0.01))
             self.rotate_uv(context, self.rotation_angle)
             self.initial_mouse_x = event.mouse_x
-        elif event.type in {'RIGHTMOUSE', 'ESC'}:
+        elif event.type in {'RIGHTMOUSE', 'ESC' , 'LEFTMOUSE'}:
             return {'CANCELLED'}
         return {'RUNNING_MODAL'}
     
