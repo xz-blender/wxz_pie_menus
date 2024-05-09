@@ -130,13 +130,15 @@ class VIEW3D_PIE_MT_Bottom_S_ctrl_Files(Menu):
                     icon='ORPHAN_DATA').do_recursive = True
 
         # 3 - BOTTOM - RIGHT
+
         # if pie_check_rely_addon_op(pie, 'Atomic Data Manager'):
         #     pie.operator('atomic.clean_all', text='清理所有', icon='PARTICLEMODE')
 
         # pie.operator('rf.callpanel', text='打开附近文件', icon='FILE_TICK')
-        pie.operator('rf.callpanel', text='展示附近文件', icon='FILE_TICK')
+        rencent = pie.operator('wm.call_menu', text='最近打开文件', icon='FILE_TICK')
+        rencent.name = "TOPBAR_MT_file_open_recent"
         # auto_smooth = pie.operator('wm.call_menu', text='打开附近文件', icon='FILE_TICK', emboss=True)
-        # auto_smooth.name = "TOPBAR_MT_file_open_recent"
+        # auto_smooth.
         # auto_smooth.keep_open = True
 
 class PIE_MT_S_Ctrl_import(Menu):

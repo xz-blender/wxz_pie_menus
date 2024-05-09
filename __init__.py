@@ -55,6 +55,7 @@ sub_modules_names = [
     "G-pie",
     "Lock_View",
     "S_ctrl_alt",
+    "S_ctrl_shift-pie",
 ]
 sub_modules_names.sort()
 
