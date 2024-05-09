@@ -1,6 +1,10 @@
 {
     "[python]": {
-        "editor.defaultFormatter": "ms-python.black-formatter"
+        "python.formatting.provider": "black",
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.formatOnSave": true, // new
+        "black-formatter.args": ["--line-length", "88",],
+        "[python]": {"editor.codeActionsOnSave": {"source.organizeImports": true },},
     },
     "python.formatting.provider": "none"
 }
