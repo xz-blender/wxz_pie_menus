@@ -1,8 +1,8 @@
 import bpy
 import os
-from .pie.utils import check_rely_addon, rely_addons, change_default_keymap
 from bpy.types import PropertyGroup, AddonPreferences, Operator
 from bpy.props import BoolProperty, PointerProperty
+from .pie.utils import check_rely_addon, rely_addons, change_default_keymap
 
 bl_info = {
     "name": "WXZ Pie Menus Addon",
@@ -217,22 +217,16 @@ class WXZ_PIE_Preferences(AddonPreferences):
     bl_idname = __name__
 
     def draw(self, context):
+
+
         layout = self.layout
-
         row = layout.box().row()
-
         box = row.box()
 
         sub = box.row(align=True)
         sub.label(text='自定义快捷键表:', icon='EVENT_SPACEKEY')
-        sub.operator(Apply_My_Keymap.bl_idname, text='应用--默认快捷键表').path = os.path.join(
-            get_keymap_dirpath(), 'Default_Keymaps.py'
-        )
-        sub.operator(Apply_My_Keymap.bl_idname, text='应用--备份快捷键表').path = os.path.join(
-            get_keymap_dirpath(), 'Stored_Keymaps.py'
-        )
-        # row1 = box.row()
-        # row1.operator('pie.enable_relay_addons',text = '打开常用插件')
+        sub.operator(Apply_My_Keymap.bl_idname, text='应用--默认快捷键表').path = os.path.join(get_keymap_dirpath(), 'Default_Keymaps.py')
+        sub.operator(Apply_My_Keymap.bl_idname, text='应用--备份快捷键表').path = os.path.join(get_keymap_dirpath(), 'Stored_Keymaps.py')
 
         row_r = row.box()
         row_r.alignment = "RIGHT"
