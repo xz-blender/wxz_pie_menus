@@ -20,18 +20,18 @@
 <!-- ![D-pie](/img/D-pie.jpg)
 ![ctrl-S-pie.png](/img/ctrl-S-pie.jpg) -->
 <div align="center">
-    <img src=./img/ctrl-S-pie.jpg style="width:80%;">
-    <img src=./img/D-pie.jpg style="width:80%;">
-    <img src=./img/Ctrl_Alt_X-pie.png style="width:80%;">
-    <img src=./img/A-pie_Object.png style="width:80%;">
-    <img src=./img/F-pie_Object.png style="width:80%;">
-    <img src=./img/W-pie_Object.png style="width:80%;">
+    <img src="https://wxz-oss.oss-cn-chengdu.aliyuncs.com/img/ctrl-S-pie.jpg" style="width:80%"/>
+    <img src="https://wxz-oss.oss-cn-chengdu.aliyuncs.com/img/D-pie.jpg" style="width:80%"/>
+    <img src="https://wxz-oss.oss-cn-chengdu.aliyuncs.com/img/Ctrl_Alt_X-pie.jpg" style="width:80%"/>
+    <img src="https://wxz-oss.oss-cn-chengdu.aliyuncs.com/img/A-pie_Object.jpg" style="width:80%"/>
+    <img src="https://wxz-oss.oss-cn-chengdu.aliyuncs.com/img/F-pie_Object.jpg" style="width:80%"/>
+    <img src="https://wxz-oss.oss-cn-chengdu.aliyuncs.com/img/W-pie_Object.jpg" style="width:80%"/>
 </div>
 
 ## -Edit Mode-
 <div align="center">
-    <img src=./img/X-pie.jpg style="width:80%;">
-    <img src=./img/A-pie_Edit.png style="width:80%;">
-    <img src=./img/E-pie_Edit.png style="width:80%;">
-    <img src=./img/F-pie_Edit.png style="width:80%;">
+    <img src="https://wxz-oss.oss-cn-chengdu.aliyuncs.com/img/X-pie.jpg" style="width:80%"/>
+    <img src="https://wxz-oss.oss-cn-chengdu.aliyuncs.com/img/A-pie_Edit.jpg" style="width:80%"/>
+    <img src="https://wxz-oss.oss-cn-chengdu.aliyuncs.com/img/E-pie_Edit.jpg" style="width:80%"/>
+    <img src="https://wxz-oss.oss-cn-chengdu.aliyuncs.com/img/F-pie_Edit.jpg" style="width:80%"/>
 </div>
