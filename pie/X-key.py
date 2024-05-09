@@ -1,15 +1,17 @@
 import bpy
 from bpy.types import Operator
+
 from .utils import change_default_keymap, restored_default_keymap
 
-submoduname = __name__.split('.')[-1]
+submoduname = __name__.split(".")[-1]
 bl_info = {
     "name": submoduname,
     "author": "wxz",
     "version": (0, 0, 1),
     "blender": (3, 3, 0),
     "location": "View3D",
-    "category": "KEY"}
+    "category": "KEY",
+}
 
 
 class Mesh_Delete_By_mode(Operator):
@@ -28,15 +30,15 @@ class Mesh_Delete_By_mode(Operator):
         ob_type = context.object.type
         if ob_type == "MESH":
             mode = context.tool_settings.mesh_select_mode
-            #选择模式 [点,线,面]
+            # 选择模式 [点,线,面]
             if mode[0] == True:
-                bpy.ops.mesh.delete(type='VERT')
+                bpy.ops.mesh.delete(type="VERT")
             elif mode[1] == True:
-                bpy.ops.mesh.delete(type='EDGE')
+                bpy.ops.mesh.delete(type="EDGE")
             elif mode[2] == True:
-                bpy.ops.mesh.delete(type='FACE')
+                bpy.ops.mesh.delete(type="FACE")
             return {"FINISHED"}
-        
+
         obj = context.active_object
         if obj.type == "CURVE":
 
@@ -45,14 +47,14 @@ class Mesh_Delete_By_mode(Operator):
             spline = curve.splines.active
             try:
                 selected_verts = [p for p in spline.bezier_points if p.select_control_point]
-            except(AttributeError):
-                bpy.ops.curve.delete(type='VERT')
+            except AttributeError:
+                bpy.ops.curve.delete(type="VERT")
                 return {"CANCELLED"}
             # print(len(selected_verts))
             if len(selected_verts) == 1:
-                bpy.ops.curve.delete(type='VERT')
+                bpy.ops.curve.delete(type="VERT")
             elif len(selected_verts) > 1:
-                bpy.ops.curve.delete(type='SEGMENT')
+                bpy.ops.curve.delete(type="SEGMENT")
                 bpy.ops.curvetools.operatorsplinesremovezerosegment()
 
             # bpy.ops.curve.delete(type='VERT')
@@ -65,11 +67,13 @@ classes = [
 
 addon_keymaps = []
 
+
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
     km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
-    kmi = km.keymap_items.new(Mesh_Delete_By_mode.bl_idname, 'X', 'CLICK')
+    kmi = km.keymap_items.new(Mesh_Delete_By_mode.bl_idname, "X", "CLICK")
     addon_keymaps.append(km)
+
 
 def unregister_keymaps():
     wm = bpy.context.window_manager
@@ -79,10 +83,12 @@ def unregister_keymaps():
         # wm.keyconfigs.addon.keymaps.remove(km)
     addon_keymaps.clear()
 
+
 def register():
     for cls in classes:
         bpy.utils.register_class(cls)
     register_keymaps()
+
 
 def unregister():
     unregister_keymaps()

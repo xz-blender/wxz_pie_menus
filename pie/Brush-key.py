@@ -1,16 +1,19 @@
-import bpy
 import os
-from bpy.types import Menu, Panel, Operator
+
+import bpy
+from bpy.types import Menu, Operator, Panel
+
 from . import check_rely_addon, rely_addons
 
-submoduname = __name__.split('.')[-1]
+submoduname = __name__.split(".")[-1]
 bl_info = {
     "name": submoduname,
     "author": "wxz",
     "version": (0, 0, 1),
     "blender": (3, 3, 0),
     "location": "View3D",
-    "category": "PIE"}
+    "category": "PIE",
+}
 
 
 # class VIEW3D_PIE_MT_Bottom_Q_alt(Menu):
@@ -54,7 +57,7 @@ class PIE_Bottom_Q_alt(bpy.types.Operator):
 
     def execute(self, context):
         mode = context.object.mode
-        if mode == 'OBJECT' or 'EDIT':
+        if mode == "OBJECT" or "EDIT":
             bpy.ops.view3d.localview(frame_selected=False)
         return {"FINISHED"}
 
@@ -65,12 +68,12 @@ classes = [
 
 addon_keymaps = []
 
+
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
 
     km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
-    kmi = km.keymap_items.new(
-        PIE_Bottom_Q_alt.bl_idname,  'Q', 'CLICK', alt=True)
+    kmi = km.keymap_items.new(PIE_Bottom_Q_alt.bl_idname, "Q", "CLICK", alt=True)
     addon_keymaps.append(km)
 
 
@@ -87,6 +90,7 @@ def register():
     for cls in classes:
         bpy.utils.register_class(cls)
     register_keymaps()
+
 
 def unregister():
     unregister_keymaps()

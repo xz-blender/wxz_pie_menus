@@ -1,11 +1,12 @@
-import bpy
 import os
-import bmesh
-from bpy.types import PropertyGroup, Panel, Operator, Menu
-from .utils import check_rely_addon, rely_addons, set_pie_ridius
-from .utils import change_default_keymap, restored_default_keymap
 
-submoduname = __name__.split('.')[-1]
+import bmesh
+import bpy
+from bpy.types import Menu, Operator, Panel, PropertyGroup
+
+from .utils import change_default_keymap, check_rely_addon, rely_addons, restored_default_keymap, set_pie_ridius
+
+submoduname = __name__.split(".")[-1]
 bl_info = {
     "name": submoduname,
     "author": "wxz",
@@ -39,66 +40,61 @@ class VIEW3D_PIE_MT_Bottom_E(Menu):
         fc_name, fc_path = rely_addons[9][0], rely_addons[9][1]
         fc_check = check_rely_addon(fc_name, fc_path)
 
-        if ob_mode == 'EDIT' and ob_type == 'MESH':
+        if ob_mode == "EDIT" and ob_type == "MESH":
             # 4 - LEFT
             pie.operator("mesh.flip_normals")
             # 6 - RIGHT
             col = pie.split().box().column()
-            if ef_check == '2':
+            if ef_check == "2":
                 row = col.row()
-                row.operator('pie.empty_operator',
-                             text='未安装"%s"插件' % (ef_name))
-            elif ef_check == '0':
+                row.operator("pie.empty_operator", text='未安装"%s"插件' % (ef_name))
+            elif ef_check == "0":
                 row = col.row()
-                row.operator('pie.empty_operator',
-                             text='未启用"%s"插件' % (ef_name))
-            elif ef_check == '1':
+                row.operator("pie.empty_operator", text='未启用"%s"插件' % (ef_name))
+            elif ef_check == "1":
                 row = col.row()
-                row.operator('mesh.set_edge_flow')
+                row.operator("mesh.set_edge_flow")
                 row = col.row()
-                row.operator('mesh.set_edge_linear')
+                row.operator("mesh.set_edge_linear")
 
             # 2 - BOTTOM
             pie.operator("mesh.normals_make_consistent")
             # 8 - TOP
-            pie.operator('mesh.extrude_manifold', text='挤出流形')
+            pie.operator("mesh.extrude_manifold", text="挤出流形")
             # 7 - TOP - LEFT
             pie.separator()
             # 9 - TOP - RIGHT
-            pie.operator('mesh.bridge_edge_loops', text='桥接循环边')
+            pie.operator("mesh.bridge_edge_loops", text="桥接循环边")
             # 1 - BOTTOM - LEFT
             pie.separator()
             # 3 - BOTTOM - RIGHT
             col = pie.split().box().column()
-            if bf_check == '2':
+            if bf_check == "2":
                 row = col.row()
-                row.operator('pie.empty_operator',
-                             text='未安装"%s"插件' % (bf_name))
-            elif bf_check == '0':
+                row.operator("pie.empty_operator", text='未安装"%s"插件' % (bf_name))
+            elif bf_check == "0":
                 row = col.row()
-                row.operator('pie.empty_operator',
-                             text='未启用"%s"插件' % (bf_name))
-            elif bf_check == '1':
+                row.operator("pie.empty_operator", text='未启用"%s"插件' % (bf_name))
+            elif bf_check == "1":
                 row = col.row()
-                row.operator('mesh.bend_face_operator')
+                row.operator("mesh.bend_face_operator")
 
-            if fc_check == '2':
+            if fc_check == "2":
                 row = col.row()
-                row.operator('pie.empty_operator',
-                             text='未安装"%s"插件' % (fc_name))
-            elif fc_check == '0':
+                row.operator("pie.empty_operator", text='未安装"%s"插件' % (fc_name))
+            elif fc_check == "0":
                 row = col.row()
-                row.operator('pie.empty_operator',
-                             text='未启用"%s"插件' % (fc_name))
-            elif fc_check == '1':
+                row.operator("pie.empty_operator", text='未启用"%s"插件' % (fc_name))
+            elif fc_check == "1":
                 row = col.row()
-                row.operator('mesh.face_cutter_operator')
+                row.operator("mesh.face_cutter_operator")
+
 
 class PIE_Shift_E_KEY(Operator):
     bl_idname = "pie.shift_e"
     bl_label = "设置折痕"
     bl_description = "在不同网格选择模式下设置不同的折痕"
-    bl_options = {"REGISTER","UNDO"}
+    bl_options = {"REGISTER", "UNDO"}
 
     @classmethod
     def poll(cls, context):
@@ -109,25 +105,26 @@ class PIE_Shift_E_KEY(Operator):
         for edge in active_ob_data.edges:
             if edge.select == True:
                 edge.crease = 1
-        
-        
-        return {'FINISHED'}
+
+        return {"FINISHED"}
+
 
 class PIE_Ctrl_Shift_E_KEY(Operator):
     bl_idname = "pie.ctrl_shift_e"
     bl_label = "设置权重"
     bl_description = "在不同网格选择模式下设置不同的权重"
-    bl_options = {"REGISTER","UNDO"}
+    bl_options = {"REGISTER", "UNDO"}
 
     @classmethod
     def poll(cls, context):
         return context.active_object is not None and context.mode == "EDIT_MESH"
 
     def execute(self, context):
-        
+
         return {"FINISHED"}
 
-'''
+
+"""
 class CAB_PG_Prop(PropertyGroup):
     ## Update functions
     def update_edge_bevelWeight(self, context):
@@ -356,8 +353,8 @@ classes = (
     
     bpy.types.Scene.CAB_PG_Prop = bpy.props.PointerProperty(type = CAB_PG_Prop)
     
-'''
-'''
+"""
+"""
 import bpy
 import bgl
 import blf
@@ -424,7 +421,7 @@ if __name__ == "__main__":
 
     # test call
 #    bpy.ops.object.modal_operator('INVOKE_DEFAULT')
-'''
+"""
 
 
 classes = [
@@ -440,17 +437,18 @@ def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
 
     km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
-    kmi = km.keymap_items.new("wm.call_menu_pie", 'E', 'CLICK_DRAG')
+    kmi = km.keymap_items.new("wm.call_menu_pie", "E", "CLICK_DRAG")
     kmi.properties.name = "VIEW3D_PIE_MT_Bottom_E"
     addon_keymaps.append(km)
 
     km = addon.keymaps.new(name="Mesh")
-    kmi = km.keymap_items.new("pie.shift_e", 'E', 'PRESS', shift = True)
+    kmi = km.keymap_items.new("pie.shift_e", "E", "PRESS", shift=True)
     addon_keymaps.append(km)
 
     km = addon.keymaps.new(name="Mesh")
-    kmi = km.keymap_items.new("pie.ctrl_shift_e", 'E', 'PRESS',ctrl = True, shift = True)
+    kmi = km.keymap_items.new("pie.ctrl_shift_e", "E", "PRESS", ctrl=True, shift=True)
     addon_keymaps.append(km)
+
 
 def unregister_keymaps():
     wm = bpy.context.window_manager
@@ -465,6 +463,7 @@ def register():
     for cls in classes:
         bpy.utils.register_class(cls)
     register_keymaps()
+
 
 def unregister():
 

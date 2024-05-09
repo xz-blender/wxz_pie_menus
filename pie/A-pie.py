@@ -1,17 +1,13 @@
 import os
 import random
 import tempfile
+from collections import defaultdict
+
 import bpy
 from bpy.types import Menu, Operator
 from mathutils import Matrix
-from collections import defaultdict
-from .utils import (
-    check_rely_addon,
-    rely_addons,
-    set_pie_ridius,
-    change_default_keymap,
-    restored_default_keymap,
-)
+
+from .utils import change_default_keymap, check_rely_addon, rely_addons, restored_default_keymap, set_pie_ridius
 
 submoduname = __name__.split(".")[-1]
 bl_info = {
@@ -44,9 +40,7 @@ class PIE_MT_Bottom_A(Menu):
             if ob_mode == "OBJECT":
                 # 4 - LEFT
                 if addon1 == "2":
-                    pie.operator(
-                        "pie.empty_operator", text='未找到"Distribute Objects"插件!'
-                    )
+                    pie.operator("pie.empty_operator", text='未找到"Distribute Objects"插件!')
                 elif addon1 == "0":
                     pie.operator("pie.empty_operator", text='启用"Distribute Objects"插件!')
                 elif addon1 == "1":
@@ -56,9 +50,7 @@ class PIE_MT_Bottom_A(Menu):
                 # 2 - BOTTOM
                 pie.separator()
                 # 8 - TOP
-                pie.operator(
-                    "object.select_all", text="反选", icon="DECORATE_OVERRIDE"
-                ).action = "INVERT"
+                pie.operator("object.select_all", text="反选", icon="DECORATE_OVERRIDE").action = "INVERT"
                 # 7 - TOP - LEFT
                 if ob_type == "EMPTY":
                     if context.active_object.data.type == "IMAGE":
@@ -78,9 +70,7 @@ class PIE_MT_Bottom_A(Menu):
                 row = col.row()
                 row.label(text="资产")
                 row.operator("asset.mark", text="标记", icon="ASSET_MANAGER")
-                row.operator(
-                    "asset.clear", text="抹除", icon="REMOVE"
-                ).set_fake_user = False
+                row.operator("asset.clear", text="抹除", icon="REMOVE").set_fake_user = False
                 row = col.row()
 
                 # row.operator("pie.creat_costom_asset_preview", text="创建视图预览", icon="IMAGE_PLANE")
@@ -121,9 +111,7 @@ class PIE_MT_Bottom_A(Menu):
                     row.separator()
                     row.operator("mesh.select_axis", text="按轴选点")
                     # 8 - TOP
-                    pie.operator(
-                        "mesh.select_all", text="反选", icon="EMPTY_SINGLE_ARROW"
-                    ).action = "INVERT"
+                    pie.operator("mesh.select_all", text="反选", icon="EMPTY_SINGLE_ARROW").action = "INVERT"
                     # 7 - TOP - LEFT
                     pie.operator("mesh.select_prev_item", text="上一个元素", icon="REMOVE")
                     # 9 - TOP - RIGHT
@@ -155,17 +143,11 @@ class PIE_MT_Bottom_A(Menu):
                     # 2 - BOTTOM
                     pie.separator()
                     # 8 - TOP
-                    pie.operator(
-                        "curve.select_all", text="反选", icon="EMPTY_SINGLE_ARROW"
-                    ).action = "INVERT"
+                    pie.operator("curve.select_all", text="反选", icon="EMPTY_SINGLE_ARROW").action = "INVERT"
                     # 7 - TOP - LEFT
-                    pie.operator(
-                        "curve.de_select_last", text="选首端点", icon="FORCE_CURVE"
-                    )
+                    pie.operator("curve.de_select_last", text="选首端点", icon="FORCE_CURVE")
                     # 9 - TOP - RIGHT
-                    pie.operator(
-                        "curve.de_select_last", text="选尾端点", icon="FORCE_CURVE"
-                    )
+                    pie.operator("curve.de_select_last", text="选尾端点", icon="FORCE_CURVE")
                     # 1 - BOTTOM - LEFT
                     pie.separator()
                     # 3 - BOTTOM - RIGHT
@@ -183,9 +165,7 @@ class PIE_MT_Bottom_A(Menu):
             # 2 - BOTTOM
             pie.separator()
             # 8 - TOP
-            pie.operator(
-                "uv.select_all", text="反选", icon="EMPTY_SINGLE_ARROW"
-            ).action = "INVERT"
+            pie.operator("uv.select_all", text="反选", icon="EMPTY_SINGLE_ARROW").action = "INVERT"
             # 7 - TOP - LEFT
             # 9 - TOP - RIGHT
             # 1 - BOTTOM - LEFT
@@ -198,7 +178,7 @@ class PIE_Image_usefaker(Operator):
     bl_description = ""
     bl_options = {"REGISTER"}
 
-    toggle: bpy.props.BoolProperty(default=True)
+    toggle: bpy.props.BoolProperty(default=True)  # type: ignore
 
     @classmethod
     def poll(cls, context):
@@ -229,8 +209,8 @@ class PIE_Apply_MultiObjects_Scale(bpy.types.Operator):
     bl_description = "Apply multi objects scale that skip links objects"
     bl_options = {"REGISTER", "UNDO"}
 
-    scale: bpy.props.BoolProperty(default=False)
-    rotation: bpy.props.BoolProperty(default=False)
+    scale: bpy.props.BoolProperty(default=False)  # type: ignore
+    rotation: bpy.props.BoolProperty(default=False)  # type: ignore
 
     @classmethod
     def poll(cls, context):
@@ -293,9 +273,7 @@ class PIE_MT_Bottom_A_Ctrl(Menu):
             ob_mode = context.object.mode
 
             # 4 - LEFT
-            rotation = pie.operator(
-                PIE_Apply_MultiObjects_Scale.bl_idname, text="旋转-跳过实例"
-            )
+            rotation = pie.operator(PIE_Apply_MultiObjects_Scale.bl_idname, text="旋转-跳过实例")
             rotation.rotation = True
             # 6 - RIGHT
             scale = pie.operator(PIE_Apply_MultiObjects_Scale.bl_idname, text="缩放-跳过实例")
@@ -333,9 +311,7 @@ class Creat_Costom_Asset_Preview(Operator):
     bl_label = "视图自定义资产预览"
     bl_options = {"REGISTER", "UNDO"}
 
-    resolution: bpy.props.IntProperty(
-        name="设置预览精度", min=64, soft_max=512, default=256, step=64
-    )
+    resolution: bpy.props.IntProperty(name="设置预览精度", min=64, soft_max=512, default=256, step=64)  # type: ignore
 
     @classmethod
     def poll(cls, context):

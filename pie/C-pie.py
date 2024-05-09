@@ -1,9 +1,11 @@
-import bpy
 import os
-from bpy.types import Menu, Operator
-from .utils import set_pie_ridius,change_default_keymap, restored_default_keymap
 
-submoduname = __name__.split('.')[-1]
+import bpy
+from bpy.types import Menu, Operator
+
+from .utils import change_default_keymap, restored_default_keymap, set_pie_ridius
+
+submoduname = __name__.split(".")[-1]
 bl_info = {
     "name": submoduname,
     "author": "wxz",
@@ -36,20 +38,20 @@ class VIEW3D_PIE_MT_Bottom_C(Menu):
         # 6 - RIGHT
         pie.operator("view3d.walk", text="行走漫游", icon="MOD_DYNAMICPAINT")
         # 2 - BOTTOM
-        if ob_type == 'CAMERA' or region == 'CAMERA':
+        if ob_type == "CAMERA" or region == "CAMERA":
             pie.prop(context.space_data, "lock_camera", text="锁定相机视图")
         else:
             pie.separator()
         # 8 - TOP
-        pie.operator("mesh.select_mode",text = '边').type='EDGE'
+        pie.operator("mesh.select_mode", text="边").type = "EDGE"
         # 7 - TOP - LEFT
-        pie.operator("mesh.select_mode", text = '点').type='VERT'
+        pie.operator("mesh.select_mode", text="点").type = "VERT"
         # 9 - TOP - RIGHT
-        pie.operator("mesh.select_mode",text = '面').type='FACE'
+        pie.operator("mesh.select_mode", text="面").type = "FACE"
         # 1 - BOTTOM - LEFT
         pie.operator("view3d.camera_to_view", text="对齐相机至视图")
         # 3 - BOTTOM - RIGHT
-        if ob_type == 'CAMERA':
+        if ob_type == "CAMERA":
             pie.operator("view3d.object_as_camera", text="激活选择相机")
 
 
@@ -64,7 +66,7 @@ def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
 
     km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
-    kmi = km.keymap_items.new("wm.call_menu_pie", 'C', 'CLICK_DRAG')
+    kmi = km.keymap_items.new("wm.call_menu_pie", "C", "CLICK_DRAG")
     kmi.properties.name = "VIEW3D_PIE_MT_Bottom_C"
     addon_keymaps.append(km)
 
@@ -77,10 +79,12 @@ def unregister_keymaps():
         # wm.keyconfigs.addon.keymaps.remove(km)
     addon_keymaps.clear()
 
+
 def register():
     for cls in classes:
         bpy.utils.register_class(cls)
     register_keymaps()
+
 
 def unregister():
 

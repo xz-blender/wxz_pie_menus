@@ -1,9 +1,10 @@
-import bpy
 import os
 from pathlib import *
-from bpy.types import Menu, Operator, AddonPreferences
-from .utils import set_pie_ridius, change_default_keymap, restored_default_keymap
 
+import bpy
+from bpy.types import AddonPreferences, Menu, Operator
+
+from .utils import change_default_keymap, restored_default_keymap, set_pie_ridius
 
 submoduname = __name__.split(".")[-1]
 bl_info = {
@@ -57,24 +58,18 @@ class VIEW3D_PIE_MT_Ctrl_Tab(Menu):
         T2_1.target_workspace = "0-LIB"
         T2_1.default_workspace = "Layout"
         split = row.split()
-        T2_2 = split.operator(
-            "pie.workspaceswapper", text="COMPO", icon="NODE_COMPOSITING"
-        )
+        T2_2 = split.operator("pie.workspaceswapper", text="COMPO", icon="NODE_COMPOSITING")
         T2_2.target_workspace = "7-COMPO"
         T2_2.default_workspace = "Compositing"
 
         row = box.row(align=True)
         row.scale_y = 1.1
         split = row.split()
-        T3_1 = split.operator(
-            "pie.workspaceswapper", text="MOTION", icon="MOD_INSTANCE"
-        )
+        T3_1 = split.operator("pie.workspaceswapper", text="MOTION", icon="MOD_INSTANCE")
         T3_1.target_workspace = "5-MOTION"
         T3_1.default_workspace = "Animation"
         split = row.split()
-        T3_2 = split.operator(
-            "pie.workspaceswapper", text="RENDER", icon="RENDER_STILL"
-        )
+        T3_2 = split.operator("pie.workspaceswapper", text="RENDER", icon="RENDER_STILL")
         T3_2.target_workspace = "6-RENDER"
         T3_2.default_workspace = "Rendering"
         # 7 - TOP - LEFT
@@ -96,10 +91,8 @@ class PIE_WorkspaceSwapOperator(Operator):
     bl_label = "Swap Workspace"
     bl_options = {"REGISTER", "UNDO"}
 
-    target_workspace: bpy.props.StringProperty(name="Target Workspace")
-    default_workspace: bpy.props.StringProperty(
-        name="Default Workspcae", default="Layout"
-    )
+    target_workspace: bpy.props.StringProperty(name="Target Workspace")  # type: ignore
+    default_workspace: bpy.props.StringProperty(name="Default Workspcae", default="Layout")  # type: ignore
 
     def execute(self, context):
         t_name = self.target_workspace
@@ -156,7 +149,7 @@ class PIE_Workspace_Import_Online_Operator(Operator):
     bl_label = "Import Workspaces"
     bl_options = {"REGISTER", "UNDO"}
 
-    target_workspace: bpy.props.StringProperty(name="Target Workspace")
+    target_workspace: bpy.props.StringProperty(name="Target Workspace")  # type: ignore
 
     def execute(self, context):
         t_name = self.target_workspace

@@ -1,8 +1,9 @@
 import bpy
-from bpy.types import Operator, Menu
-from .utils import set_pie_ridius, change_default_keymap, restored_default_keymap
+from bpy.types import Menu, Operator
 
-submoduname = __name__.split('.')[-1]
+from .utils import change_default_keymap, restored_default_keymap, set_pie_ridius
+
+submoduname = __name__.split(".")[-1]
 bl_info = {
     "name": submoduname,
     "author": "wxz",
@@ -36,16 +37,13 @@ class VIEW3D_PIE_MT_Space_KEY_shift(Menu):
         # ]:
 
         # 4 - LEFT
-        pie.operator('screen.frame_jump', text='首帧',
-                     icon='REW').end = False
+        pie.operator("screen.frame_jump", text="首帧", icon="REW").end = False
         # 6 - RIGHT
-        pie.operator('screen.frame_jump', text='末帧', icon='FF').end = True
+        pie.operator("screen.frame_jump", text="末帧", icon="FF").end = True
         # 2 - BOTTOM
-        pie.operator('screen.keyframe_jump', text='下一关键帧',
-                     icon='NEXT_KEYFRAME').next = True
+        pie.operator("screen.keyframe_jump", text="下一关键帧", icon="NEXT_KEYFRAME").next = True
         # 8 - TOP
-        pie.operator('screen.keyframe_jump', text='上一关键帧',
-                     icon='PREV_KEYFRAME').next = False
+        pie.operator("screen.keyframe_jump", text="上一关键帧", icon="PREV_KEYFRAME").next = False
         # 7 - TOP - LEFT
         pie.separator()
         # 9 - TOP - RIGHT
@@ -64,37 +62,36 @@ classes = [
 addon_keymaps = []
 
 keymap_areas = [
-    ('3D View', 'VIEW_3D'),
-    ('SequencerCommon', 'SEQUENCE_EDITOR'),
-    ('NLA Editor', 'NLA_EDITOR'),
-    ('Graph Editor', 'GRAPH_EDITOR'),
-    ('Dopesheet', 'DOPESHEET_EDITOR'),
-    ('UV Editor', 'IMAGE_EDITOR'),
-    ('Image', 'IMAGE_EDITOR'),
+    ("3D View", "VIEW_3D"),
+    ("SequencerCommon", "SEQUENCE_EDITOR"),
+    ("NLA Editor", "NLA_EDITOR"),
+    ("Graph Editor", "GRAPH_EDITOR"),
+    ("Dopesheet", "DOPESHEET_EDITOR"),
+    ("UV Editor", "IMAGE_EDITOR"),
+    ("Image", "IMAGE_EDITOR"),
 ]
 
 
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
     space_name = [
-        '3D View',
-        'Graph Editor',
-        'Dopesheet',
-        'NLA Editor',
-        'Clip',
-        'Node Editor',
-        'Sequencer',
-        'Screen',
+        "3D View",
+        "Graph Editor",
+        "Dopesheet",
+        "NLA Editor",
+        "Clip",
+        "Node Editor",
+        "Sequencer",
+        "Screen",
     ]
     for area in space_name:
         km = addon.keymaps.new(name=area)
-        kmi = km.keymap_items.new(
-            "wm.call_menu_pie", 'SPACE', 'CLICK_DRAG', shift=True)
+        kmi = km.keymap_items.new("wm.call_menu_pie", "SPACE", "CLICK_DRAG", shift=True)
         kmi.properties.name = "VIEW3D_PIE_MT_Space_KEY_shift"
         addon_keymaps.append(km)
 
 
-'''
+"""
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
     # KEY:
@@ -110,7 +107,7 @@ def register_keymaps():
         kmi = km.keymap_items.new('wm.call_menu_pie', 'SPACE', 'CLICK_DRAG', shift=True)  # 拖拽
         kmi.properties.name = "VIEW3D_PIE_MT_Space_KEY_shift"
         addon_keymaps.append(km)
-'''
+"""
 
 
 def unregister_keymaps():

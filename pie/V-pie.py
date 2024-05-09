@@ -1,10 +1,11 @@
-import bpy
 import os
-from bpy.types import Menu, Panel, Operator
-from .utils import set_pie_ridius, change_default_keymap, restored_default_keymap
 
+import bpy
+from bpy.types import Menu, Operator, Panel
 
-submoduname = __name__.split('.')[-1]
+from .utils import change_default_keymap, restored_default_keymap, set_pie_ridius
+
+submoduname = __name__.split(".")[-1]
 bl_info = {
     "name": submoduname,
     "author": "wxz",
@@ -27,7 +28,7 @@ class VIEW3D_PIE_MT_Bottom_V(Menu):
 
         set_pie_ridius(context, 100)
 
-        if ob_mode == 'OBJECT':
+        if ob_mode == "OBJECT":
             # 4 - LEFT
             pie.separator()
             # 6 - RIGHT
@@ -44,46 +45,38 @@ class VIEW3D_PIE_MT_Bottom_V(Menu):
             pie.separator()
             # 3 - BOTTOM - RIGHT
 
-        elif ob_mode == 'EDIT':
-            if ob_type == 'CURVE':
+        elif ob_mode == "EDIT":
+            if ob_type == "CURVE":
                 # 4 - LEFT
-                pie.operator(
-                    'curve.handle_type_set', text='矢量', icon='HANDLE_VECTOR'
-                ).type = 'VECTOR'
+                pie.operator("curve.handle_type_set", text="矢量", icon="HANDLE_VECTOR").type = "VECTOR"
                 # 6 - RIGHT
-                pie.operator(
-                    'curve.handle_type_set', text='对齐', icon='HANDLE_ALIGNED'
-                ).type = 'ALIGNED'
+                pie.operator("curve.handle_type_set", text="对齐", icon="HANDLE_ALIGNED").type = "ALIGNED"
                 # 2 - BOTTOM
                 pie.separator()
                 # 8 - TOP
                 pie.operator(
-                    'curve.handle_type_set',
-                    text='自由/对齐',
-                    icon='HANDLE_AUTOCLAMPED',
-                ).type = 'TOGGLE_FREE_ALIGN'
+                    "curve.handle_type_set",
+                    text="自由/对齐",
+                    icon="HANDLE_AUTOCLAMPED",
+                ).type = "TOGGLE_FREE_ALIGN"
                 # 7 - TOP - LEFT
-                pie.operator(
-                    'curve.handle_type_set', text='自由', icon='HANDLE_FREE'
-                ).type = 'FREE_ALIGN'
+                pie.operator("curve.handle_type_set", text="自由", icon="HANDLE_FREE").type = "FREE_ALIGN"
                 # 9 - TOP - RIGHT
-                pie.operator(
-                    'curve.handle_type_set', text='自动', icon='HANDLE_AUTO'
-                ).type = 'AUTOMATIC'
+                pie.operator("curve.handle_type_set", text="自动", icon="HANDLE_AUTO").type = "AUTOMATIC"
                 # 1 - BOTTOM - LEFT
                 pie.separator()
                 # 3 - BOTTOM - RIGHT
                 pie.separator()
 
-            elif ob_type == 'MESH':
+            elif ob_type == "MESH":
                 # 4 - LEFT
-                pie.operator('uv.unwrap', text='展开')
+                pie.operator("uv.unwrap", text="展开")
                 # 6 - RIGHT
-                pie.operator('uv.cube_project', text='块面投影')
+                pie.operator("uv.cube_project", text="块面投影")
                 # 2 - BOTTOM
-                pie.operator('uv.muv_uvw_box_map').assign_uvmap = True
+                pie.operator("uv.muv_uvw_box_map").assign_uvmap = True
                 # 8 - TOP
-                pie.operator('uv.project_from_view', text='视角投影')
+                pie.operator("uv.project_from_view", text="视角投影")
                 # 7 - TOP - LEFT
                 pie.separator()
                 # 9 - TOP - RIGHT
@@ -103,9 +96,9 @@ addon_keymaps = []
 
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
-    km = addon.keymaps.new(name="3D View",space_type="VIEW_3D")
-    kmi = km.keymap_items.new("wm.call_menu_pie", 'V', 'CLICK_DRAG')
-    kmi.properties.name = 'VIEW3D_PIE_MT_Bottom_V'
+    km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
+    kmi = km.keymap_items.new("wm.call_menu_pie", "V", "CLICK_DRAG")
+    kmi.properties.name = "VIEW3D_PIE_MT_Bottom_V"
     addon_keymaps.append(km)
 
 
@@ -122,6 +115,7 @@ def register():
     for cls in classes:
         bpy.utils.register_class(cls)
     register_keymaps()
+
 
 def unregister():
     unregister_keymaps()

@@ -1,10 +1,11 @@
 import re
+
 import bpy
 from bpy.types import Menu, Operator, Panel
 
 from .utils import set_pie_ridius
 
-submoduname = __name__.split('.')[-1]
+submoduname = __name__.split(".")[-1]
 bl_info = {
     "name": submoduname,
     "author": "wxz",
@@ -33,28 +34,24 @@ class VIEW3D_PIE_MT_Bottom_Z_Overlay(Menu):
             row.alignment = "RIGHT"
             row.scale_y = 1.4
             row.scale_x = 1.8
-            row.prop(context.object, 'show_bounds',
-                     icon='SHADING_BBOX', icon_only=True)
-            row.prop(context.object, 'show_wire', icon='CUBE', icon_only=True)
+            row.prop(context.object, "show_bounds", icon="SHADING_BBOX", icon_only=True)
+            row.prop(context.object, "show_wire", icon="CUBE", icon_only=True)
 
             row = col.row(align=True)
             row.scale_x = 0.8
             row.scale_y = 1.2
-            row.prop(context.object, 'display_type',
-                     expand=True, invert_checkbox=True)
+            row.prop(context.object, "display_type", expand=True, invert_checkbox=True)
         else:
             pie.separator()
 
         # 6 - RIGHT
-        pie.operator('view3d.toggle_shading', text='实体',
-                     icon='SHADING_SOLID').type = 'SOLID'
+        pie.operator("view3d.toggle_shading", text="实体", icon="SHADING_SOLID").type = "SOLID"
         # 2 - BOTTOM
-        pie.operator('view3d.toggle_shading', text='预览',
-                     icon='SHADING_TEXTURE').type = 'MATERIAL'
+        pie.operator("view3d.toggle_shading", text="预览", icon="SHADING_TEXTURE").type = "MATERIAL"
         # 8 - TOP
         if context.active_object:
-            if context.object.type == 'MESH' or 'CURVE':
-                pie.operator("pie.gn_autosmooth",icon='RADIOBUT_ON')
+            if context.object.type == "MESH" or "CURVE":
+                pie.operator("pie.gn_autosmooth", icon="RADIOBUT_ON")
                 # auto_smooth = pie.operator('wm.call_panel', text='自动光滑', icon='RADIOBUT_ON', emboss=True)
                 # auto_smooth.name = VIEW_PIE_PT_AutoSmooth.bl_idname
                 # auto_smooth.keep_open = True
@@ -63,12 +60,12 @@ class VIEW3D_PIE_MT_Bottom_Z_Overlay(Menu):
             pie.separator()
         # 7 - TOP - LEFT    &     9 - TOP - RIGHT
         if context.active_object:
-            if context.object.mode == 'OBJECT' and context.object.type == 'MESH':
-                pie.operator("OBJECT_OT_shade_smooth", icon='ANTIALIASED')
-                pie.operator("OBJECT_OT_shade_flat", icon='ALIASED')
-            elif context.object.mode == 'EDIT' and context.object.type == 'MESH':
-                pie.operator("MESH_OT_faces_shade_smooth", icon='ANTIALIASED')
-                pie.operator("MESH_OT_faces_shade_flat", icon='ALIASED')
+            if context.object.mode == "OBJECT" and context.object.type == "MESH":
+                pie.operator("OBJECT_OT_shade_smooth", icon="ANTIALIASED")
+                pie.operator("OBJECT_OT_shade_flat", icon="ALIASED")
+            elif context.object.mode == "EDIT" and context.object.type == "MESH":
+                pie.operator("MESH_OT_faces_shade_smooth", icon="ANTIALIASED")
+                pie.operator("MESH_OT_faces_shade_flat", icon="ALIASED")
             else:
                 pie.separator()
                 pie.separator()
@@ -78,20 +75,21 @@ class VIEW3D_PIE_MT_Bottom_Z_Overlay(Menu):
         # 1 - BOTTOM - LEFT
         pie.prop(
             context.space_data.overlay,
-            'show_wireframes',
+            "show_wireframes",
             text="所有线框",
-            icon='SHADING_WIRE',
+            icon="SHADING_WIRE",
             toggle=False,
         )
         # 3 - BOTTOM - RIGHT
         pie.prop(
             context.space_data.overlay,
-            'show_face_orientation',
-            icon='NORMALS_FACE',
+            "show_face_orientation",
+            icon="NORMALS_FACE",
             toggle=False,
         )
 
-'''
+
+"""
 class VIEW_PIE_PT_AutoSmooth(Panel):
     bl_idname = __qualname__
     bl_label = ""
@@ -115,13 +113,14 @@ class VIEW_PIE_PT_AutoSmooth(Panel):
             expand=True,
             invert_checkbox=True,
         )
-'''
+"""
+
 
 class VIEW_PIE_PT_AutoSmooth(Panel):
     bl_idname = __qualname__
     bl_label = ""
-    bl_space_type = 'VIEW_3D'
-    bl_region_type = 'WINDOW'
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "WINDOW"
 
     def draw(self, context):
         layout = self.layout
@@ -129,10 +128,10 @@ class VIEW_PIE_PT_AutoSmooth(Panel):
         # 创建界面元素以调整属性
         row = layout.row()
         row.scale_y = 1.4
-        op = row.operator("pie.gn_autosmooth",icon='RADIOBUT_ON')
+        op = row.operator("pie.gn_autosmooth", icon="RADIOBUT_ON")
         # 显示操作符的属性供编辑
 
-        layout.prop(op, "angle",emboss=True,event=True)
+        layout.prop(op, "angle", emboss=True, event=True)
         layout.prop(op, "ignore")
 
         # row = layout.row()
@@ -145,31 +144,36 @@ class VIEW_PIE_PT_AutoSmooth(Panel):
         #     expand=True,
         #     invert_checkbox=True,
         # )
-        
+
+
 def add_sm():
-    bpy.ops.object.modifier_add_node_group(asset_library_type='ESSENTIALS',
-                                    asset_library_identifier="",
-                                    relative_asset_identifier="geometry_nodes\\smooth_by_angle.blend\\NodeTree\Smooth by Angle")
-    
+    bpy.ops.object.modifier_add_node_group(
+        asset_library_type="ESSENTIALS",
+        asset_library_identifier="",
+        relative_asset_identifier="geometry_nodes\\smooth_by_angle.blend\\NodeTree\Smooth by Angle",
+    )
+
+
 class PIE_GN_AutoSmooth(Operator):
     bl_idname = "pie.gn_autosmooth"
     bl_label = "按角度光滑"
     bl_description = "添加自动光滑几何节点"
-    bl_options = {"REGISTER","UNDO"}
+    bl_options = {"REGISTER", "UNDO"}
 
-    angle: bpy.props.FloatProperty(default=0.52359,name="Angle",min=0,soft_max=3.14159,subtype="ANGLE")
-    ignore: bpy.props.BoolProperty(default=False,name="Ignore Sharpness")
-    
+    angle: bpy.props.FloatProperty(default=0.52359, name="Angle", min=0, soft_max=3.14159, subtype="ANGLE")  # type: ignore
+    ignore: bpy.props.BoolProperty(default=False, name="Ignore Sharpness")  # type: ignore
+
     @classmethod
     def poll(cls, context):
         return True
+
     def execute(self, context):
         store_active_ob = context.active_object
         for obj in context.selected_objects:
             context.view_layer.objects.active = obj
-            modifiers = obj.modifiers   # 获取该物体修改器属性
-                # 遍历每个选定物体的修改器
-            
+            modifiers = obj.modifiers  # 获取该物体修改器属性
+            # 遍历每个选定物体的修改器
+
             if bool(modifiers) == True:
                 # 编译一个正则表达式来匹配以“Smooth by Angle”开头的所有修改器名称
                 pattern = re.compile(r"^Smooth by Angle(\.\d+)?$")
@@ -203,7 +207,7 @@ class PIE_GN_AutoSmooth(Operator):
                             pass
                 else:
                     if bpy.data.node_groups.get("Smooth by Angle"):
-                        new_modifier = obj.modifiers.new(name="GeometryNodes", type='NODES')
+                        new_modifier = obj.modifiers.new(name="GeometryNodes", type="NODES")
                         new_modifier.node_group = bpy.data.node_groups.get("Smooth by Angle")
                         new_modifier.name = "Smooth by Angle"
                         new_modifier.show_group_selector = False
@@ -211,8 +215,8 @@ class PIE_GN_AutoSmooth(Operator):
                         add_sm()
 
                 try:
-                    modifiers['Smooth by Angle']["Input_1"] = self.angle
-                    modifiers['Smooth by Angle']["Socket_1"] = self.ignore
+                    modifiers["Smooth by Angle"]["Input_1"] = self.angle
+                    modifiers["Smooth by Angle"]["Socket_1"] = self.ignore
                 except KeyError:
                     pass
                 # 更新视图，确保修改生效
@@ -222,21 +226,21 @@ class PIE_GN_AutoSmooth(Operator):
         context.view_layer.objects.active = store_active_ob
         return {"FINISHED"}
 
+
 class PIE_Update_AutoSmooth_Angle(bpy.types.Operator):
     """更新选定物体的'Smooth by Angle'修改器中的角度参数"""
+
     bl_idname = "pie.update_smooth_angle"
     bl_label = "Update AutoSmooth Angle"
-    bl_options = {'REGISTER', 'UNDO'}
-    
-    
+    bl_options = {"REGISTER", "UNDO"}
 
     @classmethod
     def poll(cls, context):
         return True
 
     def execute(self, context):
-        
-        return {'FINISHED'}
+
+        return {"FINISHED"}
 
 
 class VIEW3D_PIE_MT_Bottom_Z_Shift(Menu):
@@ -253,18 +257,16 @@ class VIEW3D_PIE_MT_Bottom_Z_Shift(Menu):
         # addon1:"LoopTools"
         # addon1 = check_rely_addon(rely_addons[2][0], rely_addons[2][1])
 
-        
-
         # 4 - LEFT
-        pie.prop(bpy.context.space_data, 'show_gizmo',text='控件层')
+        pie.prop(bpy.context.space_data, "show_gizmo", text="控件层")
         # 6 - RIGHT
-        pie.prop(bpy.context.space_data.overlay, 'show_overlays',text='叠加层')
+        pie.prop(bpy.context.space_data.overlay, "show_overlays", text="叠加层")
         # 2 - BOTTOM
         split = pie.split()
         col = split.column(align=True)
-        col.row(align =True).prop(context.space_data.shading,'color_type',expand=True)
+        col.row(align=True).prop(context.space_data.shading, "color_type", expand=True)
         # 8 - TOP
-        pie.operator('wm.window_fullscreen_toggle')
+        pie.operator("wm.window_fullscreen_toggle")
         # 7 - TOP - LEFT
         pie.separator()
         # 9 - TOP - RIGHT
@@ -293,11 +295,10 @@ def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
 
     km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
-    kmi = km.keymap_items.new("wm.call_menu_pie", 'Z', 'CLICK_DRAG')
+    kmi = km.keymap_items.new("wm.call_menu_pie", "Z", "CLICK_DRAG")
     kmi.properties.name = "VIEW3D_PIE_MT_Bottom_Z_Overlay"
-    
-    kmi = km.keymap_items.new("wm.call_menu_pie", 'Z',
-                              'CLICK_DRAG', shift=True)
+
+    kmi = km.keymap_items.new("wm.call_menu_pie", "Z", "CLICK_DRAG", shift=True)
     kmi.properties.name = "VIEW3D_PIE_MT_Bottom_Z_Shift"
     addon_keymaps.append(km)
 
@@ -324,6 +325,6 @@ def unregister():
     unregister_keymaps()
     del bpy.types.Scene.pie_smooth_prop
 
+
 if __name__ == "__main__":
     register()
-

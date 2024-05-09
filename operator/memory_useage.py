@@ -19,32 +19,35 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
-import bpy
-import sys
-import os
-import typing
 import collections
+import os
+import subprocess
+import sys
 import tempfile
+import typing
+
+import bpy
 
 MODULE_CLASSES: typing.List[typing.Type] = []
+
 
 class DatablockMemoryUsage:
     @staticmethod
     def get_attribute_datatype_size(datatype: str) -> int:
-        if datatype == 'FLOAT':
+        if datatype == "FLOAT":
             return 4
-        elif datatype == 'INT':
+        elif datatype == "INT":
             return 4
-        elif datatype == 'FLOAT_VECTOR':
+        elif datatype == "FLOAT_VECTOR":
             return 3 * 4
-        elif datatype == 'FLOAT_COLOR':
+        elif datatype == "FLOAT_COLOR":
             return 4 * 4  # RGBA
-        elif datatype == 'STRING':
+        elif datatype == "STRING":
             # TODO: we just make something up here...
             return 16
-        elif datatype == 'BOOLEAN':
+        elif datatype == "BOOLEAN":
             return 1
-        elif datatype == 'FLOAT2':
+        elif datatype == "FLOAT2":
             return 2 * 4
         else:
             # TODO: warn?
@@ -52,25 +55,25 @@ class DatablockMemoryUsage:
 
     @staticmethod
     def get_attribute_domain_multiplier(datablock: bpy.types.Mesh, domain: str) -> int:
-        if domain == 'POINT':
+        if domain == "POINT":
             return len(datablock.vertices)
-        elif domain == 'EDGE':
+        elif domain == "EDGE":
             return len(datablock.edges)
-        elif domain == 'FACE':
+        elif domain == "FACE":
             return len(datablock.polygons)
-        elif domain == 'CORNER':
+        elif domain == "CORNER":
             # TODO: no idea
             return 0
-        elif domain == 'CURVE':
+        elif domain == "CURVE":
             # TODO: no idea
             return 0
-        elif domain == 'INSTANCE':
+        elif domain == "INSTANCE":
             # TODO: no idea
             return 0
-        #origin:
+        # origin:
         # else:
         #     telemetry.log_warning(f"{domain} not supported in memory estimation")
-        #new:
+        # new:
         else:
             return 0
 
@@ -91,9 +94,9 @@ class DatablockMemoryUsage:
 
             # each attribute has to be treated separately
             for attribute in datablock.attributes:
-                self.bytes += \
-                    self.get_attribute_datatype_size(attribute.data_type) * \
-                    self.get_attribute_domain_multiplier(datablock, attribute.domain)
+                self.bytes += self.get_attribute_datatype_size(
+                    attribute.data_type
+                ) * self.get_attribute_domain_multiplier(datablock, attribute.domain)
 
             # each edge indexes into two vertices, each index is int32, plus crease and bevel floats
             self.bytes += len(datablock.edges) * 4 * 4
@@ -130,10 +133,8 @@ class DatablockMemoryUsage:
 class MemoryUsageStatistics:
     def __init__(self):
         self.datablocks: typing.Dict[str, DatablockMemoryUsage] = {}
-        self.target_to_dependencies: typing.DefaultDict[str, typing.Set[str]] = \
-            collections.defaultdict(set)
-        self.dependency_to_targets: typing.DefaultDict[str, typing.Set[str]] = \
-            collections.defaultdict(set)
+        self.target_to_dependencies: typing.DefaultDict[str, typing.Set[str]] = collections.defaultdict(set)
+        self.dependency_to_targets: typing.DefaultDict[str, typing.Set[str]] = collections.defaultdict(set)
 
     def debug_print(self):
         print(self.datablocks)
@@ -173,7 +174,9 @@ class MemoryUsageStatistics:
             print(f"\t\t<td>{datablock_usage.bytes * 100 / total_usage_bytes :.2f}%</td>\n", file=fp)
             red_channel = datablock_usage.bytes * 255 // max_usage_bytes
             print(
-                f"\t\t<td><div style=\"background: rgb({red_channel}, {255 - red_channel}, 0); height: 12px; width: {datablock_usage.bytes * 200 // max_usage_bytes}px\"></div></td>\n", file=fp)
+                f'\t\t<td><div style="background: rgb({red_channel}, {255 - red_channel}, 0); height: 12px; width: {datablock_usage.bytes * 200 // max_usage_bytes}px"></div></td>\n',
+                file=fp,
+            )
             print("\t</tr>\n", file=fp)
         print("</table>\n", file=fp)
         print("</body></html>\n", file=fp)
@@ -265,7 +268,7 @@ class MemoryUsageStatistics:
         if obj.data is not None:
             self.record_datablock(obj.data)
             self.record_dependency(obj, obj.data)
-        if obj.instance_type == 'COLLECTION':
+        if obj.instance_type == "COLLECTION":
             self.record_datablock(obj.instance_collection)
             self.record_dependency(obj, obj.instance_collection)
 
@@ -319,6 +322,7 @@ class MemoryUsageStatistics:
             self.record_datablock(node.node_tree, scope="bpy.data.node_groups")
             self.record_dependency(node, node.node_tree)
 
+
 def xdg_open_file(path):
     if sys.platform == "win32":
         os.startfile(path)
@@ -327,28 +331,27 @@ def xdg_open_file(path):
     else:
         subprocess.call(["xdg-open", path])
 
+
 class EstimateMemoryUsage(bpy.types.Operator):
     bl_idname = "renderset.estimate_memory_usage"
     bl_label = "Estimate Memory Usage (Beta)"
-    bl_description = "Goes through datablocks that would have to be loaded for rendering, " \
+    bl_description = (
+        "Goes through datablocks that would have to be loaded for rendering, "
         "estimates how much memory is needed for each one"
-    bl_options = {'REGISTER'}
+    )
+    bl_options = {"REGISTER"}
 
     def execute(self, context: bpy.types.Context):
         stats = MemoryUsageStatistics()
         stats.record_datablock(context.scene)
 
-        out_file = tempfile.NamedTemporaryFile(
-            mode="w",
-            prefix="memory_usage_",
-            suffix=".html",
-            delete=False
-        )
+        out_file = tempfile.NamedTemporaryFile(mode="w", prefix="memory_usage_", suffix=".html", delete=False)
         stats.write_to_file(out_file)
         xdg_open_file(out_file.name)
 
         # print(list(MODULE_CLASSES))
-        return {'FINISHED'}
+        return {"FINISHED"}
+
 
 MODULE_CLASSES.append(EstimateMemoryUsage)
 

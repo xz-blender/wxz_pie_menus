@@ -1,8 +1,10 @@
-import bpy
 import os
-from bpy.types import PropertyGroup, AddonPreferences, Operator
+
+import bpy
 from bpy.props import BoolProperty, PointerProperty
-from .pie.utils import check_rely_addon, rely_addons, change_default_keymap
+from bpy.types import AddonPreferences, Operator, PropertyGroup
+
+from .pie.utils import change_default_keymap, check_rely_addon, rely_addons
 
 bl_info = {
     "name": "WXZ Pie Menus Addon",
@@ -62,7 +64,10 @@ sub_modules_names.sort()
 sub_modules = [__import__(__package__ + "." + "pie" + "." + submod, {}, {}, submod) for submod in sub_modules_names]
 sub_modules.sort(key=lambda mod: (mod.bl_info["name"], mod.bl_info["category"]))
 
-operator_modules = [__import__(__package__ + "." + "operator" + "." + submod, {}, {}, submod) for submod in extra_scripts_modules]
+operator_modules = [
+    __import__(__package__ + "." + "operator" + "." + submod, {}, {}, submod) for submod in extra_scripts_modules
+]
+
 
 def _get_pref_class(mod):
     import inspect
@@ -216,12 +221,18 @@ class WXZ_PIE_Preferences(AddonPreferences):
 
         sub = box.row(align=True)
         sub.label(text="自定义快捷键表:", icon="EVENT_SPACEKEY")
-        sub.operator(Apply_My_Keymap.bl_idname, text="应用--默认快捷键表").path = os.path.join(get_keymap_dirpath(), "Default_Keymaps.py")
-        sub.operator(Apply_My_Keymap.bl_idname, text="应用--备份快捷键表").path = os.path.join(get_keymap_dirpath(), "Stored_Keymaps.py")
+        sub.operator(Apply_My_Keymap.bl_idname, text="应用--默认快捷键表").path = os.path.join(
+            get_keymap_dirpath(), "Default_Keymaps.py"
+        )
+        sub.operator(Apply_My_Keymap.bl_idname, text="应用--备份快捷键表").path = os.path.join(
+            get_keymap_dirpath(), "Stored_Keymaps.py"
+        )
 
         row_r = row.box()
         row_r.alignment = "RIGHT"
-        row_r.operator(Restore_My_Keymap.bl_idname, text="备份--当前快捷键表").path = os.path.join(get_keymap_dirpath(), "Stored_Keymaps.py")
+        row_r.operator(Restore_My_Keymap.bl_idname, text="备份--当前快捷键表").path = os.path.join(
+            get_keymap_dirpath(), "Stored_Keymaps.py"
+        )
         # row_r = box.row()
         row_r.operator("pie.enable_relay_addons", text="打开常用插件")
 

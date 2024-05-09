@@ -1,11 +1,19 @@
-import typing
-import bpy
 import os
-from bpy.types import Context, Menu, Panel, Operator
-from .utils import check_rely_addon, rely_addons, set_pie_ridius, pie_op_check
-from .utils import change_default_keymap, restored_default_keymap
+import typing
 
-submoduname = __name__.split('.')[-1]
+import bpy
+from bpy.types import Context, Menu, Operator, Panel
+
+from .utils import (
+    change_default_keymap,
+    check_rely_addon,
+    pie_op_check,
+    rely_addons,
+    restored_default_keymap,
+    set_pie_ridius,
+)
+
+submoduname = __name__.split(".")[-1]
 bl_info = {
     "name": submoduname,
     "author": "wxz",
@@ -33,26 +41,25 @@ class VIEW3D_PIE_MT_Bottom_S(Menu):
             ob_type = context.object.type
             ob_mode = context.object.mode
 
-
-            if ob_mode == 'OBJECT':
-                #4 - LEFT
-                X = pie.operator(PIE_S_Flat_Object.bl_idname, text='X对齐')
+            if ob_mode == "OBJECT":
+                # 4 - LEFT
+                X = pie.operator(PIE_S_Flat_Object.bl_idname, text="X对齐")
                 X.X = True
                 X.Y = False
                 X.Z = False
                 # 6 - RIGHT
                 pie.separator()
                 # 2 - BOTTOM
-                X = pie.operator(PIE_S_Flat_Object.bl_idname, text='Z对齐')
+                X = pie.operator(PIE_S_Flat_Object.bl_idname, text="Z对齐")
                 X.X = False
                 X.Y = False
                 X.Z = True
                 # 8 - TOP
-                rotate_Y = pie.operator('transform.resize', text='Y',icon='EVENT_Y')
+                rotate_Y = pie.operator("transform.resize", text="Y", icon="EVENT_Y")
                 rotate_Y.orient_type = get_orient
-                rotate_Y.constraint_axis = (False,True,False)
+                rotate_Y.constraint_axis = (False, True, False)
                 # 7 - TOP - LEFT
-                X = pie.operator(PIE_S_Flat_Object.bl_idname, text='Y对齐')
+                X = pie.operator(PIE_S_Flat_Object.bl_idname, text="Y对齐")
                 X.X = False
                 X.Y = True
                 X.Z = False
@@ -63,21 +70,21 @@ class VIEW3D_PIE_MT_Bottom_S(Menu):
                 pie.separator()
                 # 3 - BOTTOM - RIGHT
                 pie.separator()
-            if ob_mode == 'EDIT':
+            if ob_mode == "EDIT":
                 # 4 - LEFT
-                X = pie.operator(PIE_S_Flat_Mesh.bl_idname, text='X拍平')
+                X = pie.operator(PIE_S_Flat_Mesh.bl_idname, text="X拍平")
                 X.X = True
                 X.Y = False
                 X.Z = False
                 # 6 - RIGHT
                 pie.separator()
                 # 2 - BOTTOM
-                X = pie.operator(PIE_S_Flat_Mesh.bl_idname, text='Z拍平')
+                X = pie.operator(PIE_S_Flat_Mesh.bl_idname, text="Z拍平")
                 X.X = False
                 X.Y = False
                 X.Z = True
                 # 8 - TOP
-                X = pie.operator(PIE_S_Flat_Mesh.bl_idname, text='Y拍平')
+                X = pie.operator(PIE_S_Flat_Mesh.bl_idname, text="Y拍平")
                 X.X = False
                 X.Y = True
                 X.Z = False
@@ -91,13 +98,13 @@ class VIEW3D_PIE_MT_Bottom_S(Menu):
                 pie.separator()
         elif ui == "UV":
             # 4 - LEFT
-            pie.operator('uv.align', text='对齐到 X 轴').axis = 'ALIGN_X'
+            pie.operator("uv.align", text="对齐到 X 轴").axis = "ALIGN_X"
             # 6 - RIGHT
             pie.separator()
             # 2 - BOTTOM
             pie.separator()
             # 8 - TOP
-            pie.operator('uv.align', text='对齐到 Y 轴').axis = 'ALIGN_Y'
+            pie.operator("uv.align", text="对齐到 Y 轴").axis = "ALIGN_Y"
             # 7 - TOP - LEFT
             pie.separator()
             # 9 - TOP - RIGHT
@@ -106,15 +113,15 @@ class VIEW3D_PIE_MT_Bottom_S(Menu):
             pie.separator()
             # 3 - BOTTOM - RIGHT
             pie.separator()
-        elif ui == 'ShaderNodeTree' or 'GeometryNodeTree' or 'CompositorNodeTree':
+        elif ui == "ShaderNodeTree" or "GeometryNodeTree" or "CompositorNodeTree":
             # 4 - LEFT
-            pie.operator('pie.s_flat_nodes', text='对齐到 X 轴').value=(0,1,1)
+            pie.operator("pie.s_flat_nodes", text="对齐到 X 轴").value = (0, 1, 1)
             # 6 - RIGHT
             pie.separator()
             # 2 - BOTTOM
             pie.separator()
             # 8 - TOP
-            pie.operator('pie.s_flat_nodes', text='对齐到 Y 轴').value=(1,0,1)
+            pie.operator("pie.s_flat_nodes", text="对齐到 Y 轴").value = (1, 0, 1)
             # 7 - TOP - LEFT
             pie.separator()
             # 9 - TOP - RIGHT
@@ -123,33 +130,36 @@ class VIEW3D_PIE_MT_Bottom_S(Menu):
             pie.separator()
             # 3 - BOTTOM - RIGHT
             try:
-                pie.operator('node_relax.arrange')
+                pie.operator("node_relax.arrange")
             except:
                 pie.separator()
+
 
 class PIE_S_Flat_NOdes(Operator):
     bl_idname = "pie.s_flat_nodes"
     bl_label = ""
     bl_options = {"REGISTER", "UNDO"}
 
-    value : bpy.props.IntVectorProperty()
+    value: bpy.props.IntVectorProperty()  # type: ignore
 
     @classmethod
     def poll(cls, context: Context):
         return True
+
     def execute(self, context):
         value = self.value
         bpy.ops.transform.resize(value=value)
         return {"FINISHED"}
+
 
 class PIE_S_Flat_Mesh(Operator):
     bl_idname = "pie.view_s_flat_mesh"
     bl_label = ""
     bl_options = {"REGISTER", "UNDO"}
 
-    X: bpy.props.BoolProperty(name='X')
-    Y: bpy.props.BoolProperty(name='Y')
-    Z: bpy.props.BoolProperty(name='Z')
+    X: bpy.props.BoolProperty(name="X")  # type: ignore
+    Y: bpy.props.BoolProperty(name="Y")  # type: ignore
+    Z: bpy.props.BoolProperty(name="Z")  # type: ignore
 
     @classmethod
     def poll(cls, context):
@@ -173,14 +183,14 @@ class PIE_S_Flat_Object(Operator):
     bl_label = ""
     bl_options = {"REGISTER", "UNDO"}
 
-    X: bpy.props.BoolProperty(name='X')
-    Y: bpy.props.BoolProperty(name='Y')
-    Z: bpy.props.BoolProperty(name='Z')
+    X: bpy.props.BoolProperty(name="X")  # type: ignore
+    Y: bpy.props.BoolProperty(name="Y")  # type: ignore
+    Z: bpy.props.BoolProperty(name="Z")  # type: ignore
 
     @classmethod
     def poll(cls, context):
         if context.selected_objects:
-            if context.object.mode == 'OBJECT':
+            if context.object.mode == "OBJECT":
                 return True
         else:
             return False
@@ -208,11 +218,12 @@ class PIE_S_Flat_Object(Operator):
         return {"FINISHED"}
 
 
-classes = [VIEW3D_PIE_MT_Bottom_S, 
-        PIE_S_Flat_Mesh,
-        PIE_S_Flat_Object,
-        PIE_S_Flat_NOdes,
-        ]
+classes = [
+    VIEW3D_PIE_MT_Bottom_S,
+    PIE_S_Flat_Mesh,
+    PIE_S_Flat_Object,
+    PIE_S_Flat_NOdes,
+]
 
 addon_keymaps = []
 
@@ -220,14 +231,14 @@ addon_keymaps = []
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
     space_name = [
-        ('3D View', 'VIEW_3D'),
-        ('UV Editor', 'EMPTY'),
-        ('Node Editor', 'NODE_EDITOR'),
-        ('Graph Editor', 'GRAPH_EDITOR'),
+        ("3D View", "VIEW_3D"),
+        ("UV Editor", "EMPTY"),
+        ("Node Editor", "NODE_EDITOR"),
+        ("Graph Editor", "GRAPH_EDITOR"),
     ]
     for space in space_name:
         km = addon.keymaps.new(name=space[0], space_type=space[1])
-        kmi = km.keymap_items.new("wm.call_menu_pie", 'S', 'CLICK_DRAG')
+        kmi = km.keymap_items.new("wm.call_menu_pie", "S", "CLICK_DRAG")
         kmi.properties.name = "VIEW3D_PIE_MT_Bottom_S"
         addon_keymaps.append(km)
 
@@ -245,6 +256,7 @@ def register():
     for cls in classes:
         bpy.utils.register_class(cls)
     register_keymaps()
+
 
 def unregister():
     unregister_keymaps()

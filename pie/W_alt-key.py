@@ -1,11 +1,13 @@
-import bpy
 import os
-from bpy.types import Menu, Panel, Operator
+
+import bpy
+from bpy.types import Menu, Operator, Panel
+
 from .utils import change_default_keymap, restored_default_keymap
 
 # from . import check_rely_addon, rely_addons
 
-submoduname = __name__.split('.')[-1]
+submoduname = __name__.split(".")[-1]
 bl_info = {
     "name": submoduname,
     "author": "wxz",
@@ -26,13 +28,13 @@ class PIE_Bottom_W_alt(Operator):
         return True
 
     def execute(self, context):
-        print('yes')
+        print("yes")
         if context.active_object:
-            if context.object.mode in ['EDIT', 'SCULPT', 'POSE', 'WEIGHT_PAINT', 'VERTEX_PAINT', 'TEXTURE_PAINT']:
-                bpy.ops.object.transfer_mode('INVOKE_DEFAULT')
+            if context.object.mode in ["EDIT", "SCULPT", "POSE", "WEIGHT_PAINT", "VERTEX_PAINT", "TEXTURE_PAINT"]:
+                bpy.ops.object.transfer_mode("INVOKE_DEFAULT")
                 return {"FINISHED"}
             else:
-                self.report({'INFO'}, '此模式无法传递编辑状态')
+                self.report({"INFO"}, "此模式无法传递编辑状态")
                 return {"CANCELLED"}
         else:
             return {"CANCELLED"}
@@ -68,6 +70,7 @@ def register():
     for cls in classes:
         bpy.utils.register_class(cls)
     register_keymaps()
+
 
 def unregister():
     unregister_keymaps()

@@ -1,7 +1,6 @@
 import bpy
 from bpy.types import Operator, Panel
 
-
 submoduname = __name__.split(".")[-1]
 bl_info = {
     "name": submoduname,
@@ -26,13 +25,9 @@ class Window_Lock_View(Operator):
     def invoke(self, context, event):
         for area in context.window.screen.areas:
             if area.type == "VIEW_3D":
-                if (area.x <= event.mouse_x < area.x + area.width) and (
-                    area.y <= event.mouse_y < area.y + area.height
-                ):
+                if (area.x <= event.mouse_x < area.x + area.width) and (area.y <= event.mouse_y < area.y + area.height):
                     if area != None:
-                        area.spaces.active.region_3d.lock_rotation = (
-                            not area.spaces.active.region_3d.lock_rotation
-                        )
+                        area.spaces.active.region_3d.lock_rotation = not area.spaces.active.region_3d.lock_rotation
 
         return {"FINISHED"}
 

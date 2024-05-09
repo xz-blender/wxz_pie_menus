@@ -1,9 +1,11 @@
-import bpy
 import os
-from bpy.types import Menu, Operator
-from .utils import set_pie_ridius, change_default_keymap, restored_default_keymap
 
-submoduname = __name__.split('.')[-1]
+import bpy
+from bpy.types import Menu, Operator
+
+from .utils import change_default_keymap, restored_default_keymap, set_pie_ridius
+
+submoduname = __name__.split(".")[-1]
 bl_info = {
     "name": submoduname,
     "author": "wxz",
@@ -40,20 +42,22 @@ classes = [
 
 addon_keymaps = []
 
+
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
 
     space_name = {
-        '3D View':'VIEW_3D',
-        'UV Editor':'IMAGE_EDITOR',
-        'Node Editor':'NODE_EDITOR',
-        'Graph Editor':'GRAPH_EDITOR'
+        "3D View": "VIEW_3D",
+        "UV Editor": "IMAGE_EDITOR",
+        "Node Editor": "NODE_EDITOR",
+        "Graph Editor": "GRAPH_EDITOR",
     }
-    for name,space in space_name.items():
-        km = addon.keymaps.new(name=name,space_type=space)
-        kmi = km.keymap_items.new('wm.tool_set_by_id', 'C', 'CLICK')
+    for name, space in space_name.items():
+        km = addon.keymaps.new(name=name, space_type=space)
+        kmi = km.keymap_items.new("wm.tool_set_by_id", "C", "CLICK")
         kmi.properties.name = "builtin.select_circle"
         addon_keymaps.append(km)
+
 
 def unregister_keymaps():
     wm = bpy.context.window_manager
@@ -63,10 +67,12 @@ def unregister_keymaps():
         # wm.keyconfigs.addon.keymaps.remove(km)
     addon_keymaps.clear()
 
+
 def register():
     # for cls in classes:
     #     bpy.utils.register_class(cls)
     register_keymaps()
+
 
 def unregister():
     unregister_keymaps()

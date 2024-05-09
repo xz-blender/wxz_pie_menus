@@ -1,10 +1,11 @@
-import bpy
 import os
-from bpy.types import Menu, Panel, Operator
+
+import bpy
+from bpy.types import Menu, Operator, Panel
 
 # from . import check_rely_addon, rely_addons
 
-submoduname = __name__.split('.')[-1]
+submoduname = __name__.split(".")[-1]
 bl_info = {
     "name": submoduname,
     "author": "wxz",
@@ -13,36 +14,6 @@ bl_info = {
     "location": "View3D",
     "category": "PIE",
 }
-
-
-# class VIEW3D_PIE_MT_Bottom_Q_alt(Menu):
-#     bl_label = __name__.split('.')[-1],
-
-#     def draw(self, context):
-#         layout = self.layout
-#         layout.alignment = "CENTER"
-#         pie = layout.menu_pie()
-
-#         ob_type = context.object.type
-#         ob_mode = context.object.mode
-
-#         # addon1:"LoopTools"
-#         addon1 = check_rely_addon(rely_addons[2][0], rely_addons[2][1])
-
-#         # 4 - LEFT
-#         # if addon1 == '1':
-#         pie.separator()
-
-#         # 6 - RIGHT
-
-#         # 2 - BOTTOM
-
-#         # 8 - TOP
-
-#         # 7 - TOP - LEFT
-#         # 9 - TOP - RIGHT
-#         # 1 - BOTTOM - LEFT
-#         # 3 - BOTTOM - RIGHT
 
 
 class PIE_Bottom_Q_alt(Operator):
@@ -70,9 +41,7 @@ def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
 
     km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
-    kmi = km.keymap_items.new(
-        PIE_Bottom_Q_alt.bl_idname, 'Q', 'CLICK', alt=True
-    )
+    kmi = km.keymap_items.new(PIE_Bottom_Q_alt.bl_idname, "Q", "CLICK", alt=True)
     addon_keymaps.append(km)
 
 
