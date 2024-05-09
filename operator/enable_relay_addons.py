@@ -64,8 +64,8 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
         join = os.path.join
 
         addons_officials_list ={
-        ####官方&自有####      
         #   addon_name : [[addon_settings],[addon_keys]]
+        #### 官方插件&自带插件####      
             'curve_tools' : [[],[]],
             'add_curve_extra_objects':[[],[]],
             'curve_simplify':[[],[]],
@@ -73,12 +73,6 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             'add_mesh_extra_objects':[[],[]],
             'development_edit_operator':[[],[]],
             'development_icon_get':[[],[]],
-            # 'amaranth':[[('use_frame_current',False),
-            #             ('use_scene_refresh',False),
-            #             ('use_file_save_reload',False),
-            #             ('use_timeline_extra_info',False),
-            #             ('use_layers_for_render',False),
-            #             ],[]], 
             'space_view3d_copy_attributes':[[],[]],
             'materials_utils':[[],[(['3D View','wm.call_menu','Material Utilities'],[('value','CLICK'),('ctrl',True)],[])]],
             'object_print3d_utils':[[],[]],
