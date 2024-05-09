@@ -25,7 +25,7 @@ class PIE_Space_KEY(Operator):
             if context.selected_objects:
                 mode = context.object.mode
                 if mode in ['OBJECT', 'EDIT']:
-                    bpy.ops.wm.tool_set_by_id(name='builtin.select_box')
+                    bpy.ops.wm.tool_set_by_id(name='builtin.select_box').mode
                 elif mode in ['SCULPT', 'WEIGHT_PAINT', 'TEXTURE_PAINT', 'VERTEX_PAINT']:
                     bpy.ops.wm.tool_set_by_index(index=1)
             else:

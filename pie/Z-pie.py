@@ -253,23 +253,26 @@ class VIEW3D_PIE_MT_Bottom_Z_Shift(Menu):
         # addon1:"LoopTools"
         # addon1 = check_rely_addon(rely_addons[2][0], rely_addons[2][1])
 
+        
+
+        # 4 - LEFT
+        pie.prop(bpy.context.space_data, 'show_gizmo',text='控件层')
+        # 6 - RIGHT
+        pie.prop(bpy.context.space_data.overlay, 'show_overlays',text='叠加层')
+        # 2 - BOTTOM
         split = pie.split()
         col = split.column(align=True)
-        row = col#.row(align=True)
-        # 4 - LEFT
-        row.prop(context.space_data.shading,'color_type',expand=True)
-        # 6 - RIGHT
-        pie.separator()
-        # 2 - BOTTOM
-        pie.operator('wm.window_fullscreen_toggle')
+        col.row(align =True).prop(context.space_data.shading,'color_type',expand=True)
         # 8 - TOP
-        pie.separator()
+        pie.operator('wm.window_fullscreen_toggle')
         # 7 - TOP - LEFT
-        pie.prop(bpy.context.space_data, 'show_gizmo',text='控件层')
+        pie.separator()
         # 9 - TOP - RIGHT
-        pie.prop(bpy.context.space_data.overlay, 'show_overlays',text='叠加层')
+        pie.separator()
         # 1 - BOTTOM - LEFT
+        pie.separator()
         # 3 - BOTTOM - RIGHT
+        pie.separator()
 
 
 classes = [
@@ -292,7 +295,7 @@ def register_keymaps():
     km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
     kmi = km.keymap_items.new("wm.call_menu_pie", 'Z', 'CLICK_DRAG')
     kmi.properties.name = "VIEW3D_PIE_MT_Bottom_Z_Overlay"
-
+    
     kmi = km.keymap_items.new("wm.call_menu_pie", 'Z',
                               'CLICK_DRAG', shift=True)
     kmi.properties.name = "VIEW3D_PIE_MT_Bottom_Z_Shift"
