@@ -141,7 +141,7 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
                             (['File Browser','wm.super_import','Super Import'],[('value','CLICK')],[]),
                             (['File Browser','wm.super_export','Super EXport'],[('value','CLICK'),('type','E')],[]),
                         ]],
-            
+
         # ————建模工具————编辑模式————
             'EdgeFlow': [[],[]],
             'slide_edge': [[],[]],
@@ -182,6 +182,7 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             'simple-tabs': [[('startup_delay',1)],[]], # 导入json设置
             'Synchronize Workspaces': [[],[]],
             'viewport_timeline_scrub': [[],[]],
+            'Quick Files': [[('include subfolders',False)],[]],
 
         # ————节点类工具————
             'BB_Nodes': [[],[]],
