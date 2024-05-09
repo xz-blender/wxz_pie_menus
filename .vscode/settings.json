@@ -3,7 +3,7 @@
         "python.formatting.provider": "black",
         "editor.defaultFormatter": "ms-python.black-formatter",
         "editor.formatOnSave": true, // new
-        "black-formatter.args": ["--line-length", "88",],
+        "black-formatter.args": ["--line-length", "150",],
         "[python]": {"editor.codeActionsOnSave": {"source.organizeImports": true },},
     },
     "python.formatting.provider": "none"
