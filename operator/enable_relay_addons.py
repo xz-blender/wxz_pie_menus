@@ -32,11 +32,11 @@ def change_addon_key_value(change_dir):
 if sys.platform == "win32":
     sync_path = r"D:/OneDrive/Sync/Blender/Assets Sync"
     local_path = r"F:/Blender Assets"
-    addon_path = Path(bpy.utils.user_resource("SCRIPTS")) / "addons"
 elif sys.platform == "darwin":
     sync_path = r"/Users/wangxianzhi/Library/CloudStorage/OneDrive-个人/Sync/Blender/Assets Sync"
     local_path = r"/Users/wangxianzhi/Blender Lib"
-    addon_path = Path(bpy.utils.user_resource("SCRIPTS")) / "addons"
+
+addon_path = Path(bpy.utils.user_resource("SCRIPTS")) / "addons"
 
 
 class Enable_Pie_Menu_Relay_Addons(Operator):
