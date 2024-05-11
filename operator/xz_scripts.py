@@ -72,8 +72,8 @@ class PIE_Custom_Scripts_EmptyToCollection(Operator):
 
 class PIE_Custom_Scripts_CleanSameObject_LinkData(Operator):
     bl_idname = "pie.clean_to_link_data"
-    bl_label = "相同顶点数物体关联数据"
-    bl_description = "比较选择的物体，如果顶点数相等,则关联物体数据"
+    bl_label = "子集相同顶点数物体关联数据"
+    bl_description = "比较选择的空物体的子集(网格)，如果顶点数相等,则关联物体数据"
     bl_options = {"REGISTER", "UNDO"}
 
     @classmethod
@@ -82,23 +82,27 @@ class PIE_Custom_Scripts_CleanSameObject_LinkData(Operator):
             return True
 
     def execute(self, context):
-        # 获取所有选中的物体
-        selected_objects = context.selected_objects
-        # 创建一个字典来存储顶点数和物体的映射
-        vertex_count_to_objects = {}
-
-        for obj in selected_objects:
-            # 确保物体类型为 'MESH'
-            if obj.type == "MESH":
-                # 获取物体的顶点数
-                vertex_count = len(obj.data.vertices)
-                # 检查是否已经有物体具有相同的顶点数
-                if vertex_count in vertex_count_to_objects:
-                    # 如果是，关联它们的物体数据
-                    obj.data = vertex_count_to_objects[vertex_count].data
-                else:
-                    # 如果不是，将该物体添加到字典中
-                    vertex_count_to_objects[vertex_count] = obj
+        for ob in bpy.context.selected_objects:
+            name = ob.name
+            bpy.context.view_layer.objects.active = ob
+            bpy.ops.object.select_grouped(type="CHILDREN_RECURSIVE")
+            bpy.data.objects[name].select_set(True)
+            # 获取所有选中的物体
+            selected_objects = context.selected_objects
+            # 创建一个字典来存储顶点数和物体的映射
+            vertex_count_to_objects = {}
+            for obj in selected_objects:
+                # 确保物体类型为 'MESH'
+                if obj.type == "MESH":
+                    # 获取物体的顶点数
+                    vertex_count = len(obj.data.vertices)
+                    # 检查是否已经有物体具有相同的顶点数
+                    if vertex_count in vertex_count_to_objects:
+                        # 如果是，关联它们的物体数据
+                        obj.data = vertex_count_to_objects[vertex_count].data
+                    else:
+                        # 如果不是，将该物体添加到字典中
+                        vertex_count_to_objects[vertex_count] = obj
 
         return {"FINISHED"}
 
