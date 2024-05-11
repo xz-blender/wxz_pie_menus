@@ -7,7 +7,7 @@ import requests
 from bpy.types import Operator
 
 
-class PIE_Custom_Scripts_OriginTOParent(bpy.types.Operator):
+class PIE_Custom_Scripts_OriginTOParent(Operator):
     bl_idname = "pie.origin_to_parent"
     bl_label = "设空物体原点为空物体原点"
     bl_description = "将选择的空物体的子级的原点移动到父级的原点上,并应用变换删除父级"
@@ -50,7 +50,7 @@ class PIE_Custom_Scripts_OriginTOParent(bpy.types.Operator):
         return {"FINISHED"}
 
 
-class PIE_Custom_Scripts_EmptyToCollection(bpy.types.Operator):
+class PIE_Custom_Scripts_EmptyToCollection(Operator):
     bl_idname = "pie.empty_to_collection"
     bl_label = "选择父子级到集合"
     bl_description = "将选择的空物体绑定的父子级创建到集合"
@@ -70,7 +70,40 @@ class PIE_Custom_Scripts_EmptyToCollection(bpy.types.Operator):
         return {"FINISHED"}
 
 
-class PIE_Custom_Scripts_ExportFiles(bpy.types.Operator):
+class PIE_Custom_Scripts_CleanSameObject_LinkData(Operator):
+    bl_idname = "pie.clean_to_link_data"
+    bl_label = "相同顶点数物体关联数据"
+    bl_description = "比较选择的物体，如果顶点数相等,则关联物体数据"
+    bl_options = {"REGISTER", "UNDO"}
+
+    @classmethod
+    def poll(cls, context):
+        if context.selected_objects:
+            return True
+
+    def execute(self, context):
+        # 获取所有选中的物体
+        selected_objects = context.selected_objects
+        # 创建一个字典来存储顶点数和物体的映射
+        vertex_count_to_objects = {}
+
+        for obj in selected_objects:
+            # 确保物体类型为 'MESH'
+            if obj.type == "MESH":
+                # 获取物体的顶点数
+                vertex_count = len(obj.data.vertices)
+                # 检查是否已经有物体具有相同的顶点数
+                if vertex_count in vertex_count_to_objects:
+                    # 如果是，关联它们的物体数据
+                    obj.data = vertex_count_to_objects[vertex_count].data
+                else:
+                    # 如果不是，将该物体添加到字典中
+                    vertex_count_to_objects[vertex_count] = obj
+
+        return {"FINISHED"}
+
+
+class PIE_Custom_Scripts_ExportFiles(Operator):
     bl_idname = "pie.parents_to_file"
     bl_label = "导出父子级到单文件"
     bl_description = "将选择的空物体绑定的父子级分别到处到单个文件,使用superIO插件"
@@ -98,7 +131,7 @@ class PIE_Custom_Scripts_ExportFiles(bpy.types.Operator):
         return {"FINISHED"}
 
 
-class PIE_Custom_Scripts_CleanSameMatTex(bpy.types.Operator):
+class PIE_Custom_Scripts_CleanSameMatTex(Operator):
     bl_idname = "pie.clean_same_material_texture"
     bl_label = "清理同名材质槽贴图"
     bl_description = "清理.001类似的材质和贴图.注意使用！"
@@ -154,7 +187,7 @@ class PIE_Custom_Scripts_CleanSameMatTex(bpy.types.Operator):
         return {"FINISHED"}
 
 
-class PIE_Quick_RedHaloM2B(bpy.types.Operator):
+class PIE_Quick_RedHaloM2B(Operator):
     bl_idname = "pie.quick_redhalom2b"
     bl_label = "导入Max导出物体"
     bl_description = "快速通过RedHaloM2B插件导入再MAX中已选择导出的物体"
@@ -217,7 +250,7 @@ def translate_text(access_token, text, from_lang="en", to_lang="zh"):
 settings_file_path = os.path.join(bpy.utils.resource_path("USER"), "config", "wxz_pie_menu_settings.txt")
 
 
-class PIE_Custom_Scripts_Context_Translate(bpy.types.Operator):
+class PIE_Custom_Scripts_Context_Translate(Operator):
     bl_idname = "pie.context_translate"
     bl_label = "翻译选择的指定内容"
     bl_description = "仅支持 英->中"
@@ -309,6 +342,7 @@ classes = [
     PIE_Custom_Scripts_Context_Translate,
     PIE_Custom_Scripts_OriginTOParent,
     PIE_Custom_Scripts_ExportFiles,
+    PIE_Custom_Scripts_CleanSameObject_LinkData,
 ]
 
 

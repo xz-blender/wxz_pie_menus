@@ -48,6 +48,7 @@ class PIE_MT_Bottom_Q_favorite(Menu):
         col.operator("pie.parents_to_file")
         col.operator("pie.origin_to_parent")
         col.operator("pie.clean_same_material_texture")
+        col.operator("pie.clean_to_link_data")
         col.operator("pie.context_translate", icon="FILE_TEXT")
 
 
