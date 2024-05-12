@@ -310,8 +310,12 @@ def change_assets_library_path():
 
 
 def change_addons():
-    bpy.context.preferences.filepaths.texture_directory = str(Path(sync_path).parent.parent / "Texture")
-    bpy.context.preferences.filepaths.font_directory = str(Path(sync_path).parent.parent / "Fonts")
+    bpy.context.preferences.filepaths.texture_directory = (
+        str(Path(sync_path).parent.parent / "Texture") + os.sep
+    ).replace("\\", "/")
+    bpy.context.preferences.filepaths.font_directory = (str(Path(sync_path).parent.parent / "Fonts") + os.sep).replace(
+        "\\", "/"
+    )
 
     bpy.ops.pie.enable_relay_addons()
     print('"WXZ_Pie_Menu" Enable Relay Addons!')
