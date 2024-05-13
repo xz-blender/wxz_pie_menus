@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 import bpy
 from bpy.props import BoolProperty, PointerProperty
@@ -20,53 +21,64 @@ extra_scripts_modules = [
     "change_settings",
     "enable_relay_addons",
     "memory_useage",
-    "xz_scripts",
-    "orient_origin_to_selection",
 ]
-
 sub_modules_names = [
-    "X-key",
-    "X-pie",
-    "Q-pie",
+    "A_shift-pie",
     "A-pie",
-    "Z-pie",
+    "B-pie",
+    # "Brush-key",
     "D-pie",
     "F-pie",
-    "R-pie",
-    "W-pie",
-    "Tab_ctrl-pie",
-    "T-pie",
-    "E-pie",
-    "Translate-key",
-    "Space-key",
-    "Space_shift-pie",
-    "C-pie",
-    "C-key",
-    "S_ctrl-pie",
-    "S-pie",
+    "Lock_View",
+    "Modifier-bar",
+    "Outliner-pie",
     "Q_alt-key",
     "Q-key",
-    "V-pie",
-    "X_ctrl_alt-pie",
-    "Outliner-pie",
-    "U-pie",
-    "Modifier-bar",
-    "W_alt-key",
-    "A_shift-pie",
-    "B-pie",
-    "G-pie",
-    "Lock_View",
+    "Q-pie",
+    "R-pie",
     "S_ctrl_alt",
     "S_ctrl_shift-pie",
+    "S_ctrl-pie",
+    "S-pie",
+    "Space_shift-pie",
+    "Space-key",
+    "T-pie",
+    "Tab_ctrl-pie",
+    "Translate-key",
+    "U-pie",
+    "V-pie",
+    "W_alt-key",
+    "W-pie",
+    "X_ctrl_alt-pie",
+    "X-key",
+    "X-pie",
+    "Z-pie",
 ]
 sub_modules_names.sort()
-
 sub_modules = [__import__(__package__ + "." + "pie" + "." + submod, {}, {}, submod) for submod in sub_modules_names]
 sub_modules.sort(key=lambda mod: (mod.bl_info["name"], mod.bl_info["category"]))
 
+extra_scripts_modules = [
+    "change_keys",
+    "change_settings",
+    "enable_relay_addons",
+    "memory_useage",
+    "orient_origin_to_selection",
+    "xz_scripts",
+]
 operator_modules = [
     __import__(__package__ + "." + "operator" + "." + submod, {}, {}, submod) for submod in extra_scripts_modules
 ]
+
+parts_addons = [
+    "uv_squares",
+]
+# parts_addons = [file.stem for file in ((Path.cwd() / "parts_addons").rglob("*.py"))]
+parts_modules = [
+    __import__(__package__ + "." + "parts_addons" + "." + submod, {}, {}, submod) for submod in parts_addons
+]
+
+sub_modules += operator_modules + parts_modules
 
 
 def _get_pref_class(mod):
@@ -108,7 +120,8 @@ def create_property(cls, name, prop):
 def register_submodule(mod):
     try:
         mod.register()
-    except ValueError:
+    except ValueError as error:
+        # print(error)
         pass
     try:
         # if hasattr(mod.bl_info):
@@ -340,16 +353,9 @@ def register():
         if getattr(prefs, "use_" + name):
             register_submodule(mod)
 
-    for mod in operator_modules:
-        register_submodule(mod)
-
 
 def unregister():
     for mod in sub_modules:
-        if mod.__addon_enabled__:
-            unregister_submodule(mod)
-
-    for mod in operator_modules:
         if mod.__addon_enabled__:
             unregister_submodule(mod)
 

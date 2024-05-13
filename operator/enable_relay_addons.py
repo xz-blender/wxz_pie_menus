@@ -7,6 +7,16 @@ import addon_utils
 import bpy
 from bpy.types import Operator
 
+submoduname = __name__.split(".")[-1]
+bl_info = {
+    "name": submoduname,
+    "author": "wxz",
+    "version": (0, 0, 1),
+    "blender": (4, 1, 0),
+    "location": "View3D",
+    "category": "3D View",
+}
+
 
 def change_addon_key_value(change_dir):
     bpy.context.preferences.view.use_translate_interface = False

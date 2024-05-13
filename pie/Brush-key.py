@@ -3,8 +3,6 @@ import os
 import bpy
 from bpy.types import Menu, Operator, Panel
 
-from . import check_rely_addon, rely_addons
-
 submoduname = __name__.split(".")[-1]
 bl_info = {
     "name": submoduname,
@@ -78,7 +76,6 @@ def register_keymaps():
 
 
 def unregister_keymaps():
-    wm = bpy.context.window_manager
     for km in addon_keymaps:
         for kmi in km.keymap_items:
             km.keymap_items.remove(kmi)

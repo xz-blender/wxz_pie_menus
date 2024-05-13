@@ -1,6 +1,16 @@
 import addon_utils
 import bpy
 
+submoduname = __name__.split(".")[-1]
+bl_info = {
+    "name": submoduname,
+    "author": "wxz",
+    "version": (0, 0, 1),
+    "blender": (4, 1, 0),
+    "location": "View3D",
+    "category": "PIE",
+}
+
 rely_addons = [
     ("Edit Mesh Tools", "mesh_tools"),  # 0
     ("Straight Skeleton", "straight_skeleton"),  # 1

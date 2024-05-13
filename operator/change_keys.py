@@ -1,7 +1,15 @@
 import bpy
 from bpy.app.handlers import persistent
 
-from ..pie.utils import change_default_keymap
+submoduname = __name__.split(".")[-1]
+bl_info = {
+    "name": submoduname,
+    "author": "wxz",
+    "version": (0, 0, 1),
+    "blender": (4, 1, 0),
+    "location": "View3D",
+    "category": "3D View",
+}
 
 
 #### def ####
