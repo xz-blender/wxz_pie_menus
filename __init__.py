@@ -15,20 +15,17 @@ bl_info = {
     "description": "Pie Menu",
     "category": "3D View",
 }
-
-extra_scripts_modules = [
-    "change_keys",
-    "change_settings",
-    "enable_relay_addons",
-    "memory_useage",
-]
 sub_modules_names = [
     "A_shift-pie",
     "A-pie",
     "B-pie",
     # "Brush-key",
+    "C-key",
+    "C-pie",
     "D-pie",
+    "E-pie",
     "F-pie",
+    "G-pie",
     "Lock_View",
     "Modifier-bar",
     "Outliner-pie",
