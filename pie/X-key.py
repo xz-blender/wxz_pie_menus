@@ -46,7 +46,7 @@ class Mesh_Delete_By_mode(Operator):
             curve = obj.data
             spline = curve.splines.active
             try:
-                selected_verts = [p for p in spline.bezier_points if p.select_control_point]
+                selected_verts = [p for p in spline.points if p.select]
             except AttributeError:
                 bpy.ops.curve.delete(type="VERT")
                 return {"CANCELLED"}
