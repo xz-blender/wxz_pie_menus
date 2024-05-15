@@ -50,7 +50,6 @@ class Mesh_Delete_By_mode(Operator):
             except AttributeError:
                 bpy.ops.curve.delete(type="VERT")
                 return {"CANCELLED"}
-            # print(len(selected_verts))
             if len(selected_verts) == 1:
                 bpy.ops.curve.delete(type="VERT")
             elif len(selected_verts) > 1:
