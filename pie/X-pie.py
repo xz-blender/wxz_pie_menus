@@ -41,6 +41,7 @@ class VIEW3D_PIE_MT_Bottom_X(Menu):
                 col = pie.split().box().column(align=True)
 
                 row = col.row(align=True)
+                row.scale_y = 1.2
                 if ed_mode[0] == True:
                     try:
                         row.operator("mesh.merge", text="首点", icon="DOT").type = "FIRST"
@@ -58,10 +59,12 @@ class VIEW3D_PIE_MT_Bottom_X(Menu):
                 col.separator(factor=0.4)
                 row = col.row()
                 row.operator("mesh.merge", text="游标").type = "CURSOR"
-                row.operator("mesh.merge", text="塌陷").type = "COLLAPSE"
-
+                op = row.operator("mesh.merge", text="塌陷")
+                op.type = "COLLAPSE"
+                op.
                 col.separator(factor=0.4)
                 row = col.row()
+                row.scale_y = 1.2
                 row.operator("mesh.remove_doubles", text="按间距合并")
                 # 6 - RIGHT
                 col = pie.split().box().column(align=True)

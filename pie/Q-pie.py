@@ -16,13 +16,17 @@ bl_info = {
     "category": "Interface",
 }
 
-preview_collections = {}
-dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "icons")
-pcoll = bpy.utils.previews.new()
-for entry in os.scandir(dir):
-    if entry.name.endswith(".png"):
-        name = os.path.splitext(entry.name)[0].upper()
-        pcoll.load(name, entry.path, "IMAGE")
+preview_dict = None
+
+
+def load_previews():
+    global preview_dict
+    preview_dict = bpy.utils.previews.new()
+    dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "icons")
+    for file in os.scandir(dir):
+        if file.name.endswith(".png"):
+            name = os.path.splitext(file.name)[0].upper()
+            preview_dict.load(name, file.path, "IMAGE")
 
 
 class VIEW3D_PIE_MT_Bottom_Q(Menu):
@@ -35,135 +39,138 @@ class VIEW3D_PIE_MT_Bottom_Q(Menu):
         set_pie_ridius(context, 100)
 
         ui = context.area.ui_type
-        print(ui)
-        if ui == "VIEW_3D":
-            # 4 - LEFT
-            pie.operator("view3d.view_axis", text="左", icon_value=pcoll["A4"].icon_id).type = "LEFT"
-            # 6 - RIGHT
-            pie.operator("view3d.view_axis", text="右", icon_value=pcoll["A6"].icon_id).type = "RIGHT"
-            # 2 - BOTTOM
-            pie.operator("view3d.view_camera", text="摄像机", icon="VIEW_CAMERA")
-            # 8 - TOP
-            pie.operator("view3d.view_axis", text="顶", icon_value=pcoll["A8"].icon_id).type = "TOP"
-            # 7 - TOP - LEFT
-            pie.operator("view3d.view_axis", text="后", icon_value=pcoll["A7"].icon_id).type = "BACK"
-            # 9 - TOP - RIGHT
-            pie.operator("view3d.view_axis", text="前", icon_value=pcoll["A9"].icon_id).type = "FRONT"
-            # 1 - BOTTOM - LEFT
-            pie.operator("view3d.view_all", text="全部")
-            # 3 - BOTTOM - RIGHT
-            pie.operator("view3d.view_selected", text="所选")
-        elif ui == "UV":
-            # 4 - LEFT
-            pie.separator()
-            # 6 - RIGHT
-            pie.separator()
-            # 2 - BOTTOM
-            pie.separator()
-            # 8 - TOP
-            pie.separator()
-            # 7 - TOP - LEFT
-            pie.separator()
-            # 9 - TOP - RIGHT
-            pie.separator()
-            # 1 - BOTTOM - LEFT
-            pie.operator("image.view_all", text="全部")
-            # 3 - BOTTOM - RIGHT
-            pie.operator("image.view_selected", text="所选")
-        elif ui == "FCURVES":
-            # 4 - LEFT
-            pie.separator()
-            # 6 - RIGHT
-            pie.separator()
-            # 2 - BOTTOM
-            pie.operator("graph.view_frame", text="当前帧")
-            # 8 - TOP
-            pie.separator()
-            # 7 - TOP - LEFT
-            pie.separator()
-            # 9 - TOP - RIGHT
-            pie.separator()
-            # 1 - BOTTOM - LEFT
-            pie.operator("graph.view_all", text="全部")
-            # 3 - BOTTOM - RIGHT
-            pie.operator("graph.view_selected", text="所选")
-
-        elif ui == "ShaderNodeTree":
-            # 4 - LEFT # 6 - RIGHT
-            if context.active_object.active_material.node_tree.nodes.active != None:
-                if context.active_object.active_material.node_tree.nodes.active.type == "TEX_IMAGE":
-                    pie.operator(Node_Change_Image_ColorSpace.bl_idname, text="图像-sRGB").colorspace = "sRGB"
-                    pie.operator(Node_Change_Image_ColorSpace.bl_idname, text="图像-非彩色").colorspace = "Non-Color"
-                else:
-                    pie.operator("node.nw_reset_nodes", text="重置所选")
-                    pie.separator()
-            else:
+        # print(ui)
+        if preview_dict is not None:
+            if ui == "VIEW_3D":
+                # 4 - LEFT
+                pie.operator("view3d.view_axis", text="左", icon_value=preview_dict["A4"].icon_id).type = "LEFT"
+                # 6 - RIGHT
+                pie.operator("view3d.view_axis", text="右", icon_value=preview_dict["A6"].icon_id).type = "RIGHT"
+                # 2 - BOTTOM
+                pie.operator("view3d.view_camera", text="摄像机", icon="VIEW_CAMERA")
+                # 8 - TOP
+                pie.operator("view3d.view_axis", text="顶", icon_value=preview_dict["A8"].icon_id).type = "TOP"
+                # 7 - TOP - LEFT
+                pie.operator("view3d.view_axis", text="后", icon_value=preview_dict["A7"].icon_id).type = "BACK"
+                # 9 - TOP - RIGHT
+                pie.operator("view3d.view_axis", text="前", icon_value=preview_dict["A9"].icon_id).type = "FRONT"
+                # 1 - BOTTOM - LEFT
+                pie.operator("view3d.view_all", text="全部", icon_value=preview_dict["A1"].icon_id)
+                # 3 - BOTTOM - RIGHT
+                pie.operator("view3d.view_selected", text="所选", icon_value=preview_dict["A3"].icon_id)
+            elif ui == "UV":
+                # 4 - LEFT
                 pie.separator()
+                # 6 - RIGHT
                 pie.separator()
+                # 2 - BOTTOM
+                pie.separator()
+                # 8 - TOP
+                pie.separator()
+                # 7 - TOP - LEFT
+                pie.separator()
+                # 9 - TOP - RIGHT
+                pie.separator()
+                # 1 - BOTTOM - LEFT
+                pie.operator("image.view_all", text="全部")
+                # 3 - BOTTOM - RIGHT
+                pie.operator("image.view_selected", text="所选")
+            elif ui == "FCURVES":
+                # 4 - LEFT
+                pie.separator()
+                # 6 - RIGHT
+                pie.separator()
+                # 2 - BOTTOM
+                pie.operator("graph.view_frame", text="当前帧")
+                # 8 - TOP
+                pie.separator()
+                # 7 - TOP - LEFT
+                pie.separator()
+                # 9 - TOP - RIGHT
+                pie.separator()
+                # 1 - BOTTOM - LEFT
+                pie.operator("graph.view_all", text="全部")
+                # 3 - BOTTOM - RIGHT
+                pie.operator("graph.view_selected", text="所选")
 
-            # 2 - BOTTOM
-            pie.operator("node.mute_toggle", text="停用")
-            # 8 - TOP
-            pie.separator()
-            # 7 - TOP - LEFT
-            if context.active_object.active_material.node_tree.nodes.active != None:
-                if context.active_object.active_material.node_tree.nodes.active.type == "TEX_IMAGE":
-                    new = pie.split()
-                    sp1 = new.split().box().column()
-                    sp1.label(text="纹理插值")
-                    sp1.operator(Node_Change_Image_Interpolation.bl_idname, text="线性").interpolation = "Linear"
-                    sp1.operator(Node_Change_Image_Interpolation.bl_idname, text="智能").interpolation = "Smart"
-                    sp2 = new.split().box().column()
-                    sp2.label(text="投射方法")
-                    sp2.operator(Node_Change_Image_Projection.bl_idname, text="平直").projection = "FLAT"
-                    sp2.operator(Node_Change_Image_Projection.bl_idname, text="立方体").projection = "BOX"
+            elif ui == "ShaderNodeTree":
+                # 4 - LEFT # 6 - RIGHT
+                if context.active_object.active_material.node_tree.nodes.active != None:
+                    if context.active_object.active_material.node_tree.nodes.active.type == "TEX_IMAGE":
+                        pie.operator(Node_Change_Image_ColorSpace.bl_idname, text="图像-sRGB").colorspace = "sRGB"
+                        pie.operator(Node_Change_Image_ColorSpace.bl_idname, text="图像-非彩色").colorspace = (
+                            "Non-Color"
+                        )
+                    else:
+                        pie.operator("node.nw_reset_nodes", text="重置所选")
+                        pie.separator()
                 else:
                     pie.separator()
-            else:
+                    pie.separator()
+
+                # 2 - BOTTOM
+                pie.operator("node.mute_toggle", text="停用")
+                # 8 - TOP
                 pie.separator()
-            # 9 - TOP - RIGHT
-            box = pie.box()
-            box.props_enum(context.object.active_material, "blend_method")
-            # 1 - BOTTOM - LEFT
-            pie.operator("node.view_all", text="全部")
-            # 3 - BOTTOM - RIGHT
-            pie.operator("node.view_selected", text="所选")
+                # 7 - TOP - LEFT
+                if context.active_object.active_material.node_tree.nodes.active != None:
+                    if context.active_object.active_material.node_tree.nodes.active.type == "TEX_IMAGE":
+                        new = pie.split()
+                        sp1 = new.split().box().column()
+                        sp1.label(text="纹理插值")
+                        sp1.operator(Node_Change_Image_Interpolation.bl_idname, text="线性").interpolation = "Linear"
+                        sp1.operator(Node_Change_Image_Interpolation.bl_idname, text="智能").interpolation = "Smart"
+                        sp2 = new.split().box().column()
+                        sp2.label(text="投射方法")
+                        sp2.operator(Node_Change_Image_Projection.bl_idname, text="平直").projection = "FLAT"
+                        sp2.operator(Node_Change_Image_Projection.bl_idname, text="立方体").projection = "BOX"
+                    else:
+                        pie.separator()
+                else:
+                    pie.separator()
+                # 9 - TOP - RIGHT
+                box = pie.box()
+                box.props_enum(context.object.active_material, "blend_method")
+                # 1 - BOTTOM - LEFT
+                pie.operator("node.view_all", text="全部")
+                # 3 - BOTTOM - RIGHT
+                pie.operator("node.view_selected", text="所选")
 
-        elif ui == "GeometryNodeTree":
-            # 4 - LEFT
-            pie.operator("node.nw_reset_nodes", text="重置所选")
-            # 6 - RIGHT
-            pie.separator()
-            # 2 - BOTTOM
-            pie.operator("node.mute_toggle", text="停用")
-            # 8 - TOP
-            pie.separator()
-            # 7 - TOP - LEFT
-            pie.separator()
-            # 9 - TOP - RIGHT
-            pie.separator()
-            # 1 - BOTTOM - LEFT
-            pie.operator("node.view_all", text="全部")
-            # 3 - BOTTOM - RIGHT
-            pie.operator("node.view_selected", text="所选")
+            elif ui == "GeometryNodeTree":
+                # 4 - LEFT
+                pie.operator("node.nw_reset_nodes", text="重置所选")
+                # 6 - RIGHT
+                pie.separator()
+                # 2 - BOTTOM
+                pie.operator("node.mute_toggle", text="停用")
+                # 8 - TOP
+                pie.separator()
+                # 7 - TOP - LEFT
+                pie.separator()
+                # 9 - TOP - RIGHT
+                pie.separator()
+                # 1 - BOTTOM - LEFT
+                pie.operator("node.view_all", text="全部")
+                # 3 - BOTTOM - RIGHT
+                pie.operator("node.view_selected", text="所选")
 
-        elif ui == "CompositorNodeTree":
-            # 4 - LEFT
-            pie.separator()
-            # 6 - RIGHT
-            pie.separator()
-            # 2 - BOTTOM
-            pie.operator("node.mute_toggle", text="停用")
-            # 8 - TOP
-            pie.separator()
-            # 7 - TOP - LEFT
-            pie.separator()
-            # 9 - TOP - RIGHT
-            pie.separator()
-            # 1 - BOTTOM - LEFT
-            pie.operator("node.view_all", text="全部")
-            # 3 - BOTTOM - RIGHT
-            pie.operator("node.view_selected", text="所选")
+            elif ui == "CompositorNodeTree":
+                # 4 - LEFT
+                pie.separator()
+                # 6 - RIGHT
+                pie.separator()
+                # 2 - BOTTOM
+                pie.operator("node.mute_toggle", text="停用")
+                # 8 - TOP
+                pie.separator()
+                # 7 - TOP - LEFT
+                pie.separator()
+                # 9 - TOP - RIGHT
+                pie.separator()
+                # 1 - BOTTOM - LEFT
+                pie.operator("node.view_all", text="全部")
+                # 3 - BOTTOM - RIGHT
+                pie.operator("node.view_selected", text="所选")
 
 
 class VIEW3D_PIE_MT_Bottom_Ctrl_Alt_Q(Menu):
@@ -337,9 +344,12 @@ def register():
     for cls in classes:
         bpy.utils.register_class(cls)
     register_keymaps()
+    load_previews()
 
 
 def unregister():
+    global preview_dict
+    bpy.utils.previews.remove(preview_dict)
     unregister_keymaps()
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
