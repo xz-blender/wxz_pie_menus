@@ -19,7 +19,7 @@ sub_modules_names = [
     "A_shift-pie",
     "A-pie",
     "B-pie",
-    "B_ctrl-pie copy",
+    "B_ctrl-pie",
     # "Brush-key",
     "C-key",
     "C-pie",

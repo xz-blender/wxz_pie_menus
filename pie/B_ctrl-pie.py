@@ -29,7 +29,6 @@ class PIE_Set_Ctrl_B_HotKey(Operator):
             return True
 
     def execute(self, context):
-        print("YES")
         if context.object.mode == "EDIT":
             if context.space_data.region_3d.view_perspective == "CAMERA":
                 bpy.ops.view3d.render_border("INVOKE_DEFAULT")
