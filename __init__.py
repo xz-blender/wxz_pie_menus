@@ -5,6 +5,7 @@ import bpy
 from bpy.props import BoolProperty, PointerProperty
 from bpy.types import AddonPreferences, Operator, PropertyGroup
 
+from .nodes_presets import *
 from .pie.utils import change_default_keymap, check_rely_addon, rely_addons
 
 bl_info = {
@@ -64,6 +65,7 @@ extra_scripts_modules = [
     "orient_origin_to_selection",
     "xz_scripts",
     "unbevel",
+    "change_nodes_presets",
 ]
 operator_modules = [
     __import__(__package__ + "." + "operator" + "." + submod, {}, {}, submod) for submod in extra_scripts_modules

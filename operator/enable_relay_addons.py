@@ -287,7 +287,7 @@ setting_lib = {
     "Motion Animate": (str(Path(local_path) / "Motion Animate"), "APPEND"),
     "图案光阴影贴图": (str(Path(local_path) / "图案光阴影贴图"), "LINK"),
     "其他": (str(Path(local_path) / "其他"), "LINK"),
-    "Higssas Nodes": (str(Path(sync_path) / "Blender Assets Browser" / "Higssas Nodes"), "APPEND"),
+    # "Higssas Nodes": (str(Path(sync_path) / "Blender Assets Browser" / "Higssas Nodes"), "APPEND"),
     "GN_Tools": (str(Path(sync_path) / "Blender Assets Browser" / "GN_Tools"), "APPEND"),
     "BMS-东京后街": (str(Path(local_path) / "BMS-东京后街"), "LINK"),
     "RealCloud": (str(Path(local_path) / "RealCloud"), "LINK"),
