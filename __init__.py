@@ -19,6 +19,7 @@ sub_modules_names = [
     "A_shift-pie",
     "A-pie",
     "B-pie",
+    "B_ctrl-pie copy",
     # "Brush-key",
     "C-key",
     "C-pie",
@@ -62,6 +63,7 @@ extra_scripts_modules = [
     "memory_useage",
     "orient_origin_to_selection",
     "xz_scripts",
+    "unbevel",
 ]
 operator_modules = [
     __import__(__package__ + "." + "operator" + "." + submod, {}, {}, submod) for submod in extra_scripts_modules

@@ -122,6 +122,9 @@ B_dir = [
     (["Node Editor", "node.clear_viewer_border", "Clear Viewer Region"], [("active", False)], []),
     (["Outliner", "outliner.select_box", "Box Select"], [("active", False)], []),
     (["NLA Editor", "nla.select_box", "Box Select"], [("active", False)], []),
+    (["Mesh", "mesh.bevel", "Bevel"], [("value", "CLICK"), ("active", False)], []),
+    (["3D View", "view3d.render_border", "Set Render Region"], [("value", "CLICK")], []),
+    (["Object Mode", "object.hide_collection", "Hide Collection"], [("active", False)], []),
 ]
 Brush_dir = [
     (["Sculpt", "wm.call_menu_pie", "Mask Edit"], [("value", "CLICK_DRAG")], []),  # A
@@ -191,6 +194,7 @@ H_dir = [
     (["Node Editor", "node.preview_toggle", "Toggle Node Preview"], [("type", "B")], []),
     (["Node Editor", "node.hide_socket_toggle", "Toggle Hidden Node Sockets"], [("type", "B")], []),
     (["NLA Editor", "nla.mute_toggle", "Toggle Muting"], [("type", "B")], []),
+    (["Mesh", "wm.call_menu", "Hooks"], [("active", False), ("type", "H")], []),
 ]
 Outliner_dir = [
     (["Outliner", "outliner.select_all", "Toggle Selected"], [("active", False)], []),  # A

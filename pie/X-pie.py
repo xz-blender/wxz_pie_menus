@@ -61,7 +61,6 @@ class VIEW3D_PIE_MT_Bottom_X(Menu):
                 row.operator("mesh.merge", text="游标").type = "CURSOR"
                 op = row.operator("mesh.merge", text="塌陷")
                 op.type = "COLLAPSE"
-                op.
                 col.separator(factor=0.4)
                 row = col.row()
                 row.scale_y = 1.2

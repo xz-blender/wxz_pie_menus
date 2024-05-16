@@ -12,11 +12,21 @@ bl_info = {
     "category": "3D View",
 }
 
+
+def shouw_stats(bool):
+    for area in bpy.context.screen.areas:
+        if area.type == "VIEW_3D":
+            overlay = area.spaces.active.overlay
+            overlay.show_stats = bool
+            break
+
+
 def change_preferences_settings():
     C = bpy.context
     pref = C.preferences
     cycles = C.scene.cycles
 
+    shouw_stats(True)
     # 界面
     view = pref.view
     view.text_hinting = "FULL"  # 文本微调
