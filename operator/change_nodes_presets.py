@@ -58,7 +58,7 @@ def set_wxz_nodes_presets():
 def change_nodes_presets():
     change_assets_library_path()
     set_wxz_nodes_presets()
-    print('"WXZ_Pie_Menu" : 已执行增加默认节点预设')
+    print('"WXZ_Pie_Menu" Add Default Nodes Presets')
 
 
 def register():

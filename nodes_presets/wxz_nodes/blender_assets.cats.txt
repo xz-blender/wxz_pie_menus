@@ -1,0 +1,16 @@
+
+# This is an Asset Catalog Definition file for Blender.
+#
+# Empty lines and lines starting with `#` will be ignored.
+# The first non-ignored line should be the version indicator.
+# Other lines are of the format "UUID:catalog/path/for/assets:simple catalog name"
+
+VERSION 1
+
+5cffadeb-3045-41d4-a989-909e26b73969:GN_Nodes:GN_Nodes
+30dbcfc1-888d-4fc7-abfb-0dc0488fa82a:GN_Nodes/No Sign:GN_Nodes-No Sign
+92a4b9e7-62ea-4cf3-a5fc-38821c022873:GN_Nodes/Edit:GN_Nodes-Edit
+a71b4317-9e4f-48eb-aec8-a5f6a6fb272b:GN_Nodes/Generate:GN_Nodes-Generate
+afcd4222-0f8c-40f2-8c87-92114674687f:GN_Nodes/Material:GN_Nodes-Material
+18946e36-24e9-42ef-9399-32f08f91359e:GN_Nodes/Preview:GN_Nodes-Preview
+75b8286c-76b9-4054-8980-a501b7a98c6c:GN_Nodes/Base Mesh:GN_Nodes-Base Mesh
