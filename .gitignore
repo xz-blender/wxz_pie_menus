@@ -2,5 +2,5 @@
 .__pycache__
 .DS_Store
 test.py
-blends_save_time_path.txt
+blends_savetime.txt
 blender_assets.cats.txt~
