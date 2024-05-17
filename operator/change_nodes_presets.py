@@ -1,5 +1,6 @@
 import json
 import os
+import subprocess
 from pathlib import Path
 
 import bpy
@@ -36,23 +37,33 @@ def change_assets_library_path():
             bpy.ops.preferences.asset_library_add(directory=path)
             asset_libraries[-1].name = name
         else:
-            asset_libraries[name] = path
+            asset_libraries.get(name).path = path
 
     nodes_dir_path_list.clear()
     app_lib_data.clear()
 
 
+wxz_nodes_dir = nodes_dir_path / "wxz_nodes"
+wxz_nodes_script = wxz_nodes_dir / "script.py"
+
+
+def set_wxz_nodes_presets():
+    for root, dirs, files in os.walk(wxz_nodes_dir):
+        for file in files:
+            if file.endswith(".blend"):
+                full_path = os.path.join(root, file)
+                subprocess.run([bpy.app.binary_path, full_path, "--background", "--python", wxz_nodes_script])
+
+
 def change_nodes_presets():
-    try:
-        change_assets_library_path()
-        print('"WXZ_Pie_Menu" : 已执行增加默认节点预设')
-    except:
-        pass
+    change_assets_library_path()
+    set_wxz_nodes_presets()
+    print('"WXZ_Pie_Menu" : 已执行增加默认节点预设')
 
 
 def register():
     if not bpy.app.timers.is_registered(change_nodes_presets):
-        bpy.app.timers.register(change_nodes_presets, first_interval=3)
+        bpy.app.timers.register(change_nodes_presets, first_interval=1)
 
 
 def unregister():

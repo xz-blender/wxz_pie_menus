@@ -8,6 +8,8 @@ from bpy.types import AddonPreferences, Operator, PropertyGroup
 from .nodes_presets import *
 from .pie.utils import change_default_keymap, check_rely_addon, rely_addons
 
+# from .prefrences import PIE_Preferences
+
 bl_info = {
     "name": "WXZ Pie Menus Addon",
     "author": "wxz",
@@ -338,6 +340,7 @@ classes = (
     Restore_My_Keymap,
     Empty_Operator,
     Enable_Addon,
+    # PIE_Preferences,
 )
 
 

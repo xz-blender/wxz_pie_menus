@@ -1,0 +1,22 @@
+# This is an Asset Catalog Definition file for Blender.
+#
+# Empty lines and lines starting with `#` will be ignored.
+# The first non-ignored line should be the version indicator.
+# Other lines are of the format "UUID:catalog/path/for/assets:simple catalog name"
+
+VERSION 1
+
+e34ee8bb-4317-4a58-b3cb-fbdf2aba02b7:Higgsas Nodes:Higgsas Nodes
+f320386e-5129-4d7f-8f02-39df31386412:Higgsas Nodes/Curves:Higgsas Nodes-Curves
+982d7bf9-af5b-4a6c-98f7-46917395c1cb:Higgsas Nodes/Deformers:Higgsas Nodes-Deformers
+1a468f91-e694-4577-a82e-b9f074e31620:Higgsas Nodes/Distribution:Higgsas Nodes-Distribution
+13f6796e-ca42-414b-bd62-748e30e41ae8:Higgsas Nodes/Effects:Higgsas Nodes-Effects
+f88a9ea8-f481-495b-98cd-3f578cc62fd8:Higgsas Nodes/Falloffs:Higgsas Nodes-Falloffs
+3185a8a9-fbae-4fce-9b52-179d44543a0a:Higgsas Nodes/Generators:Higgsas Nodes-Generators
+1658ee8f-3127-4afb-a5a4-028ca79a66dd:Higgsas Nodes/Geometry Measure:Higgsas Nodes-Geometry Measure
+137effec-7c38-4824-a468-2535256ed004:Higgsas Nodes/Mesh Primitives:Higgsas Nodes-Mesh Primitives
+642aef6f-482b-49a2-b0f2-9d69e9fcbb97:Higgsas Nodes/SDF Nodes:Higgsas Nodes-SDF Nodes
+248deb5b-a17e-4255-8ab9-2164d43eddd2:Higgsas Nodes/Selection:Higgsas Nodes-Selection
+1ec0b809-5b81-44c5-b37f-5db99983cccd:Higgsas Nodes/Simulation:Higgsas Nodes-Simulation
+ba7f03f7-b494-4987-a886-15a0e351ef28:Higgsas Nodes/UV:Higgsas Nodes-UV
+846559bb-5aae-48e9-8a8b-1334435686be:Higgsas Nodes/Utilities:Higgsas Nodes-Utilities

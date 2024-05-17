@@ -275,7 +275,6 @@ setting_lib = {
     "GN_Assets": (str(Path(sync_path) / "Blender Assets Browser" / "GN_Assets"), "APPEND_REUSE"),
     "Material": (str(Path(sync_path) / "Blender Assets Browser" / "Material"), "APPEND_REUSE"),
     "Lights": (str(Path(sync_path) / "Blender Assets Browser" / "Lights"), "APPEND_REUSE"),
-    "马路标志": (str(Path(sync_path) / "Blender Assets Browser" / "马路标志"), "LINK"),
     "Abionic": (str(Path(local_path) / "Abionic"), "LINK"),
     "BagaPie Assets": (str(Path(local_path) / "BagaPie Assets"), "LINK"),
     "室内家具模型": (str(Path(local_path) / "室内家具模型"), "LINK"),
@@ -329,8 +328,6 @@ def change_addons():
 
     bpy.ops.pie.enable_relay_addons()
     print('"WXZ_Pie_Menu" Enable Relay Addons!')
-    change_assets_library_path()
-    print('"WXZ_Pie_Menu" Change Assets Library Items!')
 
 
 def register():
