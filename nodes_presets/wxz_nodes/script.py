@@ -19,9 +19,9 @@ cwf_name = Path(bpy.data.filepath).stem
 text = ""
 
 
-def add_line(text, cat_path) -> str:
-    text += "%s:%s:%s\n" % (uuid.uuid4(), cat_path, str(cat_path).replace("\\", "/").replace("/", "-"))
-    return text
+def add_line(cat_path):
+    cat_name = str(cat_path).replace("\\", "/").replace("/", "-")
+    return "%s:%s:%s\n" % (uuid.uuid4(), cat_path, cat_name)
 
 
 def natural_sort(l):
@@ -69,19 +69,19 @@ if cwf_name == "GN_Nodes":
     text = txt_prefix
     all_nodes = bpy.data.node_groups["GN_ALL_NODES"]
     all_nodes_name = all_nodes.name
-    text = add_line(text, all_nodes_name)
+    text += add_line(all_nodes_name)
 
     for node in all_nodes.nodes:
         if node.type == "FRAME":
-            text = add_line(text, Path(all_nodes_name) / node.label)
+            text += add_line(Path(all_nodes_name) / node.label)
+            print(text)
 
+    # elif cwf_name == "SN_Nodes":
+    #     all_nodes = bpy.data.materials["SN_ALL_NODES"]
 
-elif cwf_name == "SN_Nodes":
-    all_nodes = bpy.data.materials["SN_ALL_NODES"]
+    # elif cwf_name == "CN_Nodes":
+    #     all_nodes = bpy.data.node_groups
 
-elif cwf_name == "CN_Nodes":
-    all_nodes = bpy.data.node_groups
-
-write_file(assets_cats_text_path, text)
+    write_file(assets_cats_text_path, text)
 
 bpy.ops.wm.save_mainfile()
