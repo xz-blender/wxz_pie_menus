@@ -2,6 +2,7 @@
 import json
 import os
 import re
+import time
 import uuid
 from datetime import datetime
 from pathlib import Path
@@ -109,12 +110,6 @@ def write_file(path, text):
         f.write(text)
 
 
-if cwf_name == "GN_Nodes":
-    all_nodes = bpy.data.node_groups["GN_ALL_NODES"]
-# elif cwf_name == "SN_Nodes":
-#     all_nodes = bpy.data.materials["SN_ALL_NODES"]
-
-
 def change_default_cats_and_blends(all_nodes, cwf_name, cwf_path):
 
     nosign_name = "No Sign"
@@ -176,4 +171,9 @@ def change_default_cats_and_blends(all_nodes, cwf_name, cwf_path):
     #     all_nodes = bpy.data.node_groups
 
 
-change_default_cats_and_blends(all_nodes, cwf_name, cwf_path)
+if cwf_name == "GN_Nodes":
+    all_nodes = bpy.data.node_groups["GN_ALL_NODES"]
+    change_default_cats_and_blends(all_nodes, cwf_name, cwf_path)
+
+# elif cwf_name == "SN_Nodes":
+#     all_nodes = bpy.data.materials["SN_ALL_NODES"]
