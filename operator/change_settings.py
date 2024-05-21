@@ -29,6 +29,7 @@ def change_preferences_settings():
     shouw_stats(True)
     # 界面
     view = pref.view
+    view.ui_scale = 1.2
     view.text_hinting = "FULL"  # 文本微调
     view.show_developer_ui = True  # 开发者选项
     view.show_tooltips_python = True  # Python工具提示
