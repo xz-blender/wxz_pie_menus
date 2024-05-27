@@ -49,7 +49,7 @@ class VIEW3D_PIE_MT_Bottom_T(Menu):
                 if pie_op_check(pie, lt_check, lt_name) == True:
                     pie.operator("mesh.looptools_space", text="平均")
                 # 2 - BOTTOM
-                pie.separator()
+                pie.operator("mesh.looptools_gstretch")
                 # 8 - TOP
                 if pie_op_check(pie, lt_check, lt_name) == True:
                     pie.operator("mesh.looptools_circle", text="圆环")
