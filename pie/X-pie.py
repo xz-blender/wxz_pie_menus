@@ -104,7 +104,13 @@ class VIEW3D_PIE_MT_Bottom_X(Menu):
                 # 1 - BOTTOM - LEFT
                 pie.separator()
                 # 3 - BOTTOM - RIGHT
-                pie.separator()
+                col = pie.split()
+                row = col.box().row(align=True)
+                row.operator("mesh.mark_sharp", text="清除锐边").clear = True
+                row.operator("mesh.mark_seam", text="清除边缝合").clear = True
+                row.operator("transform.edge_crease", text="清除边折痕").value = 0
+                row.operator("transform.edge_bevelweight", text="清除边权重").value = 0
+
             if ob_type == "CURVE":
                 # 4 - LEFT
                 pie.separator()

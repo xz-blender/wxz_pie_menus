@@ -122,7 +122,7 @@ B_dir = [
     (["Node Editor", "node.clear_viewer_border", "Clear Viewer Region"], [("active", False)], []),
     (["Outliner", "outliner.select_box", "Box Select"], [("active", False)], []),
     (["NLA Editor", "nla.select_box", "Box Select"], [("active", False)], []),
-    (["Mesh", "mesh.bevel", "Bevel"], [("value", "CLICK"), ("active", False)], []),
+    (["Mesh", "mesh.bevel", "Bevel"], [("value", "CLICK")], []),
     (["3D View", "view3d.render_border", "Set Render Region"], [("value", "CLICK")], []),
     (["Object Mode", "object.hide_collection", "Hide Collection"], [("active", False)], []),
 ]
