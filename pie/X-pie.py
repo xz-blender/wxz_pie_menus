@@ -89,7 +89,13 @@ class VIEW3D_PIE_MT_Bottom_X(Menu):
                 row.operator("mesh.dissolve_limited", text="有限融并")
 
                 # 2 - BOTTOM
-                pie.operator("mesh.edge_collapse", text="塌陷边面")
+                col = pie.split()
+                row = col.box().row(align=True)
+                row.scale_x = 0.9
+                row.operator("mesh.mark_sharp", text="清除锐边").clear = True
+                row.operator("mesh.mark_seam", text="清除边缝合").clear = True
+                row.operator("transform.edge_crease", text="清除边折痕").value = 0
+                row.operator("transform.edge_bevelweight", text="清除边权重").value = 0
                 # 8 - TOP
                 box = pie.split().box()
                 box.scale_y = 1.4
@@ -104,12 +110,7 @@ class VIEW3D_PIE_MT_Bottom_X(Menu):
                 # 1 - BOTTOM - LEFT
                 pie.separator()
                 # 3 - BOTTOM - RIGHT
-                col = pie.split()
-                row = col.box().row(align=True)
-                row.operator("mesh.mark_sharp", text="清除锐边").clear = True
-                row.operator("mesh.mark_seam", text="清除边缝合").clear = True
-                row.operator("transform.edge_crease", text="清除边折痕").value = 0
-                row.operator("transform.edge_bevelweight", text="清除边权重").value = 0
+                pie.operator("mesh.edge_collapse", text="塌陷边面")
 
             if ob_type == "CURVE":
                 # 4 - LEFT
