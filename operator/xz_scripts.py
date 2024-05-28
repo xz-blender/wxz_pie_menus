@@ -155,6 +155,29 @@ class PIE_Custom_Scripts_LinkSameObjectData_BySelects(Operator):
         return {"FINISHED"}
 
 
+class PIE_Custom_Scripts_SelectSameVertexObject(Operator):
+    bl_idname = "pie.selectsamevertexobject"
+    bl_label = "选择同顶点数网格物体"
+    bl_description = "选择同顶点数网格物体"
+    bl_options = {"REGISTER", "UNDO"}
+
+    @classmethod
+    def poll(cls, context):
+        if context.active_object:
+            return True
+
+    def execute(self, context):
+        if context.active_object.type == "MESH":
+            ac_len = len(context.active_object.data.vertices)
+            for ob in bpy.data.objects:
+                if ob.type == "MESH":
+                    if len(ob.data.vertices) == ac_len:
+                        ob.data.select_set(False)
+        else:
+            self.report({"INFO"}, "激活物体必须为网格物体")
+        return {"FINISHED"}
+
+
 class PIE_Custom_Scripts_ExportFiles(Operator):
     bl_idname = "pie.parents_to_file"
     bl_label = "导出父子级到单文件"
@@ -396,6 +419,7 @@ classes = [
     PIE_Custom_Scripts_ExportFiles,
     PIE_Custom_Scripts_CleanSameObject_LinkData,
     PIE_Custom_Scripts_LinkSameObjectData_BySelects,
+    PIE_Custom_Scripts_SelectSameVertexObject,
 ]
 
 
