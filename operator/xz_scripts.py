@@ -117,6 +117,44 @@ class PIE_Custom_Scripts_CleanSameObject_LinkData(Operator):
         return {"FINISHED"}
 
 
+class PIE_Custom_Scripts_LinkSameObjectData_BySelects(Operator):
+    bl_idname = "pie.linksameobjectdata_byselects"
+    bl_label = "同顶点数网格物体关联数据"
+    bl_description = "比较选择的网格物体，如果顶点数相等,则关联物体数据,激活物体优先"
+    bl_options = {"REGISTER", "UNDO"}
+
+    @classmethod
+    def poll(cls, context):
+        if context.selected_objects:
+            return True
+
+    def execute(self, context):
+        vertex_count_to_objects = {}
+        if context.active_object:
+            ac = context.active_object
+        else:
+            ac = None
+        for obj in context.selected_objects:
+            # 确保物体类型为 'MESH'
+            if obj.type == "MESH":
+
+                # 获取物体的顶点数
+                vertex_count = len(obj.data.vertices)
+                # 检查是否已经有物体具有相同的顶点数
+                if vertex_count in vertex_count_to_objects:
+                    # 如果是，关联它们的物体数据
+                    if ac:
+                        if vertex_count == len(ac.data.vertices):
+                            obj.data = ac.data
+                    else:
+                        obj.data = vertex_count_to_objects[vertex_count].data
+                else:
+                    # 如果不是，将该物体添加到字典中
+                    vertex_count_to_objects[vertex_count] = obj
+        vertex_count_to_objects = {}
+        return {"FINISHED"}
+
+
 class PIE_Custom_Scripts_ExportFiles(Operator):
     bl_idname = "pie.parents_to_file"
     bl_label = "导出父子级到单文件"
@@ -357,6 +395,7 @@ classes = [
     PIE_Custom_Scripts_OriginTOParent,
     PIE_Custom_Scripts_ExportFiles,
     PIE_Custom_Scripts_CleanSameObject_LinkData,
+    PIE_Custom_Scripts_LinkSameObjectData_BySelects,
 ]
 
 
