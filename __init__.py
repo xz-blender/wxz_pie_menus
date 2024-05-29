@@ -20,6 +20,7 @@ bl_info = {
 }
 sub_modules_names = [
     "A_shift-pie",
+    "A_ctrl_shift-pie",
     "A-pie",
     "B-pie",
     "B_ctrl-pie",
