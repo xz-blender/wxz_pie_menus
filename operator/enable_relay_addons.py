@@ -213,14 +213,15 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             "Synchronize Workspaces": [[], []],
             "viewport_timeline_scrub": [[], []],
             "Quick Files": [[("include subfolders", False)], []],
+            "Node Kit": [[("nodes_path", str(Path(sync_path) / "NodeKit"))], []],
             # ————节点类工具————
+            "NodeRelax": [[], []],
             "BB_Nodes": [[], []],
             "ETK_core": [[], []],
             "Node Kit": [[("nodes_path", str(Path(sync_path) / "NodeKit"))], []],
             "node_pie": [[], [(["Node Editor", "wm.call_menu_pie", "Node pie"], [("value", "CLICK_DRAG")], [])]],
             "uber_compositor": [[], []],
             "b3dsdf": [[], []],
-            "wxz_nodes_presets": [[], []],
             # ————UV编辑器————
             "TexTools": [[], []],
             "UvSquares": [[], []],

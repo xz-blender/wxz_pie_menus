@@ -288,6 +288,7 @@ Text_dir = [
 ]
 Others_dir = [
     (["Curves", "curves.disable_selection", "CURVES_OT_disable_selection"], [("active", False)], []),
+    (["Window", "curves.disable_selection", "Toggle engon Browser"], [("type", "BACK_SLASH")], []),  # engon
 ]
 
 
