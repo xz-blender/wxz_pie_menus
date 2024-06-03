@@ -5,7 +5,8 @@ from pathlib import Path
 import addon_utils
 import bpy
 from bpy.types import Operator
-from utils import get_local_path, get_sync_path
+
+from .utils import get_local_path, get_sync_path
 
 submoduname = __name__.split(".")[-1]
 bl_info = {

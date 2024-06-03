@@ -1,7 +1,18 @@
 from pathlib import Path
 
 import bpy
-from utils import get_local_path, get_sync_path
+
+from .utils import get_local_path, get_sync_path
+
+submoduname = __name__.split(".")[-1]
+bl_info = {
+    "name": submoduname,
+    "author": "wxz",
+    "version": (0, 0, 1),
+    "blender": (4, 1, 0),
+    "location": "View3D",
+    "category": "3D View",
+}
 
 sync_path = get_sync_path()
 local_path = get_local_path()
@@ -56,7 +67,7 @@ def change_assets_library_path():
         else:
             asset_libraries[name].path = data[0]
 
-    print("Changed Assets library")
+    print('"WXZ_Pie_Menu"Changed Assets library')
 
 
 def register():
