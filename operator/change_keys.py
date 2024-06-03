@@ -137,7 +137,7 @@ C_dir = [
     (["3D View", "view3d.copybuffer", "Copy Objects"], [("value", "CLICK")], []),  # ctrl C
 ]
 D_dir = [
-    (["3D View", "ls.select", "Loop Select"], [("active", False)], []),
+    (["Mesh", "ls.select", "Loop Select"], [("active", False)], []),
 ]
 E_dir = [
     (["Curve", "curve.extrude_move", "Extrude Curve and Move"], [("value", "CLICK")], []),
