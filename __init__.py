@@ -69,6 +69,7 @@ extra_scripts_modules = [
     "xz_scripts",
     "unbevel",
     "change_nodes_presets",
+    "change_assets_lib",
 ]
 operator_modules = [
     __import__(__package__ + "." + "operator" + "." + submod, {}, {}, submod) for submod in extra_scripts_modules

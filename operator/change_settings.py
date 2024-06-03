@@ -74,6 +74,9 @@ def change_preferences_settings():
     edit = pref.edit
     edit.undo_steps = 128  # 撤销次数
 
+    # 自动打包
+    bpy.ops.file.autopack_toggle()
+
     # 保存&加载
     filepaths = pref.filepaths
     filepaths.save_version = 0  # 保存版本0
