@@ -12,4 +12,4 @@ blender_version_min = "4.2.0"
 license = [
   "SPDX:GPL-2.0-or-later",
 ]
-wheels = [ "wheels/certifi-2024.6.2-py3-none-any.whl", "wheels/charset_normalizer-3.3.2-cp311-cp311-win_amd64.whl", "wheels/idna-3.7-py3-none-any.whl", "wheels/requests-2.32.3-py3-none-any.whl", "wheels/urllib3-2.2.1-py3-none-any.whl",]
+wheels = [ "wheels/certifi-2024.2.2-py3-none-any.whl", "wheels/charset_normalizer-3.3.2-cp311-cp311-win_amd64.whl", "wheels/idna-3.7-py3-none-any.whl", "wheels/requests-2.32.3-py3-none-any.whl", "wheels/urllib3-2.2.1-py3-none-any.whl",]
