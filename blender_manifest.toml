@@ -1,40 +1,15 @@
 schema_version = "1.0.0"
 
-# Example of manifest file for a Blender extension
-# Change the values according to your extension
 id = "wxz_pie_menus"
 version = "1.0.0"
 name = "WXZ-Pie工具合集"
 tagline = "作者自用PIE插件合集"
 maintainer = "WXZ <wxz03111997@gmail.com>"
-# Supported types: "add-on", "theme"
 type = "add-on"
-
-# Optional: add-ons can list which resources they will require:
-# * "files" (for access of any filesystem operations)
-# * "network" (for internet access)
-# * "camera" (to capture photos and videos)
-# * "microphone" (to capture audio)
-permissions = ["files", "network"]
-
-# Optional link to documentation, support, source files, etc
-# website = "http://extensions.blender.org/add-ons/my-example-package/"
-
-# Optional list defined by Blender and server, see:
-# https://docs.blender.org/manual/en/dev/extensions/tags.html
+website = "https://github.com/xz-blender/wxz_pie_menus"
 tags = ["3D View", "Modeling"]
-
 blender_version_min = "4.2.0"
-# Optional: maximum supported Blender version
-# blender_version_max = "5.1.0"
-
-# License conforming to https://spdx.org/licenses/ (use "SPDX: prefix)
-# https://docs.blender.org/manual/en/dev/extensions/licenses.html
 license = [
   "SPDX:GPL-2.0-or-later",
 ]
-# Optional: required by some licenses.
-# copyright = [
-#   "2002-2024 Developer Name",
-#   "1998 Company Name",
-# ]
+wheels = [ "wheels/certifi-2024.6.2-py3-none-any.whl", "wheels/charset_normalizer-3.3.2-cp311-cp311-win_amd64.whl", "wheels/idna-3.7-py3-none-any.whl", "wheels/requests-2.32.3-py3-none-any.whl", "wheels/urllib3-2.2.1-py3-none-any.whl",]

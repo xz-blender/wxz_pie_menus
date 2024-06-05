@@ -1,4 +1,3 @@
-
 import collections
 import os
 import subprocess
@@ -324,7 +323,7 @@ def xdg_open_file(path):
 
 
 class EstimateMemoryUsage(bpy.types.Operator):
-    bl_idname = "renderset.estimate_memory_usage"
+    bl_idname = "pie.estimate_memory_usage"
     bl_label = "Estimate Memory Usage (Beta)"
     bl_description = (
         "Goes through datablocks that would have to be loaded for rendering, "

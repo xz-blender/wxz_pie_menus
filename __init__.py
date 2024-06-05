@@ -64,7 +64,6 @@ extra_scripts_modules = [
     "change_keys",
     "change_settings",
     "enable_relay_addons",
-    "memory_useage",
     "orient_origin_to_selection",
     "xz_scripts",
     "unbevel",
@@ -77,6 +76,7 @@ operator_modules = [
 
 parts_addons = [
     "uv_squares",
+    "memory_useage",
 ]
 # parts_addons = [file.stem for file in ((Path.cwd() / "parts_addons").rglob("*.py"))]
 parts_modules = [

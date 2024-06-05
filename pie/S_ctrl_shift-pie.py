@@ -55,7 +55,7 @@ class PIE_MT_S_ctrl_Shift(Menu):
         # 1 - BOTTOM - LEFT
         pie.separator()
         # 3 - BOTTOM - RIGHT
-        pie.separator()
+        pie.operator("pie.estimate_memory_usage", text="展示场景内存使用量", icon="MEMORY")
 
 
 classes = [
