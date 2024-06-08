@@ -1,6 +1,7 @@
 *.pyc
 .__pycache__
 .DS_Store
+.git
 test.py
 blends_savetime.txt
 blender_assets.cats.txt~
