@@ -12,7 +12,7 @@ import bpy
 from bpy.props import BoolProperty, PointerProperty
 from bpy.types import AddonPreferences, Operator, PropertyGroup
 
-from .nodes_presets import *
+from .nodes_presets.Higssas import *
 from .pie.utils import change_default_keymap, check_rely_addon, rely_addons
 
 # from .prefrences import PIE_Preferences
