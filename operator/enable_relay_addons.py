@@ -267,25 +267,24 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             bpy.context.preferences.extensions.active_repo = 0
             bpy.ops.preferences.extension_repo_sync()
             for addon_name, addon_change in internal_extensions.items():
-                if addon_name in addons_list:
+                try:
+                    bpy.ops.extensions.package_install(repo_index=0, pkg_id=addon_name)
+                except:
+                    continue
+                if addon_utils.check(addon_name)[0] == False:
+                    #  # check addon is enabled
                     try:
-                        bpy.ops.extensions.package_install(repo_index=0, pkg_id=addon_name)
+                        bpy.ops.preferences.addon_enable(module=addon_name)
+                        time.sleep(0.1)
+                        bpy.ops.preferences.addon_refresh()
+                        print(addon_name, "is enabled")
                     except:
-                        continue
-                    if addon_utils.check(addon_name)[0] == False:
-                        #  # check addon is enabled
-                        try:
-                            bpy.ops.preferences.addon_enable(module=addon_name)
-                            time.sleep(0.1)
-                            bpy.ops.preferences.addon_refresh()
-                            print(addon_name, "is enabled")
-                        except:
-                            print(addon_name, "is enable error")
-                    if addon_change[0]:
-                        for pref_change in addon_change[0]:
-                            setattr(context.preferences.addons[addon_name].preferences, pref_change[0], pref_change[1])
-                    if addon_change[1]:
-                        change_addon_key_value(addon_change[1])
+                        print(addon_name, "is enable error")
+                if addon_change[0]:
+                    for pref_change in addon_change[0]:
+                        setattr(context.preferences.addons[addon_name].preferences, pref_change[0], pref_change[1])
+                if addon_change[1]:
+                    change_addon_key_value(addon_change[1])
 
             print("YES!")
             return {"FINISHED"}
