@@ -239,8 +239,11 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
         # ads_lis_dir = addons_officials_list.update(addons_thirds_list)
         # 打开插件并设置
 
+        combined_dict = internal_extensions.copy()  # 复制一个字典以避免修改原始字典
+        combined_dict.update(addons_officials_list)
+
         if bpy.app.version < (4, 2, 0):
-            for addon_name, addon_change in (internal_extensions + addons_officials_list).items():
+            for addon_name, addon_change in combined_dict.items():
                 if addon_name in addons_list:
                     if addon_utils.check(addon_name)[0] == False:
                         #  # check addon is enabled
@@ -264,13 +267,8 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             self.report({"INFO"}, "已开启预设插件")
             return {"FINISHED"}
         else:
-            bpy.context.preferences.extensions.active_repo = 0
-            bpy.ops.preferences.extension_repo_sync()
-            for addon_name, addon_change in internal_extensions.items():
-                try:
-                    bpy.ops.extensions.package_install(repo_index=0, pkg_id=addon_name)
-                except:
-                    continue
+            for addon_name, addon_change in addons_officials_list.items():
+                addon_name = "bl_ext.user_default." + addon_name
                 if addon_utils.check(addon_name)[0] == False:
                     #  # check addon is enabled
                     try:
@@ -285,6 +283,13 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
                         setattr(context.preferences.addons[addon_name].preferences, pref_change[0], pref_change[1])
                 if addon_change[1]:
                     change_addon_key_value(addon_change[1])
+            # 关闭插件
+            for disable in addon_disable_list:
+                if disable in addons_list and addon_utils.check(disable)[0] == True:
+                    bpy.ops.preferences.addon_disable(module=disable)
+            # 部分插件其他设置
+            self.report({"INFO"}, "已开启预设插件")
+            return {"FINISHED"}
 
             print("YES!")
             return {"FINISHED"}
@@ -298,6 +303,7 @@ def change_addons():
         "\\", "/"
     )
     print('"WXZ_Pie_Menu" Enable Relay Addons!')
+    bpy.ops.pie.enable_relay_addons
 
 
 def register():
