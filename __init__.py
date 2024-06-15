@@ -4,7 +4,7 @@ from pathlib import Path
 from .download import download_file
 
 down_path = Path(__file__).parent
-download_file("addons_file/wxz_pie_menus/ui_font.ttf", down_path)
+download_file("fonts/ui_font.ttf", down_path)
 download_file("addons_file/wxz_pie_menus/workspace.blend", down_path)
 download_file("addons_file/wxz_pie_menus/workspace_online.blend", down_path)
 
