@@ -2,7 +2,7 @@ from pathlib import Path
 
 import bpy
 
-from .utils import get_local_path, get_sync_path
+from ..utils import get_local_path, get_sync_path
 
 submoduname = __name__.split(".")[-1]
 bl_info = {

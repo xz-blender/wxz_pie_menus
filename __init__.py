@@ -1,19 +1,26 @@
 import os
 from pathlib import Path
 
-from .download import download_file
+from .download import download_file, download_zip
+
+down_path = Path(__file__).parent
+xz_url = "addons_file" + "/" + down_path.name + "/"
 
 down_path = Path(__file__).parent
 download_file("fonts/ui_font.ttf", down_path)
-download_file("addons_file/wxz_pie_menus/workspace.blend", down_path)
-download_file("addons_file/wxz_pie_menus/workspace_online.blend", down_path)
+download_file(xz_url + "workspace.blend", down_path)
+download_file(xz_url + "workspace_online.blend", down_path)
 
 import bpy
 from bpy.props import BoolProperty, PointerProperty
 from bpy.types import AddonPreferences, Operator, PropertyGroup
 
+from . import auto_load
 from .nodes_presets.Higssas import *
 from .pie.utils import change_default_keymap, check_rely_addon, rely_addons
+from .utils import *
+
+# auto_load.init()
 
 # from .prefrences import PIE_Preferences
 
@@ -236,7 +243,7 @@ class Enable_Addon(Operator):
 
 
 class WXZ_PIE_Preferences(AddonPreferences):
-    bl_idname = __name__
+    bl_idname = get_addon_name()
 
     def draw(self, context):
 
@@ -366,6 +373,8 @@ def register():
         if getattr(prefs, "use_" + name):
             register_submodule(mod)
 
+    # auto_load.register()
+
 
 def unregister():
     for mod in sub_modules:
@@ -374,6 +383,8 @@ def unregister():
 
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
+
+    # auto_load.unregister()
 
 
 if __name__ == "__main__":

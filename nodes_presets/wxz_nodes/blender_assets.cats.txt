@@ -1,4 +1,3 @@
-
 # This is an Asset Catalog Definition file for Blender.
 #
 # Empty lines and lines starting with `#` will be ignored.
@@ -8,9 +7,9 @@
 VERSION 1
 
 02fa00ac-7419-479f-acbd-567086b5476b:GN_Nodes:GN_Nodes
-b225e8ba-5c29-40b7-b13e-376bea3a4a45:GN_Nodes/No Sign:GN_Nodes-No Sign
+64d04fdd-130f-48d7-92ef-2bfdd2ef2df5:GN_Nodes/Base Mesh:GN_Nodes-Base Mesh
 dd282ee2-fa0f-4803-a160-5bc2d62e815e:GN_Nodes/Edit:GN_Nodes-Edit
 874ea2d0-8d44-4bbd-9a35-a6f14bba3b8e:GN_Nodes/Generate:GN_Nodes-Generate
 8a6bc4ba-5bcc-4b43-82bd-5bd30e5af11d:GN_Nodes/Material:GN_Nodes-Material
+b225e8ba-5c29-40b7-b13e-376bea3a4a45:GN_Nodes/No Sign:GN_Nodes-No Sign
 2723d186-0657-49cd-a4a1-867705b51823:GN_Nodes/Preview:GN_Nodes-Preview
-64d04fdd-130f-48d7-92ef-2bfdd2ef2df5:GN_Nodes/Base Mesh:GN_Nodes-Base Mesh

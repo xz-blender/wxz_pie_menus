@@ -6,7 +6,7 @@ import addon_utils
 import bpy
 from bpy.types import Operator
 
-from .utils import get_local_path, get_sync_path
+from ..utils import get_local_path, get_sync_path
 
 submoduname = __name__.split(".")[-1]
 bl_info = {
@@ -43,6 +43,7 @@ def change_addon_key_value(change_dir):
     bpy.context.preferences.view.use_translate_interface = True
 
 
+# addon_path = Path(bpy.utils.user_resource("SCRIPTS")) / "addons"
 addon_path = Path(bpy.utils.user_resource("SCRIPTS")) / "addons"
 
 
@@ -136,10 +137,10 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
                     (["Window", "engon.browser_toggle_area", "Toggle Engon Browser"], [("type", "BACK_SLASH")], []),
                 ],
             ],
-            "True-Assets": [
-                [("ta_directory", str(Path(sync_path) / "True Assets"))],
-                [(["3D View", "ta.saveassetsfromthisfile", "Mark Assets and Quit"], [("active", False)], [])],
-            ],
+            # "True-Assets": [
+            #     [("ta_directory", str(Path(sync_path) / "True Assets"))],
+            #     [(["3D View", "ta.saveassetsfromthisfile", "Mark Assets and Quit"], [("active", False)], [])],
+            # ],
             "BagaBatch": [
                 [
                     ("render_exposition", -1),
@@ -213,12 +214,10 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             "Synchronize Workspaces": [[], []],
             "viewport_timeline_scrub": [[], []],
             "Quick Files": [[("include subfolders", False)], []],
-            "Node Kit": [[("nodes_path", str(Path(sync_path) / "NodeKit"))], []],
             # ————节点类工具————
             "NodeRelax": [[], []],
             "BB_Nodes": [[], []],
             "ETK_core": [[], []],
-            "Node Kit": [[("nodes_path", str(Path(sync_path) / "NodeKit"))], []],
             "node_pie": [[], [(["Node Editor", "wm.call_menu_pie", "Node pie"], [("value", "CLICK_DRAG")], [])]],
             "uber_compositor": [[], []],
             "b3dsdf": [[], []],
@@ -233,7 +232,7 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
         addon_disable_list = [
             "io_anim_bvh",
             "io_mesh_ply",
-            # 'mesh_f2',
+            "mesh_f2",
         ]
 
         # ads_lis_dir = addons_officials_list.update(addons_thirds_list)
@@ -267,31 +266,28 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
             self.report({"INFO"}, "已开启预设插件")
             return {"FINISHED"}
         else:
-            for addon_name, addon_change in addons_officials_list.items():
-                addon_name = "bl_ext.user_default." + addon_name
-                if addon_utils.check(addon_name)[0] == False:
-                    #  # check addon is enabled
-                    try:
-                        bpy.ops.preferences.addon_enable(module=addon_name)
-                        time.sleep(0.1)
-                        bpy.ops.preferences.addon_refresh()
-                        print(addon_name, "is enabled")
-                    except:
-                        print(addon_name, "is enable error")
-                if addon_change[0]:
-                    for pref_change in addon_change[0]:
-                        setattr(context.preferences.addons[addon_name].preferences, pref_change[0], pref_change[1])
-                if addon_change[1]:
-                    change_addon_key_value(addon_change[1])
+            for addon_name, addon_change in combined_dict.items():
+                if addon_name in addons_list:
+                    if addon_utils.check(addon_name)[0] == False:
+                        #  # check addon is enabled
+                        try:
+                            bpy.ops.preferences.addon_enable(module=addon_name)
+                            time.sleep(0.1)
+                            bpy.ops.preferences.addon_refresh()
+                            print(addon_name, "is enabled")
+                        except:
+                            print(addon_name, "is enable error")
+                    if addon_change[0]:
+                        for pref_change in addon_change[0]:
+                            setattr(context.preferences.addons[addon_name].preferences, pref_change[0], pref_change[1])
+                    if addon_change[1]:
+                        change_addon_key_value(addon_change[1])
             # 关闭插件
             for disable in addon_disable_list:
                 if disable in addons_list and addon_utils.check(disable)[0] == True:
                     bpy.ops.preferences.addon_disable(module=disable)
             # 部分插件其他设置
             self.report({"INFO"}, "已开启预设插件")
-            return {"FINISHED"}
-
-            print("YES!")
             return {"FINISHED"}
 
 
