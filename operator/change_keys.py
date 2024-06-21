@@ -329,7 +329,7 @@ def changes_keys():
 
 def register():
     if not bpy.app.timers.is_registered(changes_keys):
-        bpy.app.timers.register(changes_keys, first_interval=4)
+        bpy.app.timers.register(changes_keys, first_interval=1)
 
 
 def unregister():

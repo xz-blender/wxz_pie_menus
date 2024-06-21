@@ -134,6 +134,7 @@ def change_default_cats_and_blends(all_nodes, cwf_name, cwf_path):
             bpy.ops.wm.save_mainfile()
             # write_save_time(assets_catstext_path, savetime_blend_key)
             print(f"WXZ_Default_Nodes:'{cwf_name}'", "File And Cats File Saved Change!")
+            write_save_time(cwf_path, savetime_blend_key)
 
     else:
         # 添加大类文件夹

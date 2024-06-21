@@ -32,72 +32,25 @@ bl_info = {
     "description": "Pie Menu",
     "category": "3D View",
 }
-sub_modules_names = [
-    "A_shift-pie",
-    "A_ctrl_shift-pie",
-    "A-pie",
-    "B-pie",
-    "B_ctrl-pie",
-    # "Brush-key",
-    "C-key",
-    "C-pie",
-    "D-pie",
-    "E-pie",
-    "F-pie",
-    "G-pie",
-    "Lock_View",
-    "Modifier-bar",
-    "Outliner-pie",
-    "Q_alt-key",
-    "Q-key",
-    "Q-pie",
-    "R-pie",
-    "S_ctrl_alt",
-    "S_ctrl_shift-pie",
-    "S_ctrl-pie",
-    "S-pie",
-    "Space_shift-pie",
-    "Space-key",
-    "T-pie",
-    "Tab_ctrl-pie",
-    "Translate-key",
-    "U-pie",
-    "V-pie",
-    "W_alt-key",
-    "W-pie",
-    "X_ctrl_alt-pie",
-    "X-key",
-    "X-pie",
-    "Z-pie",
-]
-sub_modules_names.sort()
-sub_modules = [__import__(__package__ + "." + "pie" + "." + submod, {}, {}, submod) for submod in sub_modules_names]
-sub_modules.sort(key=lambda mod: (mod.bl_info["name"], mod.bl_info["category"]))
-
-extra_scripts_modules = [
-    "change_keys",
-    "change_settings",
-    "enable_relay_addons",
-    "orient_origin_to_selection",
-    "xz_scripts",
-    "unbevel",
-    "change_nodes_presets",
-    "change_assets_lib",
-]
-operator_modules = [
-    __import__(__package__ + "." + "operator" + "." + submod, {}, {}, submod) for submod in extra_scripts_modules
+cwd = os.getcwd()
+except_name_list = [
+    "icons",
+    "__pycache__",
+    "utils",
+    "Brush-key",
 ]
 
-parts_addons = [
-    "uv_squares",
-    "memory_useage",
-]
-# parts_addons = [file.stem for file in ((Path.cwd() / "parts_addons").rglob("*.py"))]
-parts_modules = [
-    __import__(__package__ + "." + "parts_addons" + "." + submod, {}, {}, submod) for submod in parts_addons
-]
 
-sub_modules += operator_modules + parts_modules
+pie_folder_path = Path(cwd) / "pie"
+pie_submodules = iter_submodules_name(pie_folder_path, except_name_list)
+
+op_folder_path = Path(cwd) / "operator"
+op_submodules = iter_submodules_name(op_folder_path, except_name_list)
+
+parts_folder_path = Path(cwd) / "parts_addons"
+parts_submodules = iter_submodules_name(parts_folder_path, except_name_list)
+
+all_modules = pie_submodules + op_submodules + parts_submodules
 
 
 def _get_pref_class(mod):
@@ -117,7 +70,7 @@ def get_addon_preferences(name=""):
     addon_prefs = addons[__name__].preferences
     if name:
         if not hasattr(addon_prefs, name):
-            for mod in sub_modules:
+            for mod in pie_submodules:
                 if mod.__name__.split(".")[-1] == name:
                     cls = _get_pref_class(mod)
                     if cls:
@@ -238,7 +191,7 @@ class Enable_Addon(Operator):
         try:
             bpy.ops.preferences.addon_enable(module=self.module)
         except:
-            self.report({"INFO", "插件已经开启！"})
+            self.report({"INFO"}, "插件已经开启！")
         return {"FINISHED"}
 
 
@@ -302,7 +255,7 @@ class WXZ_PIE_Preferences(AddonPreferences):
         row.alignment = "CENTER"
         row.label(text="已启用以下Pie插件 :")
 
-        for mod in sub_modules:
+        for mod in all_modules:
             mod_name = mod.__name__.split(".")[-1]
             info = mod.bl_info
             box = column.box()
@@ -323,7 +276,7 @@ class WXZ_PIE_Preferences(AddonPreferences):
         row.label(text="End of Pie Menu Activations", icon="FILE_PARENT")
 
 
-for mod in sub_modules:
+for mod in all_modules:
     info = mod.bl_info
     mod_name = mod.__name__.split(".")[-1]
 
@@ -343,7 +296,8 @@ for mod in sub_modules:
         "use_" + mod_name,
         BoolProperty(
             name=info["name"],
-            description=info.get("description", ""),
+            # name=mod.__name__.split(".")[0],
+            # description=info.get("description", ""),
             update=gen_update(mod),
             default=True,
         ),
@@ -366,7 +320,7 @@ def register():
 
     prefs = get_addon_preferences()
 
-    for mod in sub_modules:
+    for mod in all_modules:
         if not hasattr(mod, "__addon_enabled__"):
             mod.__addon_enabled__ = False
         name = mod.__name__.split(".")[-1]
@@ -377,7 +331,7 @@ def register():
 
 
 def unregister():
-    for mod in sub_modules:
+    for mod in all_modules:
         if mod.__addon_enabled__:
             unregister_submodule(mod)
 

@@ -142,11 +142,24 @@ def change_context_settings():
     scene.tool_settings.snap_elements_base = {"FACE", "EDGE_MIDPOINT", "VERTEX", "EDGE", "EDGE_PERPENDICULAR"}
 
 
+def change_extensions_repo_list():
+    bpy.context.preferences.system.use_online_access = True
+    repos = bpy.context.preferences.extensions.repos
+    xz_url_name = "blender4.com"
+    xz_url = f"https://{xz_url_name}/xz"
+    repos_list = [repo.remote_url for repo in repos]
+    if xz_url not in repos_list:
+        bpy.ops.preferences.extension_repo_add(name="", remote_url=xz_url, type="REMOTE")
+        bpy.context.preferences.extensions.repos[xz_url_name].use_sync_on_startup = False
+
+
 def change_settings():
     try:
         change_preferences_settings()
         change_context_settings()
-        print('"WXZ_Pie_Menu" changed settings!')
+        print('"WXZ_Pie_Menu" changed default settings!')
+        change_extensions_repo_list()
+        print('"WXZ_Pie_Menu" changed Extensions Remote List!')
     except:
         pass
 

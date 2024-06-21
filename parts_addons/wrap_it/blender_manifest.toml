@@ -1,0 +1,12 @@
+schema_version = "1.0.0"
+id = "wrap_it"
+name = "wrap it"
+version = "1.0.0"
+tagline = "轻松创建薄膜包裹效果-选择多个物体-添加菜单"
+maintainer = "Ian Lloyd Dela Cruz"
+type = "add-on"
+tags = [ "Mesh",]
+blender_version_min = "4.2.0"
+license = [ "SPDX:GPL-2.0-or-later",]
+website = "https://blendermarket.com/products/wrapit"
+copyright = [ "blender",]

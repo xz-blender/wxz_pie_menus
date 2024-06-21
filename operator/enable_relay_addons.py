@@ -308,7 +308,7 @@ def register():
     # except:
     #     pass
     if not bpy.app.timers.is_registered(change_addons):
-        bpy.app.timers.register(change_addons, first_interval=5)
+        bpy.app.timers.register(change_addons, first_interval=2)
 
 
 def unregister():

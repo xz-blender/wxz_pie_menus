@@ -6,3 +6,4 @@ test.py
 blends_savetime.txt
 blender_assets.cats.txt~
 addons
+*.txt~
