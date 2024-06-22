@@ -32,7 +32,7 @@ bl_info = {
     "description": "Pie Menu",
     "category": "3D View",
 }
-cwd = os.getcwd()
+cwd = Path(__file__).parent
 except_name_list = [
     "icons",
     "__pycache__",

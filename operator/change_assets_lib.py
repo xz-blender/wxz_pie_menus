@@ -72,7 +72,7 @@ def change_assets_library_path():
 
 def register():
     if not bpy.app.timers.is_registered(change_assets_library_path):
-        bpy.app.timers.register(change_assets_library_path, first_interval=5)
+        bpy.app.timers.register(change_assets_library_path, first_interval=2)
 
 
 def unregister():
