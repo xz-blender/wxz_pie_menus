@@ -3,14 +3,7 @@ import os
 import bpy
 from bpy.types import Menu, Operator, Panel
 
-from .utils import (
-    change_default_keymap,
-    check_rely_addon,
-    pie_check_rely_addon_op,
-    rely_addons,
-    restored_default_keymap,
-    set_pie_ridius,
-)
+from .utils import *
 
 submoduname = __name__.split(".")[-1]
 bl_info = {
@@ -32,23 +25,10 @@ import_export_relay_default_addons = {
 }
 
 for name, path in import_export_relay_default_addons.items():
-    if check_rely_addon(name, path) == "0":
-        try:
-            bpy.ops.preferences.addon_enable(module=path)
-        except:
-            print("%s插件启用失败,请手动开启!" % (name))
-
-# SketchUp IO Addon:
-su_name, su_path = rely_addons[5][0], rely_addons[5][1]
-su_check = check_rely_addon(su_name, su_path)
-
-# DXF import
-i_dxf_name, i_dxf_path = rely_addons[11][0], rely_addons[11][1]
-i_dxf_check = check_rely_addon(i_dxf_name, i_dxf_path)
-
-# DXF export
-e_dxf_name, e_dxf_path = rely_addons[12][0], rely_addons[12][1]
-e_dxf_check = check_rely_addon(e_dxf_name, e_dxf_path)
+    try:
+        bpy.ops.preferences.addon_enable(module=path)
+    except:
+        print("%s插件启用失败,请手动开启!" % (name))
 
 
 class VIEW3D_PIE_MT_Bottom_S_ctrl_Files(Menu):
@@ -136,10 +116,6 @@ class VIEW3D_PIE_MT_Bottom_S_ctrl_Files(Menu):
         pie.operator("outliner.orphans_purge", text="清理未使用", icon="ORPHAN_DATA").do_recursive = True
 
         # 3 - BOTTOM - RIGHT
-
-        # if pie_check_rely_addon_op(pie, 'Atomic Data Manager'):
-        #     pie.operator('atomic.clean_all', text='清理所有', icon='PARTICLEMODE')
-
         # pie.operator('rf.callpanel', text='打开附近文件', icon='FILE_TICK')
         rencent = pie.operator("wm.call_menu", text="最近打开文件", icon="FILE_TICK")
         rencent.name = "TOPBAR_MT_file_open_recent"
@@ -160,16 +136,10 @@ class PIE_MT_S_Ctrl_import(Menu):
         col.scale_y = 1.2
 
         row = col.row()
-        row.operator("wm.collada_import", text="—— dae ——", icon="EVENT_D")
+        add_operator(row, "import_scene.dxf", text="—— DXF ——", icon="EVENT_D")
 
         row = col.row()
-        if i_dxf_check == "0":
-            row.operator("pie.empty_operator", text="启用DXF导入插件", icon="QUESTION")
-        elif i_dxf_check == "1":
-            row.operator("import_scene.dxf", text="—— DXF ——", icon="EVENT_D")
-
-        row = col.row()
-        row.operator("import_scene.fbx", text="—— fbx ——", icon="EVENT_F")
+        row.operator("import_scene.fbx", text="—— FBX ——", icon="EVENT_F")
 
         row = col.row()
         row.operator("import_scene.gltf", text="—— gltf ——", icon="EVENT_G")
@@ -178,18 +148,13 @@ class PIE_MT_S_Ctrl_import(Menu):
         row.operator("wm.obj_import", text="—— obj ——", icon="EVENT_O")
 
         row = col.row()
-        if su_check == "2":
-            row.operator("pie.empty_operator", text="安装SU导入插件", icon="ERROR")
-        elif su_check == "0":
-            row.operator("pie.empty_operator", text="启用SU导入插件", icon="QUESTION")
-        elif su_check == "1":
-            row.operator("import_scene.skp", text="—— skp ——", icon="EVENT_S")
-
-        row = col.row()
         row.operator("wm.stl_import", text="—— stl ——", icon="EVENT_S")
 
         row = col.row()
         row.operator("import_curve.svg", text="—— svg ——", icon="EVENT_S")
+
+        row = col.row()
+        add_operator(row, "import_scene.skp", text="—— skp ——", icon="EVENT_S")
 
 
 class PIE_MT_S_Ctrl_export(Menu):
@@ -204,13 +169,7 @@ class PIE_MT_S_Ctrl_export(Menu):
         col.scale_y = 1.2
 
         row = col.row()
-        row.operator("wm.collada_export", text="—— DAE ——", icon="EVENT_D")
-
-        row = col.row()
-        if e_dxf_check == "0":
-            row.operator("pie.empty_operator", text="启用DXF导出插件", icon="QUESTION")
-        elif e_dxf_check == "1":
-            row.operator("export.dxf", text="—— DXF ——", icon="EVENT_D")
+        add_operator(row, "export.dxf", text="—— DXF ——", icon="EVENT_D")
 
         row = col.row()
         row.operator("export_scene.fbx", text="—— FBX ——", icon="EVENT_F")

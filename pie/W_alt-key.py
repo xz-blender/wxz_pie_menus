@@ -3,9 +3,8 @@ import os
 import bpy
 from bpy.types import Menu, Operator, Panel
 
-from .utils import change_default_keymap, restored_default_keymap
+from .utils import *
 
-# from . import check_rely_addon, rely_addons
 
 submoduname = __name__.split(".")[-1]
 bl_info = {

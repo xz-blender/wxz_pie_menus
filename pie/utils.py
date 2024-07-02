@@ -1,3 +1,5 @@
+import json
+
 import addon_utils
 import bpy
 
@@ -120,3 +122,42 @@ def restored_default_keymap(stored_keys):
                 print("error:", prop_bpy, prop[0], prop[1])
     stored_value_list.clear()
     stored_prop_list.clear()
+
+
+def operator_exists(idname):
+    names = idname.split(".")
+    # print(names)
+    a = bpy.ops
+    for prop in names:
+        a = getattr(a, prop)
+    try:
+        name = a.__repr__()
+    except Exception as e:
+        # print(e)
+        return False
+    return True
+
+
+def get_op_id_name_dic():
+    from pathlib import Path
+
+    op_id_filepath = Path(__file__).parent / "operator_id.json"
+    with open(op_id_filepath, "r") as file:
+        data = json.load(file)
+    # 转换数据结构
+    new_dict = {}
+    for key, value_list in data.items():
+        for item in value_list:
+            new_dict[item] = key
+    return new_dict
+
+
+def add_operator(pie, op_id, **kwargs):
+    if operator_exists(op_id):
+        pie.operator(op_id, **kwargs)
+    else:
+        op_dic = get_op_id_name_dic()
+        if op_id in op_dic:
+            pie.operator("pie.empty_operator", text=f"未开启 {op_dic[op_id]} 插件", icon="ERROR")
+        else:
+            pie.operator("pie.empty_operator", text=f"未找到 {op_id} 插件名称", icon="QUESTION")

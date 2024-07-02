@@ -254,9 +254,6 @@ class VIEW3D_PIE_MT_Bottom_Z_Shift(Menu):
         # ob_type = context.object.type
         # ob_mode = context.object.mode
 
-        # addon1:"LoopTools"
-        # addon1 = check_rely_addon(rely_addons[2][0], rely_addons[2][1])
-
         # 4 - LEFT
         pie.prop(bpy.context.space_data, "show_gizmo", text="控件层")
         # 6 - RIGHT

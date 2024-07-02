@@ -30,9 +30,6 @@ class VIEW3D_PIE_MT_Bottom_C(Menu):
 
         set_pie_ridius(context, 100)
 
-        # addon1:"LoopTools"
-        # addon1 = check_rely_addon(rely_addons[2][0], rely_addons[2][1])
-
         # 4 - LEFT
         pie.separator()
         # 6 - RIGHT

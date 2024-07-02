@@ -4,14 +4,7 @@ import typing
 import bpy
 from bpy.types import Context, Menu, Operator, Panel
 
-from .utils import (
-    change_default_keymap,
-    check_rely_addon,
-    pie_op_check,
-    rely_addons,
-    restored_default_keymap,
-    set_pie_ridius,
-)
+from .utils import *
 
 submoduname = __name__.split(".")[-1]
 bl_info = {

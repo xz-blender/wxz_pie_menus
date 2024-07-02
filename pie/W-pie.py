@@ -1,14 +1,7 @@
 import bpy
 from bpy.types import Menu, Operator
 
-from .utils import (
-    change_default_keymap,
-    check_rely_addon,
-    pie_check_rely_addon_op,
-    rely_addons,
-    restored_default_keymap,
-    set_pie_ridius,
-)
+from .utils import *
 
 submoduname = __name__.split(".")[-1]
 bl_info = {
@@ -35,10 +28,6 @@ class VIEW3D_PIE_MT_Bottom_W(Menu):
 
         set_pie_ridius(context, 100)
 
-        # addon1: "Modifier Tools"
-        mt_name, mt_path = rely_addons[3][0], rely_addons[3][1]
-        mt_check = check_rely_addon(mt_name, mt_path)
-
         if ob_mode == "OBJECT":
             # 4 - LEFT
             pie.separator()
@@ -49,11 +38,10 @@ class VIEW3D_PIE_MT_Bottom_W(Menu):
             # 8 - TOP
             pie.prop(context.scene.tool_settings, "use_proportional_edit_objects", text="衰减编辑物体")
             # 7 - TOP - LEFT
-            if pie_check_rely_addon_op(pie, "Modifier Tools"):
-                if bool(context.object.modifiers) == False:
-                    pie.operator("pie.empty_operator", text="没有任何修改器!")
-                else:
-                    pie.operator("object.toggle_apply_modifiers_view", text="显示/隐藏所有修改器", icon="MODIFIER")
+            if bool(context.object.modifiers) == False:
+                pie.operator("pie.empty_operator", text="没有任何修改器!")
+            else:
+                add_operator(pie, "object.toggle_apply_modifiers_view", text="显示/隐藏所有修改器", icon="MODIFIER")
             # 9 - TOP - RIGHT
             # ---------------
             col = pie.split().column(align=True)
@@ -89,11 +77,10 @@ class VIEW3D_PIE_MT_Bottom_W(Menu):
             # 8 - TOP
             pie.prop(context.scene.tool_settings, "use_proportional_edit", text="衰减编辑网格")
             # 7 - TOP - LEFT
-            if pie_check_rely_addon_op(pie, "Modifier Tools"):
-                if bool(context.object.modifiers) == False:
-                    pie.operator("pie.empty_operator", text="没有任何修改器!")
-                else:
-                    pie.operator("object.toggle_apply_modifiers_view", text="显示/隐藏所有修改器", icon="MODIFIER")
+            if bool(context.object.modifiers) == False:
+                pie.operator("pie.empty_operator", text="没有任何修改器!")
+            else:
+                add_operator(pie, "object.toggle_apply_modifiers_view", text="显示/隐藏所有修改器", icon="MODIFIER")
             # 9 - TOP - RIGHT
             col = pie.split().column(align=True)
             row = col.row(align=True)

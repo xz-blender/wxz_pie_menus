@@ -13,7 +13,6 @@ bl_info = {
     "category": "PIE",
 }
 
-
 # class VIEW3D_PIE_MT_Bottom_Q_alt(Menu):
 #     bl_label = __name__.split('.')[-1],
 
@@ -25,19 +24,10 @@ bl_info = {
 #         ob_type = context.object.type
 #         ob_mode = context.object.mode
 
-#         # addon1:"LoopTools"
-#         addon1 = check_rely_addon(rely_addons[2][0], rely_addons[2][1])
-
 #         # 4 - LEFT
-#         # if addon1 == '1':
-#         pie.separator()
-
 #         # 6 - RIGHT
-
 #         # 2 - BOTTOM
-
 #         # 8 - TOP
-
 #         # 7 - TOP - LEFT
 #         # 9 - TOP - RIGHT
 #         # 1 - BOTTOM - LEFT

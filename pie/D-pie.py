@@ -1,7 +1,7 @@
 import bpy
 from bpy.types import Menu, Operator
 
-from .utils import set_pie_ridius  # check_rely_addon, rely_addons,
+from .utils import *
 
 submoduname = __name__.split(".")[-1]
 bl_info = {

@@ -3,14 +3,7 @@ import os
 import bpy
 from bpy.types import Menu, Operator, Panel
 
-from .utils import (
-    change_default_keymap,
-    check_rely_addon,
-    pie_op_check,
-    rely_addons,
-    restored_default_keymap,
-    set_pie_ridius,
-)
+from .utils import *
 
 submoduname = __name__.split(".")[-1]
 bl_info = {
@@ -36,23 +29,16 @@ class VIEW3D_PIE_MT_Bottom_T(Menu):
 
         set_pie_ridius(context, 100)
 
-        # addon1:"LoopTools"
-        lt_name, lt_path = rely_addons[2][0], rely_addons[2][1]
-        lt_check = check_rely_addon(lt_name, lt_path)
-
         if ob_mode == "EDIT":
             if ob_type == "MESH":
                 # 4 - LEFT
-                if pie_op_check(pie, lt_check, lt_name) == True:
-                    pie.operator("mesh.looptools_relax", text="松弛")
+                add_operator(pie, "mesh.looptools_relax", text="松弛")
                 # 6 - RIGHT
-                if pie_op_check(pie, lt_check, lt_name) == True:
-                    pie.operator("mesh.looptools_space", text="平均")
+                add_operator(pie, "mesh.looptools_space", text="平均")
                 # 2 - BOTTOM
-                pie.operator("mesh.looptools_gstretch")
+                add_operator(pie, "mesh.looptools_gstretch", text="拉伸")
                 # 8 - TOP
-                if pie_op_check(pie, lt_check, lt_name) == True:
-                    pie.operator("mesh.looptools_circle", text="圆环")
+                add_operator(pie, "mesh.looptools_circle", text="圆环")
                 # 7 - TOP - LEFT
                 pie.separator()
                 # 9 - TOP - RIGHT

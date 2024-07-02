@@ -18,6 +18,7 @@ from bpy.types import AddonPreferences, Operator, PropertyGroup
 from . import auto_load
 from .nodes_presets.Higssas import *
 from .pie.utils import change_default_keymap, check_rely_addon, rely_addons
+from .translation.translate import GetTranslationDict
 from .utils import *
 
 # auto_load.init()
@@ -33,24 +34,17 @@ bl_info = {
     "category": "3D View",
 }
 cwd = Path(__file__).parent
-except_name_list = [
-    "icons",
-    "__pycache__",
-    "utils",
-    "Brush-key",
+except_module_list = ["icons", "__pycache__", "utils", "Brush-key", "operator_id", "operator_id_sort"]
+
+module_list = [
+    "pie",
+    "operator",
+    "parts_addons",
 ]
-
-
-pie_folder_path = Path(cwd) / "pie"
-pie_submodules = iter_submodules_name(pie_folder_path, except_name_list)
-
-op_folder_path = Path(cwd) / "operator"
-op_submodules = iter_submodules_name(op_folder_path, except_name_list)
-
-parts_folder_path = Path(cwd) / "parts_addons"
-parts_submodules = iter_submodules_name(parts_folder_path, except_name_list)
-
-all_modules = pie_submodules + op_submodules + parts_submodules
+all_modules = []
+for module in module_list:
+    module_folder_path = Path(cwd) / module
+    all_modules += iter_submodules_name(module_folder_path, except_module_list)
 
 
 def _get_pref_class(mod):
@@ -70,7 +64,7 @@ def get_addon_preferences(name=""):
     addon_prefs = addons[__name__].preferences
     if name:
         if not hasattr(addon_prefs, name):
-            for mod in pie_submodules:
+            for mod in all_modules:
                 if mod.__name__.split(".")[-1] == name:
                     cls = _get_pref_class(mod)
                     if cls:
@@ -93,7 +87,7 @@ def register_submodule(mod):
     try:
         mod.register()
     except ValueError as error:
-        # print(error)
+        print(error)
         pass
     try:
         # if hasattr(mod.bl_info):
@@ -327,6 +321,11 @@ def register():
         if getattr(prefs, "use_" + name):
             register_submodule(mod)
 
+    try:
+        bpy.app.translations.register(__package__, GetTranslationDict())
+    except Exception as e:
+        print(e)
+
     # auto_load.register()
 
 
@@ -339,6 +338,11 @@ def unregister():
         bpy.utils.unregister_class(cls)
 
     # auto_load.unregister()
+
+    try:
+        bpy.app.translations.unregister(__package__)
+    except Exception as e:
+        print(e)
 
 
 if __name__ == "__main__":

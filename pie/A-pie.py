@@ -4,10 +4,10 @@ import tempfile
 from collections import defaultdict
 
 import bpy
-from bpy.types import Menu, Operator
+from bpy.types import Context, Menu, Operator
 from mathutils import Matrix
 
-from .utils import change_default_keymap, check_rely_addon, rely_addons, restored_default_keymap, set_pie_ridius
+from .utils import *
 
 submoduname = __name__.split(".")[-1]
 bl_info = {
@@ -33,18 +33,10 @@ class PIE_MT_Bottom_A(Menu):
         # set pie radius
         set_pie_ridius(context, 100)
 
-        # addon1:"DPFR Distribute Objects"
-        addon1 = check_rely_addon(rely_addons[4][0], rely_addons[4][1])
-
         if context.area.ui_type == "VIEW_3D":
             if ob_mode == "OBJECT":
                 # 4 - LEFT
-                if addon1 == "2":
-                    pie.operator("pie.empty_operator", text='未找到"Distribute Objects"插件!')
-                elif addon1 == "0":
-                    pie.operator("pie.empty_operator", text='启用"Distribute Objects"插件!')
-                elif addon1 == "1":
-                    pie.operator("object.distribute", text="排列物体", icon="MOD_ARRAY")
+                add_operator(pie, "object.distribute", text="排列物体", icon="MOD_ARRAY")
                 # 6 - RIGHT
                 pie.separator()
                 # 2 - BOTTOM
@@ -73,7 +65,8 @@ class PIE_MT_Bottom_A(Menu):
                 row.operator("asset.clear", text="抹除", icon="REMOVE").set_fake_user = False
                 row = col.row()
 
-                # row.operator("pie.creat_costom_asset_preview", text="创建视图预览", icon="IMAGE_PLANE")
+                row.operator("pie.creat_costom_asset_preview", text="创建视图预览", icon="IMAGE_PLANE")
+
                 row.separator()
 
                 # 1 - BOTTOM - LEFT
@@ -312,6 +305,7 @@ class Creat_Costom_Asset_Preview(Operator):
     bl_options = {"REGISTER", "UNDO"}
 
     resolution: bpy.props.IntProperty(name="设置预览精度", min=64, soft_max=512, default=256, step=64)  # type: ignore
+    show_overlays: bpy.props.BoolProperty(name="叠加层", default=False)  # type: ignore
 
     @classmethod
     def poll(cls, context):
@@ -332,6 +326,7 @@ class Creat_Costom_Asset_Preview(Operator):
         save_file_format = scene.render.image_settings.file_format
         save_file_color_mode = scene.render.image_settings.color_mode
         save_file_compression = scene.render.image_settings.compression
+        save_overlay = context.space_data.overlay.show_overlays
 
         # 孤立模式
         for area in bpy.context.screen.areas:
@@ -342,8 +337,6 @@ class Creat_Costom_Asset_Preview(Operator):
                     change_local = True
                 else:
                     change_local = False
-        # 隐藏叠加层
-        context.space_data.overlay.show_overlays = False
 
         # 更改预览大小
         scene.render.resolution_y = self.resolution
@@ -353,6 +346,7 @@ class Creat_Costom_Asset_Preview(Operator):
         scene.render.image_settings.file_format = "PNG"
         scene.render.image_settings.compression = 50
         scene.render.image_settings.color_mode = "RGBA"
+        context.space_data.overlay.show_overlays = self.show_overlays
 
         # 设置图像缓存位置
 
@@ -373,10 +367,10 @@ class Creat_Costom_Asset_Preview(Operator):
         act_obj.asset_mark()
         override = bpy.context.copy()
         override["id"] = act_obj
-        bpy.ops.ed.lib_id_load_custom_preview("EXEC_DEFAULT", filepath=temp_filepath)
+        with context.temp_override(**override):
+            bpy.ops.ed.lib_id_load_custom_preview(filepath=temp_filepath)
 
-        # 隐藏叠加层
-        context.space_data.overlay.show_overlays = True
+        # 设置叠加层
 
         # 返回原有场景信息
         if change_local:
@@ -389,6 +383,7 @@ class Creat_Costom_Asset_Preview(Operator):
         scene.render.image_settings.file_format = save_file_format
         scene.render.image_settings.color_mode = save_file_color_mode
         scene.render.image_settings.compression = save_file_compression
+        context.space_data.overlay.show_overlays = save_overlay
 
         return {"FINISHED"}
 
@@ -398,7 +393,7 @@ classes = [
     PIE_MT_Bottom_A_Ctrl,
     PIE_Image_usefaker,
     PIE_Apply_MultiObjects_Scale,
-    # Creat_Costom_Asset_Preview,
+    Creat_Costom_Asset_Preview,
 ]
 
 

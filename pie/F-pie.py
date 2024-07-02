@@ -4,7 +4,7 @@ import sys
 import bpy
 from bpy.types import Menu, Operator
 
-from .utils import change_default_keymap, check_rely_addon, rely_addons, restored_default_keymap, set_pie_ridius
+from .utils import *
 
 submoduname = __name__.split(".")[-1]
 bl_info = {
@@ -29,13 +29,6 @@ class VIEW3D_PIE_MT_Bottom_F(Menu):
 
         set_pie_ridius(context, 100)
 
-        # addon1:"Edit Mesh Tools"
-        addon1 = check_rely_addon(rely_addons[0][0], rely_addons[0][1])
-        # addon2:"Straight Skeleton"
-        addon2 = check_rely_addon(rely_addons[1][0], rely_addons[1][1])
-        # addon3:"Curve Tools"
-        addon3 = check_rely_addon(rely_addons[10][0], rely_addons[10][1])
-
         if ob_mode == "OBJECT":
             # 4 - LEFT
             op = pie.operator(PIE_Make_Sigle_User.bl_idname, text="单一化", icon="UNLINKED")
@@ -44,8 +37,7 @@ class VIEW3D_PIE_MT_Bottom_F(Menu):
             # 2 - BOTTOM
             pie.operator(Merge_Objects_WithoutActive.bl_idname, text="合并", icon="SELECT_EXTEND")
             # 8 - TOP
-            pie.operator("object.parent_to_empty")
-            # pie.operator('wm.call_menu_pie', text='BagaPie').name = "BAGAPIE_MT_pie_menu"
+            add_operator(pie, "object.parent_to_empty")
             # 7 - TOP - LEFT
             if ob_type == "ARMATURE":
                 pie.operator("armature.parent_clear")
@@ -66,10 +58,7 @@ class VIEW3D_PIE_MT_Bottom_F(Menu):
                 # 4 - LEFT
                 pie.operator("mesh.inset", text="内插面")
                 # 6 - RIGHT
-                if addon1 == "0":
-                    pie.operator("pie.empty_operator", text='启用"Edit Mesh Tools"插件!')
-                elif addon1 == "1":
-                    pie.operator("mesh.offset_edges", text="偏移边线")
+                add_operator(pie, "mesh.offset_edges", text="偏移边线")
                 # 2 - BOTTOM
                 pie.operator("mesh.subdivide", text="细分")
                 # 8 - TOP
@@ -77,17 +66,11 @@ class VIEW3D_PIE_MT_Bottom_F(Menu):
                 # 7 - TOP - LEFT
                 pie.operator("mesh.split", text="拆分")
                 # 9 - TOP - RIGHT
-                if addon1 == "0":
-                    pie.operator("pie.empty_operator", text='启用"Edit Mesh Tools"插件!')
-                elif addon1 == "1":
-                    pie.operator("mesh.edgetools_extend", text="延伸边")
+                add_operator(pie, "mesh.edgetools_extend", text="延伸边")
                 # 1 - BOTTOM - LEFT
                 pie.operator("wm.tool_set_by_id", text="切刀工具").name = "builtin.knife"
                 # 3 - BOTTOM - RIGHT
-                if addon1 == "0":
-                    pie.operator("pie.empty_operator", text='启用"Edit Mesh Tools"插件!')
-                elif addon1 == "1":
-                    pie.operator("object.mesh_edge_length_set", text="设边长")
+                add_operator(pie, "object.mesh_edge_length_set", text="设边长")
             if ob_type == "CURVE":
                 # 4 - LEFT
                 pie.operator("curve.smooth", text="光滑")

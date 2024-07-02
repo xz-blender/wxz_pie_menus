@@ -3,7 +3,7 @@ import os
 import bpy
 from bpy.types import Menu, Operator
 
-from .utils import change_default_keymap, check_rely_addon, rely_addons, restored_default_keymap, set_pie_ridius
+from .utils import *
 
 submoduname = __name__.split(".")[-1]
 bl_info = {

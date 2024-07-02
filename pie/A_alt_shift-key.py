@@ -1,7 +1,9 @@
 import os
 
 import bpy
-from bpy.types import Menu, Operator, Panel
+from bpy.types import Menu, Operator
+
+from .utils import *
 
 submoduname = __name__.split(".")[-1]
 bl_info = {
@@ -10,36 +12,36 @@ bl_info = {
     "version": (0, 0, 1),
     "blender": (3, 3, 0),
     "location": "View3D",
-    "category": "PIE",
+    "category": "3D View",
 }
 
 
-class PIE_Bottom_Q_alt(Operator):
-    bl_idname = "pie.q_alt_key"
-    bl_label = submoduname
-    bl_options = {"REGISTER", "UNDO"}
+class PIE_OP_A_alt_shift(Operator):
+    bl_idname = "pie.alt_shift_a_key"
+    bl_label = "折叠所有修改器面板"
 
     @classmethod
     def poll(cls, context):
-        return True
+        return context.selectable_objects is not None
 
     def execute(self, context):
-        bpy.ops.view3d.localview(frame_selected=False)
+        if context.area.ui_type == "PROPERTIES":
+            try:
+                bpy.ops.wm.toggle_all_show_expanded()
+            except:
+                self.report({"ERROR"}, "未开启ModifierTools插件!")
         return {"FINISHED"}
 
 
-classes = [
-    PIE_Bottom_Q_alt,
-]
+classes = [PIE_OP_A_alt_shift]
 
 addon_keymaps = []
 
 
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
-
-    km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
-    kmi = km.keymap_items.new(PIE_Bottom_Q_alt.bl_idname, "Q", "CLICK", alt=True)
+    km = addon.keymaps.new(name="Window", space_type="EMPTY")
+    kmi = km.keymap_items.new(PIE_OP_A_alt_shift.bl_idname, "A", "PRESS", shift=True, alt=True)
     addon_keymaps.append(km)
 
 
@@ -54,7 +56,10 @@ def unregister_keymaps():
 
 def register():
     for cls in classes:
-        bpy.utils.register_class(cls)
+        try:
+            bpy.utils.register_class(cls)
+        except:
+            pass
     register_keymaps()
 
 
@@ -62,8 +67,3 @@ def unregister():
     unregister_keymaps()
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
-
-
-# if __name__ == "__main__":
-#     register()
-#     bpy.ops.wm.call_menu_pie(name="VIEW3D_PIE_MT_Bottom_E")

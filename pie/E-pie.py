@@ -4,7 +4,7 @@ import bmesh
 import bpy
 from bpy.types import Menu, Operator, Panel, PropertyGroup
 
-from .utils import change_default_keymap, check_rely_addon, rely_addons, restored_default_keymap, set_pie_ridius
+from .utils import *
 
 submoduname = __name__.split(".")[-1]
 bl_info = {
@@ -30,33 +30,15 @@ class VIEW3D_PIE_MT_Bottom_E(Menu):
 
         set_pie_ridius(context, 100)
 
-        # "EdgeFlow"addon
-        ef_name, ef_path = rely_addons[7][0], rely_addons[7][1]
-        ef_check = check_rely_addon(ef_name, ef_path)
-        # "Bend Face"addon
-        bf_name, bf_path = rely_addons[8][0], rely_addons[8][1]
-        bf_check = check_rely_addon(bf_name, bf_path)
-        # "Face Cutter"addon
-        fc_name, fc_path = rely_addons[9][0], rely_addons[9][1]
-        fc_check = check_rely_addon(fc_name, fc_path)
-
         if ob_mode == "EDIT" and ob_type == "MESH":
             # 4 - LEFT
             pie.operator("mesh.flip_normals")
             # 6 - RIGHT
             col = pie.split().box().column()
-            if ef_check == "2":
-                row = col.row()
-                row.operator("pie.empty_operator", text='未安装"%s"插件' % (ef_name))
-            elif ef_check == "0":
-                row = col.row()
-                row.operator("pie.empty_operator", text='未启用"%s"插件' % (ef_name))
-            elif ef_check == "1":
-                row = col.row()
-                row.operator("mesh.set_edge_flow")
-                row = col.row()
-                row.operator("mesh.set_edge_linear")
-
+            row = col.row()
+            add_operator(row, "mesh.set_edge_flow")
+            row = col.row()
+            add_operator(row, "mesh.set_edge_linear")
             # 2 - BOTTOM
             pie.operator("mesh.normals_make_consistent")
             # 8 - TOP
@@ -69,25 +51,10 @@ class VIEW3D_PIE_MT_Bottom_E(Menu):
             pie.separator()
             # 3 - BOTTOM - RIGHT
             col = pie.split().box().column()
-            if bf_check == "2":
-                row = col.row()
-                row.operator("pie.empty_operator", text='未安装"%s"插件' % (bf_name))
-            elif bf_check == "0":
-                row = col.row()
-                row.operator("pie.empty_operator", text='未启用"%s"插件' % (bf_name))
-            elif bf_check == "1":
-                row = col.row()
-                row.operator("mesh.bend_face_operator")
-
-            if fc_check == "2":
-                row = col.row()
-                row.operator("pie.empty_operator", text='未安装"%s"插件' % (fc_name))
-            elif fc_check == "0":
-                row = col.row()
-                row.operator("pie.empty_operator", text='未启用"%s"插件' % (fc_name))
-            elif fc_check == "1":
-                row = col.row()
-                row.operator("mesh.face_cutter_operator")
+            row = col.row()
+            add_operator(row, "mesh.bend_face_operator")
+            row = col.row()
+            add_operator(row, "mesh.face_cutter_operator")
         if ob_mode == "OBJECT" and ob_type == "MESH":
             pie.operator("wrap_it.bga")
             pie.split().box().label(text="no lable")
