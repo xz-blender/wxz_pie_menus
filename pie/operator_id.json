@@ -1,45 +1,49 @@
 {
-    "Edit Mesh Tools": [
-        "mesh.edgetools_extend",
-        "mesh.offset_edges",
-        "object.mesh_edge_length_set"
+    "Bend Face": [
+        "mesh.bend_face_operator"
     ],
-    "Extra Objects": [
-        "object.parent_to_empty"
+    "DPFR Distribute Objects": [
+        "object.distribute"
     ],
     "EdgeFlow": [
         "mesh.set_edge_flow",
         "mesh.set_edge_linear"
     ],
-    "Bend Face": [
-        "mesh.bend_face_operator"
-    ],
-    "Face Cutter": [
-        "mesh.face_cutter_operator"
-    ],
-    "DPFR Distribute Objects": [
-        "object.distribute"
-    ],
-    "SketchUp Import": [
-        "import_scene.skp"
-    ],
-    "Import AutoCAD DXF Format (.dxf)": [
-        "import_scene.dxf"
+    "Edit Mesh Tools": [
+        "mesh.edgetools_extend",
+        "mesh.offset_edges",
+        "object.mesh_edge_length_set"
     ],
     "Export AutoCAD DXF Format (.dxf)": [
         "export_scene.dxf"
     ],
+    "Extra Curve Objects": [
+        "curve.primitive_bezier_circle_add",
+        "curve.simple"
+    ],
+    "Extra Objects": [
+        "object.parent_to_empty"
+    ],
     "FBX format": [
-        "import_scene.fbx",
-        "export.dxf"
+        "export.dxf",
+        "import_scene.fbx"
+    ],
+    "Face Cutter": [
+        "mesh.face_cutter_operator"
+    ],
+    "Import AutoCAD DXF Format (.dxf)": [
+        "import_scene.dxf"
     ],
     "LoopTools": [
-        "mesh.looptools_relax",
-        "mesh.looptools_space",
+        "mesh.looptools_circle",
         "mesh.looptools_gstretch",
-        "mesh.looptools_circle"
+        "mesh.looptools_relax",
+        "mesh.looptools_space"
     ],
     "Modifier Tools": [
         "object.toggle_apply_modifiers_view"
+    ],
+    "SketchUp Import": [
+        "import_scene.skp"
     ]
 }

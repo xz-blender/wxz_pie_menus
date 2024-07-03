@@ -33,13 +33,13 @@ class PIE_MT_Bottom_A_shift(Menu):
         # 6 - RIGHT
         pie.operator("mesh.primitive_cube_add", text="立方体", icon="MESH_CUBE")
         # 2 - BOTTOM
-        pie.operator("curve.primitive_bezier_circle_add", text="矢量圆", icon="MESH_CIRCLE")
+        add_operator(pie, "curve.primitive_bezier_circle_add", text="矢量圆", icon="MESH_CIRCLE")
         # 8 - TOP
         pie.operator("mesh.primitive_circle_add", text="网格圆", icon="MESH_CIRCLE")
         # 7 - TOP - LEFT
         pie.operator("mesh.primitive_vert_add", text="网格点", icon="DOT")
         # 9 - TOP - RIGHT
-        pie.operator("curve.simple", text="矢量点", icon="DOT")
+        add_operator(pie, "curve.simple", text="矢量点", icon="DOT")
         # 1 - BOTTOM - LEFT
         pie.operator("mesh.primitive_cylinder_add", text="柱", icon="MESH_CYLINDER")
         # 3 - BOTTOM - RIGHT

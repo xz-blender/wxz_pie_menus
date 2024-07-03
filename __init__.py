@@ -34,7 +34,15 @@ bl_info = {
     "category": "3D View",
 }
 cwd = Path(__file__).parent
-except_module_list = ["icons", "__pycache__", "utils", "Brush-key", "operator_id", "operator_id_sort"]
+except_module_list = [
+    "icons",
+    "__pycache__",
+    "utils",
+    "Brush-key",
+    "operator_id",
+    "operator_id_sort",
+    "extensions_setting",
+]
 
 module_list = [
     "pie",
