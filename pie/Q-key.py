@@ -99,6 +99,8 @@ class PIE_Q_key(Operator):
                     #     bpy.ops.gpencil.select_alternate('INVOKE_DEFAULT')   shift
             elif area_type == "IMAGE_EDITOR":
                 bpy.ops.uv.select_linked_pick("INVOKE_DEFAULT", extend=True)
+            elif area_type == "NODE_EDITOR":
+                bpy.ops.pie.translate_nodes("INVOKE_DEFAULT")
         else:
             bpy.ops.wm.call_menu(name="PIE_MT_Bottom_Q_favorite")
 
@@ -137,7 +139,7 @@ class PIE_Q_key_shift(Operator):
                 if self.gpencil_seselect_linkes_toggle == True:
                     bpy.ops.gpencil.select_alternate("INVOKE_DEFAULT")
         elif area_type == "IMAGE_EDITOR":
-            print("UVyes")
+            # print("UVyes")
             bpy.ops.uv.select_linked_pick("INVOKE_DEFAULT", extend=True, deselect=True)
 
         return {"FINISHED"}
@@ -164,11 +166,27 @@ class PIE_Q_key_ctrl(Operator):
         return {"FINISHED"}
 
 
+class PIE_Translate_Nodes(Operator):
+    bl_idname = "pie.translate_nodes"
+    bl_label = "翻译节点名称="
+    bl_description = "翻译选择的节点或节点组的接口名称"
+    bl_options = {"REGISTER", "UNDO"}
+
+    @classmethod
+    def poll(cls, context):
+        return True
+
+    def execute(self, context):
+
+        return {"FINISHED"}
+
+
 classes = [
     PIE_MT_Bottom_Q_favorite,
     PIE_Q_key,
     PIE_Q_key_shift,
     Render_Viewport_OpenGL,
+    PIE_Translate_Nodes,
 ]
 
 addon_keymaps = []
@@ -176,19 +194,21 @@ addon_keymaps = []
 
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
-    km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
-    kmi = km.keymap_items.new("pie.q_key", "Q", "CLICK")
-    kmi = km.keymap_items.new("pie.q_key_shift", "Q", "CLICK", shift=True)
-    addon_keymaps.append(km)
+
+    space_name = [
+        ("3D View", "VIEW_3D"),
+        ("UV Editor", "EMPTY"),
+        ("Node Editor", "NODE_EDITOR"),
+    ]
+    for space in space_name:
+        km = addon.keymaps.new(name=space[0], space_type=space[1])
+        kmi = km.keymap_items.new("pie.q_key", "Q", "CLICK")
+        kmi = km.keymap_items.new("pie.q_key_shift", "Q", "CLICK", shift=True)
+        addon_keymaps.append(km)
 
     km = addon.keymaps.new(name="Object Mode")
     kmi = km.keymap_items.new("wm.call_menu", "Q", "CLICK", ctrl=True)
     kmi.properties.name = "VIEW3D_MT_make_links"
-    addon_keymaps.append(km)
-
-    km = addon.keymaps.new(name="UV Editor")
-    kmi = km.keymap_items.new("pie.q_key", "Q", "CLICK")
-    kmi = km.keymap_items.new("pie.q_key_shift", "Q", "CLICK", shift=True)
     addon_keymaps.append(km)
 
 
