@@ -3,6 +3,8 @@ import os
 import bpy
 from bpy.types import AddonPreferences, Operator
 
+from ..utils import get_addon_name
+
 submoduname = __name__.split(".")[-1]
 bl_info = {
     "name": submoduname,
@@ -44,7 +46,7 @@ class DetectDependencies(Operator):
     bl_options = {"REGISTER", "INTERNAL"}
 
     def execute(self, context):
-        preferences = context.preferences.addons[__package__].preferences
+        preferences = context.preferences.addons[get_addon_name()].preferences
         preferences.package_pyclipper = True
 
         try:
@@ -82,50 +84,10 @@ class PIE_Remove_Dependencies(Operator):
         return {"FINISHED"}
 
 
-class PIE_AddonPreferences(AddonPreferences):
-    bl_idname = __package__
-
-    package_pyclipper: bpy.props.BoolProperty(name="PyClipper Installed", default=False)  # type: ignore
-
-    def draw(self, context):
-        layout = self.layout
-
-        box1 = layout.box()
-        row = box1.row()
-        row.label(text="依赖关系管理")
-        row.separator()
-        row.operator("pie.check_dependencies", text="刷新", icon="FILE_REFRESH")
-
-        table_key = ["Package", "Status", "Actions", ""]
-        packages = [
-            {
-                "name": "PyClipper",
-                "signal": self.package_pyclipper,
-                "operator1": "pie.dependencies_pyclipper_install",
-                "operator2": "pie.dependencies_pyclipper_remove",
-            },
-        ]
-        column = box1.column()
-        row = column.row()
-        for key in table_key:
-            row.label(text=key)
-        for p in packages:
-            row = column.row()
-            row.label(text=p["name"])
-
-            if p["signal"]:
-                row.label(text="已安装")
-            else:
-                row.label(text="未安装")
-            row.operator(p["operator1"])
-            row.operator(p["operator2"])
-
-
 classes = [
     DetectDependencies,
     PIE_Install_Dependencies,
     PIE_Remove_Dependencies,
-    PIE_AddonPreferences,
 ]
 
 

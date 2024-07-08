@@ -117,6 +117,7 @@ def change_addons():
     )
     bpy.ops.pie.enable_relay_addons()
     print('"WXZ_Pie_Menu" Enable Relay Addons!')
+    bpy.ops.wm.save_userpref()
 
 
 def register():

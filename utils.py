@@ -4,6 +4,8 @@ from pathlib import Path
 
 import bpy
 
+base_package = __package__
+
 
 def get_sync_path():
     if platform.system() == "Windows":
@@ -23,7 +25,7 @@ def get_addon_name():
     if bpy.app.version < (4, 2, 0):
         return Path(__file__).parent.name
     else:
-        return __package__
+        return base_package
 
 
 def iter_submodules_name(path, except_package_list):

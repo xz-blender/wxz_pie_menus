@@ -93,7 +93,7 @@ class PIE_MT_Bottom_A(Menu):
                     # 6 - RIGHT
                     pie.operator("mesh.select_more", text="扩展选择", icon="ADD")
                     # 2 - BOTTOM
-                    box = pie.split().box().column()
+
                     box.scale_y = 1.2
                     row = box.row(align=True)
                     row.operator("mesh.edges_select_sharp", text="选择锐边")

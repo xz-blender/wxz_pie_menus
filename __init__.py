@@ -12,8 +12,8 @@ download_file(xz_url + "workspace.blend", down_path)
 download_file(xz_url + "workspace_online.blend", down_path)
 
 import bpy
-from bpy.props import BoolProperty, PointerProperty
-from bpy.types import AddonPreferences, Operator, PropertyGroup
+from bpy.props import BoolProperty, CollectionProperty, IntProperty, PointerProperty, StringProperty
+from bpy.types import AddonPreferences, Operator, PropertyGroup, UIList
 
 from . import auto_load
 from .nodes_presets.Higssas import *
@@ -21,9 +21,6 @@ from .pie.utils import change_default_keymap, check_rely_addon, rely_addons
 from .translation.translate import GetTranslationDict
 from .utils import *
 
-# auto_load.init()
-
-# from .prefrences import PIE_Preferences
 
 bl_info = {
     "name": "WXZ Pie Menus Addon",
@@ -45,14 +42,15 @@ except_module_list = [
 ]
 
 module_list = [
-    "pie",
     "operator",
     "parts_addons",
 ]
-all_modules = []
+other_modules = []
 for module in module_list:
     module_folder_path = Path(cwd) / module
-    all_modules += iter_submodules_name(module_folder_path, except_module_list)
+    other_modules += iter_submodules_name(module_folder_path, except_module_list)
+pie_modules = iter_submodules_name(Path(cwd) / "pie", except_module_list)
+all_modules = pie_modules + other_modules
 
 
 def _get_pref_class(mod):
@@ -128,38 +126,109 @@ class Empty_Operator(Operator):
         return {"CANCELLED"}
 
 
+class PIE_UL_pie_modules(UIList):
+    def draw_item(self, context, layout, data, item, icon, active_data, active_propname):
+        mod_name = item.name
+        row = layout.row()
+        row.label(text=mod_name)
+        row.prop(data, "use_" + mod_name, text="")
+
+
+class PIE_UL_other_modules(UIList):
+    def draw_item(self, context, layout, data, item, icon, active_data, active_propname):
+        mod_name = item.name
+        row = layout.row()
+        row.label(text=mod_name)
+        row.prop(data, "use_" + mod_name, text="")
+
+
 class WXZ_PIE_Preferences(AddonPreferences):
     bl_idname = get_addon_name()
 
+    package_pyclipper: bpy.props.BoolProperty(name="PyClipper Installed", default=False)  # type: ignore
+    tabs: bpy.props.EnumProperty(
+        items=(
+            ("DEPENDENCIES", "依赖包", ""),
+            ("ADDON_MENUS", "饼菜单", ""),
+            ("RESOURCE_CONFIG", "资源配置", ""),
+        ),
+        default="ADDON_MENUS",
+    )  # type: ignore
+    pie_modules: CollectionProperty(type=PropertyGroup)  # type: ignore
+    pie_modules_index: bpy.props.IntProperty()  # type: ignore
+    other_modules: CollectionProperty(type=PropertyGroup)  # type: ignore
+    other_modules_index: bpy.props.IntProperty()  # type: ignore
+
     def draw(self, context):
-
         layout = self.layout
+        row = layout.row()
+        row.prop(self, "tabs", expand=True)
+        row.alignment = "CENTER"
+
         box = layout.box()
+        if self.tabs == "DEPENDENCIES":
+            self.draw_dependencies(box)
+        elif self.tabs == "ADDON_MENUS":
+            self.draw_addon_menus(box, context)
+        elif self.tabs == "RESOURCE_CONFIG":
+            self.draw_resource_config(box)
 
-        column = box.column()
-        box = column.box()
-        row = box.row()
-        row.alignment = "CENTER"
-        row.label(text="已启用以下Pie插件 :")
+    def draw_dependencies(self, layout):
+        layout.label(text="依赖包设置")
+        box1 = layout.box()
+        row = box1.row()
+        row.label(text="依赖关系管理")
+        row.separator()
+        row.operator("pie.check_dependencies", text="刷新", icon="FILE_REFRESH")
 
-        for mod in all_modules:
-            mod_name = mod.__name__.split(".")[-1]
-            info = mod.bl_info
-            box = column.box()
-            row = box.row()
-            sub = row.row()
-            sub.context_pointer_set("addon_prefs", self)
-            sub.label(
-                icon="DOT",
-                text="%s" % (info["name"]),
-            )
-            sub = row.row()
-            sub.alignment = "RIGHT"
-            sub.prop(self, "use_" + mod_name, text="")
+        table_key = ["Package", "Status", "Actions", ""]
+        packages = [
+            {
+                "name": "PyClipper",
+                "signal": self.package_pyclipper,
+                "operator1": "pie.dependencies_pyclipper_install",
+                "operator2": "pie.dependencies_pyclipper_remove",
+            },
+        ]
+        column = box1.column()
+        row = column.row()
+        for key in table_key:
+            row.label(text=key)
+        for p in packages:
+            row = column.row()
+            row.label(text=p["name"])
 
-        row = layout.box().row()
-        row.alignment = "CENTER"
-        row.label(text="End of Pie Menu Activations", icon="FILE_PARENT")
+            if p["signal"]:
+                row.label(text="已安装")
+            else:
+                row.label(text="未安装")
+            row.operator(p["operator1"])
+            row.operator(p["operator2"])
+
+    def draw_addon_menus(self, layout, context):
+        layout.label(text="内置饼菜单 & 内置插件开关")
+        top_row = layout.row()
+        split = top_row.split()
+
+        box = split.box()
+        sub_row = box.row()
+        sub_row.alignment = "CENTER"
+        sub_row.label(text="已启用饼菜单:")
+        sub_row = box.row()
+        column = sub_row.column()
+        column.template_list("PIE_UL_pie_modules", "", self, "pie_modules", self, "pie_modules_index", rows=8)
+
+        split = top_row.split()
+        box = split.box()
+        sub_row = box.row()
+        sub_row.alignment = "CENTER"
+        sub_row.label(text="已启用内置插件:")
+        sub_row = box.row()
+        column = sub_row.column()
+        column.template_list("PIE_UL_other_modules", "", self, "other_modules", self, "other_modules_index", rows=8)
+
+    def draw_resource_config(self, layout):
+        layout.label(text="资源配置设置")
 
 
 for mod in all_modules:
@@ -190,17 +259,18 @@ for mod in all_modules:
     )
 
 classes = (
-    WXZ_PIE_Preferences,
     Empty_Operator,
+    PIE_UL_pie_modules,
+    PIE_UL_other_modules,
+    WXZ_PIE_Preferences,
 )
+class_register, class_unregister = bpy.utils.register_classes_factory(classes)
 
 
 def register():
-    for cls in classes:
-        bpy.utils.register_class(cls)
+    class_register()
 
     prefs = get_addon_preferences()
-
     for mod in all_modules:
         if not hasattr(mod, "__addon_enabled__"):
             mod.__addon_enabled__ = False
@@ -208,24 +278,27 @@ def register():
         if getattr(prefs, "use_" + name):
             register_submodule(mod)
 
+    prefs.pie_modules.clear()
+    for mod in pie_modules:
+        item = prefs.pie_modules.add()
+        item.name = mod.__name__.split(".")[-1]
+    prefs.other_modules.clear()
+    for mod in other_modules:
+        item = prefs.other_modules.add()
+        item.name = mod.__name__.split(".")[-1]
+
     try:
         bpy.app.translations.register(__package__, GetTranslationDict())
     except Exception as e:
         print(e)
 
-    # auto_load.register()
-
 
 def unregister():
+    class_unregister()
+
     for mod in all_modules:
         if mod.__addon_enabled__:
             unregister_submodule(mod)
-
-    for cls in reversed(classes):
-        bpy.utils.unregister_class(cls)
-
-    # auto_load.unregister()
-
     try:
         bpy.app.translations.unregister(__package__)
     except Exception as e:
