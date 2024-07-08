@@ -120,10 +120,6 @@ def unregister_submodule(mod):
                     del prefs[name]
 
 
-def get_keymap_dirpath():
-    return os.path.join(os.path.dirname(os.path.realpath(__file__)), "keymap_presets")
-
-
 class Empty_Operator(Operator):
     bl_idname = "pie.empty_operator"
     bl_label = ""
@@ -132,126 +128,15 @@ class Empty_Operator(Operator):
         return {"CANCELLED"}
 
 
-class Apply_My_Keymap(Operator):
-    bl_idname = "pie.apply_my_keymap"
-    bl_label = "应用快捷键表"
-    bl_description = ""
-    bl_options = {"REGISTER", "UNDO"}
-
-    path: bpy.props.StringProperty(name="apply_name")  # type: ignore
-
-    @classmethod
-    def poll(cls, context):
-        return True
-
-    def execute(self, context):
-        # print(self.path)
-        if os.path.exists(self.path):
-            bpy.ops.preferences.keyconfig_import(filepath=self.path)
-            self.report({"INFO"}, '已应用快捷键配置:"%s"' % (os.path.basename(self.path)))
-            return {"FINISHED"}
-        else:
-            self.report({"INFO"}, '未应用快捷键表:"%s"' % (self.path))
-            return {"FINISHED"}
-
-
-class Restore_My_Keymap(Operator):
-    bl_idname = "pie.restore_my_keymap"
-    bl_label = "备份当前快捷键表"
-    bl_description = ""
-    bl_options = {"REGISTER", "UNDO"}
-
-    path: bpy.props.StringProperty(name="backup_name")  # type: ignore
-
-    @classmethod
-    def poll(cls, context):
-        return True
-
-    def invoke(self, context, event):
-        if os.path.exists(self.path) == True:
-            return context.window_manager.invoke_confirm(self, event)
-        return self.execute(context)
-
-    def draw(self, context):
-        layout = self.layout
-        layout.label(text="已有备份!是否覆盖？", icon="QUESTION")
-
-    def execute(self, context):
-        bpy.ops.preferences.keyconfig_export(filepath=self.path)
-        bpy.ops.wm.save_userpref("INVOKE_DEFAULT")
-        self.report({"INFO"}, '已备份配置到: "%s"' % (self.path))
-        return {"FINISHED"}
-
-
-class Enable_Addon(Operator):
-    bl_idname = "pie.enable_addon"
-    bl_label = ""
-
-    module: bpy.props.StringProperty(name="module_name")  # type: ignore
-
-    def execute(self, context):
-        try:
-            bpy.ops.preferences.addon_enable(module=self.module)
-        except:
-            self.report({"INFO"}, "插件已经开启！")
-        return {"FINISHED"}
-
-
 class WXZ_PIE_Preferences(AddonPreferences):
     bl_idname = get_addon_name()
 
     def draw(self, context):
 
         layout = self.layout
-        row = layout.box().row()
-        box = row.box()
+        box = layout.box()
 
-        sub = box.row(align=True)
-        sub.label(text="自定义快捷键表:", icon="EVENT_SPACEKEY")
-        sub.operator(Apply_My_Keymap.bl_idname, text="应用--默认快捷键表").path = os.path.join(
-            get_keymap_dirpath(), "Default_Keymaps.py"
-        )
-        sub.operator(Apply_My_Keymap.bl_idname, text="应用--备份快捷键表").path = os.path.join(
-            get_keymap_dirpath(), "Stored_Keymaps.py"
-        )
-
-        row_r = row.box()
-        row_r.alignment = "RIGHT"
-        row_r.operator(Restore_My_Keymap.bl_idname, text="备份--当前快捷键表").path = os.path.join(
-            get_keymap_dirpath(), "Stored_Keymaps.py"
-        )
-        # row_r = box.row()
-        row_r.operator("pie.enable_relay_addons", text="打开常用插件")
-
-        split = layout.split()
-
-        column = split.column()
-        box = column.box()
-        row = box.row()
-        row.alignment = "CENTER"
-        row.label(text="检查-饼菜单依赖三方插件 :")
-
-        for name in rely_addons:
-            box = column.box()
-            row = box.row()
-            sub = row.row()
-            sub.label(text=name[0], icon="DOT")
-            sub = row.row()
-            sub.alignment = "RIGHT"
-            if check_rely_addon(name[0], name[1]) == "1":
-                sub.label(text="", icon="CHECKMARK")
-            elif check_rely_addon(name[0], name[1]) == "0":
-                sub.label(text="点此图标开启插件--->")
-                sub.operator(
-                    Enable_Addon.bl_idname,
-                    text="",
-                    icon="CHECKBOX_HLT",
-                    emboss=True,
-                ).module = name[1]
-            else:
-                sub.label(text="未安装此插件", icon="ERROR")
-
-        column = split.column()
+        column = box.column()
         box = column.box()
         row = box.row()
         row.alignment = "CENTER"
@@ -266,7 +151,6 @@ class WXZ_PIE_Preferences(AddonPreferences):
             sub.context_pointer_set("addon_prefs", self)
             sub.label(
                 icon="DOT",
-                # text='{} ———— {}'.format(info['name'], info['category']),
                 text="%s" % (info["name"]),
             )
             sub = row.row()
@@ -305,14 +189,9 @@ for mod in all_modules:
         ),
     )
 
-
 classes = (
     WXZ_PIE_Preferences,
-    Apply_My_Keymap,
-    Restore_My_Keymap,
     Empty_Operator,
-    Enable_Addon,
-    # PIE_Preferences,
 )
 
 
