@@ -16,7 +16,7 @@ bl_info = {
 }
 
 
-def modify_package(command, option, name):
+def modify_package(command, options, names):
     """
     通过pip安装或删除Python软件包
     """
@@ -28,9 +28,13 @@ def modify_package(command, option, name):
     res = subprocess.call([python_exe, "-m", "ensurepip", "--upgrade"])
     if res > 0:
         return False
-    res = subprocess.call([python_exe, "-m", "pip", command, option, name])
-    if res > 0:
-        return False
+    # res = subprocess.call([python_exe, "-m", "pip", command, option, name])
+    for name in names:
+        res = subprocess.call(
+            [python_exe, "-m", "pip", command] + options + [name] + ["-i", "https://pypi.tuna.tsinghua.edu.cn/simple/"]
+        )
+        if res > 0:
+            return False
     bpy.ops.pie.check_dependencies()
     return True
 
@@ -47,24 +51,26 @@ class DetectDependencies(Operator):
 
     def execute(self, context):
         preferences = context.preferences.addons[get_addon_name()].preferences
-        preferences.package_pyclipper = True
-
-        try:
-            import pyclipper
-        except:
-            preferences.package_pyclipper = False
+        required_packages = ["pyclipper", "pillow", "openai", "httpx", "requests"]
+        for package in required_packages:
+            setattr(preferences, f"package_{package}", True)
+            try:
+                __import__(package)
+            except ImportError:
+                setattr(preferences, f"package_{package}", False)
 
         return {"FINISHED"}
 
 
 class PIE_Install_Dependencies(Operator):
-    bl_idname = "pie.dependencies_pyclipper_install"
+    bl_idname = "pie.dependencies_install"
     bl_label = "安装"
     bl_description = "通过pip管理软件包"
     bl_options = {"REGISTER", "INTERNAL"}
 
     def execute(self, context):
-        res = modify_package("install", "--no-input", "pyclipper")
+        packages = ["pyclipper", "pillow", "openai", "httpx", "requests"]
+        res = modify_package("install", ["--no-input"], packages)
         if res:
             self.report({"INFO"}, "Python包安装成功")
         else:
@@ -73,13 +79,14 @@ class PIE_Install_Dependencies(Operator):
 
 
 class PIE_Remove_Dependencies(Operator):
-    bl_idname = "pie.dependencies_pyclipper_remove"
+    bl_idname = "pie.dependencies_remove"
     bl_label = "移除"
     bl_description = "通过pip管理软件包"
     bl_options = {"REGISTER", "INTERNAL"}
 
     def execute(self, context):
-        res = modify_package("uninstall", "-y", "pyclipper")
+        packages = ["pyclipper", "pillow", "openai", "httpx", "requests"]
+        res = modify_package("uninstall", ["-y"], packages)
         self.report({"INFO"}, "Blender需重启")
         return {"FINISHED"}
 

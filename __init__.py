@@ -1,3 +1,4 @@
+import inspect
 import os
 from pathlib import Path
 
@@ -15,12 +16,9 @@ import bpy
 from bpy.props import BoolProperty, CollectionProperty, IntProperty, PointerProperty, StringProperty
 from bpy.types import AddonPreferences, Operator, PropertyGroup, UIList
 
-from . import auto_load
 from .nodes_presets.Higssas import *
-from .pie.utils import change_default_keymap, check_rely_addon, rely_addons
 from .translation.translate import GetTranslationDict
 from .utils import *
-
 
 bl_info = {
     "name": "WXZ Pie Menus Addon",
@@ -30,7 +28,7 @@ bl_info = {
     "description": "Pie Menu",
     "category": "3D View",
 }
-cwd = Path(__file__).parent
+
 except_module_list = [
     "icons",
     "__pycache__",
@@ -41,16 +39,12 @@ except_module_list = [
     "extensions_setting",
 ]
 
-module_list = [
-    "operator",
-    "parts_addons",
-]
-other_modules = []
-for module in module_list:
-    module_folder_path = Path(cwd) / module
-    other_modules += iter_submodules_name(module_folder_path, except_module_list)
+cwd = Path(__file__).parent
 pie_modules = iter_submodules_name(Path(cwd) / "pie", except_module_list)
-all_modules = pie_modules + other_modules
+other_modules = iter_submodules_name(Path(cwd) / "parts_addons", except_module_list)
+setting_modules = iter_submodules_name(Path(cwd) / "operator", except_module_list)
+all_modules = pie_modules + other_modules + setting_modules
+all_modules_dir = {"pie_modules": pie_modules, "other_modules": other_modules, "setting_modules": setting_modules}
 
 
 def _get_pref_class(mod):
@@ -142,6 +136,14 @@ class PIE_UL_other_modules(UIList):
         row.prop(data, "use_" + mod_name, text="")
 
 
+class PIE_UL_setting_modules(UIList):
+    def draw_item(self, context, layout, data, item, icon, active_data, active_propname):
+        mod_name = item.name
+        row = layout.row()
+        row.label(text=mod_name)
+        row.prop(data, "use_" + mod_name, text="")
+
+
 class WXZ_PIE_Preferences(AddonPreferences):
     bl_idname = get_addon_name()
 
@@ -158,6 +160,14 @@ class WXZ_PIE_Preferences(AddonPreferences):
     pie_modules_index: bpy.props.IntProperty()  # type: ignore
     other_modules: CollectionProperty(type=PropertyGroup)  # type: ignore
     other_modules_index: bpy.props.IntProperty()  # type: ignore
+    setting_modules: CollectionProperty(type=PropertyGroup)  # type: ignore
+    setting_modules_index: bpy.props.IntProperty()  # type: ignore
+
+    package_pyclipper: bpy.props.BoolProperty(name="PyClipper Installed", default=False)  # type: ignore
+    package_pillow: bpy.props.BoolProperty(name="Pillow Installed", default=False)  # type: ignore
+    package_openai: bpy.props.BoolProperty(name="OpenAI Installed", default=False)  # type: ignore
+    package_httpx: bpy.props.BoolProperty(name="HTTPX Installed", default=False)  # type: ignore
+    package_requests: bpy.props.BoolProperty(name="Requests Installed", default=False)  # type: ignore
 
     def draw(self, context):
         layout = self.layout
@@ -186,8 +196,32 @@ class WXZ_PIE_Preferences(AddonPreferences):
             {
                 "name": "PyClipper",
                 "signal": self.package_pyclipper,
-                "operator1": "pie.dependencies_pyclipper_install",
-                "operator2": "pie.dependencies_pyclipper_remove",
+                "operator1": "pie.dependencies_install",
+                "operator2": "pie.dependencies_remove",
+            },
+            {
+                "name": "Pillow",
+                "signal": self.package_pillow,
+                "operator1": "pie.dependencies_install",
+                "operator2": "pie.dependencies_remove",
+            },
+            {
+                "name": "OpenAI",
+                "signal": self.package_openai,
+                "operator1": "pie.dependencies_install",
+                "operator2": "pie.dependencies_remove",
+            },
+            {
+                "name": "HTTPX",
+                "signal": self.package_httpx,
+                "operator1": "pie.dependencies_install",
+                "operator2": "pie.dependencies_remove",
+            },
+            {
+                "name": "Requests",
+                "signal": self.package_requests,
+                "operator1": "pie.dependencies_install",
+                "operator2": "pie.dependencies_remove",
             },
         ]
         column = box1.column()
@@ -208,8 +242,8 @@ class WXZ_PIE_Preferences(AddonPreferences):
     def draw_addon_menus(self, layout, context):
         layout.label(text="内置饼菜单 & 内置插件开关")
         top_row = layout.row()
-        split = top_row.split()
 
+        split = top_row.split()
         box = split.box()
         sub_row = box.row()
         sub_row.alignment = "CENTER"
@@ -226,6 +260,17 @@ class WXZ_PIE_Preferences(AddonPreferences):
         sub_row = box.row()
         column = sub_row.column()
         column.template_list("PIE_UL_other_modules", "", self, "other_modules", self, "other_modules_index", rows=8)
+
+        split = top_row.split()
+        box = split.box()
+        sub_row = box.row()
+        sub_row.alignment = "CENTER"
+        sub_row.label(text="已应用设置:")
+        sub_row = box.row()
+        column = sub_row.column()
+        column.template_list(
+            "PIE_UL_setting_modules", "", self, "setting_modules", self, "setting_modules_index", rows=8
+        )
 
     def draw_resource_config(self, layout):
         layout.label(text="资源配置设置")
@@ -260,11 +305,20 @@ for mod in all_modules:
 
 classes = (
     Empty_Operator,
+    PIE_UL_setting_modules,
     PIE_UL_pie_modules,
     PIE_UL_other_modules,
     WXZ_PIE_Preferences,
 )
 class_register, class_unregister = bpy.utils.register_classes_factory(classes)
+
+
+def add_modules_item(prefs, module_list_name):
+    module = getattr(prefs, module_list_name)
+    module.clear()
+    for mod in all_modules_dir[module_list_name]:
+        item = module.add()
+        item.name = mod.__name__.split(".")[-1]
 
 
 def register():
@@ -278,14 +332,9 @@ def register():
         if getattr(prefs, "use_" + name):
             register_submodule(mod)
 
-    prefs.pie_modules.clear()
-    for mod in pie_modules:
-        item = prefs.pie_modules.add()
-        item.name = mod.__name__.split(".")[-1]
-    prefs.other_modules.clear()
-    for mod in other_modules:
-        item = prefs.other_modules.add()
-        item.name = mod.__name__.split(".")[-1]
+    add_modules_item(prefs, "setting_modules")
+    add_modules_item(prefs, "other_modules")
+    add_modules_item(prefs, "pie_modules")
 
     try:
         bpy.app.translations.register(__package__, GetTranslationDict())
