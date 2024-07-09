@@ -93,9 +93,9 @@ class PIE_MT_Bottom_A(Menu):
                     # 6 - RIGHT
                     pie.operator("mesh.select_more", text="扩展选择", icon="ADD")
                     # 2 - BOTTOM
-
-                    box.scale_y = 1.2
+                    box = pie.split().box().column()
                     row = box.row(align=True)
+                    row.scale_y = 1.5
                     row.operator("mesh.edges_select_sharp", text="选择锐边")
                     row.separator()
                     row.operator("mesh.edges_select_sharp", text="选择相连")
@@ -111,8 +111,8 @@ class PIE_MT_Bottom_A(Menu):
                     pie.operator("mesh.select_next_item", text="下一个元素", icon="ADD")
                     # 1 - BOTTOM - LEFT
                     box = pie.split().box().column()
-                    box.scale_y = 1.2
                     row = box.row(align=True)
+                    row.scale_y = 1.5
                     row.operator("mesh.loop_multi_select", text="循环边").ring = False
                     row.operator("mesh.loop_multi_select", text="并排边").ring = True
                     row = box.row(align=True)
@@ -120,8 +120,8 @@ class PIE_MT_Bottom_A(Menu):
                     row.operator("mesh.region_to_loop", text="选区域轮廓")
                     # 3 - BOTTOM - RIGHT
                     box = pie.split().box().column()
-                    box.scale_y = 1.2
                     row = box.row(align=True)
+                    row.scale_y = 1.5
                     row.operator("mesh.faces_select_linked_flat", text="相连平展面")
                     row.operator("mesh.select_nth", text="间隔式弃选")
                     row = box.row(align=True)
