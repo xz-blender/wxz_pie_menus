@@ -17,6 +17,7 @@ from bpy.props import BoolProperty, CollectionProperty, IntProperty, PointerProp
 from bpy.types import AddonPreferences, Operator, PropertyGroup, UIList
 
 from .nodes_presets.Higssas import *
+from .operator.pip_installer import *
 from .translation.translate import GetTranslationDict
 from .utils import *
 
@@ -38,13 +39,14 @@ except_module_list = [
     "operator_id_sort",
     "extensions_setting",
 ]
-
 cwd = Path(__file__).parent
-pie_modules = iter_submodules_name(Path(cwd) / "pie", except_module_list)
-other_modules = iter_submodules_name(Path(cwd) / "parts_addons", except_module_list)
-setting_modules = iter_submodules_name(Path(cwd) / "operator", except_module_list)
-all_modules = pie_modules + other_modules + setting_modules
-all_modules_dir = {"pie_modules": pie_modules, "other_modules": other_modules, "setting_modules": setting_modules}
+module_path_name_list = {"pie": "pie_modules", "parts_addons": "other_modules", "operator": "setting_modules"}
+all_modules = []
+all_modules_dir = {}
+for module_path, module_name in module_path_name_list.items():
+    iter_module = iter_submodules_name(Path(cwd) / module_path, except_module_list)
+    all_modules += iter_module
+    all_modules_dir[module_name] = iter_module
 
 
 def _get_pref_class(mod):
@@ -147,15 +149,15 @@ class PIE_UL_setting_modules(UIList):
 class WXZ_PIE_Preferences(AddonPreferences):
     bl_idname = get_addon_name()
 
-    package_pyclipper: bpy.props.BoolProperty(name="PyClipper Installed", default=False)  # type: ignore
     tabs: bpy.props.EnumProperty(
         items=(
             ("DEPENDENCIES", "依赖包", ""),
-            ("ADDON_MENUS", "饼菜单", ""),
+            ("ADDON_MENUS", "饼菜单&插件", ""),
             ("RESOURCE_CONFIG", "资源配置", ""),
         ),
         default="ADDON_MENUS",
     )  # type: ignore
+
     pie_modules: CollectionProperty(type=PropertyGroup)  # type: ignore
     pie_modules_index: bpy.props.IntProperty()  # type: ignore
     other_modules: CollectionProperty(type=PropertyGroup)  # type: ignore
@@ -168,6 +170,23 @@ class WXZ_PIE_Preferences(AddonPreferences):
     package_openai: bpy.props.BoolProperty(name="OpenAI Installed", default=False)  # type: ignore
     package_httpx: bpy.props.BoolProperty(name="HTTPX Installed", default=False)  # type: ignore
     package_requests: bpy.props.BoolProperty(name="Requests Installed", default=False)  # type: ignore
+
+    pip_modules_home: bpy.props.BoolProperty(default=False)  # type: ignore
+    pip_user_flag: bpy.props.BoolProperty(default=True)  # type: ignore
+    pip_advanced_toggle: bpy.props.BoolProperty(default=False)  # type: ignore
+    pip_module_name: bpy.props.StringProperty()  # type: ignore
+    default_pkg: bpy.props.EnumProperty(
+        name="default package",
+        description="本插件需要安装的第三方包",
+        items=[
+            # (identifier, pip_name, pip_import_name)
+            ("PILLOW", "pillow", "PIL"),
+            ("OPENAI", "openai", "openai"),
+            ("HTTPX", "httpx", "httpx"),
+            ("requests", "requests", "requests"),
+        ],
+        default="PILLOW",
+    )  # type: ignore
 
     def draw(self, context):
         layout = self.layout
@@ -185,59 +204,71 @@ class WXZ_PIE_Preferences(AddonPreferences):
 
     def draw_dependencies(self, layout):
         layout.label(text="依赖包设置")
-        box1 = layout.box()
-        row = box1.row()
-        row.label(text="依赖关系管理")
-        row.separator()
-        row.operator("pie.check_dependencies", text="刷新", icon="FILE_REFRESH")
+        layout = self.layout
+        row = layout.row()
+        row.prop(self, "pip_user_flag", text="使用Blender的Python目录")
 
-        table_key = ["Package", "Status", "Actions", ""]
-        packages = [
-            {
-                "name": "PyClipper",
-                "signal": self.package_pyclipper,
-                "operator1": "pie.dependencies_install",
-                "operator2": "pie.dependencies_remove",
-            },
-            {
-                "name": "Pillow",
-                "signal": self.package_pillow,
-                "operator1": "pie.dependencies_install",
-                "operator2": "pie.dependencies_remove",
-            },
-            {
-                "name": "OpenAI",
-                "signal": self.package_openai,
-                "operator1": "pie.dependencies_install",
-                "operator2": "pie.dependencies_remove",
-            },
-            {
-                "name": "HTTPX",
-                "signal": self.package_httpx,
-                "operator1": "pie.dependencies_install",
-                "operator2": "pie.dependencies_remove",
-            },
-            {
-                "name": "Requests",
-                "signal": self.package_requests,
-                "operator1": "pie.dependencies_install",
-                "operator2": "pie.dependencies_remove",
-            },
-        ]
-        column = box1.column()
-        row = column.row()
-        for key in table_key:
-            row.label(text=key)
-        for p in packages:
-            row = column.row()
-            row.label(text=p["name"])
+        row = layout.row()
+        split = row.split(factor=0.6)
+        row_l = split.row()
+        row_l.operator(PIE_OT_EnsurePIP.bl_idname)
+        row_r = split.row(align=True)
+        row_r.operator(PIE_OT_UpgradePIP.bl_idname)
+        row_r.operator(PIE_OT_PIPList.bl_idname)
 
-            if p["signal"]:
-                row.label(text="已安装")
-            else:
-                row.label(text="未安装")
-            row.operator(p["operator1"])
-            row.operator(p["operator2"])
+        row = layout.row(align=True)
+        split = row.split(factor=0.6)
+        split.scale_y = 1.4
+        row_l = split.row()
+        split_l = row_l.split(factor=0.4, align=True)
+        row_ll = split_l.row()
+        row_ll.label(text="输入包名(空格分割):")
+        row_lr = split_l.row()
+        row_lr.prop(self, "pip_module_name", text="")
+        row_r = split.row(align=True)
+        row_r.operator(PIE_OT_PIPInstall.bl_idname)
+        row_r.operator(PIE_OT_PIPRemove.bl_idname)
+
+        row = layout.row()
+        split = row.split(factor=0.6)
+        split_l = split.row(align=True)
+        for item in self.bl_rna.properties["default_pkg"].enum_items:
+            print(f"Identifier: {item.identifier}, Name: {item.name}, Description: {item.description}")
+            box = split_l.box()
+            try:
+                __import__(item.description)
+                icon = "CHECKMARK"
+            except ImportError:
+                icon = "PANEL_CLOSE"
+            box.label(text=item.name, icon=icon)
+        split_r = split.row()
+        split_r.scale_y = 1.4
+        split_r.operator(PIE_OT_PIPInstall_Default.bl_idname)
+
+        if TEXT_OUTPUT != []:
+            row = layout.row(align=True)
+            box = row.box()
+            box = box.column(align=True)
+            for i in TEXT_OUTPUT:
+                row = box.row()
+                for s in i:
+                    col = row.column()
+                    col.label(text=s)
+            row = layout.row()
+
+        if ERROR_OUTPUT != []:
+            row = layout.row(align=True)
+            box = row.box()
+            box = box.column(align=True)
+            for i in ERROR_OUTPUT:
+                row = box.row()
+                for s in i:
+                    col = row.column()
+                    col.label(text=s)
+            row = layout.row()
+
+        if TEXT_OUTPUT != [] or ERROR_OUTPUT != []:
+            row.operator(PIE_OT_ClearText.bl_idname, text="清除文本")
 
     def draw_addon_menus(self, layout, context):
         layout.label(text="内置饼菜单 & 内置插件开关")

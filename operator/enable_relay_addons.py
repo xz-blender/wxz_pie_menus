@@ -103,8 +103,11 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
     #     layout.label(text="一次性打开多个常用插件,会非常耗时!", icon="ERROR")
 
     def execute(self, context):
-        enable_addons(self, context, blender_org_extensions, "extensions.blender.org")
-        enable_addons(self, context, system_extensions)
+        try:
+            enable_addons(self, context, blender_org_extensions, "extensions.blender.org")
+            enable_addons(self, context, system_extensions)
+        except:
+            pass
         return {"FINISHED"}
 
 
