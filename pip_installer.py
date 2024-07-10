@@ -1,6 +1,7 @@
 import site
 import subprocess
 import sys
+from pathlib import Path
 
 import bpy
 from bpy.types import Operator
