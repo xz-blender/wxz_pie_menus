@@ -4,7 +4,9 @@ from pathlib import Path
 
 import bpy
 
-base_package = __package__
+
+def get_prefs():
+    return bpy.context.preferences.addons[__package__].preferences
 
 
 def get_sync_path():
@@ -25,7 +27,7 @@ def get_addon_name():
     if bpy.app.version < (4, 2, 0):
         return Path(__file__).parent.name
     else:
-        return base_package
+        return __package__
 
 
 def iter_submodules_name(path, except_package_list):

@@ -5,7 +5,7 @@ import sys
 import bpy
 from bpy.types import Operator
 
-from . import get_prefs
+from .utils import get_prefs
 
 app_path = site.getusersitepackages()
 print("Blender PIP user site:", app_path)

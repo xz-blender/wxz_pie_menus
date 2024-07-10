@@ -51,10 +51,6 @@ for module_path, module_name in module_path_name_list.items():
     all_modules_dir[module_name] = iter_module
 
 
-def get_prefs():
-    return bpy.context.preferences.addons[__package__].preferences
-
-
 def _get_pref_class(mod):
     import inspect
 
