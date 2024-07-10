@@ -20,7 +20,8 @@ if bpy.app.version < (2, 91, 0):
 else:
     python_bin = sys.executable
 
-
+global ERROR_OUTPUT
+global TEXT_OUTPUT
 TEXT_OUTPUT = []
 ERROR_OUTPUT = []
 
@@ -156,7 +157,7 @@ class PIE_OT_UpgradePIP(Operator):
         return {"FINISHED"}
 
 
-classes = (
+pip_installer_classes = (
     PIE_OT_PIPInstall,
     PIE_OT_PIPInstall_Default,
     PIE_OT_PIPRemove,
@@ -165,14 +166,3 @@ classes = (
     PIE_OT_EnsurePIP,
     PIE_OT_UpgradePIP,
 )
-class_register, class_unregister = bpy.utils.register_classes_factory(classes)
-
-
-def register():
-    global ERROR_OUTPUT
-    global TEXT_OUTPUT
-    class_register()
-
-
-def ungister():
-    class_unregister()

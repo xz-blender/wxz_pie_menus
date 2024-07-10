@@ -17,8 +17,7 @@ import bpy
 from bpy.props import BoolProperty, CollectionProperty, IntProperty, PointerProperty, StringProperty
 from bpy.types import AddonPreferences, Operator, PropertyGroup, UIList
 
-import operators
-import pip_installer
+from operators import operators_classes
 
 from .nodes_presets.Higssas import *
 from .pip_installer import *
@@ -340,6 +339,8 @@ classes = (
     PIE_UL_pie_modules,
     PIE_UL_other_modules,
     WXZ_PIE_Preferences,
+    *operators_classes,
+    *pip_installer_classes,
 )
 class_register, class_unregister = bpy.utils.register_classes_factory(classes)
 
@@ -354,8 +355,6 @@ def add_modules_item(prefs, module_list_name):
 
 def register():
     class_register()
-    operators.register()
-    pip_installer.register()
 
     prefs = get_addon_preferences()
     for mod in all_modules:
@@ -377,8 +376,6 @@ def register():
 
 def unregister():
     class_unregister()
-    operators.unregister()
-    pip_installer.ungister()
 
     for mod in all_modules:
         if mod.__addon_enabled__:

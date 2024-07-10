@@ -10,13 +10,4 @@ class Empty_Operator(Operator):
         return {"CANCELLED"}
 
 
-classes = (Empty_Operator,)
-class_register, class_unregister = bpy.utils.register_classes_factory(classes)
-
-
-def register():
-    class_register()
-
-
-def unregister():
-    class_unregister()
+operators_classes = (Empty_Operator,)
