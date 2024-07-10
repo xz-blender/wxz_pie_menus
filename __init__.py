@@ -4,8 +4,6 @@ from .download import download_file, download_zip
 
 down_path = Path(__file__).parent
 xz_url = "addons_file" + "/" + down_path.name + "/"
-
-down_path = Path(__file__).parent
 download_file("fonts/ui_font.ttf", down_path)
 download_file(xz_url + "workspace.blend", down_path)
 download_file(xz_url + "workspace_online.blend", down_path)
@@ -18,6 +16,9 @@ import sys
 import bpy
 from bpy.props import BoolProperty, CollectionProperty, IntProperty, PointerProperty, StringProperty
 from bpy.types import AddonPreferences, Operator, PropertyGroup, UIList
+
+import operators
+import pip_installer
 
 from .nodes_presets.Higssas import *
 from .translation.translate import GetTranslationDict
@@ -51,157 +52,8 @@ for module_path, module_name in module_path_name_list.items():
     all_modules_dir[module_name] = iter_module
 
 
-app_path = site.getusersitepackages()
-print("Blender PIP user site:", app_path)
-if app_path not in sys.path:
-    print("Adding site to path")
-    sys.path.append(app_path)
-
-MODULES_FOLDER = Path(bpy.utils.user_resource("SCRIPTS")) / "modules"
-
-if bpy.app.version < (2, 91, 0):
-    python_bin = bpy.app.binary_path_python
-else:
-    python_bin = sys.executable
-
-TEXT_OUTPUT = []
-ERROR_OUTPUT = []
-
-
 def get_prefs():
     return bpy.context.preferences.addons[__package__].preferences
-
-
-def run_pip_command(self, *cmds, cols=False, run_module="pip"):
-    """使用user spec命令运行P IP进程"""
-    global ERROR_OUTPUT
-    global TEXT_OUTPUT
-
-    cmds = [c for c in cmds if c is not None]
-    command = [python_bin, "-m", run_module, *cmds]
-
-    print("RUN_CMD:", command)
-    output = subprocess.run(command, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-    if output.stderr:
-        if "WARNING" not in output.stderr[:20]:
-            # Don't display error popup when PIP complains it's not the latest and greatest
-            self.report({"ERROR"}, "发生错误. 请检查控制台详细信息")
-        print(">>>------------ ERROR ------------")
-        print(">>> Rturn Code :", output.returncode)
-        print(">>> STD Error :", output.stderr)
-        ERROR_OUTPUT = save_text(output.stderr)
-    else:
-        ERROR_OUTPUT = []
-
-    if output.stdout:
-        TEXT_OUTPUT = save_text(output.stdout, cols=cols)
-    else:
-        TEXT_OUTPUT = []
-
-
-def save_text(text, cols=False):
-    """将输入文本字符串转换为2列的列表"""
-    out = []
-    for i in text.split("\n"):
-        if len(i) <= 1:
-            continue
-        subs = i.split()
-        parts = []
-        if cols:
-            for s in subs:
-                parts.append(s)
-        else:
-            parts.append(" ".join(subs))
-        out.append(parts)
-    return out
-
-
-class PIE_OT_PIPInstall(Operator):
-    bl_idname = "pie.pip_install"
-    bl_label = "安装"
-    bl_description = "安装PIP包"
-
-    def execute(self, context):
-        chosen_path = "--user" if get_prefs().pip_user_flag else None
-        run_pip_command(
-            self,
-            "install",
-            *get_prefs().pip_module_name.split(" "),
-            chosen_path,
-        )
-        return {"FINISHED"}
-
-
-class PIE_OT_PIPInstall_Default(Operator):
-    bl_idname = "pie.pip_install_default"
-    bl_label = "安装本插件需要的包 (需重启)"
-    bl_description = "安装本插件需要的PIP默认包"
-
-    def execute(self, context):
-        chosen_path = "--user" if get_prefs().pip_user_flag else None
-        pkg = [p.name for p in get_prefs().bl_rna.properties["default_pkg"].enum_items]
-        run_pip_command(
-            self,
-            "install",
-            *pkg,
-            chosen_path,
-        )
-        self.report({"INFO"}, "默认包已安装,需要重启Blender！")
-        return {"FINISHED"}
-
-
-class PIE_OT_PIPRemove(Operator):
-    bl_idname = "pie.pip_remove"
-    bl_label = "卸载"
-    bl_description = "移除PIP包"
-
-    def execute(self, context):
-        run_pip_command(self, "uninstall", *get_prefs().pip_module_name.split(" "), "-y")
-        return {"FINISHED"}
-
-
-class PIE_OT_ClearText(Operator):
-    bl_idname = "pie.pip_cleartext"
-    bl_label = "清除文本"
-    bl_description = "清除输出的文本"
-
-    def execute(self, context):
-        global TEXT_OUTPUT
-        TEXT_OUTPUT = []
-        global ERROR_OUTPUT
-        ERROR_OUTPUT = []
-        return {"FINISHED"}
-
-
-class PIE_OT_PIPList(bpy.types.Operator):
-    bl_idname = "pie.pip_show_list"
-    bl_label = "列出已安装包"
-    bl_description = "列出已安装的PIP软件包"
-
-    def execute(self, context):
-        run_pip_command(self, "list", cols=True)
-        return {"FINISHED"}
-
-
-class PIE_OT_EnsurePIP(bpy.types.Operator):
-    bl_idname = "pie.ensure_pip"
-    bl_label = "验证PIP程序"
-    bl_description = "尝试确保PIP安装程序存在"
-
-    def execute(self, context):
-        run_pip_command(self, "--default-pip", run_module="ensurepip")
-        return {"FINISHED"}
-
-
-class PIE_OT_UpgradePIP(bpy.types.Operator):
-    bl_idname = "pie.upgrade_pip"
-    bl_label = "升级PIP"
-    bl_description = "升级PIP"
-
-    def execute(self, context):
-        run_pip_command(self, "install", "--upgrade", "pip")
-        return {"FINISHED"}
 
 
 def _get_pref_class(mod):
@@ -269,14 +121,6 @@ def unregister_submodule(mod):
                     del prefs[name]
 
 
-class Empty_Operator(Operator):
-    bl_idname = "pie.empty_operator"
-    bl_label = ""
-
-    def execute(self, context):
-        return {"CANCELLED"}
-
-
 class PIE_UL_pie_modules(UIList):
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname):
         mod_name = item.name
@@ -326,6 +170,7 @@ class WXZ_PIE_Preferences(AddonPreferences):
     package_httpx: bpy.props.BoolProperty(name="HTTPX Installed", default=False)  # type: ignore
     package_requests: bpy.props.BoolProperty(name="Requests Installed", default=False)  # type: ignore
 
+    pip_use_china_sources: bpy.props.BoolProperty(name="使用清华镜像源", default=False)  # type: ignore
     pip_modules_home: bpy.props.BoolProperty(default=False)  # type: ignore
     pip_user_flag: bpy.props.BoolProperty(default=True)  # type: ignore
     pip_advanced_toggle: bpy.props.BoolProperty(default=False)  # type: ignore
@@ -362,6 +207,7 @@ class WXZ_PIE_Preferences(AddonPreferences):
         layout = self.layout
         row = layout.row()
         row.prop(self, "pip_user_flag", text="使用Blender的Python目录")
+        row.prop(self, "pip_use_china_sources", text="使用清华镜像源进行下载")
 
         row = layout.row()
         split = row.split(factor=0.65)
@@ -489,15 +335,6 @@ for mod in all_modules:
     )
 
 classes = (
-    PIE_OT_EnsurePIP,
-    PIE_OT_UpgradePIP,
-    PIE_OT_PIPList,
-    PIE_OT_PIPInstall,
-    PIE_OT_PIPInstall_Default,
-    PIE_OT_PIPRemove,
-    PIE_OT_ClearText,
-    #
-    Empty_Operator,
     PIE_UL_setting_modules,
     PIE_UL_pie_modules,
     PIE_UL_other_modules,
@@ -516,6 +353,8 @@ def add_modules_item(prefs, module_list_name):
 
 def register():
     class_register()
+    operators.register()
+    pip_installer.register()
 
     prefs = get_addon_preferences()
     for mod in all_modules:
@@ -537,6 +376,8 @@ def register():
 
 def unregister():
     class_unregister()
+    operators.unregister()
+    pip_installer.ungister()
 
     for mod in all_modules:
         if mod.__addon_enabled__:
