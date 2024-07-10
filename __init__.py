@@ -17,9 +17,8 @@ import bpy
 from bpy.props import BoolProperty, CollectionProperty, IntProperty, PointerProperty, StringProperty
 from bpy.types import AddonPreferences, Operator, PropertyGroup, UIList
 
-from operators import operators_classes
-
 from .nodes_presets.Higssas import *
+from .operators import operators_classes
 from .pip_installer import *
 from .translation.translate import GetTranslationDict
 from .utils import *
