@@ -21,6 +21,7 @@ import operators
 import pip_installer
 
 from .nodes_presets.Higssas import *
+from .pip_installer import *
 from .translation.translate import GetTranslationDict
 from .utils import *
 
