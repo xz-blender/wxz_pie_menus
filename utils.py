@@ -43,9 +43,10 @@ def iter_submodules_name(path, except_package_list):
             if file_name not in except_package_list:
                 name_list.append(file_name)
     path_base_name = os.path.basename(path).split(".")[0]
-    sub_modules = [
-        __import__(__package__ + "." + path_base_name + "." + submod, {}, {}, submod) for submod in name_list
-    ]
+    sub_modules = []
+    for submod in name_list:
+        if not submod.startswith("."):
+            sub_modules.append(__import__(__package__ + "." + path_base_name + "." + submod, {}, {}, submod))
     name_list.clear()
     sub_modules.sort(key=lambda mod: (mod.__name__))
     return sub_modules
