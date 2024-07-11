@@ -136,7 +136,7 @@ class PIE_OT_PIPInstall(Operator):
 
 class PIE_OT_PIPInstall_Default(Operator):
     bl_idname = "pie.pip_install_default"
-    bl_label = "安装本插件需要的包 (需重启)"
+    bl_label = "安装本插件需要的包"
     bl_description = "安装本插件需要的PIP默认包"
 
     def execute(self, context):
@@ -154,11 +154,14 @@ class PIE_OT_PIPInstall_Default(Operator):
 
 class PIE_OT_PIPRemove(Operator):
     bl_idname = "pie.pip_remove"
-    bl_label = "卸载"
+    bl_label = "卸载(需重启)"
     bl_description = "移除PIP包"
 
     def execute(self, context):
+        save_prop = get_prefs().pip_use_china_sources
+        setattr(get_prefs(), "pip_use_china_sources", False)
         run_pip_command(self, "uninstall", *get_prefs().pip_module_name.split(" "), "-y")
+        setattr(get_prefs(), "pip_use_china_sources", save_prop)
         return {"FINISHED"}
 
 

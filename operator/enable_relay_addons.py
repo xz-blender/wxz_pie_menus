@@ -56,7 +56,7 @@ def enable_addons(self, context, bl_ext_dict, remote_name=None):
     if bpy.app.version >= (4, 2, 0):
         if remote_name != None:
             context.preferences.extensions.repos[remote_name].enabled = True
-            bpy.ops.extensions.repo_sync_all()
+            # bpy.ops.extensions.repo_sync_all()
             bpy.ops.preferences.addon_refresh()
             prefix = "bl_ext." + remote_name.split(".", 1)[1].replace(".", "_") + "."
         else:
