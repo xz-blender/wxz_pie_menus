@@ -57,6 +57,7 @@ def enable_addons(self, context, bl_ext_dict, remote_name=None):
         if remote_name != None:
             context.preferences.extensions.repos[remote_name].enabled = True
             bpy.ops.extensions.repo_sync_all()
+            bpy.ops.preferences.addon_refresh()
             prefix = "bl_ext." + remote_name.split(".", 1)[1].replace(".", "_") + "."
         else:
             prefix = ""
@@ -67,7 +68,6 @@ def enable_addons(self, context, bl_ext_dict, remote_name=None):
                     #  # check addon is enabled
                     try:
                         bpy.ops.preferences.addon_enable(module=addon_name)
-                        bpy.ops.preferences.addon_refresh()
                         print(addon_name, "插件已经打开")
                     except:
                         print(addon_name, "插件加载错误")

@@ -30,6 +30,19 @@ def get_addon_name():
         return __package__
 
 
+def get_desktop_path():
+    """获取win桌面路径，即使路径被手动更改了(从注册表获取)"""
+    import winreg
+
+    # Open the registry key
+    with winreg.OpenKey(
+        winreg.HKEY_CURRENT_USER, r"Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders"
+    ) as key:
+        # Query the value for the Desktop
+        desktop_path, _ = winreg.QueryValueEx(key, "Desktop")
+        return desktop_path
+
+
 def iter_submodules_name(path, except_package_list):
     name_list = []
     for entry in os.listdir(path):
