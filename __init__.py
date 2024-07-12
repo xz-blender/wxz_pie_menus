@@ -305,6 +305,7 @@ class WXZ_PIE_Preferences(AddonPreferences):
             ("DEPENDENCIES", "依赖包", ""),
             ("ADDON_MENUS", "饼菜单&插件", ""),
             ("RESOURCE_CONFIG", "资源配置", ""),
+            ("Other_Addons_Setting", "其他插件设置", ""),
         ),
         default="ADDON_MENUS",
     )  # type: ignore
@@ -340,6 +341,8 @@ class WXZ_PIE_Preferences(AddonPreferences):
         default="PILLOW",
     )  # type: ignore
 
+    debug_prints: bpy.props.BoolProperty(name="调试输出", description="在终端中启用调试打印", default=False)  # type: ignore
+
     def draw(self, context):
         layout = self.layout
         row = layout.row()
@@ -353,6 +356,8 @@ class WXZ_PIE_Preferences(AddonPreferences):
             self.draw_addon_menus(box, context)
         elif self.tabs == "RESOURCE_CONFIG":
             self.draw_resource_config(box)
+        elif self.tabs == "Other_Addons_Setting":
+            self.draw_other_addons_setting(box)
 
     def draw_dependencies(self, layout):
         layout.label(text="依赖包设置")
@@ -457,6 +462,13 @@ class WXZ_PIE_Preferences(AddonPreferences):
 
     def draw_resource_config(self, layout):
         layout.label(text="资源配置设置")
+
+    def draw_other_addons_setting(self, layout):
+        layout = self.layout
+
+        row = layout.column(align=True)
+        row.label(text="检查键映射设置以编辑激活。默认为Ctrl+M")
+        row.prop(self, "debug_prints")
 
 
 for mod in all_modules:
