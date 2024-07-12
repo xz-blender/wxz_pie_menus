@@ -291,7 +291,7 @@ class ShaderMathOperation(Operation):
     @classmethod
     def _check_bad_type(cls, node: ast.Constant) -> Result[tuple, str]:
         if not isinstance(node.value, (int, float)):
-            return Err(f"Constants cannot be anything other than ints or floats.\n{node.value} is disallowed")
+            return Err(f"常量不能是整数或浮点数以外的任何东西.\n{node.value} 不允许")
         return Ok(())
 
     @classmethod
@@ -316,7 +316,7 @@ class ShaderMathOperation(Operation):
             name: ast.Name = node.func
             allowed_nums = functions.get(name.id)
             if allowed_nums is None:
-                Err(f"Unrecognized function name: '{name.id}'")
+                Err(f"无法识别的函数名: '{name.id}'")
             # check if the number of arguments align with the number of arguments in the GOOD_CALLS
             elif all(len(node.args) != x for x in allowed_nums[0]):
                 return Err(
@@ -655,10 +655,11 @@ class ComposeNodeTree(bpy.types.Operator):
         ui_mode = context.area.ui_type
         self.editor_type = ui_mode
         if get_prefs().debug_prints:
-            # if context.preferences.addons[__name__].preferences.debug_prints:
+            # if get_prefs().debug_prints:
             print(f"NQM: Editor type: {self.editor_type}")
 
-        return wm.invoke_props_dialog(self, confirm_text="Create", width=800)
+        # return wm.invoke_props_dialog(self, confirm_text="Create", width=800)
+        return wm.invoke_props_dialog(self, width=800)
 
     def current_operation_type(
         self,
@@ -677,7 +678,7 @@ class ComposeNodeTree(bpy.types.Operator):
     def generate_tree(self, expression: str) -> Result[tuple[ast.Expr, Tree], str]:
         op_type = self.current_operation_type()
         if op_type is None:
-            return Err("No known operation type available")
+            return Err("解析的表达式含有无法识别的操作符")
         op, _ = op_type
         try:
             mod = ast.parse(expression, mode="exec")
@@ -758,7 +759,7 @@ class ComposeNodeTree(bpy.types.Operator):
             if r.is_err():  # print the error
                 msg = r.unwrap_err()
 
-                if context.preferences.addons[__name__].preferences.debug_prints:
+                if get_prefs().debug_prints:
                     print(msg)
 
                 b = layout.box()
