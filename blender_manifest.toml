@@ -1,7 +1,7 @@
 schema_version = "1.0.0"
 
 id = "wxz_pie_menus"
-version = "1.0.0"
+version = "0.0.9"
 name = "WXZ-Pie工具合集"
 tagline = "作者自用PIE插件合集"
 maintainer = "WXZ <wxz03111997@gmail.com>"

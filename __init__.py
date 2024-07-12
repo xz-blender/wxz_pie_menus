@@ -28,8 +28,8 @@ from .utils import *
 bl_info = {
     "name": "WXZ Pie Menus Addon",
     "author": "wxz",
-    "version": (0, 0, 8),
-    "blender": (4, 0, 0),
+    "version": (0, 0, 9),
+    "blender": (4, 2, 0),
     "description": "Pie Menu",
     "category": "3D View",
 }
