@@ -636,19 +636,19 @@ class ComposeNodeTree(bpy.types.Operator):
     show_available_functions: bpy.props.BoolProperty(
         name="展示表达式规则",
         default=True,
-    )
+    )  # type: ignore
     hide_nodes: bpy.props.BoolProperty(
         name="折叠节点",
         description="隐藏节点以保留网格空间。",
-    )
+    )  # type: ignore
     center_nodes: bpy.props.BoolProperty(
         name="节点居中",
         description="使生成的节点居中。这是个人喜好。",
-    )
+    )  # type: ignore
 
-    editor_type: bpy.props.StringProperty(name="编辑器类型")
-    expression: bpy.props.StringProperty(name="公式表达式", description="节点的源表达式。")
-    input_socket_type: bpy.props.EnumProperty(items=InputSocketType, default="REROUTE")
+    editor_type: bpy.props.StringProperty(name="编辑器类型")  # type: ignore
+    expression: bpy.props.StringProperty(name="公式表达式", description="节点的源表达式。")  # type: ignore
+    input_socket_type: bpy.props.EnumProperty(items=InputSocketType, default="REROUTE")  # type: ignore
 
     def invoke(self, context: Context, event: Event) -> set[str]:
         wm = context.window_manager
