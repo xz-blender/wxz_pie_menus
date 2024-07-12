@@ -16,9 +16,13 @@
 </h4>
 
 # wxz_pie_menus
+## -偏好设置菜单-
+<div align="center">
+    <img src="https://img.picgo.net/2024/07/12/pref_1e65a9cba62b0014a.png" style="width:80%"/>
+    <img src="https://img.picgo.net/2024/07/12/pref_2b50987f0340c021a.png" style="width:80%"/>
+</div>
+
 ## -Object Mode-
-<!-- ![D-pie](/img/D-pie.jpg)
-![ctrl-S-pie.png](/img/ctrl-S-pie.jpg) -->
 <div align="center">
     <img src="https://img.picgo.net/2024/07/12/ctrl-S-pieedfa413d3e090a1e.jpg" style="width:80%"/>
     <img src="https://img.picgo.net/2024/07/12/Ctrl_Alt_X-pie020ff4c2042021ff.jpg" style="width:80%"/>
