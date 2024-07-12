@@ -20,18 +20,18 @@
 <!-- ![D-pie](/img/D-pie.jpg)
 ![ctrl-S-pie.png](/img/ctrl-S-pie.jpg) -->
 <div align="center">
-    <img src="https://smms.app/image/YFu4aDls9HdASVn" style="width:80%"/>
-    <img src="https://smms.app/image/AYQf2rlKDq43RJ8" style="width:80%"/>
-    <img src="https://smms.app/image/DlgUpzqJBxSRwns" style="width:80%"/>
-    <img src="https://smms.app/image/XCcqipj8ed7uo32" style="width:80%"/>
-    <img src="https://smms.app/image/skeyU4mo8PKHqRD" style="width:80%"/>
-    <img src="https://smms.app/image/JzjWCvdnLeXHh7Z" style="width:80%"/>
+    <img src="https://img.picgo.net/2024/07/12/ctrl-S-pieedfa413d3e090a1e.jpg" style="width:80%"/>
+    <img src="https://img.picgo.net/2024/07/12/Ctrl_Alt_X-pie020ff4c2042021ff.jpg" style="width:80%"/>
+    <img src="https://img.picgo.net/2024/07/12/W-pie_Object6899aa0b91c50af8.jpg" style="width:80%"/>
+    <img src="https://img.picgo.net/2024/07/12/F-pie_Objectca870a8b94a6f516.jpg" style="width:80%"/>
+    <img src="https://img.picgo.net/2024/07/12/A-pie_Object1e36a89025939cbd.jpg" style="width:80%"/>
+    <img src="https://img.picgo.net/2024/07/12/D-pie16e5803b84398815.jpg" style="width:80%"/>
 </div>
 
 ## -Edit Mode-
 <div align="center">
-    <img src="https://smms.app/image/D7GlzZQ8yviIYKB" style="width:80%"/>
-    <img src="https://smms.app/image/cqe8Y1oMsTIVnUl" style="width:80%"/>
-    <img src="https://smms.app/image/z2LUPkRNZ1YjH36" style="width:80%"/>
-    <img src="https://smms.app/image/DM7ry8AokY3gGpF" style="width:80%"/>
+    <img src="https://img.picgo.net/2024/07/12/E-pie_Editeb7383ba83755573.jpg" style="width:80%"/>
+    <img src="https://img.picgo.net/2024/07/12/F-pie_Edit0c7109958503dda8.jpg" style="width:80%"/>
+    <img src="https://img.picgo.net/2024/07/12/A-pie_Edit912e514f84bf7af6.jpg" style="width:80%"/>
+    <img src="https://img.picgo.net/2024/07/12/X-pie33da556db77b2046.jpg" style="width:80%"/>
 </div>
