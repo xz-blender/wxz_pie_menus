@@ -1,5 +1,6 @@
 <h2 align="center">
-    Owner blender pie menus<br>
+    符合鄙人操作习惯的饼菜单们，以及众多实用工具的合集<br>
+    仅适配4.2+ Blender 版本 <br>
     and more quick operators... <br>
 </h2>
 
@@ -11,8 +12,8 @@
     !!!<br>
 </h5>
 <h4 align="center">
-    <b>请打开此插件前保存好您的个人config文件夹!!!<b><br>
-    <h5>该插件会自动配置偏好设置和场景设置!!!</h5>
+    <b>请打开此插件前保存好您的个人配置文件!!!<b><br>
+    <h5>本插件会自动应用 偏好设置、场景设置、快捷键设置!!!</h5>
 </h4>
 
 # wxz_pie_menus
