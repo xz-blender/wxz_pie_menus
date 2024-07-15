@@ -30,7 +30,23 @@ class VIEW3D_PIE_MT_Bottom_D_Ctrl(Menu):
             # 4 - LEFT
             pie.separator()
             # 6 - RIGHT
-            pie.separator()
+            col = pie.split().box().column(align=True)
+            col.scale_y = 1.1
+            col.operator("pie.mm_fuse")
+            col.operator("pie.mm_change_width")
+            col.operator("pie.mm_unchamfer")
+            col.operator("pie.mm_turn_corner")
+            col.operator("pie.mm_quad_corner")
+            col.separator(factor=0.1)
+            col.operator("pie.mm_unfuse")
+            col.operator("pie.mm_refuse")
+            col.operator("pie.mm_unbevel")
+            col.separator(factor=0.1)
+            col.operator("pie.mm_offset_cut")
+            col.operator("pie.mm_unfuck")
+            col.operator("pie.mm_boolean_cleanup")
+            col.separator(factor=0.1)
+            col.operator("pie.mm_symmetrize")
             # 2 - BOTTOM
             pie.separator()
             # 8 - TOP

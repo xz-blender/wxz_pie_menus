@@ -655,7 +655,6 @@ class ComposeNodeTree(bpy.types.Operator):
         ui_mode = context.area.ui_type
         self.editor_type = ui_mode
         if get_prefs().debug_prints:
-            # if get_prefs().debug_prints:
             print(f"NQM: Editor type: {self.editor_type}")
 
         # return wm.invoke_props_dialog(self, confirm_text="Create", width=800)
@@ -758,9 +757,6 @@ class ComposeNodeTree(bpy.types.Operator):
             r = self.generate_tree(txt)
             if r.is_err():  # print the error
                 msg = r.unwrap_err()
-
-                if get_prefs().debug_prints:
-                    print(msg)
 
                 b = layout.box()
                 functions_box = b.column()

@@ -14,7 +14,7 @@ import subprocess
 import sys
 
 import bpy
-from bpy.props import BoolProperty, CollectionProperty, IntProperty, PointerProperty, StringProperty
+from bpy.props import *
 from bpy.types import AddonPreferences, Operator, PropertyGroup, UIList
 
 from . import props
@@ -299,6 +299,27 @@ class PIE_UL_setting_modules(UIList):
         row.prop(data, "use_" + mod_name, text="")
 
 
+def draw_pie_modules(self, top_row, module_path_name_list):
+    for lable_name, module_name in {
+        "已启用饼菜单:": "pie",
+        "已启用内置插件:": "parts_addons",
+        "已应用设置:": "operator",
+    }.items():
+        split = top_row.split()
+        box = split.box()
+        sub_row = box.row()
+        sub_row.alignment = "CENTER"
+        sub_row.label(text=lable_name)
+        sub_row = box.row()
+        column = sub_row.column()
+
+        name = module_path_name_list[module_name].split("_")[0]
+        # print(module_name, "__________", name)
+        column.template_list(
+            f"PIE_UL_{name}_modules", "", self, f"{name}_modules", self, f"{name}_modules_index", rows=8
+        )
+
+
 class WXZ_PIE_Preferences(AddonPreferences):
     bl_idname = get_addon_name()
 
@@ -342,10 +363,15 @@ class WXZ_PIE_Preferences(AddonPreferences):
         ],
         default="PILLOW",
     )  # type: ignore
-
+    # formula to nodes
+    show_formula2nodes_submenu: BoolProperty(name="表达式转节点")  # type: ignore
     debug_prints: bpy.props.BoolProperty(name="调试输出", description="在终端中启用调试打印", default=False)  # type: ignore
-
-    show_submenu: BoolProperty(name="子菜单设置")  # type: ignore
+    # MeshMachine
+    show_meshmachine_submenu: BoolProperty(name="MeshMachine-剥离版")  # type: ignore
+    modal_hud_color: FloatVectorProperty(name="显示字体颜色", subtype="COLOR", default=[1, 1, 1], size=3, min=0, max=1)  # type: ignore
+    modal_hud_scale: FloatProperty(name="显示图形缩放", default=1, min=0.5, max=10)  # type: ignore
+    modal_hud_hints: BoolProperty(name="显示提示", default=True)  # type: ignore
+    symmetrize_flick_distance: IntProperty(name="轻拂确认距离", default=75, min=20, max=1000)  # type: ignore
 
     def draw(self, context):
         layout = self.layout
@@ -434,57 +460,36 @@ class WXZ_PIE_Preferences(AddonPreferences):
     def draw_addon_menus(self, layout, context):
         layout.label(text="内置饼菜单 & 内置插件开关")
         top_row = layout.row()
-
-        split = top_row.split()
-        box = split.box()
-        sub_row = box.row()
-        sub_row.alignment = "CENTER"
-        sub_row.label(text="已启用饼菜单:")
-        sub_row = box.row()
-        column = sub_row.column()
-        column.template_list("PIE_UL_pie_modules", "", self, "pie_modules", self, "pie_modules_index", rows=8)
-
-        split = top_row.split()
-        box = split.box()
-        sub_row = box.row()
-        sub_row.alignment = "CENTER"
-        sub_row.label(text="已启用内置插件:")
-        sub_row = box.row()
-        column = sub_row.column()
-        column.template_list("PIE_UL_other_modules", "", self, "other_modules", self, "other_modules_index", rows=8)
-
-        split = top_row.split()
-        box = split.box()
-        sub_row = box.row()
-        sub_row.alignment = "CENTER"
-        sub_row.label(text="已应用设置:")
-        sub_row = box.row()
-        column = sub_row.column()
-        column.template_list(
-            "PIE_UL_setting_modules", "", self, "setting_modules", self, "setting_modules_index", rows=8
-        )
+        draw_pie_modules(self, top_row, module_path_name_list)
 
     def draw_resource_config(self, layout):
         layout.label(text="资源配置设置")
 
     def draw_other_addons_setting(self, layout):
         layout = self.layout
-
-        box = layout.box()
-        box.label(text="'表达式转节点'配置：")
-        row = box.row(align=True)
-        row.label(text="检查键映射设置以编辑激活。默认为Ctrl+M")
-        row.prop(self, "debug_prints")
-
-        layout.separator()
+        layout.label(text="其他插件设置")
 
         col = layout.column()
         col.scale_y = 1.1
         col.use_property_split = False
-        col.prop(self, "show_submenu", icon="TRIA_RIGHT" if self.show_submenu else "TRIA_DOWN")
-        if self.show_submenu:
-            box = layout.box()
-            box.label(text="Notice:", icon="INFO")
+        col.prop(
+            self, "show_formula2nodes_submenu", icon="TRIA_RIGHT" if self.show_formula2nodes_submenu else "TRIA_DOWN"
+        )
+        if self.show_formula2nodes_submenu:
+            box = col.box()
+            row = box.row(align=True)
+            row.label(text="检查键映射设置以编辑激活。默认为Ctrl+M")
+            row.prop(self, "debug_prints")
+
+        col.prop(self, "show_meshmachine_submenu", icon="TRIA_RIGHT" if self.show_meshmachine_submenu else "TRIA_DOWN")
+        if self.show_meshmachine_submenu:
+            box = col.box()
+            col = box.column(align=True)
+            col.label(text="MeshMachine-剥离版设置")
+            col.prop(self, "modal_hud_color")
+            col.prop(self, "modal_hud_scale")
+            col.prop(self, "modal_hud_hints")
+            col.prop(self, "symmetrize_flick_distance")
 
 
 for mod in all_modules:

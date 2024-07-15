@@ -196,6 +196,9 @@ H_dir = [
     (["NLA Editor", "nla.mute_toggle", "Toggle Muting"], [("type", "B")], []),
     (["Mesh", "wm.call_menu", "Hooks"], [("active", False), ("type", "H")], []),
 ]
+M_dir = [
+    (["Object Mode", "object.move_to_collection", "Move to Collection"], [("value", "CLICK")], []),
+]
 Outliner_dir = [
     (["Outliner", "outliner.select_all", "Toggle Selected"], [("active", False)], []),  # A
     (["Outliner", "outliner.collection_exclude_set", "Disable from View Layer"], [("value", "CLICK")], []),  # E
