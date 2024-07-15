@@ -4,9 +4,11 @@ from pathlib import Path
 
 import bpy
 
+from . import __package__ as base_package
+
 
 def get_prefs():
-    return bpy.context.preferences.addons[__package__].preferences
+    return bpy.context.preferences.addons[base_package].preferences
 
 
 def get_sync_path():
@@ -27,7 +29,7 @@ def get_addon_name():
     if bpy.app.version < (4, 2, 0):
         return Path(__file__).parent.name
     else:
-        return __package__
+        return base_package
 
 
 def get_desktop_path():

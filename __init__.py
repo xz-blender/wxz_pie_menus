@@ -17,6 +17,8 @@ import bpy
 from bpy.props import BoolProperty, CollectionProperty, IntProperty, PointerProperty, StringProperty
 from bpy.types import AddonPreferences, Operator, PropertyGroup, UIList
 
+from . import props
+
 # from . import auto_load
 from .nodes_presets.Higssas import *
 from .operators import operators_classes
@@ -343,6 +345,8 @@ class WXZ_PIE_Preferences(AddonPreferences):
 
     debug_prints: bpy.props.BoolProperty(name="调试输出", description="在终端中启用调试打印", default=False)  # type: ignore
 
+    show_submenu: BoolProperty(name="子菜单设置")  # type: ignore
+
     def draw(self, context):
         layout = self.layout
         row = layout.row()
@@ -438,7 +442,7 @@ class WXZ_PIE_Preferences(AddonPreferences):
         sub_row.label(text="已启用饼菜单:")
         sub_row = box.row()
         column = sub_row.column()
-        column.template_list("PIE_UL_pie_modules", "", self, "pie_modules", self, "pie_modules_index", rows=10)
+        column.template_list("PIE_UL_pie_modules", "", self, "pie_modules", self, "pie_modules_index", rows=8)
 
         split = top_row.split()
         box = split.box()
@@ -447,7 +451,7 @@ class WXZ_PIE_Preferences(AddonPreferences):
         sub_row.label(text="已启用内置插件:")
         sub_row = box.row()
         column = sub_row.column()
-        column.template_list("PIE_UL_other_modules", "", self, "other_modules", self, "other_modules_index", rows=10)
+        column.template_list("PIE_UL_other_modules", "", self, "other_modules", self, "other_modules_index", rows=8)
 
         split = top_row.split()
         box = split.box()
@@ -457,7 +461,7 @@ class WXZ_PIE_Preferences(AddonPreferences):
         sub_row = box.row()
         column = sub_row.column()
         column.template_list(
-            "PIE_UL_setting_modules", "", self, "setting_modules", self, "setting_modules_index", rows=10
+            "PIE_UL_setting_modules", "", self, "setting_modules", self, "setting_modules_index", rows=8
         )
 
     def draw_resource_config(self, layout):
@@ -466,9 +470,21 @@ class WXZ_PIE_Preferences(AddonPreferences):
     def draw_other_addons_setting(self, layout):
         layout = self.layout
 
-        row = layout.column(align=True)
+        box = layout.box()
+        box.label(text="'表达式转节点'配置：")
+        row = box.row(align=True)
         row.label(text="检查键映射设置以编辑激活。默认为Ctrl+M")
         row.prop(self, "debug_prints")
+
+        layout.separator()
+
+        col = layout.column()
+        col.scale_y = 1.1
+        col.use_property_split = False
+        col.prop(self, "show_submenu", icon="TRIA_RIGHT" if self.show_submenu else "TRIA_DOWN")
+        if self.show_submenu:
+            box = layout.box()
+            box.label(text="Notice:", icon="INFO")
 
 
 for mod in all_modules:
@@ -524,7 +540,9 @@ def add_modules_item(prefs, module_list_name):
 
 
 def register():
+    props.register()
     class_register()
+
     global ERROR_OUTPUT
     global TEXT_OUTPUT
 
@@ -550,6 +568,7 @@ def register():
 
 def unregister():
     class_unregister()
+    props.unregister()
     # auto_load.unregister()
 
     for mod in all_modules:

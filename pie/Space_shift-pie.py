@@ -21,6 +21,7 @@ class VIEW3D_PIE_MT_Space_KEY_shift(Menu):
         pie = self.layout.menu_pie()
 
         set_pie_ridius(context, 100)
+        scene = context.scene
 
         # print(context.area.type)
         # if context.area.type in [
@@ -51,7 +52,9 @@ class VIEW3D_PIE_MT_Space_KEY_shift(Menu):
         # 1 - BOTTOM - LEFT
         pie.separator()
         # 3 - BOTTOM - RIGHT
-        pie.separator()
+        asfmytool = scene.asfmy_tool
+
+        pie.prop(asfmytool, "asfmy_bool", text="仅播放一次")
 
 
 classes = [
