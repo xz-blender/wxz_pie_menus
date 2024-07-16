@@ -14,16 +14,16 @@ def get_prefs():
 
 def get_sync_path():
     if platform.system() == "Windows":
-        return r"D:/BaiduSyncdisk/Blender Assets"
+        return "D:/BaiduSyncdisk/Blender Assets"
     elif platform.system() == "Darwin":
-        return r"/Users/wangxianzhi/Library/CloudStorage/OneDrive-个人/Sync/Blender/Assets Sync"
+        return "/Users/wangxianzhi/Library/CloudStorage/OneDrive-个人/Sync/Blender/Assets Sync"
 
 
 def get_local_path():
     if platform.system() == "Windows":
-        return r"F:/Blender Assets"
+        return "F:/Blender Assets"
     elif platform.system() == "Darwin":
-        return r"/Users/wangxianzhi/Blender Lib"
+        return "/Users/wangxianzhi/Blender Lib"
 
 
 def get_addon_name():

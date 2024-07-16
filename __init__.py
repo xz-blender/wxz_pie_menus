@@ -331,19 +331,21 @@ class WXZ_PIE_Preferences(AddonPreferences):
         default="ADDON_MENUS",
     )  # type: ignore
 
+    # 资源设置
+    load_assets_library_presets: bpy.props.BoolProperty(name="加载资源库预设", default=False)  # type: ignore
+    assets_library_path_sync: bpy.props.StringProperty(name="资源库-远程路径", subtype="DIR_PATH", default=get_sync_path())  # type: ignore
+    assets_library_path_local: bpy.props.StringProperty(name="资源库-本地路径", subtype="DIR_PATH", default=get_local_path())  # type: ignore
+    load_xz_keys_presets: bpy.props.BoolProperty(name="加载XZ快捷键预设", default=False)  # type: ignore
+    load_xz_setting_presets: bpy.props.BoolProperty(name="加载XZ配置预设", default=False)  # type: ignore
+
+    # 饼菜单面板
     pie_modules: CollectionProperty(type=PropertyGroup)  # type: ignore
     pie_modules_index: bpy.props.IntProperty()  # type: ignore
     other_modules: CollectionProperty(type=PropertyGroup)  # type: ignore
     other_modules_index: bpy.props.IntProperty()  # type: ignore
     setting_modules: CollectionProperty(type=PropertyGroup)  # type: ignore
     setting_modules_index: bpy.props.IntProperty()  # type: ignore
-
-    package_pyclipper: bpy.props.BoolProperty(name="PyClipper Installed", default=False)  # type: ignore
-    package_pillow: bpy.props.BoolProperty(name="Pillow Installed", default=False)  # type: ignore
-    package_openai: bpy.props.BoolProperty(name="OpenAI Installed", default=False)  # type: ignore
-    package_httpx: bpy.props.BoolProperty(name="HTTPX Installed", default=False)  # type: ignore
-    package_requests: bpy.props.BoolProperty(name="Requests Installed", default=False)  # type: ignore
-
+    # 依赖包面板
     pip_use_china_sources: bpy.props.BoolProperty(name="使用清华镜像源", default=False)  # type: ignore
     pip_modules_home: bpy.props.BoolProperty(default=False)  # type: ignore
     pip_user_flag: bpy.props.BoolProperty(default=True)  # type: ignore
@@ -361,17 +363,18 @@ class WXZ_PIE_Preferences(AddonPreferences):
         ],
         default="PILLOW",
     )  # type: ignore
-    # formula to nodes
+    # 其他插件设置
+    ## formula to nodes
     show_formula2nodes_submenu: BoolProperty(name="表达式转节点")  # type: ignore
     debug_prints: bpy.props.BoolProperty(name="调试输出", description="在终端中启用调试打印", default=False)  # type: ignore
     generate_previews: bpy.props.BoolProperty(name="生成逻辑预览树", description="在创建节点树之前生成节点树的预览", default=True)  # type: ignore
-    # MeshMachine
+    ## MeshMachine
     show_meshmachine_submenu: BoolProperty(name="MeshMachine-剥离版")  # type: ignore
     modal_hud_color: FloatVectorProperty(name="显示字体颜色", subtype="COLOR", default=[1, 1, 1], size=3, min=0, max=1)  # type: ignore
     modal_hud_scale: FloatProperty(name="显示图形缩放", default=1, min=0.5, max=10)  # type: ignore
     modal_hud_hints: BoolProperty(name="显示提示", default=True)  # type: ignore
     symmetrize_flick_distance: IntProperty(name="轻拂确认距离", default=75, min=20, max=1000)  # type: ignore
-    # language swith
+    ## language swith
     show_language_switch_submenu: BoolProperty(name="双语切换设置")  # type: ignore
     first_lang: EnumProperty(name="首选语言", default="zh_HANS", items=enum_languages)  # type: ignore
     second_lang: EnumProperty(name="次选语言", default="en_US", items=enum_languages)  # type: ignore
@@ -466,7 +469,44 @@ class WXZ_PIE_Preferences(AddonPreferences):
         draw_pie_modules(self, top_row, module_path_name_list)
 
     def draw_resource_config(self, layout):
-        layout.label(text="资源配置设置")
+        layout.label(text="资源配置设置 (手动运行 or 重启后生效)")
+        box = layout.box()
+        row = box.row()
+        row.alignment = "LEFT"
+        row.prop(self, "load_assets_library_presets", text="加载XZ-资源库路径预设 (不要打开!会增加很多对你无用的路径!)")
+        if self.load_assets_library_presets:
+            split = box.split(factor=0.8)
+            box_l = split.box()
+            row = box_l.row()
+            row.prop(self, "assets_library_path_sync")
+            row = box_l.row()
+            row.prop(self, "assets_library_path_local")
+            box_r = split.box()
+            row = box_r.row()
+            row.scale_y = 2.4
+            row.operator("pie.change_assets_library_path", text="手动执行")
+
+        row = box.row()
+        if self.load_xz_keys_presets:
+            split = row.column().split(factor=0.8)
+            split.alignment = "LEFT"
+            split.prop(self, "load_xz_keys_presets", text="加载XZ-快捷键预设 (不要打开!请备份好您的快捷键!)")
+            split.alignment = "RIGHT"
+            split.operator("pie.load_xz_keys_presets", text="手动执行")
+        else:
+            row.alignment = "LEFT"
+            row.prop(self, "load_xz_keys_presets", text="加载XZ-快捷键预设 (不要打开!请备份好您的快捷键!)")
+
+        row = box.row()
+        if self.load_xz_setting_presets:
+            split = row.column().split(factor=0.8)
+            split.alignment = "LEFT"
+            split.prop(self, "load_xz_setting_presets", text="加载XZ-配置预设 (请备份好您的userpref.blend文件!)")
+            split.alignment = "RIGHT"
+            split.operator("pie.load_xz_setting_presets", text="手动执行")
+        else:
+            row.alignment = "LEFT"
+            row.prop(self, "load_xz_setting_presets", text="加载XZ-配置预设 (请备份好您的userpref.blend文件!)")
 
     def draw_other_addons_setting(self, layout):
         layout = self.layout
@@ -570,7 +610,6 @@ def add_modules_item(prefs, module_list_name):
 
 def register():
     class_register()
-
     global ERROR_OUTPUT
     global TEXT_OUTPUT
 

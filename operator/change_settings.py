@@ -2,6 +2,8 @@ import sys
 
 import bpy
 
+from ..utils import get_prefs
+
 submoduname = __name__.split(".")[-1]
 bl_info = {
     "name": submoduname,
@@ -153,25 +155,51 @@ def change_extensions_repo_list():
         bpy.context.preferences.extensions.repos[xz_url_name].use_sync_on_startup = False
 
 
-def change_settings():
-    try:
-        change_preferences_settings()
-        change_context_settings()
-        print('"WXZ_Pie_Menu" changed default settings!')
-        change_extensions_repo_list()
-        print('"WXZ_Pie_Menu" changed Extensions Remote List!')
-    except:
-        pass
+class PIE_Load_XZ_Setting_Presets(bpy.types.Operator):
+    bl_idname = "pie.load_xz_setting_presets"
+    bl_label = "更改为xz的快捷键预设"
+    bl_description = ""
+    bl_options = {"REGISTER", "UNDO"}
+
+    @classmethod
+    def poll(cls, context):
+        return True
+
+    def execute(self, context):
+        try:
+            change_preferences_settings()
+            change_context_settings()
+            print('"WXZ_Pie_Menu" changed default settings!')
+            change_extensions_repo_list()
+            print('"WXZ_Pie_Menu" changed Extensions Remote List!')
+        except:
+            pass
+        return {"FINISHED"}
 
 
 def register():
-    if not bpy.app.timers.is_registered(change_settings):
-        bpy.app.timers.register(change_settings, first_interval=1)
+    bpy.utils.register_class(PIE_Load_XZ_Setting_Presets)
+    bpy.app.handlers.load_post.append(run_set_load_xz_setting_presets)
 
 
 def unregister():
-    if bpy.app.timers.is_registered(change_settings):
-        bpy.app.timers.unregister(change_settings)
+    bpy.utils.unregister_class(PIE_Load_XZ_Setting_Presets)
+    bpy.app.handlers.load_post.remove(run_set_load_xz_setting_presets)
+
+
+def run_set_load_xz_setting_presets(dummy):
+    if get_prefs().load_xz_setting_presets:
+        bpy.ops.pie.load_xz_setting_presets()
+
+
+# def register():
+#     if not bpy.app.timers.is_registered(change_settings):
+#         bpy.app.timers.register(change_settings, first_interval=1)
+
+
+# def unregister():
+#     if bpy.app.timers.is_registered(change_settings):
+#         bpy.app.timers.unregister(change_settings)
 
 
 if __name__ == "__main__":

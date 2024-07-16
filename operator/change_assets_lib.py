@@ -2,7 +2,8 @@ from pathlib import Path
 
 import bpy
 
-from ..utils import get_local_path, get_sync_path
+from .. import __package__ as base_package
+from ..utils import *
 
 submoduname = __name__.split(".")[-1]
 bl_info = {
@@ -14,40 +15,55 @@ bl_info = {
     "category": "3D View",
 }
 
-sync_path = get_sync_path()
-local_path = get_local_path()
 
-setting_lib = {
-    "Rig_Car": (str(Path(local_path) / "rig_cars"), "LINK"),
-    "Poly Haven": (str(Path(local_path) / "Poly Haven"), "LINK"),
-    "旧公司资产": (str(Path(local_path) / "company_old_lib"), "APPEND_REUSE"),
-    "Simple Cloth": (str(Path(sync_path) / "Blender Assets Browser" / "Simply Basic Cloth Library"), "APPEND"),
-    "GN": (str(Path(sync_path) / "Blender Assets Browser" / "GN"), "APPEND_REUSE"),
-    "GN_Assets": (str(Path(sync_path) / "Blender Assets Browser" / "GN_Assets"), "APPEND_REUSE"),
-    "Material": (str(Path(sync_path) / "Blender Assets Browser" / "Material"), "APPEND_REUSE"),
-    "Lights": (str(Path(sync_path) / "Blender Assets Browser" / "Lights"), "APPEND_REUSE"),
-    "Abionic": (str(Path(local_path) / "Abionic"), "LINK"),
-    "BagaPie Assets": (str(Path(local_path) / "BagaPie Assets"), "LINK"),
-    "室内家具模型": (str(Path(local_path) / "室内家具模型"), "LINK"),
-    "Geo-Scatter_library": (str(Path(local_path) / "Geo-Scatter_library"), "LINK"),
-    "Trash_kit": (str(Path(local_path) / "Trash_kit"), "LINK"),
-    "kit_bash": (str(Path(local_path) / "kit_bash"), "LINK"),
-    "kit_building": (str(Path(local_path) / "kit_building"), "LINK"),
-    "Tree Assets": (str(Path(local_path) / "Tree Assets"), "LINK"),
-    "Motion Animate": (str(Path(local_path) / "Motion Animate"), "APPEND"),
-    "图案光阴影贴图": (str(Path(local_path) / "图案光阴影贴图"), "LINK"),
-    "其他": (str(Path(local_path) / "其他"), "LINK"),
-    "GN_Tools": (str(Path(sync_path) / "Blender Assets Browser" / "GN_Tools"), "APPEND"),
-    "BMS-东京后街": (str(Path(local_path) / "BMS-东京后街"), "LINK"),
-    "RealCloud": (str(Path(local_path) / "RealCloud"), "LINK"),
-    "DeepTree": (str(Path(local_path) / "DeepTree"), "LINK"),
-}
-app_lib_data = {}
-for lib in bpy.context.preferences.filepaths.asset_libraries:
-    app_lib_data[lib.name] = lib.path
+class PIE_Change_Assets_library_Path(bpy.types.Operator):
+    bl_idname = "pie.change_assets_library_path"
+    bl_label = "添加xz的资产库预设"
+    bl_description = ""
+    bl_options = {"REGISTER", "UNDO"}
+
+    @classmethod
+    def poll(cls, context):
+        return True
+
+    def execute(self, context):
+        sync_path = get_prefs().assets_library_path_sync
+        local_path = get_prefs().assets_library_path_local
+
+        setting_lib = {
+            "Rig_Car": (str(Path(local_path) / "rig_cars"), "LINK"),
+            "Poly Haven": (str(Path(local_path) / "Poly Haven"), "LINK"),
+            "旧公司资产": (str(Path(local_path) / "company_old_lib"), "APPEND_REUSE"),
+            "Simple Cloth": (str(Path(sync_path) / "Blender Assets Browser" / "Simply Basic Cloth Library"), "APPEND"),
+            "GN": (str(Path(sync_path) / "Blender Assets Browser" / "GN"), "APPEND_REUSE"),
+            "GN_Assets": (str(Path(sync_path) / "Blender Assets Browser" / "GN_Assets"), "APPEND_REUSE"),
+            "Material": (str(Path(sync_path) / "Blender Assets Browser" / "Material"), "APPEND_REUSE"),
+            "Lights": (str(Path(sync_path) / "Blender Assets Browser" / "Lights"), "APPEND_REUSE"),
+            "Abionic": (str(Path(local_path) / "Abionic"), "LINK"),
+            "BagaPie Assets": (str(Path(local_path) / "BagaPie Assets"), "LINK"),
+            "室内家具模型": (str(Path(local_path) / "室内家具模型"), "LINK"),
+            "Geo-Scatter_library": (str(Path(local_path) / "Geo-Scatter_library"), "LINK"),
+            "Trash_kit": (str(Path(local_path) / "Trash_kit"), "LINK"),
+            "kit_bash": (str(Path(local_path) / "kit_bash"), "LINK"),
+            "kit_building": (str(Path(local_path) / "kit_building"), "LINK"),
+            "Tree Assets": (str(Path(local_path) / "Tree Assets"), "LINK"),
+            "Motion Animate": (str(Path(local_path) / "Motion Animate"), "APPEND"),
+            "图案光阴影贴图": (str(Path(local_path) / "图案光阴影贴图"), "LINK"),
+            "其他": (str(Path(local_path) / "其他"), "LINK"),
+            "GN_Tools": (str(Path(sync_path) / "Blender Assets Browser" / "GN_Tools"), "APPEND"),
+            "BMS-东京后街": (str(Path(local_path) / "BMS-东京后街"), "LINK"),
+            "RealCloud": (str(Path(local_path) / "RealCloud"), "LINK"),
+            "DeepTree": (str(Path(local_path) / "DeepTree"), "LINK"),
+        }
+        app_lib_data = {}
+        for lib in bpy.context.preferences.filepaths.asset_libraries:
+            app_lib_data[lib.name] = lib.path
+        change_assets_library_path(app_lib_data, setting_lib)
+
+        return {"FINISHED"}
 
 
-def change_assets_library_path():
+def change_assets_library_path(app_lib_data, setting_lib):
     # for name in app_lib_data:
     #     df_name = 'User Library'
     #     if name == df_name:
@@ -70,14 +86,29 @@ def change_assets_library_path():
     print('"WXZ_Pie_Menu"Changed Assets library')
 
 
+def run_set_assets_library_path(dummy):
+    if get_prefs().load_assets_library_presets:
+        bpy.ops.pie.change_assets_library_path()
+
+
 def register():
-    if not bpy.app.timers.is_registered(change_assets_library_path):
-        bpy.app.timers.register(change_assets_library_path, first_interval=2)
+    bpy.utils.register_class(PIE_Change_Assets_library_Path)
+    bpy.app.handlers.load_post.append(run_set_assets_library_path)
 
 
 def unregister():
-    if bpy.app.timers.is_registered(change_assets_library_path):
-        bpy.app.timers.unregister(change_assets_library_path)
+    bpy.utils.unregister_class(PIE_Change_Assets_library_Path)
+    bpy.app.handlers.load_post.remove(run_set_assets_library_path)
+
+
+# def register():
+#     if not bpy.app.timers.is_registered(change_assets_library_path):
+#         bpy.app.timers.register(change_assets_library_path, first_interval=2)
+
+
+# def unregister():
+#     if bpy.app.timers.is_registered(change_assets_library_path):
+#         bpy.app.timers.unregister(change_assets_library_path)
 
 
 if __name__ == "__main__":

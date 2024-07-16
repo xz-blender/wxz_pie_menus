@@ -1,6 +1,8 @@
 import bpy
 from bpy.app.handlers import persistent
 
+from ..utils import get_prefs
+
 submoduname = __name__.split(".")[-1]
 bl_info = {
     "name": submoduname,
@@ -296,49 +298,75 @@ Others_dir = [
 ]
 
 
-def changes_keys():
+class PIE_Load_XZ_Keys_Presets(bpy.types.Operator):
+    bl_idname = "pie.load_xz_keys_presets"
+    bl_label = "更改为xz的快捷键预设"
+    bl_description = ""
+    bl_options = {"REGISTER", "UNDO"}
 
-    change_key_value(A_select_dir, "CLICK")
+    @classmethod
+    def poll(cls, context):
+        return True
 
-    for _dir in [
-        A_dir,
-        B_dir,
-        Brush_dir,
-        C_dir,
-        D_dir,
-        E_dir,
-        F_dir,
-        G_dir,
-        H_dir,
-        Outliner_dir,
-        Q_dir,
-        R_dir,
-        S_dir,
-        SPACE_dir,
-        T_dir,
-        TAB_dir,
-        U_dir,
-        V_dir,
-        W_dir,
-        X_dir,
-        Z_dir,
-        Text_dir,
-    ]:
-        change_key_value_base(_dir)
+    def execute(self, context):
+        change_key_value(A_select_dir, "CLICK")
 
-    # 其他键位设置
-    change_keys_value()
-    print('"WXZ_Pie_Menu" changed keys!')
+        for _dir in [
+            A_dir,
+            B_dir,
+            Brush_dir,
+            C_dir,
+            D_dir,
+            E_dir,
+            F_dir,
+            G_dir,
+            H_dir,
+            Outliner_dir,
+            Q_dir,
+            R_dir,
+            S_dir,
+            SPACE_dir,
+            T_dir,
+            TAB_dir,
+            U_dir,
+            V_dir,
+            W_dir,
+            X_dir,
+            Z_dir,
+            Text_dir,
+        ]:
+            change_key_value_base(_dir)
+
+        # 其他键位设置
+        change_keys_value()
+        print('"WXZ_Pie_Menu" changed keys!')
+
+        return {"FINISHED"}
 
 
 def register():
-    if not bpy.app.timers.is_registered(changes_keys):
-        bpy.app.timers.register(changes_keys, first_interval=1)
+    bpy.utils.register_class(PIE_Load_XZ_Keys_Presets)
+    bpy.app.handlers.load_post.append(run_set_load_xz_keys_presets)
 
 
 def unregister():
-    if bpy.app.timers.is_registered(changes_keys):
-        bpy.app.timers.unregister(changes_keys)
+    bpy.utils.unregister_class(PIE_Load_XZ_Keys_Presets)
+    bpy.app.handlers.load_post.remove(run_set_load_xz_keys_presets)
+
+
+def run_set_load_xz_keys_presets(dummy):
+    if get_prefs().load_xz_keys_presets:
+        bpy.ops.pie.load_xz_keys_presets()
+
+
+# def register():
+#     if not bpy.app.timers.is_registered(changes_keys):
+#         bpy.app.timers.register(changes_keys, first_interval=1)
+
+
+# def unregister():
+#     if bpy.app.timers.is_registered(changes_keys):
+#         bpy.app.timers.unregister(changes_keys)
 
 
 if __name__ == "__main__":
