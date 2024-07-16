@@ -7,7 +7,7 @@ import zipfile
 from pathlib import Path
 
 # 控制打包
-main = (1, 0, 0)
+main = (1, 1, 1)
 
 
 def get_desktop_path():
