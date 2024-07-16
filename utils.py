@@ -1,5 +1,6 @@
 import os
 import platform
+import winreg
 from pathlib import Path
 
 import bpy
@@ -34,7 +35,6 @@ def get_addon_name():
 
 def get_desktop_path():
     """获取win桌面路径，即使路径被手动更改了(从注册表获取)"""
-    import winreg
 
     # Open the registry key
     with winreg.OpenKey(

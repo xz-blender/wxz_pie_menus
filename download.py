@@ -1,10 +1,13 @@
 import os
+
 import requests
+
 my_url = "https://vip.123pan.cn/1820333155/extensions_website/"
+
 
 def download_file(url, save_folder):
     url = my_url + url
-    save_path = os.path.join(save_folder,os.path.basename(url))
+    save_path = os.path.join(save_folder, os.path.basename(url))
     # 检查文件是否已经存在
     if os.path.exists(save_path):
         return
@@ -13,28 +16,30 @@ def download_file(url, save_folder):
     response = requests.get(url, stream=True)
     if response.status_code == 200:
         # 打开文件并写入内容
-        with open(save_path, 'wb') as file:
+        with open(save_path, "wb") as file:
             for chunk in response.iter_content(chunk_size=16384):
                 file.write(chunk)
         print(f"文件已下载: {save_path}")
     else:
         print(f"无法下载文件，状态码: {response.status_code}")
-        
+
+
 def download_zip(url, save_folder):
     url = my_url + url
     basename = os.path.basename(url)
     ex_name = os.path.splitext(basename)[0]
-    save_path = os.path.join(save_folder,basename)
-    downloaded = os.path.join(save_folder,ex_name)
+    save_path = os.path.join(save_folder, basename)
+    downloaded = os.path.join(save_folder, ex_name)
     if not os.path.exists(downloaded):
         import zipfile
+
         with requests.get(url, stream=True) as r:
             r.raise_for_status()
-            with open(save_path, 'wb') as f:
+            with open(save_path, "wb") as f:
                 for chunk in r.iter_content(chunk_size=16384):
                     f.write(chunk)
-        os.makedirs(downloaded,mode=0o755)
-        with zipfile.ZipFile(save_path, 'r')as zip_ref:
-            zip_ref.extractall(os.path.join(save_folder,ex_name))
+        os.makedirs(downloaded, mode=0o755)
+        with zipfile.ZipFile(save_path, "r") as zip_ref:
+            zip_ref.extractall(os.path.join(save_folder, ex_name))
         if os.path.exists(save_path):
             os.remove(save_path)
