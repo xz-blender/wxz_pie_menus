@@ -204,6 +204,7 @@ Outliner_dir = [
     (["Outliner", "outliner.collection_exclude_set", "Disable from View Layer"], [("value", "CLICK")], []),  # E
     (["Outliner", "outliner.collection_exclude_clear", "Enable in View Layer"], [("value", "CLICK")], []),  # alt E
     (["Outliner", "outliner.collection_new", "New Collection"], [("value", "CLICK")], []),  # C
+    (["Outliner", "outliner.delete", "Delete"], [("value", "CLICK")], []),  # X
 ]
 Q_dir = [
     (["Window", "wm.call_menu", "Quick Favorites"], [("active", False)], []),  # Q

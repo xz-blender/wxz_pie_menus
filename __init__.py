@@ -22,6 +22,7 @@ from . import props
 # from . import auto_load
 from .nodes_presets.Higssas import *
 from .operators import operators_classes
+from .pie.Translate_key import enum_languages
 from .translation.translate import GetTranslationDict
 from .utils import *
 
@@ -366,12 +367,17 @@ class WXZ_PIE_Preferences(AddonPreferences):
     # formula to nodes
     show_formula2nodes_submenu: BoolProperty(name="表达式转节点")  # type: ignore
     debug_prints: bpy.props.BoolProperty(name="调试输出", description="在终端中启用调试打印", default=False)  # type: ignore
+    generate_previews: bpy.props.BoolProperty(name="生成逻辑预览树", description="在创建节点树之前生成节点树的预览", default=True)  # type: ignore
     # MeshMachine
     show_meshmachine_submenu: BoolProperty(name="MeshMachine-剥离版")  # type: ignore
     modal_hud_color: FloatVectorProperty(name="显示字体颜色", subtype="COLOR", default=[1, 1, 1], size=3, min=0, max=1)  # type: ignore
     modal_hud_scale: FloatProperty(name="显示图形缩放", default=1, min=0.5, max=10)  # type: ignore
     modal_hud_hints: BoolProperty(name="显示提示", default=True)  # type: ignore
     symmetrize_flick_distance: IntProperty(name="轻拂确认距离", default=75, min=20, max=1000)  # type: ignore
+    # language swith
+    show_language_switch_submenu: BoolProperty(name="双语切换设置")  # type: ignore
+    first_lang: EnumProperty(name="首选语言", default="zh_HANS", items=enum_languages)  # type: ignore
+    second_lang: EnumProperty(name="次选语言", default="en_US", items=enum_languages)  # type: ignore
 
     def draw(self, context):
         layout = self.layout
@@ -477,19 +483,41 @@ class WXZ_PIE_Preferences(AddonPreferences):
         )
         if self.show_formula2nodes_submenu:
             box = col.box()
+            box.label(text="检查键映射设置以编辑激活。默认为Ctrl+M")
             row = box.row(align=True)
-            row.label(text="检查键映射设置以编辑激活。默认为Ctrl+M")
             row.prop(self, "debug_prints")
-
+            row.prop(self, "generate_previews")
+        ##################
+        col = layout.column()
+        col.scale_y = 1.1
+        col.use_property_split = False
         col.prop(self, "show_meshmachine_submenu", icon="TRIA_RIGHT" if self.show_meshmachine_submenu else "TRIA_DOWN")
         if self.show_meshmachine_submenu:
             box = col.box()
             col = box.column(align=True)
             col.label(text="MeshMachine-剥离版设置")
-            col.prop(self, "modal_hud_color")
-            col.prop(self, "modal_hud_scale")
-            col.prop(self, "modal_hud_hints")
-            col.prop(self, "symmetrize_flick_distance")
+            row = col.row()
+            row.prop(self, "modal_hud_color")
+            row.prop(self, "modal_hud_scale")
+            row = col.row()
+            row.prop(self, "modal_hud_hints")
+            row.prop(self, "symmetrize_flick_distance")
+        ##################
+        col = layout.column()
+        col.scale_y = 1.1
+        col.prop(
+            self,
+            "show_language_switch_submenu",
+            icon="TRIA_RIGHT" if self.show_language_switch_submenu else "TRIA_DOWN",
+        )
+        if self.show_language_switch_submenu:
+            box = col.box()
+            col = box.column(align=True)
+            col.label(text="双语切换设置:设置不同的两种语言以供切换", icon="SETTINGS")
+            row = col.row(align=True)
+            row.prop(self, "first_lang")
+            row.separator()
+            row.prop(self, "second_lang")
 
 
 for mod in all_modules:

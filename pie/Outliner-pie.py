@@ -45,9 +45,38 @@ class OUTLINER_PIE_MT_Bottom_A(Menu):
         pie.separator()
 
 
+class OUTLINER_PIE_MT_Bottom_X(Menu):
+    bl_label = submoduname
+
+    def draw(self, context):
+        layout = self.layout
+        pie = layout.menu_pie()
+
+        # ob_type = context.object.type
+        # ob_mode = context.object.mode
+
+        set_pie_ridius(context, 20)
+
+        pie.separator()
+        # 6 - RIGHT
+        pie.separator()
+        # 2 - BOTTOM
+        pie.operator("pie.remove_empty_collection", icon="TRASH", text="空集合")
+        # 8 - TOP
+        pie.separator()
+        # 7 - TOP - LEFT
+        pie.separator()
+        # 9 - TOP - RIGHT
+        pie.separator()
+        # 1 - BOTTOM - LEFT
+        pie.separator()
+        # 3 - BOTTOM - RIGHT
+        pie.separator()
+
+
 class Collection_Enable_Toggle(Operator):
     bl_idname = "pie.toggle_collection"
-    bl_label = submoduname
+    bl_label = "打开/关闭选择的集合"
     bl_options = {"REGISTER", "UNDO"}
 
     @classmethod
@@ -55,24 +84,65 @@ class Collection_Enable_Toggle(Operator):
         return context.area.type == "OUTLINER"
 
     def execute(self, context):
-        # if context.view_layer.active_layer_collection.name != 'Scene Collection':
-        if context.view_layer.active_layer_collection.exclude:
-            context.view_layer.active_layer_collection.exclude = False
-            # bpy.ops.outliner.collection_exclude_set()
-        else:
-            context.view_layer.active_layer_collection.exclude = True
-            # bpy.ops.outliner.collection_exclude_clear() #'INVOKE_DEFAULT'
+        collection_selected_name_list = []
+        area = next(area for area in bpy.context.window.screen.areas if area.type == "OUTLINER")
+        with bpy.context.temp_override(
+            window=bpy.context.window,
+            area=area,
+            region=next(region for region in area.regions if region.type == "WINDOW"),
+            screen=bpy.context.window.screen,
+        ):
+            for collection in context.selected_ids:
+                collection_selected_name_list.append(collection.name)
+
+        def all_layer_collections(view_layer):
+            stack = [view_layer.layer_collection]
+            while stack:
+                lc = stack.pop()
+                yield lc
+                stack.extend(lc.children)
+
+        print("col_list:", collection_selected_name_list)
+        if collection_selected_name_list != []:
+            for collection_name in collection_selected_name_list:
+                view_layer = bpy.context.scene.view_layers.get(bpy.context.view_layer.name, None)
+                if view_layer:
+                    for lc in all_layer_collections(view_layer):
+                        if lc.collection.name == collection_name:
+                            if lc.exclude == True:
+                                lc.exclude = False
+                                pass
+                            elif lc.exclude == False:
+                                lc.exclude = True
+                        # for l in dir(lc):
+                        #     print("dir______:", l)
         return {"FINISHED"}
-        # else:
-        #     self.report({'INFO'}, '没有选择集合')
-        #     return {"CANCELLED"}
+
+
+class PIE_Collection_Remove_Empty(Operator):
+    bl_idname = "pie.remove_empty_collection"
+    bl_label = "删除空集合"
+    bl_description = "删除空集合"
+    bl_options = {"REGISTER", "UNDO"}
+
+    @classmethod
+    def poll(cls, context):
+        return True
+
+    def execute(self, context):
+        for eachCol in bpy.data.collections:
+            if len(eachCol.all_objects) == 0:
+                bpy.data.collections.remove(eachCol)
+        return {"FINISHED"}
 
 
 classes = [
     OUTLINER_PIE_MT_Bottom_A,
     Collection_Enable_Toggle,
+    PIE_Collection_Remove_Empty,
+    OUTLINER_PIE_MT_Bottom_X,
 ]
-
+class_register, class_unregister = bpy.utils.register_classes_factory(classes)
 addon_keymaps = []
 
 
@@ -81,8 +151,12 @@ def register_keymaps():
     km = addon.keymaps.new(name="Outliner", space_type="OUTLINER")
     kmi = km.keymap_items.new("wm.call_menu_pie", "A", "CLICK_DRAG")
     kmi.properties.name = "OUTLINER_PIE_MT_Bottom_A"
+    kmi = km.keymap_items.new("wm.call_menu_pie", "X", "CLICK_DRAG")
+    kmi.properties.name = "OUTLINER_PIE_MT_Bottom_X"
     kmi = km.keymap_items.new("outliner.show_active", "F", "CLICK")
     kmi = km.keymap_items.new("pie.toggle_collection", "E", "CLICK")
+    kmi = km.keymap_items.new("outliner.collection_new", "W", "CLICK")
+    kmi.properties.nested = True
     kmi = km.keymap_items.new("outliner.collection_objects_select", "A", "CLICK")
     kmi = km.keymap_items.new("outliner.collection_duplicate", "D", "CLICK", shift=True)
     kmi = km.keymap_items.new("outliner.collection_duplicate_linked", "D", "CLICK", alt=True)
@@ -100,16 +174,13 @@ def unregister_keymaps():
 
 
 def register():
-    for cls in classes:
-        bpy.utils.register_class(cls)
+    class_register()
     register_keymaps()
 
 
 def unregister():
-
     unregister_keymaps()
-    for cls in reversed(classes):
-        bpy.utils.unregister_class(cls)
+    class_unregister()
 
 
 # if __name__ == "__main__":

@@ -12,7 +12,7 @@ from dataclasses import dataclass
 from typing import ClassVar, Generic, Literal, NoReturn, Self, TypeAlias, TypeVar, Union
 
 import bpy
-from bpy.types import Context, Event
+from bpy.types import Context, Event, UILayout
 
 from ..utils import get_prefs
 
@@ -354,6 +354,26 @@ class ShaderMathOperation(Operation):
             op = e.op
 
             if type(op) in SHADER_NODE_BASIC_OPS:
+                # check for Multiply Add
+                if isinstance(op, ast.Add):
+                    if isinstance(e.left, ast.BinOp) and isinstance(e.left.op, ast.Mult):
+                        return cls(
+                            name="MULTIPLY_ADD",
+                            inputs=[
+                                cls.parse(e.left.left),
+                                cls.parse(e.left.right),
+                                cls.parse(e.right),
+                            ],
+                        )
+                    elif isinstance(e.right, ast.BinOp) and isinstance(e.right.op, ast.Mult):
+                        return cls(
+                            name="MULTIPLY_ADD",
+                            inputs=[
+                                cls.parse(e.right.left),
+                                cls.parse(e.right.right),
+                                cls.parse(e.left),
+                            ],
+                        )
                 return cls(
                     name=SHADER_NODE_BASIC_OPS[type(op)],
                     inputs=[cls.parse(e.left), cls.parse(e.right)],
@@ -463,6 +483,22 @@ class ComposeNodes:
 
     tree_type: ClassVar[str]
     group_type: ClassVar[str]
+
+    def preview_generate(self, root: Operation, layout: UILayout) -> None:
+        """Generates a node tree, but inside a uiLayout for previewing"""
+        child_col = layout.column(align=True)
+        for input in root.inputs:
+            input_row = child_col.box().row()
+            if isinstance(input, Operation):
+                # gengenerate_previewr the child operation
+                self.preview_generate(input, input_row)
+            elif not self.hide_nodes:
+                input_row.label(text=str(input))
+
+        # # create a row for the current node's name
+        # root_row = row.column(align=True)
+        layout.label(text=root.name)
+        ...
 
     def run(
         self,
@@ -649,6 +685,7 @@ class ComposeNodeTree(bpy.types.Operator):
     editor_type: bpy.props.StringProperty(name="编辑器类型")  # type: ignore
     expression: bpy.props.StringProperty(name="公式表达式", description="节点的源表达式。")  # type: ignore
     input_socket_type: bpy.props.EnumProperty(items=InputSocketType, default="REROUTE")  # type: ignore
+    generate_previews: bool
 
     def invoke(self, context: Context, event: Event) -> set[str]:
         wm = context.window_manager
@@ -656,6 +693,8 @@ class ComposeNodeTree(bpy.types.Operator):
         self.editor_type = ui_mode
         if get_prefs().debug_prints:
             print(f"NQM: Editor type: {self.editor_type}")
+
+        self.generate_previews = get_prefs().generate_previews
 
         # return wm.invoke_props_dialog(self, confirm_text="Create", width=800)
         return wm.invoke_props_dialog(self, width=800)
@@ -701,9 +740,11 @@ class ComposeNodeTree(bpy.types.Operator):
 
     def execute(self, context: Context):
         # Create nodes from tree
-
-        bpy.ops.node.select_all(action="DESELECT")
-
+        try:
+            bpy.ops.node.select_all(action="DESELECT")
+        except:
+            self.report({("ERROR", "请先创建节点树")})
+            pass
         tree = self.generate_tree(self.expression)
         o = self.current_operation_type()
         if tree.is_err() or o is None:
@@ -723,9 +764,11 @@ class ComposeNodeTree(bpy.types.Operator):
     def draw(self, context: Context):
         layout = self.layout
 
-        if self.current_operation_type() is None:
+        o = self.current_operation_type()
+        if o is None:
             layout.label(text="当前不支持此节点编辑器!")
             return
+        opt, comp = o
 
         layout.prop(self, "expression")
 
@@ -759,10 +802,19 @@ class ComposeNodeTree(bpy.types.Operator):
                 msg = r.unwrap_err()
 
                 b = layout.box()
-                functions_box = b.column()
-                functions_box.label(text="Error:")
+                err_col = b.column()
+                err_col.label(text="Error:")
                 for line in msg.splitlines():
-                    functions_box.label(text=line, translate=False)
+                    err_col.label(text=line, translate=False)
+            elif self.generate_previews:  # create a representation of the node tree under the settings
+                preview_box = layout.box()
+
+                composer = comp(
+                    socket_type=self.input_socket_type,
+                    center_nodes=self.center_nodes,
+                    hide_nodes=self.hide_nodes,
+                )
+                composer.preview_generate(r.unwrap()[1].root, preview_box.row())
 
 
 # class Preferences(bpy.types.AddonPreferences):

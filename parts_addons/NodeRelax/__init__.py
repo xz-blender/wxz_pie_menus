@@ -35,8 +35,8 @@ def register():
     wm = bpy.context.window_manager
     kc = wm.keyconfigs.addon
     if kc:
-        km = kc.keymaps.new(name='Node Editor', space_type='NODE_EDITOR')
-        kmi = km.keymap_items.new("node_relax.brush", 'R', 'PRESS', shift=True)
+        km = kc.keymaps.new(name="Node Editor", space_type="NODE_EDITOR")
+        kmi = km.keymap_items.new("node_relax.brush", "R", "PRESS", shift=True)
 
         addon_keymaps.append((km, kmi))
 
@@ -50,8 +50,10 @@ def register():
 
 
 def unregister():
-    for km, kmi in addon_keymaps:
-        km.keymap_items.remove(kmi)
+    # for km in addon_keymaps:
+    #     for kmi in km.keymap_items:
+    #         km.keymap_items.remove(kmi)
+    # wm.keyconfigs.addon.keymaps.remove(km)
     addon_keymaps.clear()
 
     bpy.utils.unregister_class(NodeRelaxBrush)

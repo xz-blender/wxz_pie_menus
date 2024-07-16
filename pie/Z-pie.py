@@ -168,6 +168,10 @@ class PIE_GN_AutoSmooth(Operator):
         return True
 
     def execute(self, context):
+        # 编译一个正则表达式来匹配以“Smooth by Angle”开头的所有修改器名称
+        pattern = re.compile(r"^Smooth by Angle(\.\d+)?$")
+        s_name = "Smooth by Angle"
+
         store_active_ob = context.active_object
         for obj in context.selected_objects:
             context.view_layer.objects.active = obj
@@ -175,16 +179,14 @@ class PIE_GN_AutoSmooth(Operator):
             # 遍历每个选定物体的修改器
 
             if bool(modifiers) == True:
-                # 编译一个正则表达式来匹配以“Smooth by Angle”开头的所有修改器名称
-                pattern = re.compile(r"^Smooth by Angle(\.\d+)?$")
 
                 # 初始化变量以保留找到的第一个“Smooth by Angle”修改器
                 primary_modifier = None
 
                 # 遍历所有修改器的副本列表（使用列表副本以避免在遍历时修改列表）
                 for modifier in obj.modifiers[:]:
-                    # 检查修改器名称是否完全匹配“Smooth by Angle”q
-                    if modifier.name == "Smooth by Angle":
+                    # 检查修改器名称是否完全匹配“Smooth by Angle”
+                    if modifier.name == s_name:
                         if primary_modifier is None:
                             # 如果找到第一个“Smooth by Angle”修改器，保留它
                             primary_modifier = modifier
@@ -194,34 +196,32 @@ class PIE_GN_AutoSmooth(Operator):
                     # 对于其他匹配正则表达式的修改器（即以“Smooth by Angle.”开头的），直接删除
                     elif pattern.match(modifier.name):
                         obj.modifiers.remove(modifier)
+                    # 删除空的节点修改器
+                    elif modifier.type == "NODES" and modifier.node_group == None:
+                        obj.modifiers.remove(modifier)
 
                 # 如果找到了“Smooth by Angle”修改器，将其移动到堆栈底部
                 if primary_modifier:
-                    # 计算需要下移的次数
-                    move_down_steps = len(obj.modifiers) - list(obj.modifiers).index(primary_modifier) - 1
-                    # 通过多次下移来将修改器移动到堆栈底部
-                    for _ in range(move_down_steps):
-                        try:
-                            bpy.ops.object.modifier_move_down(modifier=primary_modifier.name)
-                        except:
-                            pass
+                    primary_modifier.use_pin_to_last = True
                 else:
-                    if bpy.data.node_groups.get("Smooth by Angle"):
+                    if bpy.data.node_groups.get(s_name):
                         new_modifier = obj.modifiers.new(name="GeometryNodes", type="NODES")
-                        new_modifier.node_group = bpy.data.node_groups.get("Smooth by Angle")
-                        new_modifier.name = "Smooth by Angle"
+                        new_modifier.node_group = bpy.data.node_groups.get(s_name)
+                        new_modifier.name = s_name
                         new_modifier.show_group_selector = False
+                        new_modifier.use_pin_to_last = True
                     else:
                         add_sm()
 
                 try:
-                    modifiers["Smooth by Angle"]["Input_1"] = self.angle
-                    modifiers["Smooth by Angle"]["Socket_1"] = self.ignore
+                    modifiers[s_name]["Input_1"] = self.angle
+                    modifiers[s_name]["Socket_1"] = self.ignore
                 except KeyError:
                     pass
                 # 更新视图，确保修改生效
             else:
                 add_sm()
+                modifier[s_name].use_pin_to_last = True
             bpy.context.view_layer.update()
         context.view_layer.objects.active = store_active_ob
         return {"FINISHED"}
@@ -301,7 +301,6 @@ def register_keymaps():
 
 
 def unregister_keymaps():
-    wm = bpy.context.window_manager
     for km in addon_keymaps:
         for kmi in km.keymap_items:
             km.keymap_items.remove(kmi)
