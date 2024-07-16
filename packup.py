@@ -6,6 +6,9 @@ import winreg
 import zipfile
 from pathlib import Path
 
+# 控制打包
+main = (1, 0, 0)
+
 
 def get_desktop_path():
     with winreg.OpenKey(
@@ -140,13 +143,16 @@ def main_zip(exclude_list, source_dir, output_path, main=True):
 
 
 if __name__ == "__main__":
-    main_zip(main_exclude_list, source_dir, output_path)
-
-    if not os.path.exists(split_out_path):
-        os.makedirs(split_out_path)
-    for dir in split_folder_list:
-        input_path = Path(__file__).parent / dir
-        output_path = str(split_out_path / dir) + ".zip"
-        main_zip(split_exclude_list, input_path, output_path, False)
-
-    copy_excluded_files(source_dir, split_out_path, split_file_list)
+    if main[0]:
+        main_zip(main_exclude_list, source_dir, output_path)
+    # 打包需上传的文件夹
+    elif main[1]:
+        if not os.path.exists(split_out_path):
+            os.makedirs(split_out_path)
+        for dir in split_folder_list:
+            input_path = Path(__file__).parent / dir
+            output_path = str(split_out_path / dir) + ".zip"
+            main_zip(split_exclude_list, input_path, output_path, False)
+    # 复制需要传的文件
+    elif main[2]:
+        copy_excluded_files(source_dir, split_out_path, split_file_list)
