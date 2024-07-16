@@ -1,12 +1,14 @@
 from pathlib import Path
 
 from .download import download_file, download_zip
+from .packup import split_file_list, split_folder_list
 
-down_path = Path(__file__).parent
-xz_url = "addons_file" + "/" + down_path.name + "/"
-download_file("fonts/ui_font.ttf", down_path)
-download_file(xz_url + "workspace.blend", down_path)
-download_file(xz_url + "workspace_online.blend", down_path)
+down_path = Path(__file__).parent.name
+xz_url = down_path
+for file in split_file_list:
+    download_file(xz_url + file, down_path)
+for dir in split_folder_list:
+    download_zip(xz_url + dir, down_path)
 
 import os
 import site
