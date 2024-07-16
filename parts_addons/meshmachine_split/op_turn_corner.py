@@ -1,11 +1,12 @@
-import bpy
-from bpy.props import IntProperty, FloatProperty, BoolProperty, EnumProperty
 import bmesh
+import bpy
+from bpy.props import BoolProperty, EnumProperty, FloatProperty, IntProperty
+
+from .draw import *
 from .math import *
 from .tools import *
 from .ui import *
 from .utils import *
-from .draw import *
 
 
 class PIE_TurnCorner(bpy.types.Operator):
@@ -14,10 +15,10 @@ class PIE_TurnCorner(bpy.types.Operator):
     bl_description = "选择角的交汇处的四边面，执行本操作"
     bl_options = {"REGISTER", "UNDO"}
 
-    width: FloatProperty(name="Width", default=0.1, min=0.01, step=0.1)  # type: ignore
-    sharps: BoolProperty(name="Set Sharps", default=False)  # type: ignore
-    bweights: BoolProperty(name="Set Bevel Weights", default=False)  # type: ignore
-    bweight: FloatProperty(name="Weight", default=1, min=0, max=1)  # type: ignore
+    width: FloatProperty(name="宽度", default=0.1, min=0.01, step=0.1)  # type: ignore
+    sharps: BoolProperty(name="标记锐边", default=False)  # type: ignore
+    bweights: BoolProperty(name="设置边倒角权重", default=False)  # type: ignore
+    bweight: FloatProperty(name="权重值", default=1, min=0, max=1)  # type: ignore
     passthrough: BoolProperty(default=False)  # type: ignore
     allowmodalwidth: BoolProperty(default=True)  # type: ignore
 
@@ -37,22 +38,20 @@ class PIE_TurnCorner(bpy.types.Operator):
         if context.area == self.area:
             draw_init(self)
 
-            draw_title(self, "Turn Corner")
+            draw_title(self, self.bl_label)
 
-            draw_prop(self, "Turn", self.count, hint="scroll UP/DOWN")
+            draw_prop(self, "拐角编号", self.count, hint="滚轮")
             self.offset += 10
 
-            draw_prop(
-                self, "Width", self.width, active=self.allowmodalwidth, offset=18, hint="move LEFT/RIGHT, toggle W"
-            )
+            draw_prop(self, "宽度", self.width, active=self.allowmodalwidth, offset=18, hint="W 开关, 左右调整大小")
 
             self.offset += 10
 
-            draw_prop(self, "Set Sharps", self.sharps, offset=18, hint="toggle S")
-            draw_prop(self, "Set BWeights", self.bweights, offset=18, hint="toggle B")
+            draw_prop(self, "标记-锐边", self.sharps, offset=18, hint="S 开关")
+            draw_prop(self, "设置-边倒角权重", self.bweights, offset=18, hint="B 开关")
 
             if self.bweights:
-                draw_prop(self, "BWeight", self.bweight, offset=18, decimal=1, hint="ALT scroll UP/DOWN")
+                draw_prop(self, " | 权重值", self.bweight, offset=18, decimal=1, hint="ALT + 滚轮")
 
     @classmethod
     def poll(cls, context):

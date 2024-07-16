@@ -1,13 +1,14 @@
+import bmesh
 import bpy
 from bpy.props import BoolProperty, EnumProperty, FloatProperty
 from bpy_extras.view3d_utils import region_2d_to_location_3d, region_2d_to_origin_3d, region_2d_to_vector_3d
-import bmesh
 from mathutils import Vector
-from .utils import *
-from .symmetrize_func import *
-from .items import *
+
 from .draw import *
+from .items import *
+from .symmetrize_func import *
 from .ui import *
+from .utils import *
 from .vars import *
 
 vert_ids = []
@@ -53,11 +54,11 @@ class PIE_Symmetrize(bpy.types.Operator):
     objmode: BoolProperty(name="Object Mode", default=False)  # type: ignore
     flick: BoolProperty(name="Flick", default=True)  # type: ignore
     axis: EnumProperty(name="Axis", items=axis_items, default="X")  # type: ignore
-    direction: EnumProperty(name="Direction", items=direction_items, default="POSITIVE")  # type: ignore
-    threshold: FloatProperty(name="Threshold", default=0.0001)  # type: ignore
+    direction: EnumProperty(name="方向", items=direction_items, default="POSITIVE")  # type: ignore
+    threshold: FloatProperty(name="阈值", default=0.0001)  # type: ignore
     partial: BoolProperty(name="Partial", description="Full or Partial(selected only) Symmetrize", default=False)  # type: ignore
     remove: BoolProperty(name="Remove", description="Symmetrize or Remove", default=False)  # type: ignore
-    remove_redundant_center: BoolProperty(name="Remove Redundant Center", description="Remove Redundant Center Edges created through the Symmetrize Operation", default=True)  # type: ignore
+    remove_redundant_center: BoolProperty(name="移除对称中心线", description="Remove Redundant Center Edges created through the Symmetrize Operation", default=True)  # type: ignore
     redundant_threshold: FloatProperty(name="Redundant Threshold Angle", description="Threshold Angle, that determines if Center Edges are Redundant", default=0.05, min=0, max=1, step=0.1)  # type: ignore
     is_custom_normal: BoolProperty(default=False)  # type: ignore
     mirror_custom_normals: BoolProperty(name="Mirror Custom Normals", default=True)  # type: ignore
@@ -79,8 +80,8 @@ class PIE_Symmetrize(bpy.types.Operator):
         column = layout.column()
 
         row = column.row(align=True)
-        row.prop(self, "partial", text="Selected" if self.partial else "All", toggle=True)
-        row.prop(self, "remove", text="Remove" if self.remove else "Symmetrize", toggle=True)
+        row.prop(self, "partial", text="选择的" if self.partial else "全部", toggle=True)
+        row.prop(self, "remove", text="移除" if self.remove else "镜像", toggle=True)
 
         row = column.row()
         row.prop(self, "axis", expand=True)
@@ -137,14 +138,14 @@ class PIE_Symmetrize(bpy.types.Operator):
                 if self.partial:
                     draw_label(
                         context,
-                        title="Selected",
+                        title="镜像选择",
                         coords=(self.init_mouse[0], self.init_mouse[1] + self.flick_distance - (15 * self.scale)),
                         center=True,
                         color=color,
                         alpha=1.0,
                     )
 
-                title = "Remove" if self.remove else "Symmetrize"
+                title = "镜像移除" if self.remove else "网格镜像"
                 alpha = 1 if self.remove else 0.8
                 draw_label(
                     context,

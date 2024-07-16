@@ -1,5 +1,5 @@
-"使并排循环边流线化","Set edge flow"
-"使并排循环边线性化","Set edge linear"
+"并排边-流线化","Set edge flow"
+"并排边-线性化","Set edge linear"
 "复制 位置","Copy Location"
 "复制 旋转","Copy Rotation"
 "复制 缩放","Copy Scale"
@@ -15,3 +15,4 @@
 "复制 约束(选择)","Copy Selected Constraints"
 "复制 修改器(选择)","Copy Selected Modifiers"
 "复制 自定义属性(选择)","Copy Selected Custom Properties"
+

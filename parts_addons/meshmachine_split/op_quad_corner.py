@@ -21,10 +21,10 @@ class PIE_QuadCorner(bpy.types.Operator):
     )
     bl_options = {"REGISTER", "UNDO"}
 
-    width: FloatProperty(name="Width", default=0.01, min=0.0001, max=1, precision=2, step=0.1)  # type: ignore
+    width: FloatProperty(name="宽度", default=0.01, min=0.0001, max=1, precision=2, step=0.1)  # type: ignore
     tension: FloatProperty(name="Tension", default=0.55, min=0.01, max=2, step=0.1)  # type: ignore
     tension_preset: EnumProperty(name="Tension Presets", items=tension_preset_items, default="CUSTOM")  # type: ignore
-    turn: EnumProperty(name="Turn", items=turn_items, default="1")  # type: ignore
+    turn: EnumProperty(name="拐角编号", items=turn_items, default="1")  # type: ignore
     single: BoolProperty(name="Single", default=False)  # type: ignore
     passthrough: BoolProperty(default=False)  # type: ignore
     allowmodalwidth: BoolProperty(default=True)  # type: ignore
@@ -51,14 +51,12 @@ class PIE_QuadCorner(bpy.types.Operator):
         if context.area == self.area:
             draw_init(self)
 
-            draw_title(self, "Quad Corner")
+            draw_title(self, self.bl_label)
 
-            draw_prop(self, "Turn", self.turn, hint="scroll UP/DOwn")
+            draw_prop(self, "拐角编号", self.turn, hint="滚轮")
             self.offset += 10
 
-            draw_prop(
-                self, "Width", self.width, active=self.allowmodalwidth, offset=18, hint="move LEFT/RIGHT, toggle W"
-            )
+            draw_prop(self, "转角宽度", self.width, active=self.allowmodalwidth, offset=18, hint="W 开关, 左右调整大小")
 
             if not self.single:
                 draw_prop(

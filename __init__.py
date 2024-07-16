@@ -18,15 +18,10 @@ from bpy.props import *
 from bpy.types import AddonPreferences, Operator, PropertyGroup, UIList
 
 from . import props
-
-# from . import auto_load
 from .nodes_presets.Higssas import *
-from .operators import operators_classes
 from .pie.Translate_key import enum_languages
 from .translation.translate import GetTranslationDict
 from .utils import *
-
-# auto_load.init()
 
 bl_info = {
     "name": "WXZ Pie Menus Addon",
@@ -552,7 +547,6 @@ classes = (
     PIE_UL_pie_modules,
     PIE_UL_other_modules,
     WXZ_PIE_Preferences,
-    *operators_classes,
     PIE_OT_PIPInstall,
     PIE_OT_PIPInstall_Default,
     PIE_OT_PIPRemove,
@@ -573,13 +567,10 @@ def add_modules_item(prefs, module_list_name):
 
 
 def register():
-    props.register()
     class_register()
 
     global ERROR_OUTPUT
     global TEXT_OUTPUT
-
-    # auto_load.register()
 
     prefs = get_addon_preferences()
     for mod in all_modules:
@@ -601,8 +592,6 @@ def register():
 
 def unregister():
     class_unregister()
-    props.unregister()
-    # auto_load.unregister()
 
     for mod in all_modules:
         if mod.__addon_enabled__:

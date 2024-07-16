@@ -16,10 +16,10 @@ class PIE_BooleanCleanup(bpy.types.Operator):
     bl_description = "选择布尔交汇处的循环边(Ngons),执行本操作"
     bl_options = {"REGISTER", "UNDO"}
 
-    sideselection: EnumProperty(name="Side", items=side_selection_items, default="A")  # type: ignore
-    flip: BoolProperty(name="Flip Red to Green", default=False)  # type: ignore
-    threshold: FloatProperty(name="Threshold", default=0, min=0, step=0.1)  # type: ignore
-    triangulate: BoolProperty(name="Triangulate", default=False)  # type: ignore
+    sideselection: EnumProperty(name="AB面", items=side_selection_items, default="A")  # type: ignore
+    flip: BoolProperty(name="将红色翻转为绿色", default=False)  # type: ignore
+    threshold: FloatProperty(name="阈值", default=0, min=0, step=0.1)  # type: ignore
+    triangulate: BoolProperty(name="三角化", default=False)  # type: ignore
     allowmodalthreashold: BoolProperty(default=True)  # type: ignore
     sharp: BoolProperty(default=False)  # type: ignore
     debuginit: BoolProperty(default=True)  # type: ignore
@@ -45,25 +45,25 @@ class PIE_BooleanCleanup(bpy.types.Operator):
         if context.area == self.area:
             draw_init(self)
 
-            draw_title(self, "Boolean Cleanup")
+            draw_title(self, self.bl_label)
 
-            draw_prop(self, "Side", self.sideselection, hint="scroll UP/DOWN")
+            draw_prop(self, "AB面", self.sideselection, hint="滚轮")
             self.offset += 10
 
             draw_prop(
                 self,
-                "Threshold",
+                "阈值",
                 self.threshold,
                 offset=18,
                 decimal=4,
                 active=self.allowmodalthreashold,
-                hint="move LEFT/RIGHT, toggle W, reset ALT + W",
+                hint="W 开关, 左右移动调整, ALT + W 重置",
             )
             self.offset += 10
 
-            draw_prop(self, "Flip", self.flip, offset=18, hint="toggle F")
+            draw_prop(self, "翻转", self.flip, offset=18, hint="F 切换")
 
-            draw_prop(self, "Triangulate", self.triangulate, offset=18, hint="toggle T")
+            draw_prop(self, "三角化", self.triangulate, offset=18, hint="T 开关")
 
     def draw_VIEW3D(self, context):
         if context.area == self.area:

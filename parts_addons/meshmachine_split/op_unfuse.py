@@ -1,11 +1,12 @@
-import bpy
-from bpy.props import IntProperty, FloatProperty, BoolProperty, EnumProperty
 import bmesh
-from .selection import *
-from .ui import *
+import bpy
+from bpy.props import BoolProperty, EnumProperty, FloatProperty, IntProperty
+
 from .draw import *
-from .utils import *
+from .selection import *
 from .tools import *
+from .ui import *
+from .utils import *
 
 
 class PIE_Unfuse(bpy.types.Operator):
@@ -14,9 +15,9 @@ class PIE_Unfuse(bpy.types.Operator):
     bl_description = "选择倒圆角中的一组并排面，进行转换"
     bl_options = {"REGISTER", "UNDO"}
 
-    sharps: BoolProperty(name="Set Sharps", default=True)  # type: ignore
-    bweights: BoolProperty(name="Set Bevel Weights", default=False)  # type: ignore
-    bweight: FloatProperty(name="Weight", default=1, min=0, max=1)  # type: ignore
+    sharps: BoolProperty(name="标记锐边", default=True)  # type: ignore
+    bweights: BoolProperty(name="设置边倒角权重", default=False)  # type: ignore
+    bweight: FloatProperty(name="权重值", default=1, min=0, max=1)  # type: ignore
     cyclic: BoolProperty(name="Cyclic", default=False)  # type: ignore
 
     def draw(self, context):
@@ -33,12 +34,12 @@ class PIE_Unfuse(bpy.types.Operator):
         if context.area == self.area:
             draw_init(self)
 
-            draw_title(self, "Unfuse")
+            draw_title(self, self.bl_label)
 
-            draw_prop(self, "Set Sharps", self.sharps, hint="toggle S")
-            draw_prop(self, "Set BWeights", self.bweights, offset=18, hint="toggle B")
+            draw_prop(self, "设置锐边", self.sharps, hint="S 开关")
+            draw_prop(self, "设置-边倒角权重", self.bweights, offset=18, hint="B 开关")
             if self.bweights:
-                draw_prop(self, "BWeight", self.bweight, offset=18, hint="ALT scroll UP/DOWN")
+                draw_prop(self, " | 权重值", self.bweight, offset=18, hint="ALT + 滚轮")
 
     @classmethod
     def poll(cls, context):

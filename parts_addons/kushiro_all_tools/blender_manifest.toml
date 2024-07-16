@@ -1,0 +1,12 @@
+schema_version = "1.0.0"
+id = "kushiro_all_tools"
+name = "Kushiro All Tools"
+version = "1.0.0"
+tagline = "Kushiro作者除了Grid Modeler以外的所有工具，整合包。网格编辑右键菜单"
+maintainer = "xz-blender repack"
+type = "add-on"
+tags = [ "Mesh",]
+blender_version_min = "4.2.0"
+license = [ "SPDX:GPL-2.0-or-later",]
+website = "https://kushiro.gumroad.com/l/ikzrmy"
+copyright = [ "blender",]

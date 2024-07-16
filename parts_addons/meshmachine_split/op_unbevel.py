@@ -20,11 +20,11 @@ class PIE_Unbevel(bpy.types.Operator):
     bl_options = {"REGISTER", "UNDO"}
 
     handlemethod: EnumProperty(name="Unchamfer Method", items=handle_method_items, default="FACE")  # type: ignore
-    slide: FloatProperty(name="Slide", default=0, min=-1, max=1)  # type: ignore
+    slide: FloatProperty(name="另一侧混合值", default=0, min=-1, max=1)  # type: ignore
     reverse: BoolProperty(name="Reverse", default=False)  # type: ignore
-    sharps: BoolProperty(name="Set Sharps", default=True)  # type: ignore
-    bweights: BoolProperty(name="Set Bevel Weights", default=False)  # type: ignore
-    bweight: FloatProperty(name="Weight", default=1, min=0, max=1)  # type: ignore
+    sharps: BoolProperty(name="标记锐边", default=True)  # type: ignore
+    bweights: BoolProperty(name="设置边倒角权重", default=False)  # type: ignore
+    bweight: FloatProperty(name="权重值", default=1, min=0, max=1)  # type: ignore
     cyclic: BoolProperty(name="Cyclic", default=False)  # type: ignore
     single: BoolProperty(name="Single", default=False)  # type: ignore
     passthrough: BoolProperty(default=False)  # type: ignore
@@ -59,31 +59,31 @@ class PIE_Unbevel(bpy.types.Operator):
         if context.area == self.area:
             draw_init(self)
 
-            draw_title(self, "Unbevel")
+            draw_title(self, self.bl_label)
 
-            draw_prop(self, "Handles", self.handlemethod, hint="scroll UP/Down")
+            draw_prop(self, "切换计算方法", self.handlemethod, hint="滚轮")
             self.offset += 10
 
             if self.handlemethod == "FACE":
                 draw_prop(
                     self,
-                    "Slide",
+                    "另一侧混合值",
                     self.slide,
                     offset=18,
                     decimal=2,
                     active=self.allowmodalslide,
-                    hint="move LEFT/RIGHT, toggle W, reset ALT + W",
+                    hint="W 开启，左右移动调整，ALT + W 重置",
                 )
                 self.offset += 10
 
-            draw_prop(self, "Set Sharps", self.sharps, offset=18, hint="toggle S")
-            draw_prop(self, "Set BWeights", self.bweights, offset=18, hint="toggle B")
+            draw_prop(self, "标记锐边", self.sharps, offset=18, hint="S 开关")
+            draw_prop(self, "设置-边倒角权重", self.bweights, offset=18, hint="B 开关")
             if self.bweights:
-                draw_prop(self, "BWeight", self.bweight, offset=18, hint="ALT scroll UP/DOWN")
+                draw_prop(self, " | 权重值", self.bweight, offset=18, hint="ALT + 滚轮")
             self.offset += 10
 
             if self.single:
-                draw_prop(self, "Reverse", self.reverse, offset=18, hint="toggle R")
+                draw_prop(self, "反转", self.reverse, offset=18, hint="R 切换")
 
     def draw_VIEW3D(self, context):
         return None

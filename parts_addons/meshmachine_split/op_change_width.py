@@ -1,13 +1,14 @@
-import bpy
-from bpy.props import IntProperty, FloatProperty, BoolProperty
 import bmesh
-from mathutils import Vector, Matrix
-from .utils import *
+import bpy
+from bpy.props import BoolProperty, FloatProperty, IntProperty
+from mathutils import Matrix, Vector
+
 from .draw import *
-from .ui import *
 from .loop import *
 from .selection import *
 from .tools import *
+from .ui import *
+from .utils import *
 
 
 class PIE_ChangeWidth(bpy.types.Operator):
@@ -16,8 +17,8 @@ class PIE_ChangeWidth(bpy.types.Operator):
     bl_description = "请选择倒斜角的循环面，再执行本操作"
     bl_options = {"REGISTER", "UNDO"}
 
-    width: FloatProperty(name="Width", default=0.0, step=0.1)  # type: ignore
-    reverse: BoolProperty(name="Reverse", default=False)  # type: ignore
+    width: FloatProperty(name="宽度", default=0.0, step=0.1)  # type: ignore
+    reverse: BoolProperty(name="反转", default=False)  # type: ignore
     taper: BoolProperty(name="Taper", default=False)  # type: ignore
     taperflip: BoolProperty(name="Taper Flip", default=False)  # type: ignore
     single: BoolProperty(name="Single", default=False)  # type: ignore
@@ -42,18 +43,18 @@ class PIE_ChangeWidth(bpy.types.Operator):
         if context.area == self.area:
             draw_init(self)
 
-            draw_title(self, "Change Width")
+            draw_title(self, self.bl_label)
 
-            draw_prop(self, "Width", self.width, decimal=3, hint="move LEFT/RIGHT")
+            draw_prop(self, "宽度", self.width, decimal=3, hint="左右移动")
 
             if self.single:
-                draw_prop(self, "Reverse", self.reverse, offset=18, hint="toggle R")
+                draw_prop(self, "反转", self.reverse, offset=18, hint="R 切换")
 
             if not self.cyclic:
-                draw_prop(self, "Taper", self.taper, offset=18, hint="toggle T")
+                draw_prop(self, "Taper", self.taper, offset=18, hint="T 切换")
 
                 if self.taper:
-                    draw_prop(self, "Taper Flip", self.taperflip, offset=18, hint="toggle F")
+                    draw_prop(self, "Taper Flip", self.taperflip, offset=18, hint="F 切换")
 
     def draw_VIEW3D(self, context):
         # if context.scene.MM.debug:

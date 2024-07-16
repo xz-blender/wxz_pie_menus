@@ -1,5 +1,6 @@
 import bpy
-from bpy.props import IntProperty, BoolProperty, FloatProperty, EnumProperty
+from bpy.props import BoolProperty, EnumProperty, FloatProperty, IntProperty
+
 from .utils import *
 
 
@@ -9,17 +10,17 @@ class PIE_OffsetCut(bpy.types.Operator):
     bl_description = "选择需要倒角的循环边(Ngon)，自动向两侧偏移重构四边面"
     bl_options = {"REGISTER", "UNDO"}
 
-    width: FloatProperty(name="Width", default=0.1, min=0.01, step=0.1)  # type: ignore
-    resample: BoolProperty(name="Resample", default=True)  # type: ignore
+    width: FloatProperty(name="宽度", default=0.1, min=0.002, step=0.1)  # type: ignore
+    resample: BoolProperty(name="重新采样", default=True)  # type: ignore
     factor: FloatProperty(name="Factor", default=1, min=0.5)  # type: ignore
-    smooth: BoolProperty(name="Smooth", default=False)  # type: ignore
-    iterations: IntProperty(name="Iterations", default=1, min=1)  # type: ignore
-    optimize: BoolProperty(name="Optimize", default=True)  # type: ignore
+    smooth: BoolProperty(name="平滑", default=False)  # type: ignore
+    iterations: IntProperty(name="迭代次数", default=1, min=1)  # type: ignore
+    optimize: BoolProperty(name="优化", default=True)  # type: ignore
     angle: FloatProperty(name="Angle", default=180, min=0, max=180)  # type: ignore
     extend: FloatProperty(name="Extend", default=0.2, min=0)  # type: ignore
     override: BoolProperty(name="Spread", default=False)  # type: ignore
-    rails: IntProperty(name="Precision", default=18, min=7)  # type: ignore
-    tilt: FloatProperty(name="Wiggle", default=1)  # type: ignore
+    rails: IntProperty(name="精度", default=18, min=7)  # type: ignore
+    tilt: FloatProperty(name="摆动种子", default=1)  # type: ignore
     shift: BoolProperty(name="Shift", default=True)  # type: ignore
     solver: EnumProperty(name="Solver", items=boolean_solver_items, default="FAST")  # type: ignore
 

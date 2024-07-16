@@ -19,19 +19,19 @@ class PIE_Refuse(bpy.types.Operator):
     bl_description = "选择倒圆角中的一组并排面，进行转换"
     bl_options = {"REGISTER", "UNDO"}
 
-    method: EnumProperty(name="Method", items=fuse_method_items, default="FUSE")  # type: ignore
-    handlemethod: EnumProperty(name="Unchamfer Method", items=handle_method_items, default="FACE")  # type: ignore
-    segments: IntProperty(name="Segments", default=6, min=0, max=30)  # type: ignore
-    tension: FloatProperty(name="Tension", default=0.7, min=0.01, max=2, step=0.1)  # type: ignore
-    tension_preset: EnumProperty(name="Tension Presets", items=tension_preset_items, default="CUSTOM")  # type: ignore
-    average: BoolProperty(name="Average Tension", default=False)  # type: ignore
-    force_projected_loop: BoolProperty(name="Force Projected Loop", default=False)  # type: ignore
-    width: FloatProperty(name="Width (experimental)", default=0.0, step=0.1)  # type: ignore
-    capholes: BoolProperty(name="Cap", default=True)  # type: ignore
-    capdissolveangle: IntProperty(name="Dissolve Angle", min=0, max=180, default=10)  # type: ignore
-    smooth: BoolProperty(name="Shade Smooth", default=False)  # type: ignore
-    reverse: BoolProperty(name="Reverse", default=False)  # type: ignore
-    init: BoolProperty(name="Initialize", default=True)  # type: ignore
+    method: EnumProperty(name="方法", items=fuse_method_items, default="FUSE")  # type: ignore
+    handlemethod: EnumProperty(name="斜角转直角方法", items=handle_method_items, default="FACE")  # type: ignore
+    segments: IntProperty(name="分段数", default=6, min=0, max=30)  # type: ignore
+    tension: FloatProperty(name="张力", default=0.7, min=0.01, max=2, step=0.1)  # type: ignore
+    tension_preset: EnumProperty(name="张力预设", items=tension_preset_items, default="CUSTOM")  # type: ignore
+    average: BoolProperty(name="平均张力", default=False)  # type: ignore
+    force_projected_loop: BoolProperty(name="强制循环投影", default=False)  # type: ignore
+    width: FloatProperty(name="宽度", default=0.0, step=0.1)  # type: ignore
+    capholes: BoolProperty(name="端侧-填充孔洞", default=True)  # type: ignore
+    capdissolveangle: IntProperty(name="端侧-融并角度", min=0, max=180, default=10)  # type: ignore
+    smooth: BoolProperty(name="平滑着色", default=False)  # type: ignore
+    reverse: BoolProperty(name="翻转", default=False)  # type: ignore
+    init: BoolProperty(name="初始化", default=True)  # type: ignore
     cyclic: BoolProperty(name="Cyclic", default=False)  # type: ignore
     single: BoolProperty(name="Single", default=False)  # type: ignore
     passthrough: BoolProperty(default=False)  # type: ignore
@@ -86,52 +86,52 @@ class PIE_Refuse(bpy.types.Operator):
         # if context.area == self.area:
         draw_init(self)
 
-        draw_title(self, "Refuse")
+        draw_title(self, self.bl_label)
 
-        draw_prop(self, "Method", self.method, offset=0, hint="SHIFT scroll UP/DOWN")
+        draw_prop(self, "重构方法", self.method, offset=0, hint="SHIFT  + 滚轮")
         if self.method == "FUSE":
-            draw_prop(self, "Handles", self.handlemethod, offset=18, hint="CTRL scroll UP/DOWN")
+            draw_prop(self, "控制方法", self.handlemethod, offset=18, hint="CTRL  + 滚轮")
         self.offset += 10
 
-        draw_prop(self, "Segments", self.segments, offset=18, hint="scroll UP/DOWN")
+        draw_prop(self, "段数", self.segments, offset=18, hint="滚轮")
         draw_prop(
             self,
-            "Tension",
+            "张力",
             self.tension,
             offset=18,
             decimal=2,
             active=self.allowmodaltension,
-            hint="move UP/DOWN, toggle T, presets Z/Y, X, C, V",
+            hint="T 开启，上下移动调整，Z/Y 重置, X/C/V 预设值",
         )
 
         if self.method == "FUSE":
             if self.handlemethod == "FACE":
-                draw_prop(self, "Average Tension", self.average, offset=18, hint="toggle A")
-            draw_prop(self, "Projected Loops", self.force_projected_loop, offset=18, hint="toggle P")
+                draw_prop(self, "平均张力", self.average, offset=18, hint="A 切换")
+            draw_prop(self, "投影循环", self.force_projected_loop, offset=18, hint="P 切换")
 
             self.offset += 10
 
             draw_prop(
                 self,
-                "Width",
+                "宽度",
                 self.width,
                 offset=18,
                 decimal=3,
                 active=self.allowmodalwidth,
-                hint="move LEFT/RIGHT, toggle W, reset ALT + W",
+                hint="W 开启，左右移动调整，ALT + W 重置",
             )
             self.offset += 10
 
-            draw_prop(self, "Cap Holes", self.capholes, offset=18, hint="toggle F")
+            draw_prop(self, "端侧-填充孔洞", self.capholes, offset=18, hint="F 切换")
             if self.capholes:
-                draw_prop(self, "Dissolve Angle", self.capdissolveangle, offset=18, hint="ALT scroll UP/DOWN")
+                draw_prop(self, "端侧-融并角度", self.capdissolveangle, offset=18, hint="ALT + 滚轮")
             self.offset += 10
 
-            draw_prop(self, "Smooth", self.smooth, offset=18, hint="toggle S")
+            draw_prop(self, "平滑着色", self.smooth, offset=18, hint="tS 切换")
 
         if self.single:
             self.offset += 10
-            draw_prop(self, "Reverse", self.reverse, offset=18, hint="toggle R")
+            draw_prop(self, "反转", self.reverse, offset=18, hint="R 切换")
 
     def draw_VIEW3D(self, context):
         # if context.scene.MM.debug:

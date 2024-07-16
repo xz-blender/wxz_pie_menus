@@ -1,16 +1,18 @@
+import blf
+import bpy
+import rna_keymap_ui
+from bl_ui.space_statusbar import STATUSBAR_HT_header as statusbar
+from bpy_extras.view3d_utils import location_3d_to_region_2d, region_2d_to_location_3d
+from mathutils import Vector
+
 from .utils import *
 from .vars import *
-import bpy
-from bpy_extras.view3d_utils import region_2d_to_location_3d, location_3d_to_region_2d
-from bl_ui.space_statusbar import STATUSBAR_HT_header as statusbar
-import rna_keymap_ui
-import blf
-from mathutils import Vector
 
 
 def draw_init(self):
     self.font_id = 1
     self.offset = 0
+
 
 def draw_title(self, title, subtitle=None, subtitleoffset=125, HUDcolor=None, HUDalpha=0.5, shadow=True):
     if not HUDcolor:
@@ -42,7 +44,20 @@ def draw_title(self, title, subtitle=None, subtitleoffset=125, HUDcolor=None, HU
         blf.size(self.font_id, int(15 * scale))
         blf.draw(self.font_id, subtitle)
 
-def draw_prop(self, name, value, offset=0, decimal=2, active=True, HUDcolor=None, prop_offset=120, hint="", hint_offset=200, shadow=True):
+
+def draw_prop(
+    self,
+    name,
+    value,
+    offset=0,
+    decimal=2,
+    active=True,
+    HUDcolor=None,
+    prop_offset=120,
+    hint="",
+    hint_offset=200,
+    shadow=True,
+):
     if not HUDcolor:
         HUDcolor = get_prefs().modal_hud_color
     shadow = (0, 0, 0)
@@ -71,19 +86,24 @@ def draw_prop(self, name, value, offset=0, decimal=2, active=True, HUDcolor=None
     if type(value) is str:
         if shadow:
             blf.color(self.font_id, *shadow, alpha * 0.7)
-            blf.position(self.font_id, self.HUD_x + int(prop_offset * scale) + 1, self.HUD_y - int(20 * scale) - offset - 1, 0)
+            blf.position(
+                self.font_id, self.HUD_x + int(prop_offset * scale) + 1, self.HUD_y - int(20 * scale) - offset - 1, 0
+            )
             blf.size(self.font_id, int(14 * scale))
             blf.draw(self.font_id, value)
 
         blf.color(self.font_id, *HUDcolor, alpha)
         blf.position(self.font_id, self.HUD_x + int(prop_offset * scale), self.HUD_y - int(20 * scale) - offset, 0)
         blf.size(self.font_id, int(14 * scale))
+
         blf.draw(self.font_id, value)
 
     elif type(value) is bool:
         if shadow:
             blf.color(self.font_id, *shadow, alpha * 0.7)
-            blf.position(self.font_id, self.HUD_x + int(prop_offset * scale) + 1, self.HUD_y - int(20 * scale) - offset - 1, 0)
+            blf.position(
+                self.font_id, self.HUD_x + int(prop_offset * scale) + 1, self.HUD_y - int(20 * scale) - offset - 1, 0
+            )
             blf.size(self.font_id, int(14 * scale))
             blf.draw(self.font_id, str(value))
 
@@ -99,7 +119,9 @@ def draw_prop(self, name, value, offset=0, decimal=2, active=True, HUDcolor=None
     elif type(value) is int:
         if shadow:
             blf.color(self.font_id, *shadow, alpha * 0.7)
-            blf.position(self.font_id, self.HUD_x + int(prop_offset * scale) + 1, self.HUD_y - int(20 * scale) - offset - 1, 0)
+            blf.position(
+                self.font_id, self.HUD_x + int(prop_offset * scale) + 1, self.HUD_y - int(20 * scale) - offset - 1, 0
+            )
             blf.size(self.font_id, int(20 * scale))
             blf.draw(self.font_id, "%d" % (value))
 
@@ -111,7 +133,9 @@ def draw_prop(self, name, value, offset=0, decimal=2, active=True, HUDcolor=None
     elif type(value) is float:
         if shadow:
             blf.color(self.font_id, *shadow, alpha * 0.7)
-            blf.position(self.font_id, self.HUD_x + int(prop_offset * scale) + 1, self.HUD_y - int(20 * scale) - offset - 1, 0)
+            blf.position(
+                self.font_id, self.HUD_x + int(prop_offset * scale) + 1, self.HUD_y - int(20 * scale) - offset - 1, 0
+            )
             blf.size(self.font_id, int(16 * scale))
             blf.draw(self.font_id, "%.*f" % (decimal, value))
 
@@ -123,7 +147,9 @@ def draw_prop(self, name, value, offset=0, decimal=2, active=True, HUDcolor=None
     if get_prefs().modal_hud_hints and hint:
         if shadow:
             blf.color(self.font_id, *shadow, 0.6 * 0.7)
-            blf.position(self.font_id, self.HUD_x + int(hint_offset * scale) + 1, self.HUD_y - int(20 * scale) - offset - 1, 0)
+            blf.position(
+                self.font_id, self.HUD_x + int(hint_offset * scale) + 1, self.HUD_y - int(20 * scale) - offset - 1, 0
+            )
             blf.size(self.font_id, int(11 * scale))
             blf.draw(self.font_id, "%s" % (hint))
 
@@ -131,6 +157,7 @@ def draw_prop(self, name, value, offset=0, decimal=2, active=True, HUDcolor=None
         blf.position(self.font_id, self.HUD_x + int(hint_offset * scale), self.HUD_y - int(20 * scale) - offset, 0)
         blf.size(self.font_id, int(11 * scale))
         blf.draw(self.font_id, "%s" % (hint))
+
 
 def draw_text(self, text, size, offset=0, offsetx=0, HUDcolor=None, HUDalpha=0.5, shadow=True):
     if not HUDcolor:
@@ -144,7 +171,9 @@ def draw_text(self, text, size, offset=0, offsetx=0, HUDcolor=None, HUDalpha=0.5
 
     if shadow:
         blf.color(self.font_id, *shadow, HUDalpha * 0.7)
-        blf.position(self.font_id, self.HUD_x + int(20 * scale) + offsetx + 1, self.HUD_y - int(20 * scale) - offset - 1, 0)
+        blf.position(
+            self.font_id, self.HUD_x + int(20 * scale) + offsetx + 1, self.HUD_y - int(20 * scale) - offset - 1, 0
+        )
         blf.size(self.font_id, int(size * scale))
         blf.draw(self.font_id, text)
 
@@ -152,6 +181,8 @@ def draw_text(self, text, size, offset=0, offsetx=0, HUDcolor=None, HUDalpha=0.5
     blf.position(self.font_id, self.HUD_x + int(20 * scale) + offsetx, self.HUD_y - int(20 * scale) - offset, 0)
     blf.size(self.font_id, int(size * scale))
     blf.draw(self.font_id, text)
+
+
 def draw_basic_status(self, context, title):
     def draw(self, context):
         layout = self.layout
@@ -159,17 +190,19 @@ def draw_basic_status(self, context, title):
         row = layout.row(align=True)
         row.label(text=title)
 
-        row.label(text="", icon='MOUSE_LMB')
+        row.label(text="", icon="MOUSE_LMB")
         row.label(text="Finish")
 
-        if context.window_manager.keyconfigs.active.name.startswith('blender'):
-            row.label(text="", icon='MOUSE_MMB')
+        if context.window_manager.keyconfigs.active.name.startswith("blender"):
+            row.label(text="", icon="MOUSE_MMB")
             row.label(text="Viewport")
 
-        row.label(text="", icon='MOUSE_RMB')
+        row.label(text="", icon="MOUSE_RMB")
         row.label(text="Cancel")
 
     return draw
+
+
 def draw_keymap_items(kc, name, keylist, layout):
     drawn = []
 
@@ -229,12 +262,15 @@ def draw_keymap_items(kc, name, keylist, layout):
         drawn.append(isdrawn)
     return drawn
 
+
 def wrap_cursor(self, context, event):
 
     if event.mouse_region_x <= 0:
         context.window.cursor_warp(context.region.width + self.region_offset_x - 10, event.mouse_y)
 
-    if event.mouse_region_x >= context.region.width - 1:  # the -1 is required for full screen, where the max region width is never passed
+    if (
+        event.mouse_region_x >= context.region.width - 1
+    ):  # the -1 is required for full screen, where the max region width is never passed
         context.window.cursor_warp(self.region_offset_x + 10, event.mouse_y)
 
     if event.mouse_region_y <= 0:
@@ -243,8 +279,10 @@ def wrap_cursor(self, context, event):
     if event.mouse_region_y >= context.region.height - 1:
         context.window.cursor_warp(event.mouse_x, self.region_offset_y + 100)
 
+
 def finish_status(self):
     statusbar.draw = self.bar_orig
+
 
 def get_zoom_factor(context, depth_location, scale=10, ignore_obj_scale=False, debug=False):
     center = Vector((context.region.width / 2, context.region.height / 2))
@@ -262,7 +300,7 @@ def get_zoom_factor(context, depth_location, scale=10, ignore_obj_scale=False, d
         zoom_factor = zoom_vector.length
 
     if debug:
-        from . draw import draw_point
+        from .draw import draw_point
 
         draw_point(depth_location, color=yellow, modal=False)
         draw_point(center_3d, color=green, modal=False)
@@ -270,6 +308,7 @@ def get_zoom_factor(context, depth_location, scale=10, ignore_obj_scale=False, d
 
         print("zoom factor:", zoom_factor)
     return zoom_factor
+
 
 def init_cursor(self, event, offsetx=0, offsety=20):
     self.last_mouse_x = event.mouse_x
@@ -281,13 +320,16 @@ def init_cursor(self, event, offsetx=0, offsety=20):
     self.HUD_x = event.mouse_x - self.region_offset_x + offsetx
     self.HUD_y = event.mouse_y - self.region_offset_y + offsety
 
-def init_status(self, context, title='', func=None):
+
+def init_status(self, context, title="", func=None):
     self.bar_orig = statusbar.draw
 
     if func:
         statusbar.draw = func
     else:
         statusbar.draw = draw_basic_status(self, context, title)
+
+
 def popup_message(message, title="Info", icon="INFO", terminal=True):
     def draw_message(self, context):
         if isinstance(message, list):
@@ -295,6 +337,7 @@ def popup_message(message, title="Info", icon="INFO", terminal=True):
                 self.layout.label(text=m)
         else:
             self.layout.label(text=message)
+
     bpy.context.window_manager.popup_menu(draw_message, title=title, icon=icon)
 
     if terminal:
@@ -304,6 +347,7 @@ def popup_message(message, title="Info", icon="INFO", terminal=True):
             icon = "DISABLE"
         print(icon, title)
         print(" • ", message)
+
 
 def get_zoom_factor(context, depth_location, scale=10, ignore_obj_scale=False):
     center = Vector((context.region.width / 2, context.region.height / 2))
@@ -321,13 +365,21 @@ def get_zoom_factor(context, depth_location, scale=10, ignore_obj_scale=False):
         zoom_factor = zoom_vector.length
     return zoom_factor
 
+
 def get_flick_direction(self, context):
-    origin_2d = location_3d_to_region_2d(context.region, context.region_data, self.init_mouse_3d, default=Vector((context.region.width / 2, context.region.height / 2)))
+    origin_2d = location_3d_to_region_2d(
+        context.region,
+        context.region_data,
+        self.init_mouse_3d,
+        default=Vector((context.region.width / 2, context.region.height / 2)),
+    )
     axes_2d = {}
 
     for direction, axis in self.axes.items():
 
-        axis_2d = location_3d_to_region_2d(context.region, context.region_data, self.init_mouse_3d + axis, default=origin_2d)
+        axis_2d = location_3d_to_region_2d(
+            context.region, context.region_data, self.init_mouse_3d + axis, default=origin_2d
+        )
         if (axis_2d - origin_2d).length:
             axes_2d[direction] = (axis_2d - origin_2d).normalized()
 

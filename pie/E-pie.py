@@ -34,30 +34,40 @@ class VIEW3D_PIE_MT_Bottom_E(Menu):
             # 4 - LEFT
             pie.operator("mesh.flip_normals")
             # 6 - RIGHT
-            col = pie.split().box().column()
-            row = col.row()
-            add_operator(row, "mesh.set_edge_flow")
-            row = col.row()
-            add_operator(row, "mesh.set_edge_linear")
+            col = pie.split().box().column(align=True)
+            col.scale_y = 1.1
+            col.operator("pie.mm_fuse")
+            col.operator("pie.mm_change_width")
+            col.operator("pie.mm_unchamfer")
+            col.operator("pie.mm_turn_corner")
+            col.operator("pie.mm_quad_corner")
+            col.separator(factor=0.1)
+            col.operator("pie.mm_unfuse")
+            col.operator("pie.mm_refuse")
+            col.operator("pie.mm_unbevel")
+            col.separator(factor=0.1)
+            col.operator("pie.mm_offset_cut")
+            col.operator("pie.mm_unfuck")
+            col.operator("pie.mm_boolean_cleanup")
+            col.separator(factor=0.1)
+            col.operator("pie.mm_symmetrize")
             # 2 - BOTTOM
             pie.operator("mesh.normals_make_consistent")
             # 8 - TOP
             pie.operator("mesh.extrude_manifold", text="挤出流形")
             # 7 - TOP - LEFT
-            pie.separator()
-            # 9 - TOP - RIGHT
             pie.operator("mesh.bridge_edge_loops", text="桥接循环边")
-            # 1 - BOTTOM - LEFT
+            # 9 - TOP - RIGHT
             pie.separator()
-            # 3 - BOTTOM - RIGHT
+            # 1 - BOTTOM - LEFT
             col = pie.split().box().column()
-            row = col.row()
-            add_operator(row, "mesh.bend_face_operator")
-            row = col.row()
-            add_operator(row, "mesh.face_cutter_operator")
+            add_operator(col, "mesh.set_edge_flow")
+            add_operator(col, "mesh.set_edge_linear")
+            # 3 - BOTTOM - RIGHT
+            pie.separator()
+
         if ob_mode == "OBJECT" and ob_type == "MESH":
-            pie.operator("wrap_it.bga")
-            pie.split().box().label(text="no lable")
+            pie.split().box().label(text="未设置菜单")
 
 
 class PIE_Shift_E_KEY(Operator):

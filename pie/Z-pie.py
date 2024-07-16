@@ -221,7 +221,10 @@ class PIE_GN_AutoSmooth(Operator):
                 # 更新视图，确保修改生效
             else:
                 add_sm()
-                modifier[s_name].use_pin_to_last = True
+                if context.object.mode == "EDIT_MESH":
+                    bpy.ops.object.mode_set(mode="OBJECT")
+                    modifier[s_name].use_pin_to_last = True
+                    bpy.ops.object.mode_set(mode="EDIT_MESH")
             bpy.context.view_layer.update()
         context.view_layer.objects.active = store_active_ob
         return {"FINISHED"}

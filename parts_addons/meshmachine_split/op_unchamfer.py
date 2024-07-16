@@ -59,7 +59,7 @@ class PIE_Unchamfer(bpy.types.Operator):
         if context.area == self.area:
             draw_init(self)
 
-            draw_title(self, "Unchamfer")
+            draw_title(self, self.bl_label)
 
             draw_prop(self, "Handles", self.handlemethod, hint="scroll UP/Down")
             self.offset += 10

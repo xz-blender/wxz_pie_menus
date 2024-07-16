@@ -19,18 +19,18 @@ class PIE_Unfuck(bpy.types.Operator):
     bl_description = "选择倒角轮廓边，每次只能调整一个角的半径，至少选择3条线或四个点"
     bl_options = {"REGISTER", "UNDO"}
 
-    width: FloatProperty(name="Width", default=0, step=0.1)  # type: ignore
-    width2: FloatProperty(name="Width 2", default=0, step=0.1)  # type: ignore
-    widthlinked: BoolProperty(name="Width Linked", default=True)  # type: ignore
-    tension: FloatProperty(name="Tension", default=0.7, min=0.01, max=10, step=0.1)  # type: ignore
-    tension_preset: EnumProperty(name="Tension Presets", items=tension_preset_items, default="CUSTOM")  # type: ignore
-    tension2: FloatProperty(name="Tension 2", default=0.7, min=0.01, max=10, step=0.1)  # type: ignore
-    tension2_preset: EnumProperty(name="Tension Presets", items=tension_preset_items, default="CUSTOM")  # type: ignore
-    tensionlinked: BoolProperty(name="Tension Linked", default=True)  # type: ignore
-    propagate: IntProperty(name="Propagate", default=0, min=0)  # type: ignore
-    fade: FloatProperty(name="Fade", default=1, min=0, max=1, step=0.1)  # type: ignore
-    merge: BoolProperty(name="Merge", default=False)  # type: ignore
-    advanced: BoolProperty(name="Advanced Mode", default=False)  # type: ignore
+    width: FloatProperty(name="宽度", default=0, step=0.1)  # type: ignore
+    width2: FloatProperty(name="宽度2", default=0, step=0.1)  # type: ignore
+    widthlinked: BoolProperty(name="链接宽度", default=True)  # type: ignore
+    tension: FloatProperty(name="张力", default=0.7, min=0.01, max=10, step=0.1)  # type: ignore
+    tension_preset: EnumProperty(name="张力预设", items=tension_preset_items, default="CUSTOM")  # type: ignore
+    tension2: FloatProperty(name="张力2", default=0.7, min=0.01, max=10, step=0.1)  # type: ignore
+    tension2_preset: EnumProperty(name="张力预设", items=tension_preset_items, default="CUSTOM")  # type: ignore
+    tensionlinked: BoolProperty(name="链接张力", default=True)  # type: ignore
+    propagate: IntProperty(name="影响级数", default=0, min=0)  # type: ignore
+    fade: FloatProperty(name="每级衰减大小", default=1, min=0, max=1, step=0.1)  # type: ignore
+    merge: BoolProperty(name="合并", default=False)  # type: ignore
+    advanced: BoolProperty(name="高级模式", default=False)  # type: ignore
     passthrough: BoolProperty(default=False)  # type: ignore
     allowmodalwidth: BoolProperty(default=True)  # type: ignore
     allowmodaltension: BoolProperty(default=False)  # type: ignore
@@ -79,35 +79,35 @@ class PIE_Unfuck(bpy.types.Operator):
         if context.area == self.area:
             draw_init(self)
 
-            draw_title(self, "Unf*ck")
+            draw_title(self, self.bl_label)
 
-            draw_prop(self, "Merge", self.merge, hint="toggle M")
+            draw_prop(self, "合并为一点", self.merge, hint="M 开关")
             self.offset += 10
 
             if not self.merge:
                 draw_prop(
                     self,
-                    "Width",
+                    "宽度",
                     self.width,
                     offset=18,
                     decimal=3,
                     active=self.allowmodalwidth,
-                    hint="move LEFT/RIGHT, toggle W, reset ALT + W",
+                    hint="W 开启，左右移动调整，ALT + W 重置",
                 )
                 draw_prop(
                     self,
-                    "Tension",
+                    "张力",
                     self.tension,
                     offset=18,
                     decimal=2,
                     active=self.allowmodaltension,
-                    hint="move UP/DOWN, toggle T, presets Z/Y, X, C, V",
+                    hint="T 开启，上下移动调整，Z/Y 重置, X/C/V 预设值",
                 )
                 self.offset += 10
 
-            draw_prop(self, "Propagate", self.propagate, offset=18, hint="scroll UP/DOWN")
+            draw_prop(self, "影响级数", self.propagate, offset=18, hint="滚轮")
             if self.propagate > 0 and not self.merge:
-                draw_prop(self, "Fade", self.fade, offset=18, decimal=1, hint="ALT scroll  UP/DOWN")
+                draw_prop(self, "每级衰减大小", self.fade, offset=18, decimal=1, hint="ALT + 滚轮")
 
     @classmethod
     def poll(cls, context):
