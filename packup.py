@@ -24,7 +24,6 @@ main_exclude_list = [
     "__pycache__",
     "README.md",
     "LISENCE",
-    "ui_font.ttf",
     ".vscode",
     ".genaiscript",
     "packup.py",
@@ -37,15 +36,54 @@ split_exclude_list = [
     "blends_savetime.txt",
 ]
 split_file_list = [
-    "fonts/ui_font.ttf",
+    "ui_font.ttf",
     "workspace.blend",
     "workspace_online.blend",
 ]
-split_folder_list = ["nodes_presets", "parts_addons", "offical_extension"]
+split_folder_list = [
+    "nodes_presets",
+    "parts_addons",
+    "offical_extension",
+]
 
 
 def remove_duplicates(lst):
     return list(dict.fromkeys(lst))
+
+
+import fnmatch
+import os
+import shutil
+
+
+def copy_excluded_files(source_dir, target_dir, exclude_list):
+    def should_include(path, source_dir):
+        rel_path = os.path.relpath(path, source_dir)
+        for pattern in exclude_list:
+            if fnmatch.fnmatch(rel_path, pattern) or fnmatch.fnmatch(os.path.basename(rel_path), pattern):
+                return True
+        return False
+
+    for root, dirs, files in os.walk(source_dir):
+        rel_root = os.path.relpath(root, source_dir)
+
+        # 处理文件夹
+        for d in dirs:
+            dir_path = os.path.join(root, d)
+            if should_include(dir_path, source_dir):
+                target_path = os.path.join(target_dir, rel_root, d)
+                if not os.path.exists(target_path):
+                    os.makedirs(target_path)
+
+        # 处理文件
+        for f in files:
+            file_path = os.path.join(root, f)
+            if should_include(file_path, source_dir):
+                target_path = os.path.join(target_dir, rel_root, f)
+                target_dir_path = os.path.dirname(target_path)
+                if not os.path.exists(target_dir_path):
+                    os.makedirs(target_dir_path)
+                shutil.copy2(file_path, target_path)
 
 
 def load_gitignore(exclude_list):
@@ -110,3 +148,5 @@ if __name__ == "__main__":
         input_path = Path(__file__).parent / dir
         output_path = str(split_out_path / dir) + ".zip"
         main_zip(split_exclude_list, input_path, output_path, False)
+
+    copy_excluded_files(source_dir, split_out_path, split_file_list)

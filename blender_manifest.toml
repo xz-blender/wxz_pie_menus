@@ -1,9 +1,9 @@
 schema_version = "1.0.0"
 
 id = "wxz_pie_menus"
-version = "0.0.9"
-name = "WXZ-Pie工具合集"
-tagline = "作者自用PIE插件合集"
+version = "0.1.0"
+name = "XZ-Blender作者预设,请不要安装"
+tagline = "请不要安装,会自动配置您的BL设置!包含众多饼菜单和实用工具"
 maintainer = "WXZ <wxz03111997@gmail.com>"
 type = "add-on"
 website = "https://github.com/xz-blender/wxz_pie_menus"

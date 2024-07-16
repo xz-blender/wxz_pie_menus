@@ -2,7 +2,7 @@ import os
 
 import requests
 
-my_url = "https://vip.123pan.cn/1820333155/extensions_website/addons_file/"
+my_url = "https://vip.123pan.cn/1820333155/extensions_website/"
 
 
 def download_file(url, save_folder):
@@ -25,8 +25,6 @@ def download_file(url, save_folder):
 
 
 def download_zip(url, save_folder):
-    if not url.endswith("/"):
-        url += "/"
     url = my_url + url
     basename = os.path.basename(url)
     ex_name = os.path.splitext(basename)[0]

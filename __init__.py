@@ -3,8 +3,8 @@ from pathlib import Path
 from .download import download_file, download_zip
 from .packup import split_file_list, split_folder_list
 
-down_path = Path(__file__).parent.name
-xz_url = down_path
+down_path = Path(__file__).parent
+xz_url = "addons_file/" + down_path.name + "/"
 for file in split_file_list:
     download_file(xz_url + file, down_path)
 for dir in split_folder_list:
@@ -28,7 +28,7 @@ from .utils import *
 bl_info = {
     "name": "WXZ Pie Menus Addon",
     "author": "wxz",
-    "version": (0, 0, 9),
+    "version": (0, 1, 0),
     "blender": (4, 2, 0),
     "description": "Pie Menu",
     "category": "3D View",
