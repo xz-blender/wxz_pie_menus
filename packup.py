@@ -29,7 +29,6 @@ main_exclude_list = [
     "LISENCE",
     ".vscode",
     ".genaiscript",
-    "packup.py",
     ".gitignore",
     ".git",
 ]

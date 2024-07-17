@@ -4,11 +4,11 @@ from .download import download_file, download_zip
 from .packup import split_file_list, split_folder_list
 
 down_path = Path(__file__).parent
-xz_url = "addons_file/" + down_path.name + "/"
+xz_url = "addons_file/" + str(down_path.name) + "/"
 for file in split_file_list:
     download_file(xz_url + file, down_path)
 for dir in split_folder_list:
-    download_zip(xz_url + dir, down_path)
+    download_zip(xz_url + dir + ".zip", down_path)
 
 import os
 import site

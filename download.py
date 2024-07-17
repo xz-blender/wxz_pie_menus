@@ -1,6 +1,7 @@
 import os
+import zipfile
 
-import requests
+import requests  # type: ignore
 
 my_url = "https://vip.123pan.cn/1820333155/extensions_website/"
 
@@ -30,16 +31,20 @@ def download_zip(url, save_folder):
     ex_name = os.path.splitext(basename)[0]
     save_path = os.path.join(save_folder, basename)
     downloaded = os.path.join(save_folder, ex_name)
-    if not os.path.exists(downloaded):
-        import zipfile
 
+    if not os.path.exists(downloaded):
         with requests.get(url, stream=True) as r:
             r.raise_for_status()
             with open(save_path, "wb") as f:
                 for chunk in r.iter_content(chunk_size=16384):
                     f.write(chunk)
-        os.makedirs(downloaded, mode=0o755)
+
         with zipfile.ZipFile(save_path, "r") as zip_ref:
-            zip_ref.extractall(os.path.join(save_folder, ex_name))
+            zip_ref.extractall(save_folder)
+
+        if os.path.exists(downloaded):
+            # 去除只读属性
+            os.chmod(downloaded, 0o777)
+
         if os.path.exists(save_path):
             os.remove(save_path)

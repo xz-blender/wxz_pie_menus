@@ -1,7 +1,7 @@
 schema_version = "1.0.0"
 
 id = "wxz_pie_menus"
-version = "0.1.2"
+version = "0.1.4"
 name = "XZ-Blender作者预设"
 tagline = "包含众多饼菜单和实用工具,启用预设前请备份好您的个人配置"
 maintainer = "WXZ <wxz03111997@gmail.com>"
