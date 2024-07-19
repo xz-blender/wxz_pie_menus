@@ -143,7 +143,7 @@ class KeRadialInstances(Operator):
         layout = self.layout
 
     def draw_callback_px(self, context, pos):
-        val = str(self.count)
+        val = self.count
         degs = str(self.degrees)
         hpos, vpos = self.fs[0], self.fs[1]
         hpos = pos - self.fs[2]
@@ -154,7 +154,7 @@ class KeRadialInstances(Operator):
         blf.size(font_id, self.fs[4])
         blf.shadow(font_id, 5, 0, 0, 0, 1)
         blf.shadow_offset(font_id, 1, -1)
-        blf.draw(font_id, "Radial Instances: " + val)
+        blf.draw(font_id, "Radial Instances: " + str(val))
         # Mode display
         blf.size(font_id, self.fs[5])
         blf.color(font_id, self.hcol[0], self.hcol[1], self.hcol[2], self.hcol[3])
