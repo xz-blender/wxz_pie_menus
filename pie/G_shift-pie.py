@@ -14,7 +14,7 @@ bl_info = {
 }
 
 
-class VIEW3D_PIE_MT_Bottom_G(Menu):
+class VIEW3D_PIE_MT_XZ_Shift_G(Menu):
     bl_label = submoduname
 
     def draw(self, context):
@@ -28,19 +28,14 @@ class VIEW3D_PIE_MT_Bottom_G(Menu):
 
             set_pie_ridius(context, 100)
 
-            get_orient = context.scene.transform_orientation_slots[0].type
-
             if ob_mode == "OBJECT":
                 # 4 - LEFT
                 pie.separator()
                 # 6 - RIGHT
-                pie.separator()
+                split = pie.split().box().column()
+                split.operator_enum("object.select_grouped", "type")
                 # 2 - BOTTOM
-                pie.separator()
                 # 8 - TOP
-                rotate_Y = pie.operator("transform.translate", text="Y", icon="EVENT_Y")
-                rotate_Y.orient_type = get_orient
-                rotate_Y.constraint_axis = (False, True, False)
                 # 7 - TOP - LEFT
                 # 9 - TOP - RIGHT
                 # 1 - BOTTOM - LEFT
@@ -49,13 +44,10 @@ class VIEW3D_PIE_MT_Bottom_G(Menu):
                 # 4 - LEFT
                 pie.separator()
                 # 6 - RIGHT
-                pie.separator()
+                split = pie.split().box().column()
+                split.menu_contents("VIEW3D_MT_edit_mesh_select_similar")
                 # 2 - BOTTOM
-                pie.separator()
                 # 8 - TOP
-                rotate_Y = pie.operator("transform.translate", text="Y", icon="EVENT_Y")
-                rotate_Y.orient_type = get_orient
-                rotate_Y.constraint_axis = (False, True, False)
                 # 7 - TOP - LEFT
                 # 9 - TOP - RIGHT
                 # 1 - BOTTOM - LEFT
@@ -70,13 +62,12 @@ class VIEW3D_PIE_MT_Bottom_G(Menu):
             # 8 - TOP
             # 7 - TOP - LEFT
             # 9 - TOP - RIGHT
-
             # 1 - BOTTOM - LEFT
             # 3 - BOTTOM - RIGHT
 
 
 classes = [
-    VIEW3D_PIE_MT_Bottom_G,
+    VIEW3D_PIE_MT_XZ_Shift_G,
 ]
 class_register, class_unregister = bpy.utils.register_classes_factory(classes)
 addon_keymaps = []
@@ -90,11 +81,11 @@ def register_keymaps():
     for name, space_type in spaces.items():
         kc = bpy.context.window_manager.keyconfigs.addon
         km = kc.keymaps.new(name=name, space_type=space_type)
-        kmi = km.keymap_items.new("wm.call_menu_pie", "G", "CLICK_DRAG")
-        kmi.properties.name = "VIEW3D_PIE_MT_Bottom_G"
-        addon_keymaps.append((km, kmi))
+        kmi = km.keymap_items.new("wm.call_menu_pie", "G", "CLICK_DRAG", shift=True)
+        kmi.properties.name = "VIEW3D_PIE_MT_XZ_Shift_G"
+        kmi = km.keymap_items.new("pie.ke_mouse_axis_move", "G", "CLICK", shift=True)
 
-    # kmi.properties.Mode = "MOVE"
+        addon_keymaps.append((km, kmi))
 
 
 def unregister_keymaps():

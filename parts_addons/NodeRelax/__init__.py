@@ -28,39 +28,37 @@ bl_info = {
 
 import bpy
 
+classes = [NodeRelaxBrush, NodeRelaxBrushPanel, NodeRelaxArrange, NodeRelaxArrangePanel, NodeRelaxProps]
+class_register, class_unregister = bpy.utils.register_classes_factory(classes)
 addon_keymaps = []
 
 
-def register():
+def register_keymaps():
     wm = bpy.context.window_manager
-    kc = wm.keyconfigs.addon
-    if kc:
-        km = kc.keymaps.new(name="Node Editor", space_type="NODE_EDITOR")
-        kmi = km.keymap_items.new("node_relax.brush", "R", "PRESS", shift=True)
+    km = wm.keyconfigs.addon.keymaps.new(name="Node Editor", space_type="NODE_EDITOR")
+    kmi = km.keymap_items.new(NodeRelaxBrush.bl_idname, "R", "PRESS", shift=True)
+    addon_keymaps.append((km, kmi))
 
-        addon_keymaps.append((km, kmi))
 
-    bpy.utils.register_class(NodeRelaxBrush)
-    bpy.utils.register_class(NodeRelaxBrushPanel)
-    bpy.utils.register_class(NodeRelaxArrange)
-    bpy.utils.register_class(NodeRelaxArrangePanel)
-    bpy.utils.register_class(NodeRelaxProps)
+def unregister_keymaps():
+    for km, kmi in addon_keymaps:
+        km.keymap_items.remove(kmi)
+    addon_keymaps.clear()
 
+
+def register():
+    from bpy.utils import register_class
+
+    for cls in classes:
+        register_class(cls)
     bpy.types.Scene.NodeRelax_props = bpy.props.PointerProperty(type=NodeRelaxProps)
+    register_keymaps()
 
 
 def unregister():
-    # for km in addon_keymaps:
-    #     for kmi in km.keymap_items:
-    #         km.keymap_items.remove(kmi)
-    # wm.keyconfigs.addon.keymaps.remove(km)
-    addon_keymaps.clear()
+    # unregister_keymaps()
 
-    bpy.utils.unregister_class(NodeRelaxBrush)
-    bpy.utils.unregister_class(NodeRelaxBrushPanel)
-    bpy.utils.unregister_class(NodeRelaxArrange)
-    bpy.utils.unregister_class(NodeRelaxArrangePanel)
-    bpy.utils.unregister_class(NodeRelaxProps)
+    class_unregister()
     del bpy.types.Scene.NodeRelax_props
 
 

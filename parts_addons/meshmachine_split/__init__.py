@@ -26,7 +26,7 @@ from .op_unfuck import PIE_Unfuck
 from .op_unfuse import PIE_Unfuse
 
 
-class MeshMachine_PT_SplitVersion(bpy.types.Panel):
+class MM_PT_SplitVersion(bpy.types.Panel):
     bl_idname = __qualname__
     bl_label = "MeshMachine-剥离版"
     bl_space_type = "VIEW_3D"
@@ -75,7 +75,7 @@ classes = [
     PIE_QuadCorner,
     PIE_BooleanCleanup,
     PIE_Symmetrize,
-    MeshMachine_PT_SplitVersion,
+    MM_PT_SplitVersion,
 ]
 class_register, class_unregister = bpy.utils.register_classes_factory(classes)
 

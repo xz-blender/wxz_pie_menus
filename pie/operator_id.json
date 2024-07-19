@@ -22,7 +22,8 @@
         "curve.simple"
     ],
     "Extra Objects": [
-        "object.parent_to_empty"
+        "object.parent_to_empty",
+        "mesh.primitive_vert_add"
     ],
     "FBX format": [
         "export.dxf",

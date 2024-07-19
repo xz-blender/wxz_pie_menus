@@ -20,14 +20,14 @@ import bpy
 
 
 from bpy.props import (
-        FloatProperty,
-        IntProperty,
-        BoolProperty,
-        EnumProperty,
-        )
+    FloatProperty,
+    IntProperty,
+    BoolProperty,
+    EnumProperty,
+)
 
 
-#from . import helper
+# from . import helper
 
 import importlib
 
@@ -91,46 +91,48 @@ class VIEW3D_MT_my_addon_submenu(bpy.types.Menu):
 
     def draw(self, context):
         layout = self.layout
-        layout.operator('mesh.attach_align_operator')
-        layout.operator('mesh.connectface_operator')
-        layout.operator('mesh.cut_corner_operator')
-        layout.operator('mesh.even_triangulation_operator')
-        layout.operator('mesh.face_regulator_operator')
-        layout.operator('mesh.quad_swords_operator')
-        layout.operator('mesh.quick_bridge_operator')
-        layout.operator('mesh.safe_inset_operator')
-        layout.operator('mesh.shatter_cut_operator')
-        layout.operator('mesh.select_sim_operator')
-        layout.operator('mesh.surface_inflate_operator')
-        layout.operator('mesh.soft_bevel_operator')
-        layout.operator('mesh.visual_axis_operator')
-        layout.operator('mesh.curve_face_color_operator')
-        layout.operator('mesh.edge_extrude_operator')
-        layout.operator('mesh.light_pattern')
-        layout.operator('mesh.safe_ngon_operator')
-        layout.operator('mesh.slow_bevel_operator')
-        
+        layout.operator("mesh.attach_align_operator")
+        layout.operator("mesh.connectface_operator")
+        layout.operator("mesh.cut_corner_operator")
+        layout.operator("mesh.even_triangulation_operator")
+        layout.operator("mesh.face_regulator_operator")
+        layout.operator("mesh.quad_swords_operator")
+        layout.operator("mesh.quick_bridge_operator")
+        layout.operator("mesh.safe_inset_operator")
+        layout.operator("mesh.shatter_cut_operator")
+        layout.operator("mesh.select_sim_operator")
+        layout.operator("mesh.surface_inflate_operator")
+        layout.operator("mesh.soft_bevel_operator")
+        layout.operator("mesh.visual_axis_operator")
+        layout.operator("mesh.curve_face_color_operator")
+        layout.operator("mesh.edge_extrude_operator")
+        layout.operator("mesh.light_pattern")
+        layout.operator("mesh.safe_ngon_operator")
+        layout.operator("mesh.slow_bevel_operator")
+
 
 class VIEW3D_MT_my_addon_submenu_new(bpy.types.Menu):
     bl_label = "Kushiro Tools"
 
     def draw(self, context):
         layout = self.layout
-        layout.operator('mesh.bend_face_operator')
-        layout.operator('mesh.face_cutter_operator')
-        layout.operator('mesh.beta_quad_operator')
-        layout.operator('mesh.hard_bevel_operator')
-        layout.operator('mesh.loop_copier_operator')
-        layout.operator('mesh.mesh_copier_operator')
-        layout.operator('mesh.padding_inset_operator')
-        layout.operator('mesh.round_inset_operator')
-        layout.operator('mesh.slide_edge_operator')
-        layout.operator('mesh.simple_bend_operator')
-        
+        layout.operator("mesh.bend_face_operator")
+        layout.operator("mesh.face_cutter_operator")
+        layout.operator("mesh.beta_quad_operator")
+        layout.operator("mesh.hard_bevel_operator")
+        layout.operator("mesh.loop_copier_operator")
+        layout.operator("mesh.mesh_copier_operator")
+        layout.operator("mesh.padding_inset_operator")
+        layout.operator("mesh.round_inset_operator")
+        layout.operator("mesh.slide_edge_operator")
+        layout.operator("mesh.simple_bend_operator")
+
+
 def menu_func(self, context):
     layout = self.layout
     layout.menu("VIEW3D_MT_my_addon_submenu_new")
     layout.menu("VIEW3D_MT_my_addon_submenu")
+
 
 classes = [
     attach_align.AttachAlignOperator,
@@ -148,13 +150,11 @@ classes = [
     visual_axis.VisualAxisOperator,
     even_triangulation.InstallScipyOperator,
     safe_ngon.SafeNgonOperator,
-
     curve_face_color.CurveFaceColorOperator,
     edge_extrude.EdgeExtrudeOperator,
     light_pattern.LightPatternOperator,
     padding_inset.PaddingInsetOperator,
     slow_bevel.SlowBevelOperator,
-    
     face_cutter.FaceCutterOperator,
     beta_quad.BetaQuadOperator,
     bend_face.BendFaceOperator,
@@ -164,12 +164,12 @@ classes = [
     round_inset.RoundInsetOperator,
     slide_edge.SlideEdgeOperator,
     simple_bend.SimpleBendOperator,
-
     VIEW3D_MT_my_addon_submenu,
     VIEW3D_MT_my_addon_submenu_new,
     pref.BendFacePreferences,
 ]
 class_register, class_unregister = bpy.utils.register_classes_factory(classes)
+
 
 def register():
     try:
@@ -177,26 +177,17 @@ def register():
             importlib.reload(cls)
     except:
         pass
-    
+
     class_register()
     bpy.types.VIEW3D_MT_edit_mesh_context_menu.append(menu_func)
-
-    try:
-	    bpy.app.translations.register(__package__, GetTranslationDict())
-    except Exception as e: print(e)  
+    bpy.app.translations.register(__package__, GetTranslationDict())
 
 
 def unregister():
     class_unregister()
-
     bpy.types.VIEW3D_MT_edit_mesh_context_menu.remove(menu_func)
-
-    try:
-	    bpy.app.translations.unregister(__package__)
-    except Exception as e: print(e)
+    bpy.app.translations.unregister(__package__)
 
 
-if __name__ == "__main__":    
+if __name__ == "__main__":
     register()
-
-

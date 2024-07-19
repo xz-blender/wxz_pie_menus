@@ -37,7 +37,7 @@ class PIE_MT_Bottom_A_shift(Menu):
         # 8 - TOP
         pie.operator("mesh.primitive_circle_add", text="网格圆", icon="MESH_CIRCLE")
         # 7 - TOP - LEFT
-        pie.operator("mesh.primitive_vert_add", text="网格点", icon="DOT")
+        add_operator(pie, "mesh.primitive_vert_add", text="网格点", icon="DOT")
         # 9 - TOP - RIGHT
         add_operator(pie, "curve.simple", text="矢量点", icon="DOT")
         # 1 - BOTTOM - LEFT
@@ -49,7 +49,7 @@ class PIE_MT_Bottom_A_shift(Menu):
 classes = [
     PIE_MT_Bottom_A_shift,
 ]
-
+class_register, class_unregister = bpy.utils.register_classes_factory(classes)
 addon_keymaps = []
 
 
@@ -59,33 +59,20 @@ def register_keymaps():
     km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
     kmi = km.keymap_items.new("wm.call_menu_pie", "A", "CLICK_DRAG", shift=True)
     kmi.properties.name = "PIE_MT_Bottom_A_shift"
-    addon_keymaps.append(km)
+    addon_keymaps.append((km, kmi))
 
 
 def unregister_keymaps():
-    wm = bpy.context.window_manager
-    for km in addon_keymaps:
-        for kmi in km.keymap_items:
-            km.keymap_items.remove(kmi)
-        # wm.keyconfigs.addon.keymaps.remove(km)
+    for km, kmi in addon_keymaps:
+        km.keymap_items.remove(kmi)
     addon_keymaps.clear()
 
 
 def register():
-    for cls in classes:
-        try:
-            bpy.utils.register_class(cls)
-        except:
-            print(__name__, "->", cls, " error")
+    class_register()
     register_keymaps()
 
 
 def unregister():
-    unregister_keymaps()
-    for cls in reversed(classes):
-        bpy.utils.unregister_class(cls)
-
-
-# if __name__ == "__main__":
-#     register()
-#     bpy.ops.wm.call_menu_pie(name="PIE_MT_Bottom_A")
+    class_unregister()
+    # unregister_keymaps()

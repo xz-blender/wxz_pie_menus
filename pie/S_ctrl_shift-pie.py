@@ -17,8 +17,7 @@ bl_info = {
 }
 
 
-class PIE_MT_S_ctrl_Shift(Menu):
-    bl_idname = __qualname__
+class VIEW3D_MT_PIE_S_ctrl_Shift(Menu):
     bl_label = submoduname
 
     def draw(self, context):
@@ -32,16 +31,18 @@ class PIE_MT_S_ctrl_Shift(Menu):
         file_path = bpy.data.filepath
 
         # 4 - LEFT
-        try:
-            pie.operator("rf.callpanel", text="打开附近文件", icon="FILE_TICK", emboss=True)
-            if file_path and not any(Path(file_path).resolve().is_relative_to(folder) for folder in temp_path):
-                pp = Path(str(file_path)).parent
-                context.preferences.addons["Quick Files"].preferences["blends_path"] = str(pp)
-                bpy.ops.rf.refreshfiles()
-            else:
-                context.preferences.addons["Quick Files"].preferences["blends_path"] = "该文件在缓存文件夹中！"
-        except Exception as e:
-            print(f"Error: {e}")
+        pie.separator()
+        # try:
+        #     pie.operator("rf.callpanel", text="打开附近文件", icon="FILE_TICK", emboss=True)
+        #     if file_path and not any(Path(file_path).resolve().is_relative_to(folder) for folder in temp_path):
+        #         pp = Path(str(file_path)).parent
+        #         context.preferences.addons["Quick Files"].preferences["blends_path"] = str(pp)
+        #         bpy.ops.rf.refreshfiles()
+        #     else:
+        #         context.preferences.addons["Quick Files"].preferences["blends_path"] = "该文件在缓存文件夹中！"
+        # except Exception as e:
+        #     print(f"Error: {e}")
+
         # 6 - RIGHT
         pie.separator()
         # 2 - BOTTOM
@@ -59,9 +60,9 @@ class PIE_MT_S_ctrl_Shift(Menu):
 
 
 classes = [
-    PIE_MT_S_ctrl_Shift,
+    VIEW3D_MT_PIE_S_ctrl_Shift,
 ]
-
+class_register, class_unregister = bpy.utils.register_classes_factory(classes)
 addon_keymaps = []
 
 
@@ -69,26 +70,21 @@ def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
     km = addon.keymaps.new(name="Object Mode")
     kmi = km.keymap_items.new("wm.call_menu_pie", "S", "CLICK_DRAG", ctrl=True, shift=True)
-    kmi.properties.name = "PIE_MT_S_ctrl_Shift"
-    addon_keymaps.append(km)
+    kmi.properties.name = "VIEW3D_MT_PIE_S_ctrl_Shift"
+    addon_keymaps.append((km, kmi))
 
 
 def unregister_keymaps():
-    wm = bpy.context.window_manager
-    for km in addon_keymaps:
-        for kmi in km.keymap_items:
-            km.keymap_items.remove(kmi)
-        # wm.keyconfigs.addon.keymaps.remove(km)
+    for km, kmi in addon_keymaps:
+        km.keymap_items.remove(kmi)
     addon_keymaps.clear()
 
 
 def register():
-    for cls in classes:
-        bpy.utils.register_class(cls)
+    class_register()
     register_keymaps()
 
 
 def unregister():
-    unregister_keymaps()
-    for cls in reversed(classes):
-        bpy.utils.unregister_class(cls)
+    class_unregister()
+    # unregister_keymaps()

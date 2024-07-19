@@ -55,9 +55,9 @@ for module_path, module_name in module_path_name_list.items():
 
 
 app_path = site.getusersitepackages()
-print("Blender PIP user site:", app_path)
+# print("Blender PIP user site:", app_path)
 if app_path not in sys.path:
-    print("Adding site to path")
+    # print("Adding site to path")
     sys.path.append(app_path)
 
 MODULES_FOLDER = Path(bpy.utils.user_resource("SCRIPTS")) / "modules"

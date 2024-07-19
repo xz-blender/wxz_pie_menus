@@ -150,9 +150,11 @@ def change_extensions_repo_list():
     xz_url_name = "blender4.com"
     xz_url = f"https://{xz_url_name}/xz"
     repos_list = [repo.remote_url for repo in repos]
+
     if xz_url not in repos_list:
         bpy.ops.preferences.extension_repo_add(name="", remote_url=xz_url, type="REMOTE")
         bpy.context.preferences.extensions.repos[xz_url_name].use_sync_on_startup = False
+        # bpy.ops.extensions.repo_unlock()
 
 
 class PIE_Load_XZ_Setting_Presets(bpy.types.Operator):

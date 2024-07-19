@@ -60,6 +60,12 @@ class PIE_Change_Assets_library_Path(bpy.types.Operator):
             app_lib_data[lib.name] = lib.path
         change_assets_library_path(app_lib_data, setting_lib)
 
+        # 设置默认 文件夹路径
+        filepaths = context.preferences.filepaths
+        parent_path = Path(sync_path).parent.parent
+        filepaths.texture_directory = (str(parent_path / "Texture")).replace("\\", "/")
+        filepaths.font_directory = (str(parent_path / "Fonts")).replace("\\", "/")
+
         return {"FINISHED"}
 
 

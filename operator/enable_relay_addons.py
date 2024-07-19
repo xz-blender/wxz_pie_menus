@@ -76,11 +76,11 @@ def enable_addons(self, context, bl_ext_dict, remote_name=None):
                         setattr(context.preferences.addons[addon_name].preferences, pref_change[0], pref_change[1])
                 if addon_change[1]:
                     change_addon_key_value(addon_change[1])
-            else:
-                try:
-                    bpy.ops.extensions.package_install(repo_index=0, pkg_id=addon_name)
-                except:
-                    print(addon_name, "插件下载失败")
+            # else:
+            #     try:
+            #         bpy.ops.extensions.package_install(repo_index=0, pkg_id=addon_name)
+            #     except:
+            #         print(addon_name, "插件下载失败")
         self.report({"INFO"}, "已开启预设插件")
 
 
@@ -112,12 +112,6 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
 
 
 def change_addons():
-    bpy.context.preferences.filepaths.texture_directory = (
-        str(Path(sync_path).parent.parent / "Texture") + os.sep
-    ).replace("\\", "/")
-    bpy.context.preferences.filepaths.font_directory = (str(Path(sync_path).parent.parent / "Fonts") + os.sep).replace(
-        "\\", "/"
-    )
     bpy.ops.pie.enable_relay_addons()
     print('"WXZ_Pie_Menu" Enable Relay Addons!')
     bpy.ops.wm.save_userpref()

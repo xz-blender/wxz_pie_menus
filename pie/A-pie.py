@@ -278,7 +278,7 @@ class PIE_MT_Bottom_A_Ctrl(Menu):
             if ob_type in ["MESH", "CURVE", "SURFACE", "FONT", "GPENCIL", "META"]:
                 pie.operator("object.convert", text="可视几何->网格").target = "MESH"
             else:
-                pie.separate()
+                pie.separator()
             # 8 - TOP
             lrs1 = pie.operator("object.transform_apply", text="旋转&缩放")
             lrs1.location = False
@@ -398,7 +398,7 @@ classes = [
     PIE_Apply_MultiObjects_Scale,
     Creat_Costom_Asset_Preview,
 ]
-
+class_register, class_unregister = bpy.utils.register_classes_factory(classes)
 
 addon_keymaps = []
 
@@ -409,40 +409,29 @@ def register_keymaps():
     km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
     kmi = km.keymap_items.new("wm.call_menu_pie", "A", "CLICK_DRAG")
     kmi.properties.name = "PIE_MT_Bottom_A"
+    addon_keymaps.append((km, kmi))
 
     kmi = km.keymap_items.new("wm.call_menu_pie", "A", "CLICK_DRAG", ctrl=True)
     kmi.properties.name = "PIE_MT_Bottom_A_Ctrl"
+    addon_keymaps.append((km, kmi))
 
     km = addon.keymaps.new(name="UV Editor")
     kmi = km.keymap_items.new("wm.call_menu_pie", "A", "CLICK_DRAG")
     kmi.properties.name = "PIE_MT_Bottom_A"
-    addon_keymaps.append(km)
+    addon_keymaps.append((km, kmi))
 
 
 def unregister_keymaps():
-    wm = bpy.context.window_manager
-    for km in addon_keymaps:
-        for kmi in km.keymap_items:
-            km.keymap_items.remove(kmi)
-        # wm.keyconfigs.addon.keymaps.remove(km)
+    for km, kmi in addon_keymaps:
+        km.keymap_items.remove(kmi)
     addon_keymaps.clear()
 
 
 def register():
-    for cls in classes:
-        try:
-            bpy.utils.register_class(cls)
-        except:
-            None
+    class_register()
     register_keymaps()
 
 
 def unregister():
-    unregister_keymaps()
-    for cls in reversed(classes):
-        bpy.utils.unregister_class(cls)
-
-
-# if __name__ == "__main__":
-#     register()
-#     bpy.ops.wm.call_menu_pie(name="PIE_MT_Bottom_A")
+    class_unregister()
+    # unregister_keymaps()

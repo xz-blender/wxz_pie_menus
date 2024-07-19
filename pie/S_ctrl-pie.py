@@ -44,36 +44,6 @@ class VIEW3D_PIE_MT_Bottom_S_ctrl_Files(Menu):
 
         set_pie_ridius(context, 100)
 
-        # if context.selected_objects != [] and context.active_object != None:
-        # if context.object.mode == 'OBJECT':
-        #     self.bl_label = 'Object Menu'
-        #     # 4 - LEFT
-        #     pie.separator()
-        #     # 6 - RIGHT
-        #     pie.separator()
-        #     # 2 - BOTTOM
-        #     pie.menu('PIE_MT_S_Ctrl_export', text='导出', icon='EXPORT')
-        #     # 8 - TOP
-        #     pie.menu('PIE_MT_S_Ctrl_import', text='导入', icon='IMPORT')
-        #     # 7 - TOP - LEFT
-        #     # col.separator(factor=0.2)
-        #     # 9 - TOP - RIGHT
-        #     # 1 - BOTTOM - LEFT
-        #     # 3 - BOTTOM - RIGHT
-        # elif context.object.mode == 'EDIT':
-        #     self.bl_label = 'Edit Menu'
-        #     # 4 - LEFT
-        #     pie.separator()
-        #     # 6 - RIGHT
-        #     # 2 - BOTTOM
-        #     # 8 - TOP
-        #     # 7 - TOP - LEFT
-        #     # col.separator(factor=0.2)
-        #     # 9 - TOP - RIGHT
-        #     # 1 - BOTTOM - LEFT
-        #     # 3 - BOTTOM - RIGHT
-        # else:
-
         # 4 - LEFT
         pie.operator("wm.open_mainfile", text="打开文件", icon="FILEBROWSER")
         # 6 - RIGHT
@@ -181,7 +151,7 @@ class PIE_MT_S_Ctrl_export(Menu):
         row.operator("wm.obj_export", text="—— OBJ", icon="EVENT_O")
 
         row = col.row()
-        row.operator("export_mesh.stl", text="—— STL ——", icon="EVENT_S")
+        row.operator("wm.stl_export", text="—— STL ——", icon="EVENT_S")
 
         # row = col.row()
         # row.operator('import_curve.svg', text='—— svg ——', icon='EVENT_S')

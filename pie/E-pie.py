@@ -67,7 +67,18 @@ class VIEW3D_PIE_MT_Bottom_E(Menu):
             pie.separator()
 
         if ob_mode == "OBJECT" and ob_type == "MESH":
-            pie.split().box().label(text="未设置菜单")
+            # 4 - LEFT
+            pie.separator()
+            # 6 - RIGHT
+            pie.operator("pie.ke_lineararray")
+            # 2 - BOTTOM
+            pie.separator()
+            # 8 - TOP
+            pie.operator("pie.ke_radial_instances")
+            # 7 - TOP - LEFT
+            # 9 - TOP - RIGHT
+            # 1 - BOTTOM - LEFT
+            # 3 - BOTTOM - RIGHT
 
 
 class PIE_Shift_E_KEY(Operator):

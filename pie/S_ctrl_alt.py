@@ -235,37 +235,34 @@ classes = [
     PIE_ScaleUVOperator,
 ]
 addon_keymaps = []
+class_register, class_unregister = bpy.utils.register_classes_factory(classes)
 
 
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
-
     km = addon.keymaps.new(name="Mesh")
     kmi = km.keymap_items.new(idname="pie.uv_modal_scale_operator", type="S", value="CLICK", ctrl=True, alt=True)
+    addon_keymaps.append((km, kmi))
 
     km = addon.keymaps.new(name="Mesh")
     kmi = km.keymap_items.new(idname="wm.call_menu_pie", type="S", value="CLICK_DRAG", ctrl=True, alt=True)
     kmi.properties.name = "VIEW3D_PIE_MT_Ctrl_Alt_S"
+    addon_keymaps.append((km, kmi))
 
 
 def unregister_keymaps():
-    wm = bpy.context.window_manager
     for km in addon_keymaps:
         for kmi in km.keymap_items:
             km.keymap_items.remove(kmi)
-        # wm.keyconfigs.addon.keymaps.remove(km)
     addon_keymaps.clear()
 
 
 def register():
+    class_register()
     bpy.types.VIEW3D_MT_uv_map.append(uv_menu_func)
-    for cls in classes:
-        bpy.utils.register_class(cls)
     register_keymaps()
 
 
 def unregister():
-    unregister_keymaps()
-    for cls in reversed(classes):
-        bpy.utils.unregister_class(cls)
     bpy.types.VIEW3D_MT_uv_map.remove(uv_menu_func)
+    class_unregister()

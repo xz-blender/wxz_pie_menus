@@ -34,6 +34,7 @@ class PIE_OP_A_alt_shift(Operator):
 
 
 classes = [PIE_OP_A_alt_shift]
+class_register, class_unregister = bpy.utils.register_classes_factory(classes)
 
 addon_keymaps = []
 
@@ -42,28 +43,20 @@ def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
     km = addon.keymaps.new(name="Window", space_type="EMPTY")
     kmi = km.keymap_items.new(PIE_OP_A_alt_shift.bl_idname, "A", "PRESS", shift=True, alt=True)
-    addon_keymaps.append(km)
+    addon_keymaps.append((km, kmi))
 
 
 def unregister_keymaps():
-    wm = bpy.context.window_manager
-    for km in addon_keymaps:
-        for kmi in km.keymap_items:
-            km.keymap_items.remove(kmi)
-        # wm.keyconfigs.addon.keymaps.remove(km)
+    for km, kmi in addon_keymaps:
+        km.keymap_items.remove(kmi)
     addon_keymaps.clear()
 
 
 def register():
-    for cls in classes:
-        try:
-            bpy.utils.register_class(cls)
-        except:
-            pass
+    class_register()
     register_keymaps()
 
 
 def unregister():
-    unregister_keymaps()
-    for cls in reversed(classes):
-        bpy.utils.unregister_class(cls)
+    class_unregister()
+    # unregister_keymaps()

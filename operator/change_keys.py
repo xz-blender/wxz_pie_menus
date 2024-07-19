@@ -169,6 +169,8 @@ G_dir = [
     ),  # G ctrl shift alt
     (["Object Mode", "collection.objects_remove", "Remove from Collection"], [("active", False)], []),  # G ctrl alt
     (["Object Mode", "collection.create", "Create New Collection"], [("active", False)], []),  # G ctrl
+    (["Object Mode", "object.select_grouped", "Select Grouped"], [("active", False)], []),  # Shift G - Object
+    (["Mesh", "wm.call_menu", "Select Similar"], [("active", False)], []),  # Shift G - Mesh
 ]
 H_dir = [
     (["Outliner", "outliner.hide", "Hide"], [("type", "B")], []),
