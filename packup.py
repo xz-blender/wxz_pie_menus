@@ -2,21 +2,13 @@ import fnmatch
 import os
 import shutil
 import tempfile
-import winreg
 import zipfile
 from pathlib import Path
 
+from .utils import *
+
 # 控制打包
 main = (1, 0, 0)
-
-
-def get_desktop_path():
-    with winreg.OpenKey(
-        winreg.HKEY_CURRENT_USER, r"Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders"
-    ) as key:
-        desktop_path, _ = winreg.QueryValueEx(key, "Desktop")
-        return desktop_path
-
 
 desktop_path = get_desktop_path()
 source_dir = Path(__file__).parent

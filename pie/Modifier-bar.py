@@ -61,6 +61,13 @@ def set_default_props(self):
     self.prop_string = ""
 
 
+class PIR_PT_Bar_AddCustomModifier(Operator):
+    bl_idname = "bar.add_new_modifier"
+    bl_label = "Add New Modifier"
+    bl_description = ""
+    bl_options = {"REGISTER", "UNDO"}
+
+
 class Bar_Add_New_Modifier(Operator):
     bl_idname = "bar.add_new_modifier"
     bl_label = "Add New Modifier"
@@ -77,9 +84,13 @@ class Bar_Add_New_Modifier(Operator):
     def poll(cls, context):
         return context.active_object is not None
 
+    # def invoke(self, context, event):
+    #     if event.type == "CTRL":
+    #         print("!!!!!!")
+    # return {"MODAL"}
+
     def execute(self, context):
         name = self.name
-
         ob_modifiers = context.active_object.modifiers
         active_modifier = ob_modifiers.active
 

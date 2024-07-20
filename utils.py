@@ -1,6 +1,5 @@
 import os
 import platform
-import winreg
 from pathlib import Path
 
 import bpy
@@ -12,17 +11,25 @@ def get_prefs():
     return bpy.context.preferences.addons[base_package].preferences
 
 
+def is_windows():
+    return platform.system() == "Windows"
+
+
+def is_macos():
+    return platform.system() == "Darwin"
+
+
 def get_sync_path():
-    if platform.system() == "Windows":
+    if is_windows():
         return "D:/BaiduSyncdisk/Blender Assets"
-    elif platform.system() == "Darwin":
+    if is_macos():
         return "/Users/wangxianzhi/Library/CloudStorage/OneDrive-个人/Sync/Blender/Assets Sync"
 
 
 def get_local_path():
-    if platform.system() == "Windows":
+    if is_windows():
         return "F:/Blender Assets"
-    elif platform.system() == "Darwin":
+    if is_macos():
         return "/Users/wangxianzhi/Blender Lib"
 
 
@@ -35,14 +42,16 @@ def get_addon_name():
 
 def get_desktop_path():
     """获取win桌面路径，即使路径被手动更改了(从注册表获取)"""
+    if is_windows():
+        import winreg
 
-    # Open the registry key
-    with winreg.OpenKey(
-        winreg.HKEY_CURRENT_USER, r"Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders"
-    ) as key:
-        # Query the value for the Desktop
-        desktop_path, _ = winreg.QueryValueEx(key, "Desktop")
-        return desktop_path
+        with winreg.OpenKey(
+            winreg.HKEY_CURRENT_USER, r"Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders"
+        ) as key:
+            desktop_path, _ = winreg.QueryValueEx(key, "Desktop")
+            return desktop_path
+    elif is_macos():
+        return os.path.join(os.path.expanduser("~"), "Desktop")
 
 
 def iter_submodules_name(path, except_package_list):
