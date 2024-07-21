@@ -1,5 +1,5 @@
 import bpy
-from bpy.types import Menu, Operator
+from bpy.types import Context, Event, Menu, Operator
 
 from .utils import set_pie_ridius
 
@@ -11,6 +11,51 @@ bl_info = {
     "blender": (3, 3, 0),
     "location": "Properties > Modifiers",
     "category": "BAR",
+}
+
+numbers = ("ZERO", "ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN", "EIGHT", "NINE")
+modifier_props = {
+    "SOLIDIFY": {
+        "DEFAULT_PROP": [("use_even_offset", True)],
+        "shift": [("offset", 0)],
+    },
+    "BEVEL": {
+        "DEFAULT_PROP": [("segments", 1), ("use_clamp_overlap", False)],
+        "shift": [("harden_normals", True)],
+        "NUMBERS": ("segments"),
+    },
+    "ARRAY": {
+        "DEFAULT_PROP": [("use_merge_vertices_cap", True)],
+        "shift": [("use_constant_offset", True), ("use_relative_offset", False)],
+        "X": [("relative_offset_displace", (1, 0, 0)), ("constant_offset_displace", (1, 0, 0))],
+        "Y": [("relative_offset_displace", (0, 1, 0)), ("constant_offset_displace", (0, 1, 0))],
+        "Z": [("relative_offset_displace", (0, 0, 1)), ("constant_offset_displace", (0, 0, 1))],
+    },
+    "MIRROR": {
+        "DEFAULT_PROP": [("use_clip", True)],
+        "X": [("use_axis", (True, False, False))],
+        "Y": [("use_axis", (False, True, False))],
+        "Z": [("use_axis", (False, False, True))],
+    },
+    "SIMPLE_DEFORM": {
+        "DEFAULT_PROP": [("deform_method", "BEND")],
+        "shift": [("deform_method", "TWIST")],
+        "X": [("deform_axis", "X")],
+        "Y": [("deform_axis", "Y")],
+        "Z": [("deform_axis", "Z")],
+    },
+    "SCREW": {
+        "DEFAULT_PROP": [("use_normal_calculate", True), ("use_merge_vertices", True)],
+        "shift": [("angle", 0), ("steps", 1), ("render_steps", 1)],
+        "X": [("axis", "X")],
+        "Y": [("axis", "Y")],
+        "Z": [("axis", "Z")],
+    },
+    "BOOLEAN": {
+        "DEFAULT_PROP": [("solver", "FAST")],
+        "shift": [("operation", "UNION")],
+        "ctrl": [("operation", "INTERSECT")],
+    },
 }
 
 
@@ -61,11 +106,95 @@ def set_default_props(self):
     self.prop_string = ""
 
 
-class PIR_PT_Bar_AddCustomModifier(Operator):
-    bl_idname = "bar.add_new_modifier"
-    bl_label = "Add New Modifier"
+def add_custom_boolean(context):
+    objs = context.selected_objects
+    active_object = context.active_object
+    active_modifier = active_object.modifiers.active
+    if len(objs) > 1:
+        # 获取当前激活的物体
+        # 创建一个新的列表，排除激活的物体
+        filtered_objects = [obj for obj in objs if obj != active_object]
+        if len(filtered_objects) > 1:
+            # 获取当前激活物体所在的集合
+            if active_object.users_collection:
+                active_collection = active_object.users_collection[0]
+            # 创建一个新的集合
+            new_collection_name = active_object.name + "_Boolean"
+            new_collection = bpy.data.collections.new(name=new_collection_name)
+            # 将新的集合链接到当前场景
+            if active_object.users_collection:
+                active_collection.children.link(new_collection)
+            else:
+                context.scene.collection.children.link(new_collection)
+            # 将排除激活物体后的选择物体移动到新的集合
+            for obj in filtered_objects:
+                obj.display_type = "WIRE"
+                # 将物体从原来的集合中移除
+                for collection in obj.users_collection:
+                    collection.objects.unlink(obj)
+                # 将物体添加到新的集合
+                new_collection.objects.link(obj)
+
+            active_modifier.solver = "FAST"
+            active_modifier.operand_type = "COLLECTION"
+            active_modifier.collection = new_collection
+        elif len(filtered_objects) == 1:
+            object = filtered_objects[0]
+            object.display_type = "WIRE"
+            active_modifier.solver = "FAST"
+            active_modifier.object = object
+
+
+class PIE_PT_Bar_AddCustomModifier(Operator):
+    bl_idname = "bar.add_custom_prop_modifier"
+    bl_label = "测试修改器"
     bl_description = ""
     bl_options = {"REGISTER", "UNDO"}
+
+    type: bpy.props.StringProperty()  # type: ignore
+
+    @classmethod
+    def poll(cls, context):
+        return True
+
+    def invoke(self, context, event):
+        ob_modifiers = context.active_object.modifiers
+        active_modifier = ob_modifiers.active
+
+        new_mod = bpy.context.active_object.modifiers.new(name="", type=self.type)
+        # print([d for d in dir(event.type)])
+        # print(event.type_prev)
+        # print(event.type_recast)
+        if self.type in modifier_props:
+            for item_name, item_data in modifier_props[self.type].items():
+                if item_name == "DEFAULT_PROP":
+                    for props in item_data:
+                        setattr(new_mod, props[0], props[1])
+                elif event.type_prev == item_name:
+                    for props in item_data:
+                        setattr(new_mod, props[0], props[1])
+                elif item_name not in ["X", "Y", "Z", "NUMBERS"]:
+                    if getattr(event, item_name):
+                        for props in item_data:
+                            setattr(new_mod, props[0], props[1])
+                elif item_name == "NUMBERS" and event.type_prev in numbers:
+                    setattr(new_mod, item_data, numbers.index(event.type_prev))
+
+        if self.type == "BOOLEAN":
+            add_custom_boolean(context)
+
+        if active_modifier is not None:
+            modifier_list = [md.name for md in ob_modifiers]
+            # 移动修改器到激活位置+1
+            bpy.ops.object.modifier_move_to_index(
+                modifier=new_mod.name, index=modifier_list.index(active_modifier.name) + 1
+            )
+            modifier_list.clear()
+
+        return {"FINISHED"}
+
+
+id = PIE_PT_Bar_AddCustomModifier.bl_idname
 
 
 class Bar_Add_New_Modifier(Operator):
@@ -81,13 +210,8 @@ class Bar_Add_New_Modifier(Operator):
     prop_string: bpy.props.StringProperty()  # type: ignore
 
     @classmethod
-    def poll(cls, context):
-        return context.active_object is not None
-
-    # def invoke(self, context, event):
-    #     if event.type == "CTRL":
-    #         print("!!!!!!")
-    # return {"MODAL"}
+    def poll(cls, context: Context) -> bool:
+        return super().poll(context)
 
     def execute(self, context):
         name = self.name
@@ -121,6 +245,11 @@ class Bar_Add_New_Modifier(Operator):
 
         return {"FINISHED"}
 
+    # def invoke(self, context, event):
+    #     if event.ctrl:
+    #         print("!!!!!!")
+    #     return self.execute(context)
+
 
 class Bar_Quick_Decimate(Operator):
     bl_idname = "bar.quick_decimate"
@@ -153,10 +282,10 @@ class Bar_Quick_Decimate(Operator):
                     md.ratio = ratio
 
             self.report({"INFO"}, md_name)
-            return {"FINISHED"}
         else:
             self.report({"INFO"}, "没有选择物体")
-            return {"FINISHED"}
+
+        return {"FINISHED"}
 
 
 # Menus #
@@ -202,69 +331,54 @@ def costom_modifier_bar(self, context):
     col = self.layout.column(align=True)
     col.alignment = "CENTER"
     col.scale_y = 0.9
+
     # ---------------------------- 1 Level --------------------------------
     row = col.row(align=True)
-    nodes = row.operator(Bar_Add_New_Modifier.bl_idname, icon="GEOMETRY_NODES", text="节点")
-    nodes.name = "NODES"
-
-    subs = row.operator(Bar_Add_New_Modifier.bl_idname, icon="MOD_SUBSURF", text="细分")
-    subs.name = "SUBSURF"
-
-    shirink = row.operator(Bar_Add_New_Modifier.bl_idname, icon="MOD_SHRINKWRAP", text="缩裹")
-    shirink.name = "SHRINKWRAP"
+    nodes = row.operator(id, icon="GEOMETRY_NODES", text="节点")
+    nodes.type = "NODES"
+    subs = row.operator(id, icon="MOD_SUBSURF", text="细分")
+    subs.type = "SUBSURF"
+    shirink = row.operator(id, icon="MOD_SHRINKWRAP", text="缩裹")
+    shirink.type = "SHRINKWRAP"
 
     # ----------------------------- 2 Level --------------------------------
     row = col.row(align=True)
-    # 倒角
-    bevel = row.operator(Bar_Add_New_Modifier.bl_idname, icon="MOD_BEVEL", text="倒角")
-    bevel.name = "BEVEL"
-    bevel.prop_bool = "harden_normals=True,use_clamp_overlap=False"
-    bevel.prop_int = "segments=2"
-    # 阵列
-    array = row.operator(Bar_Add_New_Modifier.bl_idname, icon="MOD_ARRAY", text="阵列")
-    array.name = "ARRAY"
-    # 置换
+    bevel = row.operator(id, icon="MOD_BEVEL", text="倒角")
+    bevel.type = "BEVEL"
+    array = row.operator(id, icon="MOD_ARRAY", text="阵列")
+    array.type = "ARRAY"
     if context.active_object.type == "MESH":
-        displace = row.operator(Bar_Add_New_Modifier.bl_idname, icon="MOD_DISPLACE", text="置换")
-        displace.name = "DISPLACE"
+        displace = row.operator(id, icon="MOD_DISPLACE", text="置换")
+        displace.type = "DISPLACE"
     else:
         row.operator("pie.empty_operator", icon="ERROR", text="置换")
 
     # ------------------------------3 Level--------------------------------
     row = col.row(align=True)
-    # 镜像
-    mirror = row.operator(Bar_Add_New_Modifier.bl_idname, icon="MOD_MIRROR", text="镜像")
-    mirror.name = "MIRROR"
-    mirror.prop_bool = "use_clip=True"
-    # 布尔
+    mirror = row.operator(id, icon="MOD_MIRROR", text="镜像")
+    mirror.type = "MIRROR"
     if context.active_object.type == "MESH":
-        bool_mod = row.operator(Bar_Add_New_Modifier.bl_idname, icon="MOD_BOOLEAN", text="布尔")
-        bool_mod.name = "BOOLEAN"
-        bool_mod.prop_string = "solver=FAST"
+        bool_mod = row.operator(id, icon="MOD_BOOLEAN", text="布尔")
+        bool_mod.type = "BOOLEAN"
     else:
         row.operator("pie.empty_operator", icon="ERROR", text="布尔")
-    # 形变
-    deform = row.operator(Bar_Add_New_Modifier.bl_idname, icon="MOD_SIMPLEDEFORM", text="形变")
-    deform.name = "SIMPLE_DEFORM"
-    deform.prop_string = "deform_method=BEND"
+    deform = row.operator(id, icon="MOD_SIMPLEDEFORM", text="形变")
+    deform.type = "SIMPLE_DEFORM"
 
     # ------------------------------4 Level-------------------------------
     row = col.row(align=True)
-    # 厚度
-    solidfy = row.operator(Bar_Add_New_Modifier.bl_idname, icon="MOD_SOLIDIFY", text="厚度")
-    solidfy.name = "SOLIDIFY"
-    solidfy.prop_bool = "use_even_offset=True"
-    # 焊接
-    weld = row.operator(Bar_Add_New_Modifier.bl_idname, icon="AUTOMERGE_OFF", text="焊接")
-    weld.name = "WELD"
-    # 螺旋
-    weld = row.operator(Bar_Add_New_Modifier.bl_idname, icon="MOD_SCREW", text="螺旋")
-    weld.name = "SCREW"
+    solidfy = row.operator(id, icon="MOD_SOLIDIFY", text="厚度")
+    solidfy.type = "SOLIDIFY"
+    weld = row.operator(id, icon="AUTOMERGE_OFF", text="焊接")
+    weld.type = "WELD"
+    weld = row.operator(id, icon="MOD_SCREW", text="螺旋")
+    weld.type = "SCREW"
 
 
 classes = [
     Bar_Quick_Decimate,
     Bar_Add_New_Modifier,
+    PIE_PT_Bar_AddCustomModifier,
 ]
 
 
@@ -276,8 +390,8 @@ def register():
 
 
 def unregister():
-    bpy.types.DATA_PT_modifiers.remove(menu)
     bpy.types.DATA_PT_modifiers.remove(costom_modifier_bar)
+    bpy.types.DATA_PT_modifiers.remove(menu)
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
 
