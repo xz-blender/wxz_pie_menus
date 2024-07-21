@@ -20,8 +20,8 @@ modifier_props = {
         "shift": [("offset", 0)],
     },
     "BEVEL": {
-        "DEFAULT_PROP": [("segments", 1), ("use_clamp_overlap", False)],
-        "shift": [("harden_normals", True)],
+        "DEFAULT_PROP": [("segments", 1), ("use_clamp_overlap", False), ("harden_normals", True)],
+        "shift": [("harden_normals", False)],
         "NUMBERS": ("segments"),
     },
     "ARRAY": {
