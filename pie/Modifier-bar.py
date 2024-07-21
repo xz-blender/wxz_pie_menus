@@ -18,10 +18,12 @@ modifier_props = {
     "SOLIDIFY": {
         "DEFAULT_PROP": [("use_even_offset", True)],
         "shift": [("offset", 0)],
+        "alt": [("offset", -1)],
+        "ctrl": [("offset", 1)],
     },
     "BEVEL": {
         "DEFAULT_PROP": [("segments", 1), ("use_clamp_overlap", False), ("harden_normals", True)],
-        "shift": [("harden_normals", False)],
+        "shift": [("harden_normals", False), ("use_clamp_overlap", True)],
         "NUMBERS": ("segments"),
     },
     "ARRAY": {
