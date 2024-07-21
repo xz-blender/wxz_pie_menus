@@ -1,14 +1,33 @@
 import fnmatch
 import os
+import platform
 import shutil
 import tempfile
 import zipfile
 from pathlib import Path
 
-from .utils import *
 
-# 控制打包
-main = (1, 0, 0)
+def is_windows():
+    return platform.system() == "Windows"
+
+
+def is_macos():
+    return platform.system() == "Darwin"
+
+
+def get_desktop_path():
+    """获取win桌面路径，即使路径被手动更改了(从注册表获取)"""
+    if is_windows():
+        import winreg
+
+        with winreg.OpenKey(
+            winreg.HKEY_CURRENT_USER, r"Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders"
+        ) as key:
+            desktop_path, _ = winreg.QueryValueEx(key, "Desktop")
+            return desktop_path
+    elif is_macos():
+        return os.path.join(os.path.expanduser("~"), "Desktop")
+
 
 desktop_path = get_desktop_path()
 source_dir = Path(__file__).parent
@@ -134,16 +153,13 @@ def main_zip(exclude_list, source_dir, output_path, main=True):
 
 
 if __name__ == "__main__":
-    if main[0]:
-        main_zip(main_exclude_list, source_dir, output_path)
-    # 打包需上传的文件夹
-    elif main[1]:
-        if not os.path.exists(split_out_path):
-            os.makedirs(split_out_path)
-        for dir in split_folder_list:
-            input_path = Path(__file__).parent / dir
-            output_path = str(split_out_path / dir) + ".zip"
-            main_zip(split_exclude_list, input_path, output_path, False)
-    # 复制需要传的文件
-    elif main[2]:
-        copy_excluded_files(source_dir, split_out_path, split_file_list)
+    main_zip(main_exclude_list, source_dir, output_path)
+
+    if not os.path.exists(split_out_path):
+        os.makedirs(split_out_path)
+    for dir in split_folder_list:
+        input_path = Path(__file__).parent / dir
+        output_path = str(split_out_path / dir) + ".zip"
+        main_zip(split_exclude_list, input_path, output_path, False)
+
+    copy_excluded_files(source_dir, split_out_path, split_file_list)
