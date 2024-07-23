@@ -70,7 +70,7 @@ else:
 
 TEXT_OUTPUT = []
 ERROR_OUTPUT = []
-
+addon_keymaps = []
 
 def run_pip_command(self, *cmds, cols=False, run_module="pip"):
     """使用user spec命令运行P IP进程"""
@@ -357,9 +357,11 @@ class WXZ_PIE_Preferences(AddonPreferences):
         items=[
             # (identifier, pip_name, pip_import_name)
             ("PILLOW", "pillow", "PIL"),
-            ("OPENAI", "openai", "openai"),
-            ("HTTPX", "httpx", "httpx"),
-            ("requests", "requests", "requests"),
+            # ("OPENAI", "openai", "openai"),
+            # ("HTTPX", "httpx", "httpx"),
+            # ("requests", "requests", "requests"),
+            ("pyclipper", "pyclipper", "pyclipper"),
+            ("pulp", "pulp", "pulp"),
         ],
         default="PILLOW",
     )  # type: ignore
@@ -378,6 +380,9 @@ class WXZ_PIE_Preferences(AddonPreferences):
     show_language_switch_submenu: BoolProperty(name="双语切换设置")  # type: ignore
     first_lang: EnumProperty(name="首选语言", default="zh_HANS", items=enum_languages)  # type: ignore
     second_lang: EnumProperty(name="次选语言", default="en_US", items=enum_languages)  # type: ignore
+    ## 资产浏览器滚动放大缩小预览图
+    show_asset_browser_scroll: BoolProperty(name="资产浏览器-滚轮缩放快捷键")  # type: ignore
+    tby_bsr_multiplier_resize_factor: bpy.props.IntProperty(default=10) # type: ignore
 
     def draw(self, context):
         layout = self.layout
@@ -555,6 +560,16 @@ class WXZ_PIE_Preferences(AddonPreferences):
             row.prop(self, "first_lang")
             row.separator()
             row.prop(self, "second_lang")
+        ####################
+        col = layout.column()
+        col.scale_y = 1.1
+        col.use_property_split = False
+        col.prop(self, "show_asset_browser_scroll", icon="TRIA_RIGHT" if self.show_asset_browser_scroll else "TRIA_DOWN")
+        if self.show_asset_browser_scroll:
+            box = col.box()
+            box.label(text="Properties:")
+            col = box.column(align=True)
+            box.prop(self.tby_bsr_multiplier_resize_factor,text="缩放因子")
 
 
 for mod in all_modules:
