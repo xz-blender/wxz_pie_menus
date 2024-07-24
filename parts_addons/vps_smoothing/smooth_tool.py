@@ -134,7 +134,7 @@ class ToolVpsSmooting(bpy.types.WorkSpaceTool):
     bl_space_type = "VIEW_3D"
     bl_context_mode = "EDIT_MESH"
 
-    bl_idname = "my_template.my_vol_smooth"
+    bl_idname = "pie.my_vol_smooth"
     bl_label = "Volume Smooth"
     bl_description = "Volume Smooth Tool"
     bl_icon = "ops.mesh.vertices_smooth"
@@ -296,7 +296,7 @@ class BrushCircleGizmoGroup(bpy.types.GizmoGroup):
     def poll(cls, context):
         is_ht_on = (
             context.mode == "EDIT_MESH"
-            and context.workspace.tools.from_space_view3d_mode(mode="EDIT_MESH").idname == "my_template.my_vol_smooth"
+            and context.workspace.tools.from_space_view3d_mode(mode="EDIT_MESH").idname == "pie.my_vol_smooth"
         )
         if not is_ht_on or not context.scene.vps_gizmo_show:
             wm = context.window_manager

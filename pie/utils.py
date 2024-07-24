@@ -160,4 +160,4 @@ def add_operator(pie, op_id, **kwargs):
         if op_id in op_dic:
             pie.operator("pie.empty_operator", text=f"未开启 {op_dic[op_id]} 插件", icon="ERROR")
         else:
-            pie.operator("pie.empty_operator", text=f"未找到 {op_id} 插件名称", icon="QUESTION")
+            pie.operator("pie.empty_operator", text=f"未找到 {op_id} 操作的插件", icon="QUESTION")

@@ -1,10 +1,22 @@
 import importlib
 import inspect
+import os
 import pkgutil
+import sys
 import typing
 from pathlib import Path
 
 import bpy
+
+submoduname = __name__.split(".")[-1]
+bl_info = {
+    "name": submoduname,
+    "author": "wxz",
+    "version": (0, 0, 1),
+    "blender": (3, 3, 0),
+    "location": "View3D",
+    "category": "Interface",
+}
 
 __all__ = (
     "init",
@@ -22,7 +34,6 @@ def init():
     global modules
     global ordered_classes
 
-    # default: modules = get_all_submodules(Path(__file__).parent)
     modules = get_all_submodules(Path(__file__).parent)
     ordered_classes = get_ordered_classes_to_register(modules)
 
@@ -34,19 +45,13 @@ def register():
     for module in modules:
         if module.__name__ == __name__:
             continue
-        else:
-            pass
         if hasattr(module, "register"):
             module.register()
 
 
 def unregister():
     for cls in reversed(ordered_classes):
-        try:
-            bpy.utils.unregister_class(cls)
-        except Exception as e:
-            print(e)
-            print(f"Problem  unregisterring class {cls}")
+        bpy.utils.unregister_class(cls)
 
     for module in modules:
         if module.__name__ == __name__:
@@ -60,12 +65,12 @@ def unregister():
 
 
 def get_all_submodules(directory):
-    return list(iter_submodules(directory, directory.name))
+    return list(iter_submodules(directory, __package__))
 
 
 def iter_submodules(path, package_name):
     for name in sorted(iter_submodule_names(path)):
-        yield importlib.import_module("." + name, __package__)
+        yield importlib.import_module("." + name, package_name)
 
 
 def iter_submodule_names(path, root=""):
@@ -88,9 +93,7 @@ def get_ordered_classes_to_register(modules):
 
 def get_register_deps_dict(modules):
     my_classes = set(iter_my_classes(modules))
-    my_classes_by_idname = {
-        cls.bl_idname: cls for cls in my_classes if hasattr(cls, "bl_idname")
-    }  # TODO. add --> bpy.types.Panel in cls.__bases__?
+    my_classes_by_idname = {cls.bl_idname: cls for cls in my_classes if hasattr(cls, "bl_idname")}
 
     deps_dict = {}
     for cls in my_classes:
@@ -123,7 +126,7 @@ def get_dependency_from_annotation(value):
 
 
 def iter_my_deps_from_parent_id(cls, my_classes_by_idname):
-    if bpy.types.Panel in cls.__bases__:
+    if issubclass(cls, bpy.types.Panel):
         parent_idname = getattr(cls, "bl_parent_id", None)
         if parent_idname is not None:
             parent_cls = my_classes_by_idname.get(parent_idname)
@@ -134,7 +137,7 @@ def iter_my_deps_from_parent_id(cls, my_classes_by_idname):
 def iter_my_classes(modules):
     base_types = get_register_base_types()
     for cls in get_classes_in_modules(modules):
-        if any(base in base_types for base in cls.__bases__):
+        if any(issubclass(cls, base) for base in base_types):
             if not getattr(cls, "is_registered", False):
                 yield cls
 
@@ -170,6 +173,11 @@ def get_register_base_types():
             "RenderEngine",
             "Gizmo",
             "GizmoGroup",
+            "TempProp",
+            "OperatorProperty",
+            "AlignUi",
+            "GetLocation",
+            "SetLocation",
         ]
     )
 
@@ -183,14 +191,11 @@ def toposort(deps_dict):
     sorted_values = set()
     while len(deps_dict) > 0:
         unsorted = []
-        sorted_list_sub = []  # helper for additional sorting by bl_order - in panels
         for value, deps in deps_dict.items():
             if len(deps) == 0:
-                sorted_list_sub.append(value)
+                sorted_list.append(value)
                 sorted_values.add(value)
             else:
                 unsorted.append(value)
         deps_dict = {value: deps_dict[value] - sorted_values for value in unsorted}
-        sort_by_panel_order = sorted(sorted_list_sub, key=lambda cls: getattr(cls, "bl_order", 0))
-        sorted_list.extend(sort_by_panel_order)
     return sorted_list

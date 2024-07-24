@@ -7,7 +7,7 @@ from bpy.props import FloatProperty, IntProperty
 from bpy.types import Menu, Operator
 from mathutils import Matrix, Quaternion, Vector
 
-from .utils import change_default_keymap, restored_default_keymap, set_pie_ridius
+from .utils import *
 
 submoduname = __name__.split(".")[-1]
 bl_info = {
@@ -38,7 +38,11 @@ class VIEW3D_PIE_MT_Bottom_R(Menu):
                 # 6 - RIGHT
                 pie.operator(PIE_Transform_Rotate_Z.bl_idname, text="Z轴+90°").degree = pi / 2
                 # 2 - BOTTOM
-                pie.separator()
+                add_operator(pie, "pie.m4mirror", text="镜像")
+                # mir.property_overridable_library_set("flick", True)
+                # mir.property_overridable_library_set("remove", False)
+                # mir.properties.flick = True
+                # mir.properties.remove = False
                 # 8 - TOP
                 rotate_Y = pie.operator("transform.rotate", text="Y", icon="EVENT_Y")
                 rotate_Y.orient_type = get_orient

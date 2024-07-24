@@ -383,7 +383,12 @@ class WXZ_PIE_Preferences(AddonPreferences):
     second_lang: EnumProperty(name="次选语言", default="en_US", items=enum_languages)  # type: ignore
     ## 资产浏览器滚动放大缩小预览图
     show_asset_browser_scroll: BoolProperty(name="资产浏览器-滚轮缩放快捷键")  # type: ignore
-    tby_bsr_multiplier_resize_factor: bpy.props.IntProperty(default=10)  # type: ignore
+    tby_bsr_multiplier_resize_factor: IntProperty(name="缩放因子", default=10)  # type: ignore
+    ## M4功能合集
+    show_m4_submenu: BoolProperty(name="M4功能")  # type: ignore
+    focus_view_transition: BoolProperty(name="视口补间", default=True)  # type: ignore
+    focus_lights: BoolProperty(name="忽略灯光（使它们始终可见）", default=False)  # type: ignore
+    ah_show_text: BoolProperty(name="Show Button Text", default=True)  # type: ignore
 
     def draw(self, context):
         layout = self.layout
@@ -515,10 +520,10 @@ class WXZ_PIE_Preferences(AddonPreferences):
             row.prop(self, "load_xz_setting_presets", text="加载XZ-配置预设 (请备份好您的userpref.blend文件!)")
 
     def draw_other_addons_setting(self, layout):
-        layout = self.layout
         layout.label(text="其他插件设置")
+        layout = self.layout.column(align=False)
 
-        col = layout.column()
+        col = layout.box().column()
         col.scale_y = 1.1
         col.use_property_split = False
         col.prop(
@@ -531,7 +536,7 @@ class WXZ_PIE_Preferences(AddonPreferences):
             row.prop(self, "debug_prints")
             row.prop(self, "generate_previews")
         ##################
-        col = layout.column()
+        col = layout.box().column()
         col.scale_y = 1.1
         col.use_property_split = False
         col.prop(self, "show_meshmachine_submenu", icon="TRIA_RIGHT" if self.show_meshmachine_submenu else "TRIA_DOWN")
@@ -546,7 +551,7 @@ class WXZ_PIE_Preferences(AddonPreferences):
             row.prop(self, "modal_hud_hints")
             row.prop(self, "symmetrize_flick_distance")
         ##################
-        col = layout.column()
+        col = layout.box().column()
         col.scale_y = 1.1
         col.prop(
             self,
@@ -562,7 +567,7 @@ class WXZ_PIE_Preferences(AddonPreferences):
             row.separator()
             row.prop(self, "second_lang")
         ####################
-        col = layout.column()
+        col = layout.box().column()
         col.scale_y = 1.1
         col.use_property_split = False
         col.prop(
@@ -572,11 +577,12 @@ class WXZ_PIE_Preferences(AddonPreferences):
             box = col.box()
             box.label(text="Properties:")
             col = box.column(align=True)
-            box.prop(self.tby_bsr_multiplier_resize_factor, text="缩放因子")
+            row = col.row()
+            row.prop(self, "tby_bsr_multiplier_resize_factor")
 
 
 for mod in all_modules:
-    info = mod.bl_info
+    # info = mod.bl_info
     mod_name = mod.__name__.split(".")[-1]
 
     def gen_update(mod):
@@ -594,7 +600,8 @@ for mod in all_modules:
         WXZ_PIE_Preferences,
         "use_" + mod_name,
         BoolProperty(
-            name=info["name"],
+            # name=info["name"],
+            name=mod_name,
             # name=mod.__name__.split(".")[0],
             # description=info.get("description", ""),
             update=gen_update(mod),
@@ -628,6 +635,7 @@ def add_modules_item(prefs, module_list_name):
 
 def register():
     class_register()
+    props.register()
     global ERROR_OUTPUT
     global TEXT_OUTPUT
 
@@ -651,6 +659,7 @@ def register():
 
 def unregister():
     class_unregister()
+    props.unregister()
 
     for mod in all_modules:
         if mod.__addon_enabled__:
