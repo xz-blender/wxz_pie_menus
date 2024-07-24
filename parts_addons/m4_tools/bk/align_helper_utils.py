@@ -1,7 +1,7 @@
 from time import time as _time
 
 import bpy
-import numpy as _np # type: ignore
+import numpy as _np  # type: ignore
 from mathutils import Vector
 
 
@@ -22,11 +22,11 @@ def _get_mesh(data: object):
     if type(data) == bpy.types.Mesh:
         data.update()
         obj = data
-    elif (type(data) == bpy.types.Object) and (data.type == 'MESH'):
+    elif (type(data) == bpy.types.Object) and (data.type == "MESH"):
         data.update_from_editmode()
         obj = data.data
     else:
-        obj = Exception(f'物体{data}不是一个网格物体')
+        obj = Exception(f"物体{data}不是一个网格物体")
     return obj
 
 
@@ -47,9 +47,9 @@ def vertices_co(data, *, matrix=None, debug=False):
         v_l = vertices.__len__()
         np_co = _np.zeros(v_l * 3, dtype=_np.float32)
 
-        vertices.foreach_get('co', np_co)
+        vertices.foreach_get("co", np_co)
     except Exception as e:
-        print(f'获取错误:{data} 不是有效的网格或物体数据 {e.args}')
+        print(f"获取错误:{data} 不是有效的网格或物体数据 {e.args}")
 
     else:
         np_co = np_co.reshape((v_l, 3))
@@ -57,7 +57,7 @@ def vertices_co(data, *, matrix=None, debug=False):
         if matrix:
             np_co = np_matrix_dot(np_co, matrix)
         if debug:
-            print(f'获取{data}顶点数据,共用时{_time() - st}s')
+            print(f"获取{data}顶点数据,共用时{_time() - st}s")
         return np_co
 
 
@@ -86,17 +86,19 @@ def screen_relevant_direction_3d_axis(context, *, return_type=None):
     from math import pi
     from mathutils import Vector
     from bpy_extras.view3d_utils import location_3d_to_region_2d
+
     area = context.area
     region_3d = context.space_data.region_3d
     origin = location_3d_to_region_2d(area, region_3d, Vector())  # 原点
 
     ox = Vector((1, 0))
     oy = Vector((0, 1))
-    data = {'x': {'angle': 360},
-            'y': {'angle': 360},
-            }
+    data = {
+        "x": {"angle": 360},
+        "y": {"angle": 360},
+    }
 
-    for index, axis in enumerate(('X', 'Y', 'Z')):
+    for index, axis in enumerate(("X", "Y", "Z")):
         # 循环测试这三个轴
         av = Vector()
         av[index] = 1
@@ -115,17 +117,17 @@ def screen_relevant_direction_3d_axis(context, *, return_type=None):
             angle = (180 * o.angle(v_2d)) / pi
             angle_ = 180 - angle
 
-            i_ = '-' + axis_
-            if angle <= data[screen_axis]['angle']:
-                data[screen_axis]['angle'] = angle
-                data[screen_axis]['axis'] = (axis_, i_)
-            if angle_ <= data[screen_axis]['angle']:
-                data[screen_axis]['angle'] = angle_
-                data[screen_axis]['axis'] = (i_, axis_)
+            i_ = "-" + axis_
+            if angle <= data[screen_axis]["angle"]:
+                data[screen_axis]["angle"] = angle
+                data[screen_axis]["axis"] = (axis_, i_)
+            if angle_ <= data[screen_axis]["angle"]:
+                data[screen_axis]["angle"] = angle_
+                data[screen_axis]["axis"] = (i_, axis_)
 
-        get_and_set_axis(ox, 'x', axis)
-        get_and_set_axis(oy, 'y', axis)
+        get_and_set_axis(ox, "x", axis)
+        get_and_set_axis(oy, "y", axis)
     if return_type:
         return data
 
-    return data['x']['axis'], data['y']['axis']
+    return data["x"]["axis"], data["y"]["axis"]

@@ -2,8 +2,8 @@ import bpy
 from bpy.types import Menu, Operator
 
 from .utils import *
-from ..parts_addons.m4_tools.align_helper_utils import screen_relevant_direction_3d_axis
-from ..parts_addons.m4_tools.align_helper_npanels import *
+from ..parts_addons.m4_tools.align_helper_utils import *
+from ..parts_addons.m4_tools.align_helper_npanel import *
 
 submoduname = __name__.split(".")[-1]
 bl_info = {
