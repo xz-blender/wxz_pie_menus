@@ -24,7 +24,7 @@ modifier_props = {
     "BEVEL": {
         "DEFAULT_PROP": [("segments", 1), ("use_clamp_overlap", False), ("harden_normals", True)],
         "shift": [("harden_normals", False), ("use_clamp_overlap", True)],
-        "NUMBERS": ("segments"),
+        "NUMBERS": ("segments", 1),
     },
     "ARRAY": {
         "DEFAULT_PROP": [("use_merge_vertices_cap", True)],
@@ -57,6 +57,12 @@ modifier_props = {
         "DEFAULT_PROP": [("solver", "FAST")],
         "shift": [("operation", "UNION")],
         "ctrl": [("operation", "INTERSECT")],
+    },
+    "DECIMATE": {
+        "DEFAULT_PROP": [("ratio", 0.5)],
+        "ctrl": [("decimate_type", "UNSUBDIV"), ("iterations", 2)],
+        "shift": [("decimate_type", "DISSOLVE"), ("angle_limit", 0.0174533)],
+        "NUMBERS": ("ratio", 0.1),
     },
 }
 
@@ -111,40 +117,41 @@ def set_default_props(self):
 def add_custom_boolean(context):
     objs = context.selected_objects
     active_object = context.active_object
-    active_modifier = active_object.modifiers.active
-    if len(objs) > 1:
-        # 获取当前激活的物体
-        # 创建一个新的列表，排除激活的物体
-        filtered_objects = [obj for obj in objs if obj != active_object]
-        if len(filtered_objects) > 1:
-            # 获取当前激活物体所在的集合
-            if active_object.users_collection:
-                active_collection = active_object.users_collection[0]
-            # 创建一个新的集合
-            new_collection_name = active_object.name + "_Boolean"
-            new_collection = bpy.data.collections.new(name=new_collection_name)
-            # 将新的集合链接到当前场景
-            if active_object.users_collection:
-                active_collection.children.link(new_collection)
-            else:
-                context.scene.collection.children.link(new_collection)
-            # 将排除激活物体后的选择物体移动到新的集合
-            for obj in filtered_objects:
-                obj.display_type = "WIRE"
-                # 将物体从原来的集合中移除
-                for collection in obj.users_collection:
-                    collection.objects.unlink(obj)
-                # 将物体添加到新的集合
-                new_collection.objects.link(obj)
+    if active_object in objs:
+        active_modifier = active_object.modifiers.active
+        if len(objs) > 1:
+            # 获取当前激活的物体
+            # 创建一个新的列表，排除激活的物体
+            filtered_objects = [obj for obj in objs if obj != active_object]
+            if len(filtered_objects) > 1:
+                # 获取当前激活物体所在的集合
+                if active_object.users_collection:
+                    active_collection = active_object.users_collection[0]
+                # 创建一个新的集合
+                new_collection_name = active_object.name + "_Boolean"
+                new_collection = bpy.data.collections.new(name=new_collection_name)
+                # 将新的集合链接到当前场景
+                if active_object.users_collection:
+                    active_collection.children.link(new_collection)
+                else:
+                    context.scene.collection.children.link(new_collection)
+                # 将排除激活物体后的选择物体移动到新的集合
+                for obj in filtered_objects:
+                    obj.display_type = "WIRE"
+                    # 将物体从原来的集合中移除
+                    for collection in obj.users_collection:
+                        collection.objects.unlink(obj)
+                    # 将物体添加到新的集合
+                    new_collection.objects.link(obj)
 
-            active_modifier.solver = "FAST"
-            active_modifier.operand_type = "COLLECTION"
-            active_modifier.collection = new_collection
-        elif len(filtered_objects) == 1:
-            object = filtered_objects[0]
-            object.display_type = "WIRE"
-            active_modifier.solver = "FAST"
-            active_modifier.object = object
+                active_modifier.solver = "FAST"
+                active_modifier.operand_type = "COLLECTION"
+                active_modifier.collection = new_collection
+            elif len(filtered_objects) == 1:
+                object = filtered_objects[0]
+                object.display_type = "WIRE"
+                active_modifier.solver = "FAST"
+                active_modifier.object = object
 
 
 class PIE_PT_Bar_AddCustomModifier(Operator):
@@ -180,7 +187,7 @@ class PIE_PT_Bar_AddCustomModifier(Operator):
                         for props in item_data:
                             setattr(new_mod, props[0], props[1])
                 elif item_name == "NUMBERS" and event.type_prev in numbers:
-                    setattr(new_mod, item_data, numbers.index(event.type_prev))
+                    setattr(new_mod, item_data[0], numbers.index(event.type_prev) * item_data[1])
 
         if self.type == "BOOLEAN":
             add_custom_boolean(context)
@@ -290,42 +297,42 @@ class Bar_Quick_Decimate(Operator):
         return {"FINISHED"}
 
 
-# Menus #
-def menu(self, context):
-    col = self.layout.column(align=True)
-    col.alignment = "CENTER"
-    col.scale_y = 0.9
-    row = col.row(align=True)
+# # Menus #
+# def menu(self, context):
+#     col = self.layout.column(align=True)
+#     col.alignment = "CENTER"
+#     col.scale_y = 0.9
+#     row = col.row(align=True)
 
-    split = row.split(factor=0.2)
+#     split = row.split(factor=0.2)
 
-    split_1 = split.operator("object.modifier_add", icon="MOD_TRIANGULATE", text="三角化").type = "TRIANGULATE"
-    # ------
-    split_2 = split.row()
+#     split_1 = split.operator("object.modifier_add", icon="MOD_TRIANGULATE", text="三角化").type = "TRIANGULATE"
+#     # ------
+#     split_2 = split.row()
 
-    L1 = split_2.operator(Bar_Quick_Decimate.bl_idname, text="0.1")
-    L1.de_type = "COLLAPSE"
-    L1.ratio = 0.1
+#     L1 = split_2.operator(Bar_Quick_Decimate.bl_idname, text="0.1")
+#     L1.de_type = "COLLAPSE"
+#     L1.ratio = 0.1
 
-    L2 = split_2.operator(Bar_Quick_Decimate.bl_idname, text="0.2")
-    L2.de_type = "COLLAPSE"
-    L2.ratio = 0.2
+#     L2 = split_2.operator(Bar_Quick_Decimate.bl_idname, text="0.2")
+#     L2.de_type = "COLLAPSE"
+#     L2.ratio = 0.2
 
-    L3 = split_2.operator(Bar_Quick_Decimate.bl_idname, text="0.3")
-    L3.de_type = "COLLAPSE"
-    L3.ratio = 0.3
+#     L3 = split_2.operator(Bar_Quick_Decimate.bl_idname, text="0.3")
+#     L3.de_type = "COLLAPSE"
+#     L3.ratio = 0.3
 
-    L4 = split_2.operator(Bar_Quick_Decimate.bl_idname, text="0.4")
-    L4.de_type = "COLLAPSE"
-    L4.ratio = 0.4
+#     L4 = split_2.operator(Bar_Quick_Decimate.bl_idname, text="0.4")
+#     L4.de_type = "COLLAPSE"
+#     L4.ratio = 0.4
 
-    L5 = split_2.operator(Bar_Quick_Decimate.bl_idname, text="0.5")
-    L5.de_type = "COLLAPSE"
-    L5.ratio = 0.5
+#     L5 = split_2.operator(Bar_Quick_Decimate.bl_idname, text="0.5")
+#     L5.de_type = "COLLAPSE"
+#     L5.ratio = 0.5
 
-    L0 = split_2.operator(Bar_Quick_Decimate.bl_idname, text="反细分")
-    L0.de_type = "UNSUBDIV"
-    L0.iterations = 2
+#     L0 = split_2.operator(Bar_Quick_Decimate.bl_idname, text="反细分")
+#     L0.de_type = "UNSUBDIV"
+#     L0.iterations = 2
 
 
 # Modifier Bar
@@ -334,6 +341,9 @@ def costom_modifier_bar(self, context):
     col.alignment = "CENTER"
     col.scale_y = 0.9
 
+    # ---------------------------- 0 Level --------------------------------
+    # row = col.row(align=True)
+    # nodes = row.operator(id, icon="GEOMETRY_NODES", text="节点")
     # ---------------------------- 1 Level --------------------------------
     row = col.row(align=True)
     nodes = row.operator(id, icon="GEOMETRY_NODES", text="节点")
@@ -376,6 +386,17 @@ def costom_modifier_bar(self, context):
     weld = row.operator(id, icon="MOD_SCREW", text="螺旋")
     weld.type = "SCREW"
 
+    # ------------------------------4 Level-------------------------------
+    row = col.row(align=True)
+    decimate = row.operator(id, icon="MOD_DECIM", text="精简")
+    decimate.type = "DECIMATE"
+    edge_split = row.operator(id, icon="MOD_EDGESPLIT", text="拆边")
+    edge_split.type = "EDGE_SPLIT"
+    triangulate = row.operator(id, icon="MOD_TRIANGULATE", text="三角化")
+    triangulate.type = "TRIANGULATE"
+    # lattice = row.operator(id, icon="MOD_LATTICE", text="晶格")
+    # lattice.type = "LATTICE"
+
 
 classes = [
     Bar_Quick_Decimate,
@@ -388,12 +409,12 @@ def register():
     for cls in classes:
         bpy.utils.register_class(cls)
     bpy.types.DATA_PT_modifiers.prepend(costom_modifier_bar)
-    bpy.types.DATA_PT_modifiers.append(menu)  # 区别 prepend 和 append
+    # bpy.types.DATA_PT_modifiers.append(menu)  # 区别 prepend 和 append
 
 
 def unregister():
     bpy.types.DATA_PT_modifiers.remove(costom_modifier_bar)
-    bpy.types.DATA_PT_modifiers.remove(menu)
+    # bpy.types.DATA_PT_modifiers.remove(menu)
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
 

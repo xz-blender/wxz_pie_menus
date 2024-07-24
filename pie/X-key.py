@@ -17,7 +17,7 @@ bl_info = {
 class Mesh_Delete_By_mode(Operator):
     bl_idname = "pie.x_key"
     bl_label = submoduname
-    bl_options = {"REGISTER"}
+    bl_options = {"REGISTER", "UNDO"}
 
     @classmethod
     def poll(cls, context):
@@ -43,20 +43,34 @@ class Mesh_Delete_By_mode(Operator):
         if obj.type == "CURVE":
 
             # 获取当前编辑模式下的选中顶点
-            curve = obj.data
-            spline = curve.splines.active
-            try:
-                selected_verts = [p for p in spline.points if p.select]
-            except AttributeError:
-                bpy.ops.curve.delete(type="VERT")
-                return {"CANCELLED"}
-            if len(selected_verts) == 1:
-                bpy.ops.curve.delete(type="VERT")
-            elif len(selected_verts) > 1:
-                bpy.ops.curve.delete(type="SEGMENT")
-                bpy.ops.curvetools.operatorsplinesremovezerosegment()
+            curve_data = obj.data
+            # 获取曲线对象的所有控制点
+            selected_points = 0
+            # 遍历曲线中的每个样条
+            for spline in curve_data.splines:
+                if spline.type == "BEZIER":
+                    # 贝塞尔曲线的控制点
+                    for point in spline.bezier_points:
+                        if point.select_control_point:
+                            selected_points += 1
 
-            # bpy.ops.curve.delete(type='VERT')
+                elif spline.type == "NURBS" or spline.type == "POLY":
+                    # NURBS和多边形曲线的控制点
+                    for point in spline.points:
+                        if point.select:
+                            selected_points += 1
+
+            if selected_points == 1:
+                bpy.ops.curve.delete(type="VERT")
+            elif selected_points == 0:
+                self.report({"ERROR"}, "无法删除,请选择一个顶点")
+                return {"CANCELED"}
+            else:
+                bpy.ops.curve.delete(type="SEGMENT")
+                try:
+                    bpy.ops.curvetools.operatorsplinesremovezerosegment()
+                except:
+                    pass
             return {"FINISHED"}
 
 
