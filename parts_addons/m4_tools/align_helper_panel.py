@@ -13,13 +13,7 @@ class PanelM4A1tools(bpy.types.Panel):
 
     @classmethod
     def poll(cls, context):
-        p = get_prefs()
-
-        if p.show_sidebar_panel:
-            if context.mode == "OBJECT":
-                return p.activate_smart_drive or p.activate_unity or p.activate_group or p.activate_assetbrowser_tools
-            elif context.mode == "EDIT_MESH":
-                return p.activate_extrude
+        return True
 
     def draw(self, context):
         layout = self.layout
@@ -30,7 +24,7 @@ class PanelM4A1tools(bpy.types.Panel):
         b = sp.row(align=True)
 
         b.scale_y = a.scale_x = a.scale_y = 1.5
-        from .align_helper_npanels import draw_left, draw_right
+        from .align_helper_npanel import draw_left, draw_right
 
         pref = get_prefs()
         if not pref.ah_show_text:

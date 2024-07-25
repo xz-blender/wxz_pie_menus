@@ -1,11 +1,6 @@
 import bpy
-import numpy as np # type: ignore
-from bpy.props import (
-    BoolProperty,
-    EnumProperty,
-    FloatProperty,
-    StringProperty
-)
+import numpy as np  # type: ignore
+from bpy.props import BoolProperty, EnumProperty, FloatProperty, StringProperty
 from bpy.types import Operator
 from mathutils import Vector
 
@@ -14,53 +9,53 @@ from .align_helper_utils import bound_to_tuple, vertices_co
 
 class Data:
     ENUM_DISTRIBUTION_SORTED_AXIS = [
-        ('0', 'X', 'Sort distribution by X axis'),
-        ('1', 'Y', 'Sort distribution by Y axis'),
-        ('2', 'Z', 'Sort distribution by X axis'), ]
-    ENUM_GROUND_MODE = [('ALL', 'All Object', ''),
-                        ('MINIMUM', 'Lowest Object', ''), ]
+        ("0", "X", "Sort distribution by X axis"),
+        ("1", "Y", "Sort distribution by Y axis"),
+        ("2", "Z", "Sort distribution by X axis"),
+    ]
+    ENUM_GROUND_MODE = [
+        ("ALL", "All Object", ""),
+        ("MINIMUM", "Lowest Object", ""),
+    ]
     ENUM_ALIGN_MODE = [
-        ('ORIGINAL', 'World Original',
-         'Aligning to the world origin is the same as resetting'),
-        ('ACTIVE', 'Active', 'Align to Active Object'),
-        ('CURSOR', 'Cursor', 'Align to Cursor(Scale reset 1)'),
-        ('GROUND', 'Ground', 'Align Ground'),
-        ('DISTRIBUTION', 'Distribution', 'Distribution Align'),
-        ('ALIGN',
-         'Align',
-         'General alignment, you can set the alignment of each axis'
-         '(maximum, center, minimum)'),
+        ("ORIGINAL", "World Original", "Aligning to the world origin is the same as resetting"),
+        ("ACTIVE", "Active", "Align to Active Object"),
+        ("CURSOR", "Cursor", "Align to Cursor(Scale reset 1)"),
+        ("GROUND", "Ground", "Align Ground"),
+        ("DISTRIBUTION", "Distribution", "Distribution Align"),
+        ("ALIGN", "Align", "General alignment, you can set the alignment of each axis" "(maximum, center, minimum)"),
     ]
     ENUM_DISTRIBUTION_MODE = [
         ("FIXED", "Fixed", "Fixed the nearest and farthest objects"),
-        ("ADJUSTMENT", "Adjustment",
-         "Adjust the distance between each object(Fixed active object)"), ]
+        ("ADJUSTMENT", "Adjustment", "Adjust the distance between each object(Fixed active object)"),
+    ]
     ENUM_ALIGN_FUNC = [
-        ('MIN', 'Min Point', 'Align to Min Point'),
-        ('CENTER', 'Center', 'Center Align'),
-        ('MAX', 'Max Point', 'Align to Max Point'),
+        ("MIN", "Min Point", "Align to Min Point"),
+        ("CENTER", "Center", "Center Align"),
+        ("MAX", "Max Point", "Align to Max Point"),
     ]
 
-    ENUM_AXIS = [('X', 'X', 'Align X Axis'),
-                 ('Y', 'Y', 'Align Y Axis'),
-                 ('Z', 'Z', 'Align Z Axis'),
-                 ]
-    VALID_OBJ_TYPE = ('FONT', 'OBJECT', 'META', 'SURFACE',
-                      'CURVES', 'LATTICE', 'POINTCLOUD', 'GPENCIL', 'ARMATURE')
+    ENUM_AXIS = [
+        ("X", "X", "Align X Axis"),
+        ("Y", "Y", "Align Y Axis"),
+        ("Z", "Z", "Align Z Axis"),
+    ]
+    VALID_OBJ_TYPE = ("FONT", "OBJECT", "META", "SURFACE", "CURVES", "LATTICE", "POINTCLOUD", "GPENCIL", "ARMATURE")
 
 
 axis_enum_property = EnumProperty(
-    name='Axis to be aligned',
-    description='Select the axis to be aligned, multiple choices are allowed',
+    name="Axis to be aligned",
+    description="Select the axis to be aligned, multiple choices are allowed",
     items=Data.ENUM_AXIS,
-    options={'ENUM_FLAG'},
-    default={'X', 'Y', 'Z'})
+    options={"ENUM_FLAG"},
+    default={"X", "Y", "Z"},
+)
 
 
 class TempProp:
     min_co: Vector  # 最小的坐标
     max_co: Vector  # 最大的坐标
-    objs_max_min_co: 'list[Vector]'
+    objs_max_min_co: "list[Vector]"
     objs_center_co: Vector  # 中心坐标
     data: dict  # 数据
     align_mode_location: Vector
@@ -68,46 +63,49 @@ class TempProp:
 
 
 class OperatorProperty(TempProp):
-    align_mode: EnumProperty(items=Data.ENUM_ALIGN_MODE)# type: ignore
+    align_mode: EnumProperty(items=Data.ENUM_ALIGN_MODE)  # type: ignore
 
-    distribution_mode: EnumProperty(
-        items=Data.ENUM_DISTRIBUTION_MODE,
-        default='FIXED'
-    )# type: ignore
-    distribution_adjustment_value: FloatProperty(
-        name="Distribution interval value", default=1)# type: ignore
+    distribution_mode: EnumProperty(items=Data.ENUM_DISTRIBUTION_MODE, default="FIXED")  # type: ignore
+    distribution_adjustment_value: FloatProperty(name="Distribution interval value", default=1)  # type: ignore
 
-    align_location: BoolProperty(name='Location', default=True)# type: ignore
-    align_rotation: BoolProperty(name='Rotate', default=True)# type: ignore
-    align_scale: BoolProperty(name='Scale', default=False)# type: ignore
-    align_location_axis: axis_enum_property# type: ignore
+    align_location: BoolProperty(name="Location", default=True)  # type: ignore
+    align_rotation: BoolProperty(name="Rotate", default=True)  # type: ignore
+    align_scale: BoolProperty(name="Scale", default=False)  # type: ignore
+    align_location_axis: axis_enum_property  # type: ignore
 
-    align_rotation_euler_axis: axis_enum_property# type: ignore
-    align_scale_axis: axis_enum_property# type: ignore
+    align_rotation_euler_axis: axis_enum_property  # type: ignore
+    align_scale_axis: axis_enum_property  # type: ignore
 
     distribution_sorted_axis: EnumProperty(
-        name='Distribution sort axis',
-        description='Align and sort the selected objects according'
-                    ' to the selection axis to obtain the correct movement '
-                    'position',
-        items=Data.ENUM_DISTRIBUTION_SORTED_AXIS)# type: ignore
+        name="Distribution sort axis",
+        description="Align and sort the selected objects according"
+        " to the selection axis to obtain the correct movement "
+        "position",
+        items=Data.ENUM_DISTRIBUTION_SORTED_AXIS,
+    )  # type: ignore
 
-    ground_mode: EnumProperty(
-        items=Data.ENUM_GROUND_MODE)# type: ignore
-    align_to_ground_object: BoolProperty(name='Align To Ground Object')# type: ignore
-    ground_object_name: StringProperty(
-        name='To Object',
-        description='Align To Ground Object')# type: ignore
+    ground_mode: EnumProperty(items=Data.ENUM_GROUND_MODE)  # type: ignore
+    align_to_ground_object: BoolProperty(name="Align To Ground Object")  # type: ignore
+    ground_object_name: StringProperty(name="To Object", description="Align To Ground Object")  # type: ignore
 
     # 每个一个轴的对齐方式
-    x_align_func: EnumProperty(name='X', items=Data.ENUM_ALIGN_FUNC,
-                               default='CENTER', )# type: ignore
-    y_align_func: EnumProperty(name='Y', items=Data.ENUM_ALIGN_FUNC,
-                               default='CENTER', )# type: ignore
-    z_align_func: EnumProperty(name='Z', items=Data.ENUM_ALIGN_FUNC,
-                               default='CENTER', )# type: ignore
+    x_align_func: EnumProperty(
+        name="X",
+        items=Data.ENUM_ALIGN_FUNC,
+        default="CENTER",
+    )  # type: ignore
+    y_align_func: EnumProperty(
+        name="Y",
+        items=Data.ENUM_ALIGN_FUNC,
+        default="CENTER",
+    )  # type: ignore
+    z_align_func: EnumProperty(
+        name="Z",
+        items=Data.ENUM_ALIGN_FUNC,
+        default="CENTER",
+    )  # type: ignore
 
-    including_children: BoolProperty(name='Include Children', default=True)# type: ignore
+    including_children: BoolProperty(name="Include Children", default=True)  # type: ignore
 
     @property
     def is_fixed_mode(self):
@@ -154,23 +152,23 @@ class AlignUi(OperatorProperty):
     # draw UI
     def draw_align_location(self, layout):
         row = layout.row()
-        row.prop(self, 'align_location')
+        row.prop(self, "align_location")
         row = row.row()
         row.active = self.align_location
-        row.row().prop(self, 'align_location_axis')
+        row.row().prop(self, "align_location_axis")
 
     def draw_default_ui(self, layout: bpy.types.UILayout):
         row = layout.row()
-        row.prop(self, 'align_rotation')
+        row.prop(self, "align_rotation")
         row = row.row()
         row.active = self.align_rotation
-        row.prop(self, 'align_rotation_euler_axis')
+        row.prop(self, "align_rotation_euler_axis")
 
         row = layout.row()
-        row.prop(self, 'align_scale')
+        row.prop(self, "align_scale")
         row = row.row()
         row.active = self.align_scale
-        row.prop(self, 'align_scale_axis')
+        row.prop(self, "align_scale_axis")
 
         self.draw_align_location(layout)
 
@@ -185,8 +183,8 @@ class AlignUi(OperatorProperty):
 
     def draw_distribution(self, layout: bpy.types.UILayout):
         row = layout.row()
-        row.label(text='Sort Axis')
-        row.prop(self, 'distribution_sorted_axis', expand=True)
+        row.label(text="Sort Axis")
+        row.prop(self, "distribution_sorted_axis", expand=True)
         layout.separator()
         self.draw_align_location(layout)
         if self.is_adjustment_mode:
@@ -196,62 +194,64 @@ class AlignUi(OperatorProperty):
     def draw_ground(self, layout: bpy.types.UILayout):
         col = layout.column()
 
-        col.row().prop(self, 'ground_mode', expand=True)
+        col.row().prop(self, "ground_mode", expand=True)
 
         row = col.row()
-        row.prop(self, 'align_location')
+        row.prop(self, "align_location")
         row = row.row()
         row.active = self.align_location
-        row.prop(self, 'align_location_axis', expand=True)
+        row.prop(self, "align_location_axis", expand=True)
         layout.prop(self, "including_children")
 
     def draw_align(self, layout: bpy.types.UILayout):
         col = layout.column()
 
         row = col.row()
-        row.label(text='X')
-        row.active = ('X' in self.align_location_axis)
-        row.prop(self, 'x_align_func', expand=True)
+        row.label(text="X")
+        row.active = "X" in self.align_location_axis
+        row.prop(self, "x_align_func", expand=True)
 
         row = col.row()
-        row.label(text='Y')
-        row.active = ('Y' in self.align_location_axis)
-        row.prop(self, 'y_align_func', expand=True)
+        row.label(text="Y")
+        row.active = "Y" in self.align_location_axis
+        row.prop(self, "y_align_func", expand=True)
 
         row = col.row()
-        row.label(text='Z')
-        row.active = ('Z' in self.align_location_axis)
-        row.prop(self, 'z_align_func', expand=True)
+        row.label(text="Z")
+        row.active = "Z" in self.align_location_axis
+        row.prop(self, "z_align_func", expand=True)
 
         layout.separator()
         self.draw_align_location(layout)
 
 
-class GetLocation(AlignUi,
-                  Operator, ):
+class GetLocation(
+    AlignUi,
+    Operator,
+):
 
     def subtract_location_axis(self, obj, location):
         x, y, z = location
-        if 'X' in self.align_location_axis:
+        if "X" in self.align_location_axis:
             obj.location.x -= x
-        if 'Y' in self.align_location_axis:
+        if "Y" in self.align_location_axis:
             obj.location.y -= y
-        if 'Z' in self.align_location_axis:
+        if "Z" in self.align_location_axis:
             obj.location.z -= z
 
     def add_location_axis(self, obj, location):
         x, y, z = location
-        if 'X' in self.align_location_axis:
+        if "X" in self.align_location_axis:
             obj.location.x += x
         else:
             x = 0
 
-        if 'Y' in self.align_location_axis:
+        if "Y" in self.align_location_axis:
             obj.location.y += y
         else:
             y = 0
 
-        if 'Z' in self.align_location_axis:
+        if "Z" in self.align_location_axis:
             obj.location.z += z
         else:
             z = 0
@@ -260,37 +260,37 @@ class GetLocation(AlignUi,
 
     def set_location_axis(self, obj, location):
         x, y, z = location
-        if 'X' in self.align_location_axis:
+        if "X" in self.align_location_axis:
             obj.location.x = x
-        if 'Y' in self.align_location_axis:
+        if "Y" in self.align_location_axis:
             obj.location.y = y
-        if 'Z' in self.align_location_axis:
+        if "Z" in self.align_location_axis:
             obj.location.z = z
 
     def set_rotation_euler_axis(self, obj, rotation_euler):
         x, y, z = rotation_euler
-        if 'X' in self.align_rotation_euler_axis:
+        if "X" in self.align_rotation_euler_axis:
             obj.rotation_euler.x = x
-        if 'Y' in self.align_rotation_euler_axis:
+        if "Y" in self.align_rotation_euler_axis:
             obj.rotation_euler.y = y
-        if 'Z' in self.align_rotation_euler_axis:
+        if "Z" in self.align_rotation_euler_axis:
             obj.rotation_euler.z = z
 
     def set_scale_axis(self, obj, scale):
         x, y, z = scale
-        if 'X' in self.align_scale_axis:
+        if "X" in self.align_scale_axis:
             obj.scale.x = x
-        if 'Y' in self.align_scale_axis:
+        if "Y" in self.align_scale_axis:
             obj.scale.y = y
-        if 'Z' in self.align_scale_axis:
+        if "Z" in self.align_scale_axis:
             obj.scale.z = z
 
     def get_align_func_co(self, func):
-        if func == 'MIN':
+        if func == "MIN":
             return self.min_co
-        elif func == 'MAX':
+        elif func == "MAX":
             return self.max_co
-        elif func == 'CENTER':
+        elif func == "CENTER":
             return self.objs_center_co
 
     def get_align_obj_mode_co(self, obj):
@@ -310,9 +310,9 @@ class GetLocation(AlignUi,
 
         for a in context.selected_objects.copy():
             obj = a.evaluated_get(deep)
-            is_valid_obj_type = (obj.type in Data.VALID_OBJ_TYPE)
+            is_valid_obj_type = obj.type in Data.VALID_OBJ_TYPE
             obj_not_in_data = obj not in self.data
-            is_mesh = (obj.type == 'MESH')
+            is_mesh = obj.type == "MESH"
             obj_name = obj.name
             mat = obj.matrix_world
 
@@ -329,23 +329,23 @@ class GetLocation(AlignUi,
                 loc_max = Vector(np.max(data, axis=0))
                 loc_min = Vector(np.min(data, axis=0))
                 dimensions = loc_max - loc_min
-                self.data[obj_name]['DIMENSIONS'] = dimensions
+                self.data[obj_name]["DIMENSIONS"] = dimensions
 
                 center = (loc_min + dimensions / 2).freeze()
 
-                self.data[obj_name]['CENTER'] = center
+                self.data[obj_name]["CENTER"] = center
 
-                self.data['DATA']['CO_TUPLE'] += [loc_max, loc_min]
+                self.data["DATA"]["CO_TUPLE"] += [loc_max, loc_min]
                 # 添加最大最小点
-                self.data['DATA']['DIMENSIONS'] += dimensions
+                self.data["DATA"]["DIMENSIONS"] += dimensions
                 # 添加物体的尺寸
-                self.data[obj_name]['MIN'] = loc_min
-                self.data[obj_name]['MAX'] = loc_max
+                self.data[obj_name]["MIN"] = loc_min
+                self.data[obj_name]["MAX"] = loc_max
 
-                if center not in self.data['CENTER']:
-                    self.data['CENTER'][center] = []
+                if center not in self.data["CENTER"]:
+                    self.data["CENTER"][center] = []
 
-                self.data['CENTER'][center].append(obj_name)
+                self.data["CENTER"][center].append(obj_name)
             elif obj_not_in_data:
                 self.init_not_int_data_object(gen_data, obj, obj_name)
 
@@ -353,19 +353,19 @@ class GetLocation(AlignUi,
         gen_data()
         loc = obj.location.copy().freeze()
         center = loc_max = loc_min = loc
-        self.data[obj_name]['MIN'] = self.data[obj_name]['MAX'] = loc
+        self.data[obj_name]["MIN"] = self.data[obj_name]["MAX"] = loc
 
-        self.data['DATA']['CO_TUPLE'] += [loc_max, loc_min]
+        self.data["DATA"]["CO_TUPLE"] += [loc_max, loc_min]
 
         dimensions = Vector((0, 0, 0))
-        self.data[obj_name]['DIMENSIONS'] = dimensions
-        self.data[obj_name]['CENTER'] = center
-        self.data['DATA']['DIMENSIONS'] += dimensions
+        self.data[obj_name]["DIMENSIONS"] = dimensions
+        self.data[obj_name]["CENTER"] = center
+        self.data["DATA"]["DIMENSIONS"] += dimensions
 
-        if center not in self.data['CENTER']:
-            self.data['CENTER'][center] = []
+        if center not in self.data["CENTER"]:
+            self.data["CENTER"][center] = []
 
-        self.data['CENTER'][center].append(obj_name)
+        self.data["CENTER"][center].append(obj_name)
 
     def init_align_mode_data(self):
         """获取所选轴对齐方式的坐标
@@ -380,8 +380,8 @@ class SetLocation(GetLocation):
 
     def object_location_set_funcs(self, context):
         align_mode = self.align_mode
-        is_distribution_mode = (align_mode == 'DISTRIBUTION')
-        is_align_mode = (align_mode == 'ALIGN')
+        is_distribution_mode = align_mode == "DISTRIBUTION"
+        is_align_mode = align_mode == "ALIGN"
 
         objs = context.selected_objects.copy()
         if is_distribution_mode:
@@ -394,11 +394,11 @@ class SetLocation(GetLocation):
             return
 
         for index, obj in enumerate(objs):
-            '''
+            """
             如果是分布对齐objs就是物体的名称(作为键)
             否则objs就是物体
-            '''
-            run_func = getattr(self, f'align_to_{align_mode.lower()}', None)
+            """
+            run_func = getattr(self, f"align_to_{align_mode.lower()}", None)
             self.index = index  # 分布对齐用,查找当前物体需要对齐到的目标
 
             if align_mode.lower() == "ground":
@@ -454,25 +454,25 @@ class SetLocation(GetLocation):
             data = self.data[obj_name]
 
             if order.index(obj_name) in (0, dl - 1):
-                self.tmp_co = data['MAX']
+                self.tmp_co = data["MAX"]
                 # 是第一个或最后一个物体，不用操作
             else:
                 obj = bpy.data.objects[obj_name]
 
-                '''
+                """
                 # if self.distribution_func == 'spacing':
-                    # 分布间隔对齐'''
+                    # 分布间隔对齐"""
 
-                obj_lo = data['MIN']
+                obj_lo = data["MIN"]
                 location = self.obj_interval - (obj_lo - self.tmp_co)
                 co = Vector(self.add_location_axis(obj, location))
-                self.tmp_co = data['MAX'] + co
+                self.tmp_co = data["MAX"] + co
 
     def align_to_ground(self, context, obj):
         if self.align_location:
 
-            if self.ground_mode == 'ALL':
-                location = self.data[obj.name]['MIN']
+            if self.ground_mode == "ALL":
+                location = self.data[obj.name]["MIN"]
             else:
                 location = self.min_co
 
@@ -491,7 +491,7 @@ class SetLocation(GetLocation):
         objs = self.distribution_order
 
         if active_obj and (active_obj.name not in objs):
-            self.report({'INFO'}, 'Not Selected Active Object')
+            self.report({"INFO"}, "Not Selected Active Object")
             active_index = -1
             active_data = self.data[objs[0]]
         else:
@@ -500,29 +500,29 @@ class SetLocation(GetLocation):
 
         value = self.distribution_adjustment_value
 
-        self.tmp_co = active_data['MIN']
+        self.tmp_co = active_data["MIN"]
         for obj in objs[:active_index][::-1]:
             data = self.data[obj]
 
             obj = bpy.data.objects[obj]
 
-            obj_lo = data['MAX']
-            v = (obj_lo - self.tmp_co)
+            obj_lo = data["MAX"]
+            v = obj_lo - self.tmp_co
             location = Vector((-value, -value, -value)) - v
 
             self.add_location_axis(obj, location)
-            self.tmp_co = data['MIN'] + Vector(location)
+            self.tmp_co = data["MIN"] + Vector(location)
 
-        self.tmp_co = active_data['MAX']
-        for obj_name in objs[active_index + 1:]:
+        self.tmp_co = active_data["MAX"]
+        for obj_name in objs[active_index + 1 :]:
             data = self.data[obj_name]
 
             obj = bpy.data.objects[obj_name]
 
-            obj_lo = data['MIN']
+            obj_lo = data["MIN"]
             location = Vector((value, value, value)) - (obj_lo - self.tmp_co)
             self.add_location_axis(obj, location)
-            self.tmp_co = data['MAX'] + Vector(location)
+            self.tmp_co = data["MAX"] + Vector(location)
 
     def init_distribution_data(self):
         """
@@ -535,26 +535,24 @@ class SetLocation(GetLocation):
 
         # 使用选定的轴进行一次排序
         center_key = int(self.distribution_sorted_axis)
-        distribution_center_sorted = sorted(
-            self.data['CENTER'].keys(), key=lambda x: x[center_key])
+        distribution_center_sorted = sorted(self.data["CENTER"].keys(), key=lambda x: x[center_key])
 
         # 再排一次序，对比出中点一至的多个物体的次序
         objs = []
         for center in distribution_center_sorted:
-            if len(self.data['CENTER'][center]) > 1:
+            if len(self.data["CENTER"][center]) > 1:
 
-                objs += sorted(self.data['CENTER'][center],
-                               key=lambda x: self.data[x]['DIMENSIONS'])
+                objs += sorted(self.data["CENTER"][center], key=lambda x: self.data[x]["DIMENSIONS"])
             else:
-                objs += self.data['CENTER'][center]
-        print('objs', objs, distribution_center_sorted)
+                objs += self.data["CENTER"][center]
+        print("objs", objs, distribution_center_sorted)
         self.distribution_order = objs
 
-        max_co = self.data[objs[-1]]['MAX']
-        min_co = self.data[objs[0]]['MIN']
+        max_co = self.data[objs[-1]]["MAX"]
+        min_co = self.data[objs[0]]["MIN"]
 
         dimensions_max_min_co = max_co - min_co  # 中心点第一个和最后一个物体的最大最小坐标
-        dimensions = self.data['DATA']['DIMENSIONS']  # 物体的总尺寸长度
+        dimensions = self.data["DATA"]["DIMENSIONS"]  # 物体的总尺寸长度
         self.interval_distance = dimensions_max_min_co - dimensions  #
         # 所有物体应间隔的总长度
 
@@ -592,9 +590,9 @@ class AlignObject(SetLocation):
     可组合按
     """
 
-    bl_idname = 'm4a1.tool_kits_fast_align'
-    bl_label = 'POPOTI Align Helper'
-    bl_options = {'REGISTER', 'UNDO'}
+    bl_idname = "m4a1.tool_kits_fast_align"
+    bl_label = "POPOTI Align Helper"
+    bl_options = {"REGISTER", "UNDO"}
 
     @classmethod
     def poll(cls, context):
@@ -604,29 +602,26 @@ class AlignObject(SetLocation):
         layout = self.layout
         col = layout.column()
 
-        run_func = getattr(self, f'draw_{self.align_mode.lower()}', None)
+        run_func = getattr(self, f"draw_{self.align_mode.lower()}", None)
         if run_func:
             run_func(col)
 
-        col.column().prop(self, 'align_mode', expand=True)
+        col.column().prop(self, "align_mode", expand=True)
 
     def invoke(self, context, event):
-        self.data = {'DATA': {'CO_TUPLE': [],
-                              'DIMENSIONS': Vector()},
-                     'CENTER': {}
-                     }
+        self.data = {"DATA": {"CO_TUPLE": [], "DIMENSIONS": Vector()}, "CENTER": {}}
         self.invoke_init_object_location(bpy.context)
 
-        self.min_co = np.min(self.data['DATA']['CO_TUPLE'], axis=0)
-        self.max_co = np.max(self.data['DATA']['CO_TUPLE'], axis=0)
+        self.min_co = np.min(self.data["DATA"]["CO_TUPLE"], axis=0)
+        self.max_co = np.max(self.data["DATA"]["CO_TUPLE"], axis=0)
 
         self.objs_max_min_co = self.max_co - self.min_co  # 所有所选物体的最大最小坐标
         self.objs_center_co = (self.min_co + self.max_co) / 2
 
         if event.ctrl or event.shift or event.alt:
-            self.align_rotation = event.ctrl
+            self.align_rotation = event.alt
             self.align_scale = event.shift
-            self.align_location = event.alt
+            self.align_location = event.ctrl
         return self.execute(context)
 
     def execute(self, context):
@@ -640,15 +635,12 @@ class AlignObject(SetLocation):
         """
 
         self.object_location_set_funcs(context)
-        return {'FINISHED'}
+        return {"FINISHED"}
 
 
-class_tuples = (
-    AlignObject,
-)
+class_tuples = (AlignObject,)
 
-register_class, unregister_class = bpy.utils.register_classes_factory(
-    class_tuples)
+register_class, unregister_class = bpy.utils.register_classes_factory(class_tuples)
 
 
 def register():

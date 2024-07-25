@@ -352,6 +352,7 @@ class VIEW3D_PIE_MT_Bottom_D_Ctrl(Menu):
 
                 col = pie.column(align=True)
                 col.scale_y = 1.3
+                col.scale_x = 1.5
                 draw_center_align(col, direction)
 
                 draw_distribution_x(pie, x)

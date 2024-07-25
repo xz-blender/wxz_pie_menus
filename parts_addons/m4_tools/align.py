@@ -3,7 +3,6 @@ import bpy
 from bpy.props import BoolProperty, EnumProperty
 from mathutils import Matrix, Vector, geometry
 
-from .items import *
 from .align_utils import *
 from .items import *
 
@@ -238,7 +237,7 @@ class CenterEditMesh(bpy.types.Operator):
         active = context.active_object
         mx = active.matrix_world if space == "LOCAL" else context.scene.cursor.matrix if space == "CURSOR" else Matrix()
 
-        mode = context.scene.M4.align_mode
+        mode = context.scene.M4_split.align_mode
 
         if mode == "VIEW":
             axis_right, axis_up, flip_right, flip_up = get_right_and_up_axes(context, mx=mx)

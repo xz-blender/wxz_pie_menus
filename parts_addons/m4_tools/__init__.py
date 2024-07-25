@@ -8,22 +8,20 @@ bl_info = {
     "category": "Interface",
 }
 
+from pathlib import Path
+
 import bpy
+
 from .align import AlignEditMesh, AlignObjectToEdge, AlignObjectToVert, CenterEditMesh, Straighten
-from .align_helper_op import AlignObject
 from .align_helper_npanel import ObjectAlignPanel
+from .align_helper_op import AlignObject
 from .align_helper_panel import PanelM4A1tools
 from .align_helper_uv import AlignUV
 from .focus_handler import delay_execution, manage_focus_HUD
-from .mirror import Mirror
 from .icons import icon
-
-from pathlib import Path
-
+from .mirror import Mirror
 
 classes = [
-    ObjectAlignPanel,
-    PanelM4A1tools,
     AlignUV,
     Mirror,
     AlignObject,
@@ -32,6 +30,8 @@ classes = [
     AlignObjectToVert,
     Straighten,
     AlignEditMesh,
+    ObjectAlignPanel,
+    PanelM4A1tools,
 ]
 class_register, class_unregister = bpy.utils.register_classes_factory(classes)
 
