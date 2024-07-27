@@ -31,7 +31,6 @@ class PIE_Change_Assets_library_Path(bpy.types.Operator):
         local_path = get_prefs().assets_library_path_local
 
         setting_lib = {
-            "Rig_Car": (str(Path(local_path) / "rig_cars"), "LINK"),
             "Poly Haven": (str(Path(local_path) / "Poly Haven"), "LINK"),
             "旧公司资产": (str(Path(local_path) / "company_old_lib"), "APPEND_REUSE"),
             "Simple Cloth": (str(Path(sync_path) / "Simply Basic Cloth Library"), "APPEND"),
@@ -84,11 +83,11 @@ def change_assets_library_path(app_lib_data, setting_lib):
             bpy.ops.preferences.asset_library_add(directory=data[0])
             asset_libraries[-1].name = name
 
-            version = bpy.app.version
-            if version[0] >= 3 and version[1] >= 5:
+            if bpy.app.version >= (3, 5, 0):
                 asset_libraries[-1].import_method = data[1]
+
         else:
-            asset_libraries[name].path = data[0]
+            asset_libraries.get(name).path = data[0]
 
     print('"WXZ_Pie_Menu"Changed Assets library')
 

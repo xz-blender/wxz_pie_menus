@@ -93,14 +93,16 @@ class PIE_MT_Bottom_A(Menu):
                     # 6 - RIGHT
                     pie.operator("mesh.select_more", text="扩展选择", icon="ADD")
                     # 2 - BOTTOM
-                    box = pie.split().box().column()
-                    row = box.row(align=True)
-                    row.scale_y = 1.5
+                    col = pie.split().box().column()
+                    col.scale_y = 1.2
+                    col.scale_x = 0.8
+                    row = col.row(align=True)
+                    # row.scale_y = 1.2
                     row.operator("mesh.edges_select_sharp", text="选择锐边")
                     row.separator(factor=0.5)
                     row.operator("mesh.edges_select_sharp", text="选择相连")
-                    row = box.row(align=True)
-                    row.scale_y = 1.5
+                    row = col.row(align=True)
+                    # row.scale_y = 1.2
                     row.operator("mesh.select_face_by_sides", text="边数选面")
                     row.separator(factor=0.5)
                     row.operator("mesh.select_axis", text="按轴选点")
@@ -112,27 +114,27 @@ class PIE_MT_Bottom_A(Menu):
                     pie.operator("mesh.select_next_item", text="下一个元素", icon="ADD")
                     # 1 - BOTTOM - LEFT
                     box = pie.split().box().column()
+                    col.scale_y = 1.2
+                    col.scale_x = 0.8
                     row = box.row(align=True)
-                    row.scale_y = 1.4
                     row.operator("mesh.loop_multi_select", text="循环边").ring = False
                     row.separator(factor=0.5)
                     row.operator("mesh.loop_multi_select", text="并排边").ring = True
                     row = box.row(align=True)
-                    row.scale_y = 1.4
                     row.operator("mesh.loop_to_region", text="选循环内侧")
                     row.separator(factor=0.5)
                     row.operator("mesh.region_to_loop", text="选区域轮廓")
                     # 3 - BOTTOM - RIGHT
                     box = pie.split().box().column()
+                    col.scale_y = 1.2
+                    col.scale_x = 0.8
                     row = box.row(align=True)
-                    row.scale_y = 1.4
+                    row.scale_y = 1.2
                     row.operator("mesh.faces_select_linked_flat", text="相连平展面")
-                    row.separator(factor=0.5)
                     row.operator("mesh.select_nth", text="间隔式弃选")
                     row = box.row(align=True)
-                    row.scale_y = 1.4
+                    row.scale_y = 1.2
                     row.operator("mesh.select_loose", text="选松散元素")
-                    row.separator(factor=0.5)
                     row.operator("mesh.select_non_manifold", text="选择非流形")
 
                 if ob_type in ["CURVE", "SURFACE"]:

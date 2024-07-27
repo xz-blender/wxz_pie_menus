@@ -20,3 +20,10 @@ align_direction_items = [
     ("HORIZONTAL", "Horizontal", ""),
     ("VERTICAL", "Vertical", ""),
 ]
+white = (1, 1, 1)
+yellow = (1, 0.9, 0.2)
+green = (0.25, 1, 0.25)
+red = (1, 0.25, 0.25)
+
+ctrl = ["LEFT_CTRL", "RIGHT_CTRL"]
+alt = ["LEFT_ALT", "RIGHT_ALT"]

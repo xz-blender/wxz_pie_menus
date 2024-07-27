@@ -38,7 +38,7 @@ class VIEW3D_PIE_MT_Bottom_C(Menu):
         if ob_type == "CAMERA" or region == "CAMERA":
             pie.prop(context.space_data, "lock_camera", text="锁定相机视图")
         else:
-            pie.separator()
+            pie.operator("pie.material_pincker")
         # 8 - TOP
         pie.operator("mesh.select_mode", text="边").type = "EDGE"
         # 7 - TOP - LEFT

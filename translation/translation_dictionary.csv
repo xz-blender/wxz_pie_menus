@@ -15,4 +15,6 @@
 "复制 约束(选择)","Copy Selected Constraints"
 "复制 修改器(选择)","Copy Selected Modifiers"
 "复制 自定义属性(选择)","Copy Selected Custom Properties"
-
+"垂直","Horizontal"
+"水平","Vertical"
+"分布","Distribution"

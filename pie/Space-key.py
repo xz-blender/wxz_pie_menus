@@ -40,7 +40,7 @@ class PIE_Space_KEY(Operator):
                 bpy.ops.wm.tool_set_by_index(index=1)
             elif bpy.context.space_data.ui_mode == "MASK":
                 bpy.ops.screen.animation_play()
-        elif context.area.ui_type == "NODE_EDITOR":
+        elif context.area.ui_type == "NODE":
             bpy.ops.wm.tool_set_by_id(name="builtin.select_box")
             # elif bpy.context.space_data.ui_mode == 'PAINT':
             #     bpy.ops.wm.tool_set_by_id(name="builtin_brush.Draw")

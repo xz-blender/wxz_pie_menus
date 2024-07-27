@@ -20,6 +20,7 @@ from .align_helper_uv import AlignUV
 from .focus_handler import delay_execution, manage_focus_HUD
 from .icons import icon
 from .mirror import Mirror
+from .material_pincker import PIE_MaterialPicker
 
 classes = [
     AlignUV,
@@ -32,6 +33,7 @@ classes = [
     AlignEditMesh,
     ObjectAlignPanel,
     PanelM4A1tools,
+    PIE_MaterialPicker,
 ]
 class_register, class_unregister = bpy.utils.register_classes_factory(classes)
 
