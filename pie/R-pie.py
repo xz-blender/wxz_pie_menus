@@ -58,15 +58,9 @@ class VIEW3D_PIE_MT_Bottom_R(Menu):
                 TR.y = False
                 TR.degree = -pi / 2
                 # 1 - BOTTOM - LEFT
-                TR = pie.operator(PIE_Transform_Rotate_XY.bl_idname, text="向左转")
-                TR.x = False
-                TR.y = True
-                TR.degree = pi / 2
+                TR = pie.operator("pie.ke_vp_step_rotate", text="向左转")
                 # 3 - BOTTOM - RIGHT
-                TR = pie.operator(PIE_Transform_Rotate_XY.bl_idname, text="向右转")
-                TR.x = False
-                TR.y = True
-                TR.degree = -pi / 2
+                TR = pie.operator("pie.ke_vp_step_rotate", text="向右转")
 
             elif ob_mode == "EDIT":
                 # 4 - LEFT
@@ -90,15 +84,9 @@ class VIEW3D_PIE_MT_Bottom_R(Menu):
                 TL.y = False
                 TL.degree = pi / 2
                 # 1 - BOTTOM - LEFT
-                TR = pie.operator(PIE_Transform_Rotate_XY.bl_idname, text="向左转")
-                TR.x = False
-                TR.y = True
-                TR.degree = pi / 2
+                TR = pie.operator("pie.ke_vp_step_rotate", text="向左转")
                 # 3 - BOTTOM - RIGHT
-                TR = pie.operator(PIE_Transform_Rotate_XY.bl_idname, text="向右转")
-                TR.x = False
-                TR.y = True
-                TR.degree = -pi / 2
+                TR = pie.operator("pie.ke_vp_step_rotate", text="向右转")
 
         elif ui == "UV":
             set_pie_ridius(context, 100)

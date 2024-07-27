@@ -104,6 +104,7 @@ def change_context_settings():
     cycles = scene.cycles
     render = scene.render
     v_sets = scene.view_settings
+    space = context.space_data
     # -------渲染设置-------
 
     render.engine = "CYCLES"
@@ -136,6 +137,9 @@ def change_context_settings():
     scene.cycles.transparent_max_bounces = 16
     scene.cycles.caustics_reflective = False
     scene.cycles.caustics_refractive = False
+
+    space.shading.shwow_cavity = True
+    space.shading.cavity_type = "BOTH"
 
     # -------3D View-------
     scene.transform_orientation_slots[0].type = "GLOBAL"  # 变换轴方向

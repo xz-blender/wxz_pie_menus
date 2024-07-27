@@ -1,4 +1,5 @@
 from pathlib import Path
+from collections import OrderedDict
 
 import bpy
 
@@ -30,7 +31,7 @@ class PIE_Change_Assets_library_Path(bpy.types.Operator):
         sync_path = get_prefs().assets_library_path_sync
         local_path = get_prefs().assets_library_path_local
 
-        setting_lib = {
+        custom_assets_setting_lib = {
             "Poly Haven": (str(Path(local_path) / "Poly Haven"), "LINK"),
             "旧公司资产": (str(Path(local_path) / "company_old_lib"), "APPEND_REUSE"),
             "Simple Cloth": (str(Path(sync_path) / "Simply Basic Cloth Library"), "APPEND"),
@@ -43,22 +44,18 @@ class PIE_Change_Assets_library_Path(bpy.types.Operator):
             "室内家具模型": (str(Path(local_path) / "室内家具模型"), "LINK"),
             "Geo-Scatter_library": (str(Path(local_path) / "Geo-Scatter_library"), "LINK"),
             "Trash_kit": (str(Path(local_path) / "Trash_kit"), "LINK"),
-            "kit_bash": (str(Path(local_path) / "kit_bash"), "LINK"),
-            "kit_building": (str(Path(local_path) / "kit_building"), "LINK"),
             "Tree Assets": (str(Path(local_path) / "Tree Assets"), "LINK"),
             "Motion Animate": (str(Path(local_path) / "Motion Animate"), "APPEND"),
-            "图案光阴影贴图": (str(Path(local_path) / "图案光阴影贴图"), "LINK"),
-            "其他": (str(Path(local_path) / "其他"), "LINK"),
             "GN_Tools": (str(Path(sync_path) / "GN_Tools"), "APPEND"),
-            "BMS-东京后街": (str(Path(local_path) / "BMS-东京后街"), "LINK"),
             "RealCloud": (str(Path(local_path) / "RealCloud"), "LINK"),
             "DeepTree": (str(Path(local_path) / "DeepTree"), "LINK"),
             "光影灯光": (str(Path(local_path) / "Gobos Light Textures"), "LINK"),
         }
+        custom_assets_setting_lib = OrderedDict(sorted(custom_assets_setting_lib.items()))
         app_lib_data = {}
         for lib in bpy.context.preferences.filepaths.asset_libraries:
             app_lib_data[lib.name] = lib.path
-        change_assets_library_path(app_lib_data, setting_lib)
+        change_assets_library_path(app_lib_data, custom_assets_setting_lib)
 
         # 设置默认 文件夹路径
         filepaths = context.preferences.filepaths
@@ -69,17 +66,17 @@ class PIE_Change_Assets_library_Path(bpy.types.Operator):
         return {"FINISHED"}
 
 
-def change_assets_library_path(app_lib_data, setting_lib):
+def change_assets_library_path(app_lib_data, custom_assets_setting_lib):
     # for name in app_lib_data:
     #     df_name = 'User Library'
     #     if name == df_name:
     #         bpy.ops.preferences.asset_library_remove(index = app_lib_data.index(df_name))
 
-    sort_setting_lib = dict(sorted(setting_lib.items(), key=lambda x: x[0]))
+    sort_setting_lib = dict(sorted(custom_assets_setting_lib.items(), key=lambda x: x[0]))
 
     for name, data in sort_setting_lib.items():
         asset_libraries = bpy.context.preferences.filepaths.asset_libraries
-        if name not in app_lib_data:
+        if name not in app_lib_data and data[0].exists():
             bpy.ops.preferences.asset_library_add(directory=data[0])
             asset_libraries[-1].name = name
 
