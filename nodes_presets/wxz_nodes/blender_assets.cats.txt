@@ -13,3 +13,4 @@ dd282ee2-fa0f-4803-a160-5bc2d62e815e:GN_Nodes/Edit:GN_Nodes-Edit
 8a6bc4ba-5bcc-4b43-82bd-5bd30e5af11d:GN_Nodes/Material:GN_Nodes-Material
 b225e8ba-5c29-40b7-b13e-376bea3a4a45:GN_Nodes/No Sign:GN_Nodes-No Sign
 2723d186-0657-49cd-a4a1-867705b51823:GN_Nodes/Preview:GN_Nodes-Preview
+d31c2fb1-ff04-4313-a3ec-39ac3b30bcc5:GN_Nodes/Read:GN_Nodes-Read

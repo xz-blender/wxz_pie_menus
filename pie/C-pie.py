@@ -1,4 +1,7 @@
 import os
+import tempfile
+from datetime import datetime
+from pathlib import Path
 
 import bpy
 from bpy.types import Menu, Operator
@@ -50,10 +53,86 @@ class VIEW3D_PIE_MT_Bottom_C(Menu):
         # 3 - BOTTOM - RIGHT
         if ob_type == "CAMERA":
             pie.operator("view3d.object_as_camera", text="激活选择相机")
+        else:
+            col = pie.split().column()
+            col.scale_y = 1.7
+            col.operator("pie.paste_clipboard_as_image_plane", icon="IMAGE_REFERENCE")
+            col.operator("pie.paste_clipboard_as_image_plane", icon="MESH_PLANE").is_ref = False
+
+
+class PIE_Paste_ClipBord_as_Image_Plane(bpy.types.Operator):
+    bl_idname = "pie.paste_clipboard_as_image_plane"
+    bl_label = "导入剪切板图像"
+    bl_description = "导入剪切板图像"
+    bl_options = {"REGISTER", "UNDO"}
+
+    is_ref: bpy.props.BoolProperty(default=True)  # type: ignore
+
+    @classmethod
+    def poll(cls, context):
+        return True
+
+    def execute(self, context):
+        try:
+
+            from PIL import Image, ImageGrab
+        except ImportError:
+            self.report({"ERROR"}, "pyperclip或pillow库未安装，请在偏好设置安装库。")
+            return {"CANCELLED"}
+
+        try:
+            image_path = None
+            file_paths = None
+            temp_dir = tempfile.gettempdir()
+            image = ImageGrab.grabclipboard()
+            if isinstance(image, Image.Image):
+                # 保存图像到临时文件夹并返回路径
+                current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
+                image_name = f"clipboard_image_{current_time}.png"
+                image_path = os.path.join(temp_dir, image_name)
+                image.save(image_path)
+                print(f"Image saved to: {image_path}")
+            elif isinstance(image, list):
+                # 如果剪贴板包含文件，则打印其绝对路径
+                file_paths = [os.path.abspath(file) for file in image]
+                for file_path in file_paths:
+                    print(f"File path: {file_path}")
+            else:
+                self.report({"ERROR"}, "剪贴板不包含图像或文件")
+                return {"CANCELLED"}
+        except Exception as e:
+            self.report({"ERROR"}, f"访问剪贴板时出错:{e}")
+            return {"CANCELLED"}
+
+        def add_plane(file_path, image_name, dir):
+            bpy.ops.image.import_as_mesh_planes(
+                relative=False, filepath=file_path, files=[{"name": image_name, "name": image_name}], directory=dir
+            )
+
+        def add_ref(file_path):
+            bpy.ops.object.empty_image_add(filepath=file_path, align="VIEW")
+
+        if self.is_ref:
+            if image_path:
+                add_ref(image_path)
+            elif file_paths:
+                for file_path in file_paths:
+                    add_ref(file_path)
+        else:
+            if image_path:
+                add_plane(image_path, image_name, temp_dir)
+            elif file_paths:
+                for file_path in file_paths:
+                    dir = str(Path(file_path).parent)
+                    image_name = Path(file_path).name
+                    add_plane(file_path, image_name, dir)
+
+        return {"FINISHED"}
 
 
 classes = [
     VIEW3D_PIE_MT_Bottom_C,
+    PIE_Paste_ClipBord_as_Image_Plane,
 ]
 
 addon_keymaps = []
@@ -61,6 +140,9 @@ addon_keymaps = []
 
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
+
+    km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
+    kmi = km.keymap_items.new("pie.paste_clipboard_as_image_plane", "R", "PRESS", ctrl=True, shift=True)
 
     km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
     kmi = km.keymap_items.new("wm.call_menu_pie", "C", "CLICK_DRAG")

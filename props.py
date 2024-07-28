@@ -39,8 +39,8 @@ class_register, class_unregister = bpy.utils.register_classes_factory(classes)
 
 def register():
     class_register()
-    if "bpy" in locals():
-        importlib.reload(M4_split_SceneProperties)
+    # if "bpy" in locals():
+    #     importlib.reload(M4_split_SceneProperties)
 
     bpy.types.Scene.M4_split = bpy.props.PointerProperty(type=M4_split_SceneProperties)
 

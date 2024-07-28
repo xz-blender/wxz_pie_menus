@@ -1,0 +1,32 @@
+{
+  "Base Mesh": [
+    "GN_UV curve_Sphere",
+    "GN_底部柱体",
+    "GN_底部球体",
+    "GN_底部立方体"
+  ],
+  "Edit": [
+    "GN_AutoSmooth",
+    "GN_BB_Offset",
+    "GN_Curve_deform",
+    "GN_Offset_Multiple"
+  ],
+  "Generate": [
+    "GN_boxmap",
+    "GN_Splines Patch",
+    "GN_Tubes",
+    "GN_UV_Unwrap",
+    "GN_绳缠绕"
+  ],
+  "Material": [
+    "GN_随机指定材质"
+  ],
+  "Preview": [
+    "GN_3D_Viewer",
+    "GN_ndex_Viewer",
+    "GN_Vector_Viewer"
+  ],
+  "Read": [
+    "GN_String Selection"
+  ]
+}
