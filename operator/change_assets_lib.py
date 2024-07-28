@@ -76,7 +76,7 @@ def change_assets_library_path(app_lib_data, custom_assets_setting_lib):
 
     for name, data in sort_setting_lib.items():
         asset_libraries = bpy.context.preferences.filepaths.asset_libraries
-        if name not in app_lib_data and data[0].exists():
+        if name not in app_lib_data:
             bpy.ops.preferences.asset_library_add(directory=data[0])
             asset_libraries[-1].name = name
 
