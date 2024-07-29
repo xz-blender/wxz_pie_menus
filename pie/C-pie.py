@@ -141,8 +141,8 @@ addon_keymaps = []
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
 
-    km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
-    kmi = km.keymap_items.new("pie.paste_clipboard_as_image_plane", "R", "PRESS", ctrl=True, shift=True)
+    # km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
+    # kmi = km.keymap_items.new("pie.paste_clipboard_as_image_plane", "R", "PRESS", ctrl=True, shift=True)
 
     km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
     kmi = km.keymap_items.new("wm.call_menu_pie", "C", "CLICK_DRAG")
