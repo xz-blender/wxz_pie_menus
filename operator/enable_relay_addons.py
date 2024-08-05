@@ -6,6 +6,7 @@ import addon_utils
 import bpy
 from bpy.types import Operator
 
+from ..download import download_zip
 from ..utils import get_local_path, get_sync_path
 from .extensions_setting import *
 
@@ -54,13 +55,24 @@ def change_addon_key_value(change_dir):
 
 def enable_addons(self, context, bl_ext_dict, remote_name=None):
     if bpy.app.version >= (4, 2, 0):
-        if remote_name != None:
+        if remote_name == "extensions.blender.org":
+            rep_directory = context.preferences.extensions.repos[remote_name].directory + "/"
+            # print("-----------", rep_directory)
+            # print(xz_url)
+            for addon_name in blender_org_extensions.keys():
+                try:
+                    download_zip(remote_name + "/" + f"{addon_name}.zip", rep_directory)
+                except:
+                    print("----", addon_name, " 插件下载失败")
+
+        if remote_name in context.preferences.extensions.repos.keys():
             context.preferences.extensions.repos[remote_name].enabled = True
             # bpy.ops.extensions.repo_sync_all()
             bpy.ops.preferences.addon_refresh()
             prefix = "bl_ext." + remote_name.split(".", 1)[1].replace(".", "_") + "."
         else:
             prefix = ""
+
         for addon_name, addon_change in bl_ext_dict.items():
             addon_name = prefix + addon_name
             if addon_name in get_addon_list():
@@ -76,11 +88,7 @@ def enable_addons(self, context, bl_ext_dict, remote_name=None):
                         setattr(context.preferences.addons[addon_name].preferences, pref_change[0], pref_change[1])
                 if addon_change[1]:
                     change_addon_key_value(addon_change[1])
-            # else:
-            #     try:
-            #         bpy.ops.extensions.package_install(repo_index=0, pkg_id=addon_name)
-            #     except:
-            #         print(addon_name, "插件下载失败")
+
         self.report({"INFO"}, "已开启预设插件")
 
 

@@ -43,6 +43,8 @@ blender_org_extensions = {
     "import_autocad_dxf_format_dxf": [[], []],
     "export_autocad_dxf_format_dxf": [[], []],
     "synchronize_workspaces": [[], []],
+    "NodePie": [[], []],
+    "improved_node_search": [[], []],
 }
 addons_officials_list = {
     ####第三方####
