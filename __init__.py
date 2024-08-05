@@ -60,7 +60,7 @@ if app_path not in sys.path:
     # print("Adding site to path")
     sys.path.append(app_path)
 
-MODULES_FOLDER = Path(bpy.utils.user_resource("SCRIPTS")) / "modules"
+MODULES_FOLDER = Path(bpy.utils.system_resource("SCRIPTS")) / "modules"
 
 if bpy.app.version < (2, 91, 0):
     python_bin = bpy.app.binary_path_python
