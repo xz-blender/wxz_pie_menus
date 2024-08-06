@@ -12,4 +12,5 @@
     ],
     "python.formatting.provider": "black",
     "CodeGPT.apiKey": "CodeGPT Plus Beta",
+    "commentTranslate.hover.enabled": true,
 }
