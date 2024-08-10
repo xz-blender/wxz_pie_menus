@@ -66,7 +66,7 @@ if bpy.app.version < (2, 91, 0):
     python_bin = bpy.app.binary_path_python
 else:
     python_bin = sys.executable
-                                        
+
 
 TEXT_OUTPUT = []
 ERROR_OUTPUT = []
@@ -371,6 +371,9 @@ class WXZ_PIE_Preferences(AddonPreferences):
     show_formula2nodes_submenu: BoolProperty(name="表达式转节点")  # type: ignore
     debug_prints: bpy.props.BoolProperty(name="调试输出", description="在终端中启用调试打印", default=False)  # type: ignore
     generate_previews: bpy.props.BoolProperty(name="生成逻辑预览树", description="在创建节点树之前生成节点树的预览", default=True)  # type: ignore
+    from .parts_addons.formula_to_nodes import VariableSortMode
+
+    sort_vars: bpy.props.EnumProperty(items=VariableSortMode, name="变量排序模式", description="对变量进行排序的顺序", default="INSERTION")  # type: ignore
     ## MeshMachine
     show_meshmachine_submenu: BoolProperty(name="MeshMachine-剥离版")  # type: ignore
     modal_hud_color: FloatVectorProperty(name="显示字体颜色", subtype="COLOR", default=[1, 1, 1], size=3, min=0, max=1)  # type: ignore
@@ -535,6 +538,10 @@ class WXZ_PIE_Preferences(AddonPreferences):
             row = box.row(align=True)
             row.prop(self, "debug_prints")
             row.prop(self, "generate_previews")
+            row = box.row()
+            row.label(text="变量排序依据...")
+            row.prop(self, "sort_vars", expand=True)
+
         ##################
         col = layout.box().column()
         col.scale_y = 1.1

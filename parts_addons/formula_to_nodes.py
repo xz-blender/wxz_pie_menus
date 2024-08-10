@@ -1,23 +1,17 @@
-bl_info = {
-    "name": "node_quick_maths",
-    "author": "Erin MacDonald",
-    "version": (1, 1, 9),
-    "blender": (4, 2, 0),
-    "description": "A fast way to make long math chains in node editors",
-    "category": "Node",
-}
+from __future__ import annotations
+
 import ast
+import difflib
+import math
 from abc import abstractmethod
 from dataclasses import dataclass
+from functools import lru_cache
 from typing import ClassVar, Generic, Literal, NoReturn, Self, TypeAlias, TypeVar, Union
 
 import bpy
 from bpy.types import Context, Event, UILayout
 
 from ..utils import get_prefs
-
-# from __future__ import annotations
-
 
 T = TypeVar("T", covariant=True)
 E = TypeVar("E", covariant=True)
@@ -36,7 +30,7 @@ class Ok(Generic[T]):
         return self._value
 
     def unwrap_err(self) -> NoReturn:
-        raise Exception("Unwrapped an err on an Ok value")
+        raise Exception("在正确的值上无法求解")
 
 
 class Err(Generic[E]):
@@ -49,7 +43,7 @@ class Err(Generic[E]):
         return True
 
     def unwrap(self) -> NoReturn:
-        raise Exception("Unwrapped on an Err value")
+        raise Exception("在错误的值上无法求解")
 
     def unwrap_err(self) -> E:
         return self._value
@@ -85,11 +79,14 @@ BAD_MATH_AST_NODES = (
 SHADER_MATH_CALLS = {  # Function inputs in python, names Blender
     # -------
     # Functions
-    # ADD, SUBTRACT, MULTIPLY, DIVIDE, POWER have dedicated operators
+    # ADD, SUBTRACT, MULTIPLY, DIVIDE have dedicated operators
+    # MULTIPLY_ADD: Special case (a * b + c) or (a + b * c),
+    # POWER has a dedicated operator
     "log": ((1, 2), "LOGARITHM"),  # (x[, base])
     "sqrt": ((1,), "SQRT"),  # (x)
+    # INVERSE_SQRT: Special case ( 1 / sqrt(x) )
     "abs": ((1,), "ABSOLUTE"),  # (x)
-    "exp": ((1,), "EXPONENT"),  # (x)
+    "exp": ((1,), "EXPONENT"),  # (x) or (e ** x)
     # -------
     # Comparison
     "min": ((2,), "MINIMUM"),  # (x, y)
@@ -139,6 +136,7 @@ PRINTABLE_SHADER_MATH_CALLS = {
         "**  乘方",
         "log(x[, base])  对数",
         "sqrt(x)  平方根",
+        "1 / sqrt(x)  反平方根",
         "abs(x)  绝对值",
         "exp(x)  指数",
     ),
@@ -180,23 +178,39 @@ PRINTABLE_SHADER_MATH_CALLS = {
 }
 
 
-SHADER_NODE_BASIC_OPS = {
-    ast.Add: "ADD",
-    ast.Sub: "SUBTRACT",
-    ast.Mult: "MULTIPLY",
-    ast.Div: "DIVIDE",
-    ast.Mod: "MODULO",
-    ast.Pow: "POWER",
+VARIABLE_NAME = str
+
+ASSUMABLE_CONSTANTS = {
+    "pi": math.pi,
+    "e": math.e,
+    "tau": math.tau,
 }
 
 
-VARIABLE_NAME = str
+InputSocketType = [
+    ("VALUE", "值", "使用值连接变量。"),
+    ("REROUTE", "转接点", "使用转接点连接变量。"),
+    ("GROUP", "节点组", "使用节点组打包创建。"),
+]
+
+VariableSortMode = [
+    ("NONE", "无", "变量是伪随机排序的"),
+    ("ALPHABET", "字母表", "变量按字母顺序排序"),
+    (
+        "INSERTION",
+        "插入",
+        "变量根据它们在链中添加的时间进行排序",
+    ),
+]
 
 
-@dataclass
+@dataclass(frozen=True)
 class Operation:
     name: str
-    inputs: "list[int | float | str | Operation]"
+    """ 操作的名称，如bpy API中所述. """
+
+    inputs: "tuple[_Input, ...]"
+    """ 合成期间将连接的输入"""
 
     @classmethod
     @abstractmethod
@@ -210,20 +224,31 @@ class Operation:
 
     @classmethod
     @abstractmethod
-    def parse(cls, e: ast.expr) -> int | float | str | Self:
+    def parse(cls, e: ast.expr, order_by_complexity: bool) -> int | float | str | Self:
         raise NotImplementedError
 
-    def to_tree(self):
-        return Tree(variables=list(self.variables()), root=self)
+    def to_tree(self, sort_mode="NONE"):
+        return Tree(variables=self.variables(sort_mode), root=self)
 
-    def variables(self) -> set[VARIABLE_NAME]:
+    def variables(self, sort_mode="NONE") -> list[VARIABLE_NAME]:
+        if sort_mode == "INSERTION":
+            v: list[VARIABLE_NAME] = []
+            for input in self.inputs:
+                if isinstance(input, Operation):
+                    v.extend(var for var in input.variables(sort_mode) if var not in v)
+                elif isinstance(input, VARIABLE_NAME):
+                    v.append(input)
+            return v
+
         vars: set[VARIABLE_NAME] = set()
         for input in self.inputs:
             if isinstance(input, Operation):
-                vars.update(input.variables())
+                vars.update(input.variables(sort_mode))
             elif isinstance(input, VARIABLE_NAME):
                 vars.add(input)
-        return vars
+        if sort_mode == "ALPHABET":
+            return sorted(vars)
+        return list(vars)
 
     @abstractmethod
     def create_node(self, nt: bpy.types.NodeTree) -> bpy.types.Node:
@@ -282,6 +307,33 @@ class Operation:
         return parent, layers, oinputs
 
 
+_Input = int | float | str | Operation
+
+
+@lru_cache(maxsize=64)
+def ipt_complexity(inpt: _Input):
+    """
+    Calculates the complexity of an Operation input,
+    Complexity being defined as the number of sub-operations that are required to compute this operation, plus itself.
+    """
+    if isinstance(inpt, Operation):
+        return sum(ipt_complexity(arg) for arg in inpt.inputs) + 1
+    else:
+        return 0
+
+
+SHADER_NODE_BASIC_OPS: dict[type[ast.operator], str] = {
+    # Add is covered
+    ast.Sub: "SUBTRACT",
+    # Mult is covered
+    # Div is covered
+    ast.Mod: "MODULO",
+    # Pow is covered
+    # Floordiv is covered
+    # MatMult, LShift, RShift, BitOr, BitXor, BitAnd will not be implemented
+}
+
+
 class ShaderMathOperation(Operation):
     def create_node(self, nt: bpy.types.NodeTree) -> bpy.types.Node:
         node = nt.nodes.new("ShaderNodeMath")
@@ -303,7 +355,7 @@ class ShaderMathOperation(Operation):
     ) -> Result[tuple, str]:
         # check if node is bad
         if any(isinstance(node, bad_node) for bad_node in bad_nodes):
-            return Err(f"Do not use node of type: {type(node)} ")
+            return Err(f"无法识别节点的表达式: {type(node)} ")
 
         # check if node is a constant and it is a disallowed type
         if isinstance(node, ast.Constant):
@@ -313,14 +365,21 @@ class ShaderMathOperation(Operation):
 
         # check if node is a call and it has an allowed function name
         if isinstance(node, ast.Call):
-            name: ast.Name = node.func
+            if not isinstance(node.func, ast.Name):
+                return Err("函数只能按规定名称调用")
+            name = node.func
             allowed_nums = functions.get(name.id)
             if allowed_nums is None:
-                Err(f"无法识别的函数名: '{name.id}'")
+                errmsg = f"无法识别函数名: '{name.id}'"
+
+                if matches := difflib.get_close_matches(name.id, list(functions)):
+                    return Err(f"{errmsg}\n你是说其中一个?\n{', '.join(matches)}")
+                return Err(errmsg)
+
             # check if the number of arguments align with the number of arguments in the GOOD_CALLS
             elif all(len(node.args) != x for x in allowed_nums[0]):
                 return Err(
-                    f"Function {name.id} is allowed, but\nthe number of arguments is wrong\n({len(node.args)} is not in {allowed_nums[0]})"
+                    f"函数 {name.id} 是被允许的, 但是\n参数的数值是错误的\n({len(node.args)} 不在其中 {allowed_nums[0]})"
                 )
 
         return Ok(())
@@ -349,48 +408,94 @@ class ShaderMathOperation(Operation):
         return Ok(())
 
     @classmethod
-    def parse(cls, e: ast.expr) -> int | float | str | Self:
+    def parse(cls, e: ast.expr, order_by_complexity: bool) -> int | float | str | Self:
+        def maybe_sort(args: tuple[_Input, ...]):
+            """Helper method."""
+            if order_by_complexity:
+                return tuple(sorted(args, key=ipt_complexity, reverse=True))
+            return args
+
+        def parse(e):
+            """Parses the expression, carrying over settings."""
+            return cls.parse(e, order_by_complexity)
+
         if isinstance(e, ast.BinOp):
             op = e.op
 
             if type(op) in SHADER_NODE_BASIC_OPS:
-                # check for Multiply Add
-                if isinstance(op, ast.Add):
-                    if isinstance(e.left, ast.BinOp) and isinstance(e.left.op, ast.Mult):
-                        return cls(
-                            name="MULTIPLY_ADD",
-                            inputs=[
-                                cls.parse(e.left.left),
-                                cls.parse(e.left.right),
-                                cls.parse(e.right),
-                            ],
-                        )
-                    elif isinstance(e.right, ast.BinOp) and isinstance(e.right.op, ast.Mult):
-                        return cls(
-                            name="MULTIPLY_ADD",
-                            inputs=[
-                                cls.parse(e.right.left),
-                                cls.parse(e.right.right),
-                                cls.parse(e.left),
-                            ],
-                        )
                 return cls(
                     name=SHADER_NODE_BASIC_OPS[type(op)],
-                    inputs=[cls.parse(e.left), cls.parse(e.right)],
+                    inputs=(
+                        parse(e.left),
+                        parse(e.right),
+                    ),
                 )
-            elif isinstance(op, ast.FloorDiv):
+
+            if isinstance(op, ast.Add):
+                # check for Multiply Add
+                if isinstance(e.left, ast.BinOp) and isinstance(e.left.op, ast.Mult):
+                    return cls(
+                        name="MULTIPLY_ADD",
+                        inputs=(
+                            *maybe_sort((parse(e.left.left), parse(e.left.right))),
+                            parse(e.right),
+                        ),
+                    )
+                if isinstance(e.right, ast.BinOp) and isinstance(e.right.op, ast.Mult):
+                    return cls(
+                        name="MULTIPLY_ADD",
+                        inputs=(
+                            *maybe_sort((parse(e.right.left), parse(e.right.right))),
+                            parse(e.left),
+                        ),
+                    )
+
+                return cls(name="ADD", inputs=maybe_sort((parse(e.left), parse(e.right))))
+
+            if isinstance(op, ast.Mult):
+                return cls(name="MULTIPLY", inputs=maybe_sort((parse(e.left), parse(e.right))))
+
+            if isinstance(op, ast.Div):
+                # check for Inverse Square Root
+                if (
+                    isinstance(e.left, ast.Constant)
+                    and e.left.value == 1
+                    and isinstance(e.right, ast.Call)
+                    and e.right.func.id == "sqrt"
+                ):
+                    return cls(
+                        name="INVERSE_SQRT",
+                        inputs=(parse(e.right.args[0]),),
+                    )
+                return cls(
+                    name="DIVIDE",
+                    inputs=(parse(e.left), parse(e.right)),
+                )
+
+            # check for Exponent(
+            if isinstance(op, ast.Pow):
+                if isinstance(op, ast.Pow) and isinstance(e.left, ast.Name) and e.left.id == "e":
+                    return cls(
+                        name="EXPONENT",
+                        inputs=(parse(e.right),),
+                    )
+                return cls(
+                    name="POWER",
+                    inputs=(parse(e.left), parse(e.right)),
+                )
+
+            if isinstance(op, ast.FloorDiv):
                 return cls(
                     name="FLOOR",
-                    inputs=[
+                    inputs=(
                         cls(
                             name="DIVIDE",
-                            inputs=[cls.parse(e.left), cls.parse(e.right)],
+                            inputs=(parse(e.left), parse(e.right)),
                         ),
-                        0,
-                    ],
+                    ),
                 )
-            else:
-                raise NotImplementedError(f"Unhandled operation {op}")
+
+            raise NotImplementedError(f"Unhandled operation {op}")
 
         if isinstance(e, ast.UnaryOp) and isinstance(e.op, ast.USub):
             if isinstance(e.operand, ast.Constant):
@@ -398,36 +503,62 @@ class ShaderMathOperation(Operation):
             else:
                 return cls(
                     name="MULTIPLY",
-                    inputs=[cls.parse(e.operand), -1],
+                    inputs=(parse(e.operand), -1),
                 )
 
         if isinstance(e, ast.Compare):
             if isinstance(e.ops[0], (ast.Gt, ast.GtE)):
-                return cls(
-                    name="GREATER_THAN",
-                    inputs=[cls.parse(e.left), cls.parse(e.comparators[0])],
+                # check if the comparison can be flipped to simplify
+                inputs = (
+                    parse(e.left),
+                    parse(e.comparators[0]),
                 )
+                if inputs == (ms := maybe_sort(inputs)):
+                    name = "GREATER_THAN"
+                else:
+                    name = "LESS_THAN"
+                    inputs = ms
+
+                return cls(
+                    name=name,
+                    inputs=inputs,
+                )
+
             elif isinstance(e.ops[0], (ast.Lt, ast.LtE)):
-                return cls(
-                    name="LESS_THAN",
-                    inputs=[cls.parse(e.left), cls.parse(e.comparators[0])],
+                # check if the comparison can be flipped to simplify
+                inputs = (
+                    parse(e.left),
+                    parse(e.comparators[0]),
                 )
+                if inputs == (ms := maybe_sort(inputs)):
+                    name = "LESS_THAN"
+                else:
+                    name = "GREATER_THAN"
+                    inputs = ms
+
+                return cls(
+                    name=name,
+                    inputs=inputs,
+                )
+
             elif isinstance(e.ops[0], ast.Eq):  # Opinion
                 return cls(
                     name="COMPARE",
-                    inputs=[
-                        cls.parse(e.left),
-                        cls.parse(e.comparators[0]),
+                    inputs=(
+                        *maybe_sort((parse(e.left), parse(e.comparators[0]))),
                         0.5,
-                    ],
+                    ),
                 )
 
         if isinstance(e, ast.Call):
             inputs = []
             for arg in e.args:
-                inputs.append(cls.parse(arg))
+                inputs.append(parse(arg))
 
-            return cls(name=SHADER_MATH_CALLS[e.func.id][1], inputs=inputs)
+            return cls(
+                name=SHADER_MATH_CALLS[e.func.id][1],
+                inputs=tuple(inputs),
+            )
 
         if isinstance(e, ast.Constant):
             return e.value
@@ -436,9 +567,9 @@ class ShaderMathOperation(Operation):
             return e.id
 
         if isinstance(e, ast.Expr):
-            return cls.parse(e.value)
+            return parse(e.value)
 
-        raise NotImplementedError(f"未处理的表达式 {ast.dump(e, indent=4)}")
+        raise NotImplementedError(f"Unhandled expression {ast.dump(e, indent=4)}")
 
 
 class CompositorMathOperation(ShaderMathOperation):
@@ -468,13 +599,6 @@ def _new_reroute(nt: bpy.types.NodeTree, name: str):
     return node
 
 
-InputSocketType = [
-    ("VALUE", "值", "使用值连接变量。"),
-    ("REROUTE", "转接点", "使用转接点连接变量。"),
-    ("GROUP", "节点组", "使用节点组打包创建。"),
-]
-
-
 @dataclass
 class ComposeNodes:
     socket_type: str = "VALUE"
@@ -490,15 +614,15 @@ class ComposeNodes:
         for input in root.inputs:
             input_row = child_col.box().row()
             if isinstance(input, Operation):
-                # gengenerate_previewr the child operation
+                # generates preview for the child operation
                 self.preview_generate(input, input_row)
             elif not self.hide_nodes:
                 input_row.label(text=str(input))
 
-        # # create a row for the current node's name
-        # root_row = row.column(align=True)
-        layout.label(text=root.name)
-        ...
+        # create a label for the current node's name
+        namecol = layout.column()
+        namecol.label(text=root.name)
+        namecol.separator(type="LINE")
 
     def run(
         self,
@@ -541,12 +665,12 @@ class ComposeNodes:
         max_height = max(layer_heights)
 
         # loop through every layer in the subtrees, move them to the correct location
-        for l_idx, (layer, layer_heights) in enumerate(zip(layers, layer_heights)):
+        for l_idx, (layer, height) in enumerate(zip(layers, layer_heights)):
             # offset the layer by user-defined rules
             if self.center_nodes:
                 layer_offset = (
                     offset[0],
-                    offset[1] - ((max_height / 2) - (layer_heights / 2)),
+                    offset[1] - ((max_height / 2) - (height / 2)),
                 )
             else:
                 layer_offset = offset
@@ -580,38 +704,42 @@ class ComposeNodes:
         if self.socket_type == "GROUP":
             group = bpy.data.node_groups.new(ast.unparse(source), self.tree_type)
 
+            interface: bpy.types.NodeTreeInterface = group.interface
+
+            node, sublayers, inputs = tree.root.generate(group)
+
+            sublayers.insert(0, [node])
+
+            # create the input sockets
+            group_input = group.nodes.new("NodeGroupInput")
+            sublayers.append([group_input])
+
+            # create the output socket
+            group_output = group.nodes.new("NodeGroupOutput")
+            interface.new_socket(name="Output", in_out="OUTPUT", socket_type="NodeSocketFloat")
+            group.links.new(node.outputs[0], group_output.inputs[0])
+            sublayers.insert(0, [group_output])
+
+            # add the variables to the interface
+            sockets = {}
+            for variable in tree.variables:
+                socket = interface.new_socket(name=variable, in_out="INPUT", socket_type="NodeSocketFloat")
+                if variable in ASSUMABLE_CONSTANTS:
+                    socket.default_value = ASSUMABLE_CONSTANTS[variable]
+                sockets[variable] = group_input.outputs[variable]
+
             # add group to node tree
             node = nt.nodes.new(self.group_type)
             node.location = group_offset
             node.node_tree = group
 
             nt = group
-            interface = nt.interface
-
-        node, sublayers, inputs = tree.root.generate(
-            nt=nt,
-        )
-
-        sublayers.insert(0, [node])
-
-        if self.socket_type == "GROUP":
-            # create the input sockets
-            group_input = nt.nodes.new("NodeGroupInput")
-            sublayers.append([group_input])
-
-            # create the output socket
-            group_output = nt.nodes.new("NodeGroupOutput")
-            interface.new_socket(name="Output", in_out="OUTPUT", socket_type="NodeSocketFloat")
-            nt.links.new(node.outputs[0], group_output.inputs[0])
-            sublayers.insert(0, [group_output])
-
-            # add the variables to the interface
-            sockets = {}
-            for variable in tree.variables:
-                interface.new_socket(name=variable, in_out="INPUT", socket_type="NodeSocketFloat")
-                sockets[variable] = group_input.outputs[variable]
 
         else:
+            node, sublayers, inputs = tree.root.generate(nt)
+
+            sublayers.insert(0, [node])
+
             # Create the variables nodes
             sockets = {}
             layer = []
@@ -640,6 +768,8 @@ class ComposeShaderMathNodes(ComposeNodes):
         node = nt.nodes.new("ShaderNodeValue")
         if name:
             node.label = name
+            if name in ASSUMABLE_CONSTANTS:
+                node.outputs[0].default_value = ASSUMABLE_CONSTANTS[name]
         return node
 
 
@@ -657,6 +787,8 @@ class ComposeCompositorMathNodes(ComposeNodes):
         node = nt.nodes.new("CompositorNodeValue")
         if name:
             node.label = name
+            if name in ASSUMABLE_CONSTANTS:
+                node.outputs[0].default_value = ASSUMABLE_CONSTANTS[name]
         return node
 
 
@@ -667,25 +799,33 @@ class ComposeTextureMathNodes(ComposeNodes):
 
 class ComposeNodeTree(bpy.types.Operator):
     bl_idname = "node.formula_to_nodes"
-    bl_label = "表达式公式转换为节点："
+    bl_label = "表达式公式转换为节点"
 
     show_available_functions: bpy.props.BoolProperty(
         name="展示表达式规则",
         default=True,
-    )  # type: ignore
+    )
     hide_nodes: bpy.props.BoolProperty(
         name="折叠节点",
-        description="隐藏节点以保留网格空间。",
-    )  # type: ignore
+        description="隐藏节点以保留网格空间",
+    )
     center_nodes: bpy.props.BoolProperty(
         name="节点居中",
-        description="使生成的节点居中。这是个人喜好。",
-    )  # type: ignore
+        description="使生成的节点居中。这是个人喜好",
+    )
 
-    editor_type: bpy.props.StringProperty(name="编辑器类型")  # type: ignore
-    expression: bpy.props.StringProperty(name="公式表达式", description="节点的源表达式。")  # type: ignore
-    input_socket_type: bpy.props.EnumProperty(items=InputSocketType, default="REROUTE")  # type: ignore
+    order_operations_by_complexity: bpy.props.BoolProperty(
+        name="按复杂性排序操作",
+        default=False,
+        description="A按复杂性排序操作",
+    )
+
+    editor_type: bpy.props.StringProperty(name="编辑器类型")
+    expression: bpy.props.StringProperty(name="公式表达式", description="节点的源表达式")
+    input_socket_type: bpy.props.EnumProperty(items=InputSocketType, default="REROUTE")
+
     generate_previews: bool
+    var_sort_mode: str
 
     def invoke(self, context: Context, event: Event) -> set[str]:
         wm = context.window_manager
@@ -695,8 +835,8 @@ class ComposeNodeTree(bpy.types.Operator):
             print(f"NQM: Editor type: {self.editor_type}")
 
         self.generate_previews = get_prefs().generate_previews
+        self.var_sort_mode = get_prefs().sort_vars
 
-        # return wm.invoke_props_dialog(self, confirm_text="Create", width=800)
         return wm.invoke_props_dialog(self, width=800)
 
     def current_operation_type(
@@ -730,21 +870,21 @@ class ComposeNodeTree(bpy.types.Operator):
             return Err("无法解析表达式")
 
         try:
-            parsed = op.parse(expr)
+            parsed = op.parse(expr, self.order_operations_by_complexity)
         except Exception as e:
             return Err(str(e))
         if not isinstance(parsed, Operation):
             return Err("解析的表达式含有无法识别的操作符")
 
-        return Ok((expr, parsed.to_tree()))
+        return Ok((expr, parsed.to_tree(sort_mode=self.var_sort_mode)))
 
     def execute(self, context: Context):
         # Create nodes from tree
         try:
             bpy.ops.node.select_all(action="DESELECT")
         except:
-            self.report({("ERROR", "请先创建节点树")})
-            pass
+            self.report({"INFO"}, "没有节点组!")
+            return {"CANCELLED"}
         tree = self.generate_tree(self.expression)
         o = self.current_operation_type()
         if tree.is_err() or o is None:
@@ -765,9 +905,11 @@ class ComposeNodeTree(bpy.types.Operator):
         layout = self.layout
 
         o = self.current_operation_type()
+
         if o is None:
             layout.label(text="当前不支持此节点编辑器!")
             return
+
         opt, comp = o
 
         layout.prop(self, "expression")
@@ -775,13 +917,17 @@ class ComposeNodeTree(bpy.types.Operator):
         options_box = layout.box()
         options = options_box.column(align=True)
 
-        options.prop(self, "input_socket_type", expand=True)
-        options.prop(self, "hide_nodes")
-        options.prop(
+        options.row().prop(self, "input_socket_type", expand=True)
+        options = options.row()
+        col1 = options.column(align=True)
+        col1.prop(self, "hide_nodes")
+        col1.prop(
             self,
             "center_nodes",
         )
-        options.prop(self, "show_available_functions")
+        col2 = options.column(align=True)
+        col2.prop(self, "order_operations_by_complexity")
+        col2.prop(self, "show_available_functions")
 
         if self.show_available_functions:
             functions_box = layout.column()
@@ -800,6 +946,9 @@ class ComposeNodeTree(bpy.types.Operator):
             r = self.generate_tree(txt)
             if r.is_err():  # print the error
                 msg = r.unwrap_err()
+
+                if get_prefs().debug_prints:
+                    print(msg)
 
                 b = layout.box()
                 err_col = b.column()
@@ -821,17 +970,37 @@ class ComposeNodeTree(bpy.types.Operator):
 #     bl_idname = __package__
 
 #     debug_prints: bpy.props.BoolProperty(
-#         name="Debug prints",
-#         description="Enables debug prints in the terminal.",
+#         name="打印调试信息",
+#         description="在终端中启用调试打印",
 #         default=False,
+#     )
+
+#     generate_previews: bpy.props.BoolProperty(
+#         name="生成简易预览",
+#         description="在创建节点组之前生成节点树的预览",
+#         default=False,
+#     )
+
+#     sort_vars: bpy.props.EnumProperty(
+#         items=VariableSortMode,
+#         name="变量排序模式",
+#         description="对变量进行排序的顺序",
+#         default="INSERTION",
 #     )
 
 #     def draw(self, context):
 #         layout = self.layout
 
 #         row = layout.column(align=True)
-#         row.label(text="Check the Keymaps settings to edit activation. Default is Ctrl + M")
+#         row.label(
+#             text="检查键映射设置以编辑激活。默认为Ctrl + M"
+#         )
 #         row.prop(self, "debug_prints")
+#         row.prop(self, "generate_previews")
+
+#         r = row.row()
+#         r.label(text="变量排序依据...")
+#         r.prop(self, "sort_vars", expand=True)
 
 
 addon_keymaps = []
@@ -854,17 +1023,20 @@ def registerKeymaps():
 
 
 def unregisterKeymaps():
-    for km, kmi in addon_keymaps:
-        km.keymap_items.remove(kmi)
+    # for km, kmi in addon_keymaps:
+    #     km.keymap_items.remove(kmi)
     addon_keymaps.clear()
+
+
+classes = (
+    ComposeNodeTree,
+    # Preferences,
+)
 
 
 def draw_header_menu_button(self, context):
     layout = self.layout
     layout.operator("node.formula_to_nodes", text="表达式转节点")
-
-
-classes = (ComposeNodeTree,)
 
 
 def register():
@@ -877,7 +1049,7 @@ def register():
 
 
 def unregister():
-    # unregisterKeymaps()
+    unregisterKeymaps()
     from bpy.utils import unregister_class
 
     for cls in reversed(classes):
