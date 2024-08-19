@@ -6,6 +6,9 @@
 
 VERSION 1
 
+f85fefaf-f5db-4665-9e0b-d7aab34895b7:CN_Nodes:CN_Nodes
+1d3754cf-d04c-4860-a61b-8bc3a54bdbe3:CN_Nodes/Filter:CN_Nodes-Filter
+17af7d8f-df9c-4847-b6f4-a3d4dccc5e23:CN_Nodes/Vector Math Nodes:CN_Nodes-Vector Math Nodes
 02fa00ac-7419-479f-acbd-567086b5476b:GN_Nodes:GN_Nodes
 64d04fdd-130f-48d7-92ef-2bfdd2ef2df5:GN_Nodes/Base Mesh:GN_Nodes-Base Mesh
 dd282ee2-fa0f-4803-a160-5bc2d62e815e:GN_Nodes/Edit:GN_Nodes-Edit
@@ -14,3 +17,5 @@ dd282ee2-fa0f-4803-a160-5bc2d62e815e:GN_Nodes/Edit:GN_Nodes-Edit
 b225e8ba-5c29-40b7-b13e-376bea3a4a45:GN_Nodes/No Sign:GN_Nodes-No Sign
 2723d186-0657-49cd-a4a1-867705b51823:GN_Nodes/Preview:GN_Nodes-Preview
 d31c2fb1-ff04-4313-a3ec-39ac3b30bcc5:GN_Nodes/Read:GN_Nodes-Read
+5e25096d-0694-4870-86f7-7bab14ac4af5:SN_Nodes:SN_Nodes
+c9afd1cc-5310-4523-bd9a-551a071da9e2:SN_Nodes/Material:SN_Nodes-Material

@@ -1,5 +1,7 @@
 import os
 
+import bgl
+import blf
 import bmesh
 import bpy
 from bpy.types import Menu, Operator, Panel, PropertyGroup
@@ -87,17 +89,60 @@ class PIE_Shift_E_KEY(Operator):
     bl_description = "在不同网格选择模式下设置不同的折痕"
     bl_options = {"REGISTER", "UNDO"}
 
+    first_mouse_x: bpy.props.IntProperty()  # type: ignore
+    first_value: bpy.props.FloatProperty()  # type: ignore
+    v: bpy.props.FloatProperty(min=0, max=1)  # type: ignore
+
     @classmethod
     def poll(cls, context):
         return context.active_object is not None and context.mode == "EDIT_MESH"
 
-    def execute(self, context):
-        active_ob_data = context.active_object.data
-        for edge in active_ob_data.edges:
-            if edge.select == True:
-                edge.crease = 1
+    def set_value(self, ac_data, attr, value):
+        bpy.ops.object.mode_set(mode="OBJECT")
+        for idx, e in enumerate(ac_data.edges):
+            if e.select:
+                if attr[idx].value == 0:
+                    self.v = e.value
+                else:
+                    self.v = 0
+                attr.data[idx].value = value
+        bpy.ops.object.mode_set(mode="EDIT")
 
-        return {"FINISHED"}
+    def modal(self, context, event):
+        if event.type == "MOUSEMOVE":
+            delta = self.first_mouse_x - event.mouse_x
+            self.v = self.first_value + delta * 0.01
+        elif event.type == "MIDDLEMOUSE":
+            return {"PASS_THROUGH"}
+        elif event.type == "LEFTMOUSE":
+            return {"FINISHED"}
+        elif event.type in {"RIGHTMOUSE", "ESC"}:
+            return {"CANCELLED"}
+        context.area.tag_redraw()
+        return {"RUNNING_MODAL"}
+
+    def invoke(self, context, event):
+
+        if context.object:
+            self.first_mouse_x = event.mouse_x
+            ac_obj = bpy.context.active_object
+            ac_data = ac_obj.data
+            ac_attr = ac_data.attributes
+
+            bw_name = "bevel_weight_edge"
+            v = self.v
+            if bw_name not in ac_attr:
+                attr = ac_attr.new(bw_name, "FLOAT", "EDGE")
+                self.set_value(ac_data, attr, v)
+            else:
+                attr = ac_attr[bw_name]
+                self.set_value(ac_data, attr, v)
+
+            context.window_manager.modal_handler_add(self)
+
+            return {"RUNNING_MODAL"}
+        else:
+            return {"CANCELLED"}
 
 
 class PIE_Ctrl_Shift_E_KEY(Operator):

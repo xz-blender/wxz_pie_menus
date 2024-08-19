@@ -1,0 +1,24 @@
+{
+  "Filter": [
+    "Effects - UC"
+  ],
+  "Vector Math Nodes": [
+    "Map Range SmootherStep",
+    "Map Range SmoothStep",
+    "Vector Cross Product",
+    "Vector Distance",
+    "Vector Dot Product",
+    "Vector Entrywise Add",
+    "Vector Entrywise Divide",
+    "Vector Entrywise Multiply",
+    "Vector Entrywise Power",
+    "Vector Entrywise Subtract",
+    "Vector FaceForward",
+    "Vector Length",
+    "Vector Normalize",
+    "Vector Project",
+    "Vector Reflect",
+    "Vector Refract",
+    "Vector Scale"
+  ]
+}
