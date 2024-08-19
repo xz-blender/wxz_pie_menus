@@ -4,7 +4,7 @@ import bgl
 import blf
 import bmesh
 import bpy
-from bpy.types import Menu, Operator, Panel, PropertyGroup
+from bpy.types import Context, Menu, Operator, Panel, PropertyGroup
 
 from .utils import *
 
@@ -90,80 +90,113 @@ class PIE_Shift_E_KEY(Operator):
     bl_options = {"REGISTER", "UNDO"}
 
     first_mouse_x: bpy.props.IntProperty()  # type: ignore
-    first_value: bpy.props.FloatProperty()  # type: ignore
-    v: bpy.props.FloatProperty(min=0, max=1)  # type: ignore
+    set_value: bpy.props.FloatProperty(min=0, max=1)  # type: ignore
+    attr_name: bpy.props.StringProperty()  # type: ignore
+
+    attr_name_item = {
+        "bevel_weight_edge": "边 - 倒角权重",
+        "bevel_weight_vert": "顶点 - 倒角权重",
+        "crease_vert": "顶点 - 折痕",
+        "crease_edge": "边 - 折痕",
+    }
 
     @classmethod
     def poll(cls, context):
         return context.active_object is not None and context.mode == "EDIT_MESH"
 
-    def set_value(self, ac_data, attr, value):
-        bpy.ops.object.mode_set(mode="OBJECT")
-        for idx, e in enumerate(ac_data.edges):
-            if e.select:
-                if attr[idx].value == 0:
-                    self.v = e.value
-                else:
-                    self.v = 0
-                attr.data[idx].value = value
-        bpy.ops.object.mode_set(mode="EDIT")
+    def get_suffix_name(self, context):
+        mode = context.tool_settings.mesh_select_mode
+        if mode[0]:
+            return "_vert"
+        elif mode[1]:
+            return "_edge"
+        elif mode[3]:
+            return "_edge"
+
+    def get_mode_name(self, context):
+        mode = context.tool_settings.mesh_select_mode
+        if mode[0]:
+            return "POINT"
+        elif mode[1]:
+            return "EDGE"
+        elif mode[3]:
+            return "EDGE"
+
+    def get_mode_string(self, context):
+        mode = context.tool_settings.mesh_select_mode
+        if mode[0]:
+            return "vertices"
+        elif mode[1]:
+            return "edges"
+        elif mode[3]:
+            return "edges"
 
     def modal(self, context, event):
+
+        bpy.ops.object.mode_set(mode="OBJECT")
         if event.type == "MOUSEMOVE":
-            delta = self.first_mouse_x - event.mouse_x
-            self.v = self.first_value + delta * 0.01
+            delta = event.mouse_x - self.first_mouse_x
+            self.set_value = delta * 0.005
+
+            ac_data = bpy.context.object.data
+            ac_attr = ac_data.attributes
+            attr_name = self.attr_name + self.get_suffix_name(context)
+
+            if attr_name not in ac_attr:
+                attr = ac_attr.new(attr_name, "FLOAT", self.get_mode_name(context))
+                for idx, e in enumerate(getattr(ac_data, self.get_mode_string(context))):
+                    if e.select:
+                        attr.data[idx].value = self.set_value
+            else:
+                attr = ac_data.attributes[attr_name]
+                for idx, e in enumerate(getattr(ac_data, self.get_mode_string(context))):
+                    if e.select:
+                        attr.data[idx].value = self.set_value
+
         elif event.type == "MIDDLEMOUSE":
             return {"PASS_THROUGH"}
         elif event.type == "LEFTMOUSE":
+            bpy.ops.object.mode_set(mode="EDIT")
+            context.area.tag_redraw()
+            bpy.types.SpaceView3D.draw_handler_remove(self._handle, "WINDOW")
             return {"FINISHED"}
         elif event.type in {"RIGHTMOUSE", "ESC"}:
+            context.area.tag_redraw()
+            bpy.types.SpaceView3D.draw_handler_remove(self._handle, "WINDOW")
+            bpy.ops.object.mode_set(mode="EDIT")
             return {"CANCELLED"}
-        context.area.tag_redraw()
+        bpy.ops.object.mode_set(mode="EDIT")
         return {"RUNNING_MODAL"}
 
     def invoke(self, context, event):
 
         if context.object:
             self.first_mouse_x = event.mouse_x
-            ac_obj = bpy.context.active_object
-            ac_data = ac_obj.data
-            ac_attr = ac_data.attributes
-
-            bw_name = "bevel_weight_edge"
-            v = self.v
-            if bw_name not in ac_attr:
-                attr = ac_attr.new(bw_name, "FLOAT", "EDGE")
-                self.set_value(ac_data, attr, v)
-            else:
-                attr = ac_attr[bw_name]
-                self.set_value(ac_data, attr, v)
-
             context.window_manager.modal_handler_add(self)
 
+            self._handle = bpy.types.SpaceView3D.draw_handler_add(
+                self.draw_callback, (context,), "WINDOW", "POST_PIXEL"
+            )
+            context.area.tag_redraw()
             return {"RUNNING_MODAL"}
         else:
             return {"CANCELLED"}
 
+    def draw_callback(self, context):
+        region = context.region
+        mid_x = region.width / 2 - 200
+        mid_y = region.height * 0.1
 
-class PIE_Ctrl_Shift_E_KEY(Operator):
-    bl_idname = "pie.ctrl_shift_e"
-    bl_label = "设置权重"
-    bl_description = "在不同网格选择模式下设置不同的权重"
-    bl_options = {"REGISTER", "UNDO"}
-
-    @classmethod
-    def poll(cls, context):
-        return context.active_object is not None and context.mode == "EDIT_MESH"
-
-    def execute(self, context):
-
-        return {"FINISHED"}
+        font_id = 0
+        blf.position(font_id, mid_x, mid_y, 0)
+        blf.size(font_id, 50)
+        blf.color(font_id, 1.0, 1.0, 1.0, 1.0)
+        blf.draw(font_id, f"{self.attr_name_item[self.attr_name+self.get_suffix_name(context)]} : {self.set_value:.2f}")
 
 
 classes = [
     VIEW3D_PIE_MT_Bottom_E,
     PIE_Shift_E_KEY,
-    PIE_Ctrl_Shift_E_KEY,
 ]
 
 addon_keymaps = []
@@ -179,10 +212,12 @@ def register_keymaps():
 
     km = addon.keymaps.new(name="Mesh")
     kmi = km.keymap_items.new("pie.shift_e", "E", "PRESS", shift=True)
+    kmi.properties.attr_name = "crease"
     addon_keymaps.append(km)
 
     km = addon.keymaps.new(name="Mesh")
-    kmi = km.keymap_items.new("pie.ctrl_shift_e", "E", "PRESS", ctrl=True, shift=True)
+    kmi = km.keymap_items.new("pie.shift_e", "E", "PRESS", ctrl=True, shift=True)
+    kmi.properties.attr_name = "bevel_weight"
     addon_keymaps.append(km)
 
 
