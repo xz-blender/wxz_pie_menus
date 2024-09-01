@@ -56,7 +56,10 @@ class VIEW3D_PIE_MT_Bottom_E(Menu):
             # 2 - BOTTOM
             pie.operator("mesh.normals_make_consistent")
             # 8 - TOP
-            pie.operator("mesh.extrude_manifold", text="挤出流形")
+            col = pie.split().box().column(align=True)
+            col.scale_y = 1.4
+            col.operator("mesh.extrude_manifold", text="挤出流形")
+            col.operator("pie.punchit", text="负向流形")
             # 7 - TOP - LEFT
             pie.operator("mesh.bridge_edge_loops", text="桥接循环边")
             # 9 - TOP - RIGHT

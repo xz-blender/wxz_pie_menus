@@ -392,6 +392,12 @@ class WXZ_PIE_Preferences(AddonPreferences):
     focus_view_transition: BoolProperty(name="视口补间", default=True)  # type: ignore
     focus_lights: BoolProperty(name="忽略灯光（使它们始终可见）", default=False)  # type: ignore
     ah_show_text: BoolProperty(name="Show Button Text", default=True)  # type: ignore
+    ## punch it
+    show_punchit: BoolProperty(name="挤出流形插件")  # type: ignore
+    push_default: IntProperty(name="推-默认值", description="将挤压扩大解决精度问题", default=1, min=0)  # type: ignore
+    pull_default: IntProperty(name="拉-默认值", description="拉动最初选择的面并后退一点,解决精度问题", default=1, min=0)  # type: ignore
+    non_manifold_extrude: BoolProperty(name="支持非流形网格", description="允许在非流形网格上进行拉伸", default=False)  # type: ignore
+    modal_hud_timeout: FloatProperty(name="HUD 超时", description="HUD元素的持续时间", default=1, min=0.1, max=10)  # type: ignore
 
     def draw(self, context):
         layout = self.layout
@@ -586,6 +592,20 @@ class WXZ_PIE_Preferences(AddonPreferences):
             col = box.column(align=True)
             row = col.row()
             row.prop(self, "tby_bsr_multiplier_resize_factor")
+        ####################
+        col = layout.box().column()
+        col.scale_y = 1.1
+        col.use_property_split = False
+        col.prop(self, "show_punchit", icon="TRIA_RIGHT" if self.show_punchit else "TRIA_DOWN")
+        if self.show_punchit:
+            box = col.box()
+            col = box.column(align=True)
+            row = col.row()
+            row.prop(self, "push_default")
+            row.prop(self, "pull_default")
+            row = col.row()
+            row.prop(self, "non_manifold_extrude")
+            row.prop(self, "modal_hud_timeout")
 
 
 for mod in all_modules:
