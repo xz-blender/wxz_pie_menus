@@ -1,9 +1,9 @@
 import bpy
 from bpy.types import Panel
 
-from .icons.icon import get_icon
 from .align_helper_op import AlignObject
 from .align_helper_utils import screen_relevant_direction_3d_axis
+from .icons.icon import get_icon
 
 AXIS = ("X", "Y", "Z")
 
@@ -143,11 +143,11 @@ def draw_left(layout, context):
 
 class ObjectAlignPanel(Panel):
     bl_idname = "ALIGN_PT_Panel"
-    bl_label = "POPOTI Align Helper"
+    bl_label = "对齐工具"
 
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
-    bl_category = "Tool"
+    bl_category = "XZ"
 
     def draw(self, context):
         layout = self.layout
