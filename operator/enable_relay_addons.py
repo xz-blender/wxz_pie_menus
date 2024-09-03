@@ -64,6 +64,18 @@ def enable_addons(self, context, bl_ext_dict, remote_name=None):
                     download_zip(remote_name + "/" + f"{addon_name}.zip", rep_directory)
                 except:
                     print("----", addon_name, " 插件下载失败")
+        # 检查 rep_directory 下的 xz_ex_check.txt 文件内的存储版本号，如果不匹配则重新下载
+        if Path(rep_directory + "xz_ex_check.txt").exists():
+            with open(rep_directory + "xz_ex_check.txt", "r") as f:
+                local_version = f.read()
+            if local_version != blender_org_extensions["xz_ex_check"]:
+                print("----", "插件版本号不匹配，正在重新下载")
+                for addon_name in blender_org_extensions.keys():
+                    try:
+                        download_zip(remote_name + "/" + f"{addon_name}.zip", rep_directory)
+                    except:
+                        print("----", addon_name, " 插件下载失败")
+
         repos_keys = context.preferences.extensions.repos.keys()
         if remote_name in repos_keys:
             context.preferences.extensions.repos[remote_name].enabled = True
