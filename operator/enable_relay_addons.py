@@ -64,8 +64,8 @@ def enable_addons(self, context, bl_ext_dict, remote_name=None):
                     download_zip(remote_name + "/" + f"{addon_name}.zip", rep_directory)
                 except:
                     print("----", addon_name, " 插件下载失败")
-
-        if remote_name in context.preferences.extensions.repos.keys():
+        repos_keys = context.preferences.extensions.repos.keys()
+        if remote_name in repos_keys:
             context.preferences.extensions.repos[remote_name].enabled = True
             # bpy.ops.extensions.repo_sync_all()
             bpy.ops.preferences.addon_refresh()
@@ -73,23 +73,24 @@ def enable_addons(self, context, bl_ext_dict, remote_name=None):
         else:
             prefix = ""
 
-        for addon_name, addon_change in bl_ext_dict.items():
-            addon_name = prefix + addon_name
-            if addon_name in get_addon_list():
-                if addon_utils.check(addon_name)[0] == False:
-                    #  # check addon is enabled
-                    try:
-                        bpy.ops.preferences.addon_enable(module=addon_name)
-                        print(addon_name, "插件已经打开")
-                    except:
-                        print(addon_name, "插件加载错误")
-                if addon_change[0]:
-                    for pref_change in addon_change[0]:
-                        setattr(context.preferences.addons[addon_name].preferences, pref_change[0], pref_change[1])
-                if addon_change[1]:
-                    change_addon_key_value(addon_change[1])
+        if bl_ext_dict:
+            for addon_name, addon_change in bl_ext_dict.items():
+                addon_name = prefix + addon_name
+                if addon_name in get_addon_list():
+                    if addon_utils.check(addon_name)[0] == False:
+                        #  # check addon is enabled
+                        try:
+                            bpy.ops.preferences.addon_enable(module=addon_name)
+                            print(addon_name, "插件已经打开")
+                        except:
+                            print(addon_name, "插件加载错误")
+                    if addon_change[0]:
+                        for pref_change in addon_change[0]:
+                            setattr(context.preferences.addons[addon_name].preferences, pref_change[0], pref_change[1])
+                    if addon_change[1]:
+                        change_addon_key_value(addon_change[1])
 
-        self.report({"INFO"}, "已开启预设插件")
+            self.report({"INFO"}, "已开启预设插件")
 
 
 class Enable_Pie_Menu_Relay_Addons(Operator):
@@ -113,6 +114,7 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
     def execute(self, context):
         try:
             enable_addons(self, context, blender_org_extensions, "extensions.blender.org")
+            # enable_addons(self, context, None, "extensions.blender.org")
             enable_addons(self, context, system_extensions)
         except:
             pass
