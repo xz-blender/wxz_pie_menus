@@ -31,6 +31,17 @@ for name, path in import_export_relay_default_addons.items():
         print("%s插件启用失败,请手动开启!" % (name))
 
 
+class PIE_Click_Deep_Clean_Purge(bpy.types.Operator):
+    bl_idname = "pie.one_purge_orphaned_data"
+    bl_label = "清理未使用"
+    bl_description = "清理未使用的数据"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        bpy.ops.outliner.orphans_purge(do_recursive=True)
+        return {"FINISHED"}
+
+
 class VIEW3D_PIE_MT_Bottom_S_ctrl_Files(Menu):
     bl_label = submoduname
 
@@ -83,7 +94,7 @@ class VIEW3D_PIE_MT_Bottom_S_ctrl_Files(Menu):
         row.operator("wm.append", text="追加数据", icon="APPEND_BLEND")
 
         # 1 - BOTTOM - LEFT
-        pie.operator("outliner.orphans_purge", text="清理未使用", icon="ORPHAN_DATA").do_recursive = True
+        pie.operator("pie.one_purge_orphaned_data", text="清理未使用(不提示)", icon="ORPHAN_DATA")
 
         # 3 - BOTTOM - RIGHT
         # pie.operator('rf.callpanel', text='打开附近文件', icon='FILE_TICK')
@@ -161,6 +172,7 @@ classes = [
     VIEW3D_PIE_MT_Bottom_S_ctrl_Files,
     PIE_MT_S_Ctrl_import,
     PIE_MT_S_Ctrl_export,
+    PIE_Click_Deep_Clean_Purge,
 ]
 
 addon_keymaps = []

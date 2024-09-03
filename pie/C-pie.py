@@ -56,7 +56,9 @@ class VIEW3D_PIE_MT_Bottom_C(Menu):
         else:
             col = pie.split().column()
             col.scale_y = 1.7
-            col.operator("pie.paste_clipboard_as_image_plane", text="剪切板 - 参考图", icon="IMAGE_REFERENCE")
+            col.operator(
+                "pie.paste_clipboard_as_image_plane", text="剪切板 - 参考图", icon="IMAGE_REFERENCE"
+            ).is_ref = True
             col.operator("pie.paste_clipboard_as_image_plane", text="剪切板 - 平面", icon="MESH_PLANE").is_ref = False
 
 
