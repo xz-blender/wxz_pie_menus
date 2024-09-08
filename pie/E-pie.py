@@ -4,6 +4,7 @@ import bgl
 import blf
 import bmesh
 import bpy
+import numpy as np
 from bpy.types import Context, Menu, Operator, Panel, PropertyGroup
 
 from .utils import *
@@ -111,31 +112,26 @@ class PIE_Shift_E_KEY(Operator):
         mode = context.tool_settings.mesh_select_mode
         if mode[0]:
             return "_vert"
-        elif mode[1]:
-            return "_edge"
-        elif mode[3]:
+        elif mode[1] or mode[2]:
             return "_edge"
 
     def get_mode_name(self, context):
         mode = context.tool_settings.mesh_select_mode
         if mode[0]:
             return "POINT"
-        elif mode[1]:
-            return "EDGE"
-        elif mode[3]:
+        elif mode[1] or mode[2]:
             return "EDGE"
 
     def get_mode_string(self, context):
         mode = context.tool_settings.mesh_select_mode
         if mode[0]:
             return "vertices"
-        elif mode[1]:
-            return "edges"
-        elif mode[3]:
+        elif mode[1] or mode[2]:
             return "edges"
 
     def modal(self, context, event):
-
+        """Old Operator - Bad Performance"""
+        """
         bpy.ops.object.mode_set(mode="OBJECT")
         if event.type == "MOUSEMOVE":
             delta = event.mouse_x - self.first_mouse_x
@@ -170,9 +166,44 @@ class PIE_Shift_E_KEY(Operator):
             return {"CANCELLED"}
         bpy.ops.object.mode_set(mode="EDIT")
         return {"RUNNING_MODAL"}
+        """
+        if event.type == "MOUSEMOVE":
+            delta = event.mouse_x - self.first_mouse_x
+            self.set_value = delta * 0.005
+
+            ac_data = bpy.context.object.data
+            ac_attr = ac_data.attributes
+            attr_name = self.attr_name + self.get_suffix_name(context)
+
+            bpy.ops.object.mode_set(mode="OBJECT")
+
+            if attr_name not in ac_attr:
+                attr = ac_attr.new(attr_name, "FLOAT", self.get_mode_name(context))
+            else:
+                attr = ac_attr[attr_name]
+
+            elements = np.array([e.select for e in getattr(ac_data, self.get_mode_string(context))])
+            selected_indices = np.where(elements)[0]
+
+            for idx in selected_indices:
+                attr.data[idx].value = self.set_value
+
+            bpy.ops.object.mode_set(mode="EDIT")
+
+        elif event.type == "MIDDLEMOUSE":
+            return {"PASS_THROUGH"}
+        elif event.type == "LEFTMOUSE":
+            context.area.tag_redraw()
+            bpy.types.SpaceView3D.draw_handler_remove(self._handle, "WINDOW")
+            return {"FINISHED"}
+        elif event.type in {"RIGHTMOUSE", "ESC"}:
+            context.area.tag_redraw()
+            bpy.types.SpaceView3D.draw_handler_remove(self._handle, "WINDOW")
+            return {"CANCELLED"}
+
+        return {"RUNNING_MODAL"}
 
     def invoke(self, context, event):
-
         if context.object:
             self.first_mouse_x = event.mouse_x
             context.window_manager.modal_handler_add(self)
