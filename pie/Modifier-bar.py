@@ -1,6 +1,7 @@
 import bpy
 from bpy.types import Context, Event, Menu, Operator
 
+from ..utils import get_prefs
 from .utils import set_pie_ridius
 
 submoduname = __name__.split(".")[-1]
@@ -297,42 +298,64 @@ class Bar_Quick_Decimate(Operator):
         return {"FINISHED"}
 
 
-# # Menus #
-# def menu(self, context):
-#     col = self.layout.column(align=True)
-#     col.alignment = "CENTER"
-#     col.scale_y = 0.9
-#     row = col.row(align=True)
+class PIE_Modifier_Profiling_Panel(bpy.types.Panel):
+    """ """
 
-#     split = row.split(factor=0.2)
+    bl_label = "修改器-耗时统计"
+    bl_idname = "SCENE_PT_modifier_profiling_PIE"
+    bl_space_type = "PROPERTIES"
+    bl_region_type = "WINDOW"
+    bl_context = "modifier"
+    bl_options = {"DEFAULT_CLOSED", "HIDE_HEADER"}
 
-#     split_1 = split.operator("object.modifier_add", icon="MOD_TRIANGULATE", text="三角化").type = "TRIANGULATE"
-#     # ------
-#     split_2 = split.row()
+    def draw(self, context):
+        if get_prefs().modifier_profiling:
+            draw_modifier_times(self, context)
 
-#     L1 = split_2.operator(Bar_Quick_Decimate.bl_idname, text="0.1")
-#     L1.de_type = "COLLAPSE"
-#     L1.ratio = 0.1
 
-#     L2 = split_2.operator(Bar_Quick_Decimate.bl_idname, text="0.2")
-#     L2.de_type = "COLLAPSE"
-#     L2.ratio = 0.2
+def time_to_string(t):
+    """Formats time in seconds to the nearest sensible unit."""
+    units = {3600.0: "h", 60.0: "m", 1.0: "s", 0.001: "ms"}
+    for factor in units.keys():
+        if t >= factor:
+            return f"{t/factor:.3g} {units[factor]}"
+    if t >= 1e-4:
+        return f"{t/factor:.3g} {units[factor]}"
+    else:
+        return f"<0.1 ms"
 
-#     L3 = split_2.operator(Bar_Quick_Decimate.bl_idname, text="0.3")
-#     L3.de_type = "COLLAPSE"
-#     L3.ratio = 0.3
 
-#     L4 = split_2.operator(Bar_Quick_Decimate.bl_idname, text="0.4")
-#     L4.de_type = "COLLAPSE"
-#     L4.ratio = 0.4
+def draw_modifier_times(self, context):
+    depsgraph = context.view_layer.depsgraph
 
-#     L5 = split_2.operator(Bar_Quick_Decimate.bl_idname, text="0.5")
-#     L5.de_type = "COLLAPSE"
-#     L5.ratio = 0.5
+    ob = context.object
+    ob_eval = ob.evaluated_get(depsgraph)
 
-#     L0 = split_2.operator(Bar_Quick_Decimate.bl_idname, text="反细分")
-#     L0.de_type = "UNSUBDIV"
-#     L0.iterations = 2
+    box = self.layout.box()
+    times = []
+    total = 0
+    for mod_eval in ob_eval.modifiers:
+        t = mod_eval.execution_time
+        times += [t]
+        total += t
+
+    col_fl = box.column_flow(columns=2)
+    col = col_fl.column(align=True)
+    for mod_eval in ob_eval.modifiers:
+        row = col.row()
+        row.enabled = mod_eval.show_viewport
+        row.label(text=f"{mod_eval.name}:")
+
+    col = col_fl.column(align=True)
+    for i, t in enumerate(times):
+        row = col.row()
+        row.enabled = ob_eval.modifiers[i].show_viewport
+        row.alert = t >= 0.8 * max(times)
+        row.label(text=time_to_string(t))
+
+    row = box.column_flow()
+    row.column().label(text=f"总计:")
+    row.column().label(text=time_to_string(sum(times)))
 
 
 # Modifier Bar
@@ -402,6 +425,7 @@ classes = [
     Bar_Quick_Decimate,
     Bar_Add_New_Modifier,
     PIE_PT_Bar_AddCustomModifier,
+    PIE_Modifier_Profiling_Panel,
 ]
 
 

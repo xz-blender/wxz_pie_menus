@@ -367,6 +367,8 @@ class WXZ_PIE_Preferences(AddonPreferences):
         default="PILLOW",
     )  # type: ignore
     # 其他插件设置
+    show_other_module_prop: BoolProperty(name="实用小工具设置")  # type: ignore
+    modifier_profiling: BoolProperty(name="修改器-耗时统计面板", default=False)  # type: ignore
     ## formula to nodes
     show_formula2nodes_submenu: BoolProperty(name="表达式转节点")  # type: ignore
     debug_prints: bpy.props.BoolProperty(name="调试输出", description="在终端中启用调试打印", default=False)  # type: ignore
@@ -532,6 +534,18 @@ class WXZ_PIE_Preferences(AddonPreferences):
         layout.label(text="其他插件设置")
         layout = self.layout.column(align=False)
 
+        ##################
+        col = layout.box().column()
+        col.scale_y = 1.1
+        col.use_property_split = False
+        col.prop(self, "show_other_module_prop", icon="TRIA_RIGHT" if self.show_meshmachine_submenu else "TRIA_DOWN")
+        if self.show_other_module_prop:
+            box = col.box()
+            col = box.column(align=True)
+            row = col.row()
+            row.prop(self, "modifier_profiling")
+
+        ##################
         col = layout.box().column()
         col.scale_y = 1.1
         col.use_property_split = False
@@ -556,7 +570,6 @@ class WXZ_PIE_Preferences(AddonPreferences):
         if self.show_meshmachine_submenu:
             box = col.box()
             col = box.column(align=True)
-            col.label(text="MeshMachine-剥离版设置")
             row = col.row()
             row.prop(self, "modal_hud_color")
             row.prop(self, "modal_hud_scale")
@@ -588,7 +601,6 @@ class WXZ_PIE_Preferences(AddonPreferences):
         )
         if self.show_asset_browser_scroll:
             box = col.box()
-            box.label(text="Properties:")
             col = box.column(align=True)
             row = col.row()
             row.prop(self, "tby_bsr_multiplier_resize_factor")

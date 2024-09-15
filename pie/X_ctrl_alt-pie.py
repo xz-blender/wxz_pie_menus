@@ -149,6 +149,41 @@ class PIE_Origin_TO_Bottom_No_Apply(Operator):
         return {"FINISHED"}
 
 
+def get_collection(name):
+    if not [c.name for c in bpy.data.collections if bpy.context.scene.user_of_id(c) and name in c.name]:
+        col = bpy.data.collections.new(name)
+        # col = bpy.data.collections[name]
+        bpy.context.scene.collection.children.link(col)
+        return col.name
+    return [c.name for c in bpy.data.collections if bpy.context.scene.user_of_id(c) and name in c.name][0]
+
+
+def duplicate_object(obj, col=None):
+    new_obj = None
+    to_copy = bpy.data.objects[obj.name]
+    if not col:
+        col = bpy.context.view_layer.active_layer_collection.collection
+    else:
+        col = get_collection(col)
+        col = bpy.data.collections[col]
+    new_obj = to_copy.copy()
+    if new_obj.data is not None:
+        new_obj.data = to_copy.data.copy()
+    new_obj.animation_data_clear()
+    if col:
+        col.objects.link(new_obj)
+    return new_obj
+
+
+def delete_object_with_data(obj):
+    if obj and obj.name in bpy.data.objects:
+        data = obj.data
+        isMesh = obj.type == "MESH"
+        bpy.data.objects.remove(obj, do_unlink=True)
+        if isMesh:
+            bpy.data.meshes.remove(data)
+
+
 # 原点到底部-应用变换
 class PIE_Origin_TO_Bottom_Apply_Object(Operator):
     bl_idname = "pie.origin_to_bottom_apply_object"
@@ -157,26 +192,37 @@ class PIE_Origin_TO_Bottom_Apply_Object(Operator):
 
     @classmethod
     def poll(cls, context):
-        obj = context.active_object
-        return obj is not None and obj.type == "MESH"
+        return context.selected_objects
 
     def execute(self, context):
-        bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
-        bpy.ops.object.origin_set(type="ORIGIN_GEOMETRY")
-        o = context.active_object
-        init = 0
-        for x in o.data.vertices:
-            if init == 0:
-                a = x.co.z
-                init = 1
-            elif x.co.z < a:
-                a = x.co.z
+        active = context.active_object
+        for obj in context.selected_objects:
+            dup = duplicate_object(obj)
+            mw = dup.matrix_world.copy()
+            dup.parent = None
+            dup.matrix_world = mw
+            # bbverts =
+            lowest_pt = min([(dup.matrix_world @ Vector(corner)).z for corner in dup.bound_box])
 
-        for x in o.data.vertices:
-            x.co.z -= a
-
-        o.location.z += a
-
+            cursorLocBackUp = bpy.context.scene.cursor.location.copy()
+            bpy.context.scene.cursor.location = (dup.location[0], dup.location[1], lowest_pt)
+            delete_object_with_data(dup)
+            override = context.copy()
+            override.update(
+                {
+                    "selected_objects": [
+                        obj,
+                    ],
+                    "acitve_object": obj,
+                    "object": obj,
+                    "selected_editable_objects": [
+                        obj,
+                    ],
+                }
+            )
+            with bpy.context.temp_override(**override):
+                bpy.ops.object.origin_set(type="ORIGIN_CURSOR")
+            bpy.context.scene.cursor.location = cursorLocBackUp
         return {"FINISHED"}
 
 
