@@ -64,6 +64,9 @@ def change_preferences_settings():
     view.smooth_view = 0  # 平滑视图 0
 
     # 系统
+    system = pref.system
+    system.max_shader_compilation_subprocesses = 8
+
     if sys.platform == "win32":
         pref.addons["cycles"].preferences.compute_device_type = "OPTIX"  # 设置渲染设备
         cycles.preview_denoiser = "OPTIX"  # 预览降噪设备
