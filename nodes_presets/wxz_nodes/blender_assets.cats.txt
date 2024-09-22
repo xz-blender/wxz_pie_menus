@@ -18,4 +18,5 @@ b225e8ba-5c29-40b7-b13e-376bea3a4a45:GN_Nodes/No Sign:GN_Nodes-No Sign
 2723d186-0657-49cd-a4a1-867705b51823:GN_Nodes/Preview:GN_Nodes-Preview
 d31c2fb1-ff04-4313-a3ec-39ac3b30bcc5:GN_Nodes/Read:GN_Nodes-Read
 5e25096d-0694-4870-86f7-7bab14ac4af5:SN_Nodes:SN_Nodes
+34fce323-75bf-4f38-b307-a3618f8ed329:SN_Nodes/Generate:SN_Nodes-Generate
 c9afd1cc-5310-4523-bd9a-551a071da9e2:SN_Nodes/Material:SN_Nodes-Material
