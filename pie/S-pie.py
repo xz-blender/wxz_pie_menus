@@ -371,34 +371,34 @@ class VIEW3D_PIE_MT_Bottom_S(Menu):
                     elif m4.align_mode == "VIEW":
                         draw_align_with_view_edit(pie, m4, sel)
 
-            elif ui == "UV":
-                set_pie_ridius(context, 100)
+        elif ui == "UV":
+            set_pie_ridius(context, 100)
 
-                if m4.align_mode == "AXES":
-                    draw_align_with_axes_uv(pie, m4)
-                elif m4.align_mode == "VIEW":
-                    draw_align_with_view_uv(pie, m4)
+            if m4.align_mode == "AXES":
+                draw_align_with_axes_uv(pie, m4)
+            elif m4.align_mode == "VIEW":
+                draw_align_with_view_uv(pie, m4)
 
-            elif ui == "ShaderNodeTree" or "GeometryNodeTree" or "CompositorNodeTree":
-                # 4 - LEFT
-                pie.operator("pie.s_flat_nodes", text="对齐到 X 轴").value = (0, 1, 1)
-                # 6 - RIGHT
+        elif ui == "ShaderNodeTree" or "GeometryNodeTree" or "CompositorNodeTree":
+            # 4 - LEFT
+            pie.operator("pie.s_flat_nodes", text="对齐到 X 轴").value = (0, 1, 1)
+            # 6 - RIGHT
+            pie.separator()
+            # 2 - BOTTOM
+            pie.separator()
+            # 8 - TOP
+            pie.operator("pie.s_flat_nodes", text="对齐到 Y 轴").value = (1, 0, 1)
+            # 7 - TOP - LEFT
+            pie.separator()
+            # 9 - TOP - RIGHT
+            pie.separator()
+            # 1 - BOTTOM - LEFT
+            pie.separator()
+            # 3 - BOTTOM - RIGHT
+            try:
+                pie.operator("node_relax.arrange")
+            except:
                 pie.separator()
-                # 2 - BOTTOM
-                pie.separator()
-                # 8 - TOP
-                pie.operator("pie.s_flat_nodes", text="对齐到 Y 轴").value = (1, 0, 1)
-                # 7 - TOP - LEFT
-                pie.separator()
-                # 9 - TOP - RIGHT
-                pie.separator()
-                # 1 - BOTTOM - LEFT
-                pie.separator()
-                # 3 - BOTTOM - RIGHT
-                try:
-                    pie.operator("node_relax.arrange")
-                except:
-                    pie.separator()
 
 
 class PIE_S_Flat_NOdes(Operator):
