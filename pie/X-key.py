@@ -64,7 +64,7 @@ class Mesh_Delete_By_mode(Operator):
                 bpy.ops.curve.delete(type="VERT")
             elif selected_points == 0:
                 self.report({"ERROR"}, "无法删除,请选择一个顶点")
-                return {"CANCELED"}
+                return {"CANCELLED"}
             else:
                 bpy.ops.curve.delete(type="SEGMENT")
                 try:
