@@ -31,13 +31,6 @@ def get_local_path():
         return "/Users/wangxianzhi/Blender Lib"
 
 
-def get_addon_name():
-    if bpy.app.version < (4, 2, 0):
-        return Path(__file__).parent.name
-    else:
-        return __package__
-
-
 def get_desktop_path():
     """获取win桌面路径，即使路径被手动更改了(从注册表获取)"""
     if is_windows():

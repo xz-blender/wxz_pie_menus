@@ -318,7 +318,7 @@ def draw_pie_modules(self, top_row, module_path_name_list):
 
 
 class WXZ_PIE_Preferences(AddonPreferences, props.WXZ_PIE_Prefs_Props):
-    bl_idname = get_addon_name()
+    bl_idname = __package__
 
     def draw(self, context):
         layout = self.layout
