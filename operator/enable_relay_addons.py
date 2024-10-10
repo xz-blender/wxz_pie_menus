@@ -7,7 +7,7 @@ import bpy
 from bpy.types import Operator
 
 from ..download import download_zip
-from ..utils import get_local_path, get_sync_path
+from ..utils import get_local_path, get_prefs, get_sync_path
 from .extensions_setting import *
 
 submoduname = __name__.split(".")[-1]
@@ -60,10 +60,11 @@ def enable_addons(self, context, bl_ext_dict, remote_name=None):
             # print("-----------", rep_directory)
             # print(xz_url)
             for addon_name in blender_org_extensions.keys():
-                try:
-                    download_zip(remote_name + "/" + f"{addon_name}.zip", rep_directory)
-                except:
-                    print("----", addon_name, " 插件下载失败")
+                if get_prefs().download_official_addons:
+                    try:
+                        download_zip(remote_name + "/" + f"{addon_name}.zip", rep_directory)
+                    except:
+                        print("----", addon_name, " 插件下载失败")
         # 检查 rep_directory 下的 xz_ex_check.txt 文件内的存储版本号，如果不匹配则重新下载
         # if Path(rep_directory + "xz_ex_check.txt").exists():
         #     with open(rep_directory + "xz_ex_check.txt", "r") as f:

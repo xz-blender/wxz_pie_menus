@@ -1,6 +1,8 @@
 import json
 import os
+import random
 import re
+from hashlib import md5
 
 import bpy
 import requests
@@ -283,40 +285,31 @@ class PIE_Quick_RedHaloM2B(Operator):
 # ———————————— #
 
 
-# 检查文本是否包含中文字符
+def make_md5(s, encoding="utf-8"):
+    return md5(s.encode(encoding)).hexdigest()
+
+
+# 检查文中是否包含中文字符
 def contains_chinese(text):
     return re.search("[\u4e00-\u9fff]", text)
 
 
-def get_access_token(api, secret):
-    """
-    使用 AK,SK 生成鉴权签名(Access Token)
-    :return: access_token,或是None(如果错误)
-    """
-    url = "https://aip.baidubce.com/oauth/2.0/token"
-    params = {"grant_type": "client_credentials", "client_id": api, "client_secret": secret}
-    response = requests.post(url, params=params).json()
-    return response.get("access_token")
+def translate_text(appid, appkey, text, from_lang="en", to_lang="zh"):
+    endpoint = "http://api.fanyi.baidu.com"
+    path = "/api/trans/vip/translate"
+    url = endpoint + path
 
+    salt = random.randint(32768, 65536)
+    sign = make_md5(appid + text + str(salt) + appkey)
 
-def translate_text(access_token, text, from_lang="en", to_lang="zh"):
-    """
-    使用百度翻译API进行翻译
-    """
-    if access_token is None:
-        print("获取access_token失败")
-        return text
+    headers = {"Content-Type": "application/x-www-form-urlencoded"}
+    payload = {"appid": appid, "q": text, "from": from_lang, "to": to_lang, "salt": salt, "sign": sign}
 
-    url = f"https://aip.baidubce.com/rpc/2.0/mt/texttrans/v1?access_token={access_token}"
-
-    payload = json.dumps({"q": text, "from": from_lang, "to": to_lang})
-    headers = {"Content-Type": "application/json", "Accept": "application/json"}
-
-    response = requests.post(url, headers=headers, data=payload)
+    response = requests.post(url, params=payload, headers=headers)
     result = response.json()
 
-    if "result" in result and "trans_result" in result["result"]:
-        return result["result"]["trans_result"][0]["dst"]
+    if "trans_result" in result:
+        return result["trans_result"][0]["dst"]
     else:
         print("翻译失败：", result)
         return text
@@ -352,8 +345,6 @@ class PIE_Custom_Scripts_Context_Translate(Operator):
             with open(settings_file_path, "w") as outfile:
                 json.dump(data, outfile)
 
-        access_token = get_access_token(api, key)
-
         if self.trans_ob_text:
             # 翻译场景中的所有文本对象
             for obj in bpy.context.selected_objects:
@@ -366,7 +357,7 @@ class PIE_Custom_Scripts_Context_Translate(Operator):
                         print("文本包含中文，跳过翻译")
                         continue
                     # 翻译文本
-                    translated_text = translate_text(access_token, original_text)
+                    translated_text = translate_text(api, key, original_text)
                     print(f"翻译文本: {translated_text}")
                     # 更新文本对象的内容
                     obj.data.body = translated_text
@@ -381,7 +372,7 @@ class PIE_Custom_Scripts_Context_Translate(Operator):
                     original_name = collection.name
                     print(f"原始集合名称: {original_name}")
                     # 翻译集合名称
-                    translated_name = translate_text(access_token, original_name)
+                    translated_name = translate_text(api, key, original_name)
                     print(f"翻译后的集合名称: {translated_name}")
                     # 更新集合的名称
                     collection.name = translated_name
@@ -395,16 +386,27 @@ class PIE_Custom_Scripts_Context_Translate(Operator):
                 self.baidu_api_key = data.get("baidu_api_key", "")
                 self.baidu_secret_key = data.get("baidu_secret_key", "")
                 print(data)
+        print("密钥储存路径:\n", settings_file_path)
         return context.window_manager.invoke_props_dialog(self)
 
     def draw(self, context):
         layout = self.layout
         layout.scale_x = 2
+
+        check_api = len(self.baidu_api_key) < 10
+        check_sec = len(self.baidu_secret_key) < 10
         box = layout.box()
-        row = box.row()
-        row.prop(self, "baidu_api_key")
-        row = box.row()
-        row.prop(self, "baidu_secret_key")
+        if check_api:
+            row = box.row()
+            row.prop(self, "baidu_api_key")
+        if check_sec < 10:
+            row = box.row()
+            row.prop(self, "baidu_secret_key")
+        if check_api or check_sec:
+            row = box.row()
+            row.label(text="密钥将储存在(详情查看控制台):")
+            row = box.row()
+            row.label(text=str(settings_file_path))
         row = layout.box().row()
         row.prop(self, "trans_ob_text")
         row.prop(self, "trans_collection")

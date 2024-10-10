@@ -1,5 +1,5 @@
-from pathlib import Path
 from collections import OrderedDict
+from pathlib import Path
 
 import bpy
 
@@ -100,8 +100,11 @@ def register():
 
 
 def unregister():
+    try:
+        bpy.app.handlers.load_post.remove(run_set_assets_library_path)
+    except:
+        pass
     bpy.utils.unregister_class(PIE_Change_Assets_library_Path)
-    bpy.app.handlers.load_post.remove(run_set_assets_library_path)
 
 
 # def register():

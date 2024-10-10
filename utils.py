@@ -4,11 +4,9 @@ from pathlib import Path
 
 import bpy
 
-from . import __package__ as base_package
-
 
 def get_prefs():
-    return bpy.context.preferences.addons[base_package].preferences
+    return bpy.context.preferences.addons[__package__].preferences
 
 
 def is_windows():
@@ -37,7 +35,7 @@ def get_addon_name():
     if bpy.app.version < (4, 2, 0):
         return Path(__file__).parent.name
     else:
-        return base_package
+        return __package__
 
 
 def get_desktop_path():

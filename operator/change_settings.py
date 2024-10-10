@@ -192,8 +192,11 @@ def register():
 
 
 def unregister():
+    try:
+        bpy.app.handlers.load_post.remove(run_set_load_xz_setting_presets)
+    except:
+        pass
     bpy.utils.unregister_class(PIE_Load_XZ_Setting_Presets)
-    bpy.app.handlers.load_post.remove(run_set_load_xz_setting_presets)
 
 
 def run_set_load_xz_setting_presets(dummy):

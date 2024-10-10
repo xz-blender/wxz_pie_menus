@@ -1,7 +1,93 @@
 import importlib
 
 import bpy
-from bpy.props import CollectionProperty, EnumProperty, PointerProperty, StringProperty
+from bpy.props import *
+from bpy.types import PropertyGroup
+
+from .pie.Translate_key import enum_languages
+from .utils import *
+
+
+class WXZ_PIE_Prefs_Props:
+    tabs: bpy.props.EnumProperty(
+        items=(
+            ("DEPENDENCIES", "依赖包", ""),
+            ("ADDON_MENUS", "饼菜单&插件", ""),
+            ("RESOURCE_CONFIG", "资源配置", ""),
+            ("Other_Addons_Setting", "其他插件设置", ""),
+        ),
+        default="ADDON_MENUS",
+    )  # type: ignore
+
+    # 资源设置
+    load_assets_library_presets: bpy.props.BoolProperty(name="加载资源库预设", default=False)  # type: ignore
+    assets_library_path_sync: bpy.props.StringProperty(name="资源库-远程路径", subtype="DIR_PATH", default=get_sync_path())  # type: ignore
+    assets_library_path_local: bpy.props.StringProperty(name="资源库-本地路径", subtype="DIR_PATH", default=get_local_path())  # type: ignore
+    load_xz_keys_presets: bpy.props.BoolProperty(name="加载XZ快捷键预设", default=False)  # type: ignore
+    load_xz_setting_presets: bpy.props.BoolProperty(name="加载XZ配置预设", default=False)  # type: ignore
+    download_official_addons: bpy.props.BoolProperty(name="下载常用内置插件", default=False)  # type: ignore
+
+    # 饼菜单面板
+    pie_modules: CollectionProperty(type=PropertyGroup)  # type: ignore
+    pie_modules_index: bpy.props.IntProperty()  # type: ignore
+    other_modules: CollectionProperty(type=PropertyGroup)  # type: ignore
+    other_modules_index: bpy.props.IntProperty()  # type: ignore
+    setting_modules: CollectionProperty(type=PropertyGroup)  # type: ignore
+    setting_modules_index: bpy.props.IntProperty()  # type: ignore
+    # 依赖包面板
+    pip_use_china_sources: bpy.props.BoolProperty(name="使用清华镜像源", default=False)  # type: ignore
+    pip_modules_home: bpy.props.BoolProperty(default=False)  # type: ignore
+    pip_user_flag: bpy.props.BoolProperty(default=True)  # type: ignore
+    pip_advanced_toggle: bpy.props.BoolProperty(default=False)  # type: ignore
+    pip_module_name: bpy.props.StringProperty()  # type: ignore
+    default_pkg: bpy.props.EnumProperty(
+        name="default package",
+        description="本插件需要安装的第三方包",
+        items=[
+            # (identifier, pip_name, pip_import_name)
+            ("PILLOW", "pillow", "PIL"),
+            # ("OPENAI", "openai", "openai"),
+            # ("HTTPX", "httpx", "httpx"),
+            # ("requests", "requests", "requests"),
+            ("pyclipper", "pyclipper", "pyclipper"),
+            ("pulp", "pulp", "pulp"),
+        ],
+        default="PILLOW",
+    )  # type: ignore
+    # 其他插件设置
+    show_other_module_prop: BoolProperty(name="实用小工具设置")  # type: ignore
+    modifier_profiling: BoolProperty(name="修改器-耗时统计面板", default=False)  # type: ignore
+    ## formula to nodes
+    show_formula2nodes_submenu: BoolProperty(name="表达式转节点")  # type: ignore
+    debug_prints: bpy.props.BoolProperty(name="调试输出", description="在终端中启用调试打印", default=False)  # type: ignore
+    generate_previews: bpy.props.BoolProperty(name="生成逻辑预览树", description="在创建节点树之前生成节点树的预览", default=True)  # type: ignore
+    from .parts_addons.formula_to_nodes import VariableSortMode
+
+    sort_vars: bpy.props.EnumProperty(items=VariableSortMode, name="变量排序模式", description="对变量进行排序的顺序", default="INSERTION")  # type: ignore
+    ## MeshMachine
+    show_meshmachine_submenu: BoolProperty(name="MeshMachine-剥离版")  # type: ignore
+    modal_hud_color: FloatVectorProperty(name="显示字体颜色", subtype="COLOR", default=[1, 1, 1], size=3, min=0, max=1)  # type: ignore
+    modal_hud_scale: FloatProperty(name="显示图形缩放", default=1, min=0.5, max=10)  # type: ignore
+    modal_hud_hints: BoolProperty(name="显示提示", default=True)  # type: ignore
+    symmetrize_flick_distance: IntProperty(name="轻拂确认距离", default=75, min=20, max=1000)  # type: ignore
+    ## language swith
+    show_language_switch_submenu: BoolProperty(name="双语切换设置")  # type: ignore
+    first_lang: EnumProperty(name="首选语言", default="zh_HANS", items=enum_languages)  # type: ignore
+    second_lang: EnumProperty(name="次选语言", default="en_US", items=enum_languages)  # type: ignore
+    ## 资产浏览器滚动放大缩小预览图
+    show_asset_browser_scroll: BoolProperty(name="资产浏览器-滚轮缩放快捷键")  # type: ignore
+    tby_bsr_multiplier_resize_factor: IntProperty(name="缩放因子", default=10)  # type: ignore
+    ## M4功能合集
+    show_m4_submenu: BoolProperty(name="M4功能")  # type: ignore
+    focus_view_transition: BoolProperty(name="视口补间", default=True)  # type: ignore
+    focus_lights: BoolProperty(name="忽略灯光（使它们始终可见）", default=False)  # type: ignore
+    ah_show_text: BoolProperty(name="Show Button Text", default=True)  # type: ignore
+    ## punch it
+    show_punchit: BoolProperty(name="挤出流形插件")  # type: ignore
+    push_default: IntProperty(name="推-默认值", description="将挤压扩大解决精度问题", default=1, min=0)  # type: ignore
+    pull_default: IntProperty(name="拉-默认值", description="拉动最初选择的面并后退一点,解决精度问题", default=1, min=0)  # type: ignore
+    non_manifold_extrude: BoolProperty(name="支持非流形网格", description="允许在非流形网格上进行拉伸", default=False)  # type: ignore
+    modal_hud_timeout: FloatProperty(name="HUD 超时", description="HUD元素的持续时间", default=1, min=0.1, max=10)  # type: ignore
 
 
 class PIE_HistoryObjectsCollection(bpy.types.PropertyGroup):

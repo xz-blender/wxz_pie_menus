@@ -353,8 +353,11 @@ def register():
 
 
 def unregister():
+    try:
+        bpy.app.handlers.load_post.remove(run_set_load_xz_keys_presets)
+    except:
+        pass
     bpy.utils.unregister_class(PIE_Load_XZ_Keys_Presets)
-    bpy.app.handlers.load_post.remove(run_set_load_xz_keys_presets)
 
 
 def run_set_load_xz_keys_presets(dummy):
