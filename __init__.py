@@ -474,26 +474,18 @@ class WXZ_PIE_Preferences(AddonPreferences, props.WXZ_PIE_Prefs_Props):
         layout.label(text="其他插件设置")
         layout = self.layout.column(align=False)
 
-        ##################
-        col = layout.box().column()
-        col.scale_y = 1.1
-        col.use_property_split = False
-        col.prop(self, "show_other_module_prop", icon="TRIA_RIGHT" if self.show_meshmachine_submenu else "TRIA_DOWN")
-        if self.show_other_module_prop:
-            box = col.box()
+        # 实用小工具设置
+        sub = prefs_show_sub_panel(self, layout,"show_other_module_prop")
+        if sub[0]:
+            box = sub[1].box()
             col = box.column(align=True)
             row = col.row()
             row.prop(self, "modifier_profiling")
 
-        ##################
-        col = layout.box().column()
-        col.scale_y = 1.1
-        col.use_property_split = False
-        col.prop(
-            self, "show_formula2nodes_submenu", icon="TRIA_RIGHT" if self.show_formula2nodes_submenu else "TRIA_DOWN"
-        )
-        if self.show_formula2nodes_submenu:
-            box = col.box()
+        # 表达式转节点
+        sub = prefs_show_sub_panel(self, layout,"show_formula2nodes_submenu")
+        if sub[0]:
+            box = sub[1].box()
             box.label(text="检查键映射设置以编辑激活。默认为Ctrl+M")
             row = box.row(align=True)
             row.prop(self, "debug_prints")
@@ -502,13 +494,10 @@ class WXZ_PIE_Preferences(AddonPreferences, props.WXZ_PIE_Prefs_Props):
             row.label(text="变量排序依据...")
             row.prop(self, "sort_vars", expand=True)
 
-        ##################
-        col = layout.box().column()
-        col.scale_y = 1.1
-        col.use_property_split = False
-        col.prop(self, "show_meshmachine_submenu", icon="TRIA_RIGHT" if self.show_meshmachine_submenu else "TRIA_DOWN")
-        if self.show_meshmachine_submenu:
-            box = col.box()
+        # meshmachine剥离版
+        sub = prefs_show_sub_panel(self, layout,"show_meshmachine_submenu")
+        if sub[0]:
+            box = sub[1].box()
             col = box.column(align=True)
             row = col.row()
             row.prop(self, "modal_hud_color")
@@ -516,41 +505,28 @@ class WXZ_PIE_Preferences(AddonPreferences, props.WXZ_PIE_Prefs_Props):
             row = col.row()
             row.prop(self, "modal_hud_hints")
             row.prop(self, "symmetrize_flick_distance")
-        ##################
-        col = layout.box().column()
-        col.scale_y = 1.1
-        col.prop(
-            self,
-            "show_language_switch_submenu",
-            icon="TRIA_RIGHT" if self.show_language_switch_submenu else "TRIA_DOWN",
-        )
-        if self.show_language_switch_submenu:
-            box = col.box()
+        # 双语切换设置
+        sub = prefs_show_sub_panel(self, layout,"show_language_switch_submenu")
+        if sub[0]:
+            box = sub[1].box()
             col = box.column(align=True)
             col.label(text="双语切换设置:设置不同的两种语言以供切换", icon="SETTINGS")
             row = col.row(align=True)
             row.prop(self, "first_lang")
             row.separator()
             row.prop(self, "second_lang")
-        ####################
-        col = layout.box().column()
-        col.scale_y = 1.1
-        col.use_property_split = False
-        col.prop(
-            self, "show_asset_browser_scroll", icon="TRIA_RIGHT" if self.show_asset_browser_scroll else "TRIA_DOWN"
-        )
-        if self.show_asset_browser_scroll:
-            box = col.box()
+        # 资产浏览器缩略图缩放快捷键
+        sub = prefs_show_sub_panel(self, layout,"show_asset_browser_scroll")
+        if sub[0]:
+            box = sub[1].box()
             col = box.column(align=True)
             row = col.row()
             row.prop(self, "tby_bsr_multiplier_resize_factor")
-        ####################
-        col = layout.box().column()
-        col.scale_y = 1.1
-        col.use_property_split = False
-        col.prop(self, "show_punchit", icon="TRIA_RIGHT" if self.show_punchit else "TRIA_DOWN")
-        if self.show_punchit:
-            box = col.box()
+
+        # 挤出流形插件
+        sub = prefs_show_sub_panel(self, layout,"show_punchit")
+        if sub[0]:
+            box = sub[1].box()
             col = box.column(align=True)
             row = col.row()
             row.prop(self, "push_default")
