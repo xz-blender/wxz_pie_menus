@@ -5,7 +5,7 @@ def Material_handle_Panel(self, context):
     """options for fast naming and setting materials color"""
     layout = self.layout.box()
     layout.use_property_split = False
-    layout.label(text="设置颜色:")
+    # layout.label(text="设置颜色:")
 
     split = layout.split(factor=0.5, align=True)
     split.operator(
