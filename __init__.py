@@ -475,17 +475,17 @@ class WXZ_PIE_Preferences(AddonPreferences, props.WXZ_PIE_Prefs_Props):
         layout = self.layout.column(align=False)
 
         # 实用小工具设置
-        sub = prefs_show_sub_panel(self, layout,"show_other_module_prop")
-        if sub[0]:
-            box = sub[1].box()
+        attr, col = prefs_show_sub_panel(self, layout, "show_other_module_prop")
+        if attr:
+            box = col.box()
             col = box.column(align=True)
             row = col.row()
             row.prop(self, "modifier_profiling")
 
         # 表达式转节点
-        sub = prefs_show_sub_panel(self, layout,"show_formula2nodes_submenu")
-        if sub[0]:
-            box = sub[1].box()
+        attr, col = prefs_show_sub_panel(self, layout, "show_formula2nodes_submenu")
+        if attr:
+            box = col.box()
             box.label(text="检查键映射设置以编辑激活。默认为Ctrl+M")
             row = box.row(align=True)
             row.prop(self, "debug_prints")
@@ -495,9 +495,9 @@ class WXZ_PIE_Preferences(AddonPreferences, props.WXZ_PIE_Prefs_Props):
             row.prop(self, "sort_vars", expand=True)
 
         # meshmachine剥离版
-        sub = prefs_show_sub_panel(self, layout,"show_meshmachine_submenu")
-        if sub[0]:
-            box = sub[1].box()
+        attr, col = prefs_show_sub_panel(self, layout, "show_meshmachine_submenu")
+        if attr:
+            box = col.box()
             col = box.column(align=True)
             row = col.row()
             row.prop(self, "modal_hud_color")
@@ -506,9 +506,9 @@ class WXZ_PIE_Preferences(AddonPreferences, props.WXZ_PIE_Prefs_Props):
             row.prop(self, "modal_hud_hints")
             row.prop(self, "symmetrize_flick_distance")
         # 双语切换设置
-        sub = prefs_show_sub_panel(self, layout,"show_language_switch_submenu")
-        if sub[0]:
-            box = sub[1].box()
+        attr, col = prefs_show_sub_panel(self, layout, "show_language_switch_submenu")
+        if attr:
+            box = col.box()
             col = box.column(align=True)
             col.label(text="双语切换设置:设置不同的两种语言以供切换", icon="SETTINGS")
             row = col.row(align=True)
@@ -516,17 +516,17 @@ class WXZ_PIE_Preferences(AddonPreferences, props.WXZ_PIE_Prefs_Props):
             row.separator()
             row.prop(self, "second_lang")
         # 资产浏览器缩略图缩放快捷键
-        sub = prefs_show_sub_panel(self, layout,"show_asset_browser_scroll")
-        if sub[0]:
-            box = sub[1].box()
+        attr, col = prefs_show_sub_panel(self, layout, "show_asset_browser_scroll")
+        if attr:
+            box = col.box()
             col = box.column(align=True)
             row = col.row()
             row.prop(self, "tby_bsr_multiplier_resize_factor")
 
         # 挤出流形插件
-        sub = prefs_show_sub_panel(self, layout,"show_punchit")
-        if sub[0]:
-            box = sub[1].box()
+        attr, col = prefs_show_sub_panel(self, layout, "show_punchit")
+        if attr:
+            box = col.box()
             col = box.column(align=True)
             row = col.row()
             row.prop(self, "push_default")
