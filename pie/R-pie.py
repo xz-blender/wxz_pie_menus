@@ -95,21 +95,21 @@ class VIEW3D_PIE_MT_Bottom_R(Menu):
         elif ui == "UV":
             set_pie_ridius(context, 100)
             # 4 - LEFT
-            # R_Left = pie.operator("transform.rotate", text='Z轴-90°', icon='TRIA_LEFT_BAR')
-            # R_Left.value = -(pi/2)
-            # R_Left.orient_axis = "Z"
-            # R_Left.orient_type = "VIEW"
             pie.operator(PIE_Transform_Rotate_Z.bl_idname, text="左转-90°", icon="TRIA_RIGHT_BAR").degree = -(pi / 2)
-
             # 6 - RIGHT
             pie.operator(PIE_Transform_Rotate_Z.bl_idname, text="右转+90°", icon="TRIA_RIGHT_BAR").degree = pi / 2
             # 2 - BOTTOM
+            pie.separator()
             # 8 - TOP
+            pie.operator("pie.uv_mirror", text="镜像Y轴").axis = "Y"
             # 7 - TOP - LEFT
+            pie.separator()
             # 9 - TOP - RIGHT
-
+            pie.separator()
             # 1 - BOTTOM - LEFT
+            pie.operator("pie.uv_mirror", text="镜像X轴").axis = "X"
             # 3 - BOTTOM - RIGHT
+            pie.separator()
 
         elif ui == "ShaderNodeTree":
             # 4 - LEFT
@@ -214,6 +214,22 @@ class PIE_Transform_Rotate_Z(Operator):
             bpy.ops.transform.rotate(
                 value=self.degree, orient_axis="Z", orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1))
             )
+        return {"FINISHED"}
+
+
+class PIE_Transform_UV_Mirror(Operator):
+    bl_idname = "pie.uv_mirror"
+    bl_label = "UV镜像"
+    bl_options = {"REGISTER", "UNDO"}
+    axis: bpy.props.EnumProperty(
+        name="Axis", description="选择镜像轴", items=[(("X"), "X", "沿X轴镜像"), (("Y"), "Y", "沿Y轴镜像")]
+    )  # type: ignore
+
+    def execute(self, context):
+        if self.axis == "X":
+            bpy.ops.transform.mirror(constraint_axis=(True, False, False))
+        elif self.axis == "Y":
+            bpy.ops.transform.mirror(constraint_axis=(False, True, False))
         return {"FINISHED"}
 
 
@@ -394,6 +410,7 @@ classes = [
     PIE_Mesh_UV_Rotate,
     VIEW3D_PIE_MT_Ctrl_Alt_R,
     PIE_Mesh_UV_Rotate_Modal,
+    PIE_Transform_UV_Mirror,
 ]
 addon_keymaps = []
 
