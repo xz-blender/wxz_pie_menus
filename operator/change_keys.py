@@ -346,23 +346,27 @@ class PIE_Load_XZ_Keys_Presets(bpy.types.Operator):
 
         return {"FINISHED"}
 
+def run_set_load_xz_keys_presets(dummy):
+    if get_prefs().load_xz_keys_presets:
+        bpy.ops.pie.load_xz_keys_presets()
 
 def register():
     bpy.utils.register_class(PIE_Load_XZ_Keys_Presets)
+    bpy.app.handlers.load_pre.append(run_set_load_xz_keys_presets)
     bpy.app.handlers.load_post.append(run_set_load_xz_keys_presets)
+    bpy.app.handlers.load_post_fail.append(run_set_load_xz_keys_presets)
 
 
 def unregister():
     try:
+        bpy.app.handlers.load_pre.remove(run_set_load_xz_keys_presets)
         bpy.app.handlers.load_post.remove(run_set_load_xz_keys_presets)
+        bpy.app.handlers.load_post_fail.remove(run_set_load_xz_keys_presets)
     except:
         pass
     bpy.utils.unregister_class(PIE_Load_XZ_Keys_Presets)
 
 
-def run_set_load_xz_keys_presets(dummy):
-    if get_prefs().load_xz_keys_presets:
-        bpy.ops.pie.load_xz_keys_presets()
 
 
 # def register():

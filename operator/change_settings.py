@@ -1,8 +1,10 @@
 import sys
+from pathlib import Path
 
 import bpy
+from bpy.app.handlers import persistent
 
-from ..utils import get_prefs
+from ..utils import addon_name, get_prefs, manage_app_handlers
 
 submoduname = __name__.split(".")[-1]
 bl_info = {
@@ -14,21 +16,39 @@ bl_info = {
     "category": "3D View",
 }
 
+view3d_handlder_sets = [
+    ("overlay", "show_stats", True),
+    ("overlay", "show_light_colors", True),
+    ("overlay", "show_floor", False),
+    ("overlay", "show_ortho_grid", False),
+    ("shading", "show_cavity", True),
+    ("shading", "cavity_type", "BOTH"),
+]
 
-def shouw_stats(bool):
+
+def set_overlay_shading_props(context, attr, set):
     for area in bpy.context.screen.areas:
         if area.type == "VIEW_3D":
-            overlay = area.spaces.active.overlay
-            overlay.show_stats = bool
-            break
+            for space in area.spaces:
+                try:
+                    setattr(getattr(space, context), attr, set)
+                except:
+                    pass
 
 
-def change_preferences_settings():
+@persistent
+def workspace_change_overlay(scene):
+    for context, attr, bool in view3d_handlder_sets:
+        set_overlay_shading_props(context, attr, bool)
+
+
+def change_preferences_settings(context):
     C = bpy.context
-    pref = C.preferences
+    pref = bpy.context.preferences
+
+    C.scene.render.engine = "CYCLES"
     cycles = C.scene.cycles
 
-    shouw_stats(True)
     # 界面
     view = pref.view
     view.ui_scale = 1.2
@@ -41,8 +61,6 @@ def change_preferences_settings():
         view.show_statusbar_vram = True  # 显存使用量
     view.show_statusbar_version = True  # 显示版本
     view.use_mouse_over_open = True  # 鼠标划过开启菜单
-
-    from pathlib import Path
 
     font_path = Path(__file__).parent.parent / "ui_font.ttf"
     view.font_path_ui = str(font_path)  # 界面字体
@@ -80,7 +98,6 @@ def change_preferences_settings():
     edit.undo_steps = 128  # 撤销次数
 
     # 自动打包
-    bpy.ops.file.autopack_toggle()
 
     # 保存&加载
     filepaths = pref.filepaths
@@ -141,9 +158,6 @@ def change_context_settings():
     scene.cycles.caustics_reflective = False
     scene.cycles.caustics_refractive = False
 
-    space.shading.shwow_cavity = True
-    space.shading.cavity_type = "BOTH"
-
     # -------3D View-------
     scene.transform_orientation_slots[0].type = "GLOBAL"  # 变换轴方向
     scene.tool_settings.transform_pivot_point = "BOUNDING_BOX_CENTER"  # 变换中心点
@@ -176,42 +190,40 @@ class PIE_Load_XZ_Setting_Presets(bpy.types.Operator):
 
     def execute(self, context):
         try:
-            change_preferences_settings()
-            change_context_settings()
-            print('"WXZ_Pie_Menu" changed default settings!')
-            change_extensions_repo_list()
-            print('"WXZ_Pie_Menu" changed Extensions Remote List!')
+            bpy.ops.file.autopack_toggle()
+            print(f"{addon_name()} 已开启自动打包资源!")
         except:
             pass
+        change_preferences_settings(context)
+        change_context_settings()
+        print(f"{addon_name()} 已更改默认设置!")
+        change_extensions_repo_list()
+        print(f"{addon_name()} 已添加远程存储库!")
         return {"FINISHED"}
 
 
-def register():
-    bpy.utils.register_class(PIE_Load_XZ_Setting_Presets)
-    bpy.app.handlers.load_post.append(run_set_load_xz_setting_presets)
-
-
-def unregister():
-    try:
-        bpy.app.handlers.load_post.remove(run_set_load_xz_setting_presets)
-    except:
-        pass
-    bpy.utils.unregister_class(PIE_Load_XZ_Setting_Presets)
-
-
+@persistent
 def run_set_load_xz_setting_presets(dummy):
     if get_prefs().load_xz_setting_presets:
         bpy.ops.pie.load_xz_setting_presets()
 
 
-# def register():
-#     if not bpy.app.timers.is_registered(change_settings):
-#         bpy.app.timers.register(change_settings, first_interval=1)
+handler_list_1 = ["load_pre", "load_factory_startup_post", "load_post"]
+handler_list_2 = ["depsgraph_update_post"]
 
 
-# def unregister():
-#     if bpy.app.timers.is_registered(change_settings):
-#         bpy.app.timers.unregister(change_settings)
+def register():
+    bpy.utils.register_class(PIE_Load_XZ_Setting_Presets)
+    manage_app_handlers(handler_list_1, run_set_load_xz_setting_presets)
+    manage_app_handlers(handler_list_2, workspace_change_overlay)
+    manage_app_handlers(handler_list_2, change_preferences_settings)
+
+
+def unregister():
+    manage_app_handlers(handler_list_1, run_set_load_xz_setting_presets, remove=True)
+    manage_app_handlers(handler_list_2, workspace_change_overlay, remove=True)
+    manage_app_handlers(handler_list_2, change_preferences_settings, remove=True)
+    bpy.utils.unregister_class(PIE_Load_XZ_Setting_Presets)
 
 
 if __name__ == "__main__":

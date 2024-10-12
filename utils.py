@@ -3,6 +3,11 @@ import platform
 from pathlib import Path
 
 import bpy
+from bpy.app.handlers import persistent
+
+
+def addon_name():
+    return "WXZ Pie Menus Addon"
 
 
 def get_prefs():
@@ -43,6 +48,18 @@ def get_desktop_path():
             return desktop_path
     elif is_macos():
         return os.path.join(os.path.expanduser("~"), "Desktop")
+
+
+@persistent
+def manage_app_handlers(handler_list, func, remove=False):
+    for handler in handler_list:
+        handls = getattr(bpy.app.handlers, handler)
+        if remove:
+            if func in handls:
+                handls.remove(func)
+        else:
+            if func not in handls:
+                handls.append(func)
 
 
 def iter_submodules_name(path, except_package_list):

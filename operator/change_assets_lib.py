@@ -2,8 +2,8 @@ from collections import OrderedDict
 from pathlib import Path
 
 import bpy
+from bpy.app.handlers import persistent
 
-from .. import __package__ as base_package
 from ..utils import *
 
 submoduname = __name__.split(".")[-1]
@@ -89,6 +89,7 @@ def change_assets_library_path(app_lib_data, custom_assets_setting_lib):
     print('"WXZ_Pie_Menu"Changed Assets library')
 
 
+@persistent
 def run_set_assets_library_path(dummy):
     if get_prefs().load_assets_library_presets:
         bpy.ops.pie.change_assets_library_path()
@@ -96,25 +97,19 @@ def run_set_assets_library_path(dummy):
 
 def register():
     bpy.utils.register_class(PIE_Change_Assets_library_Path)
+    bpy.app.handlers.load_pre.append(run_set_assets_library_path)
     bpy.app.handlers.load_post.append(run_set_assets_library_path)
+    bpy.app.handlers.load_post_fail.append(run_set_assets_library_path)
 
 
 def unregister():
     try:
+        bpy.app.handlers.load_pre.remove(run_set_assets_library_path)
         bpy.app.handlers.load_post.remove(run_set_assets_library_path)
+        bpy.app.handlers.load_post_fail.remove(run_set_assets_library_path)
     except:
         pass
     bpy.utils.unregister_class(PIE_Change_Assets_library_Path)
-
-
-# def register():
-#     if not bpy.app.timers.is_registered(change_assets_library_path):
-#         bpy.app.timers.register(change_assets_library_path, first_interval=2)
-
-
-# def unregister():
-#     if bpy.app.timers.is_registered(change_assets_library_path):
-#         bpy.app.timers.unregister(change_assets_library_path)
 
 
 if __name__ == "__main__":
