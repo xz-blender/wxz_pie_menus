@@ -7,6 +7,8 @@ from pathlib import Path
 
 import bpy
 
+from ..utils import addon_name
+
 submoduname = __name__.split(".")[-1]
 bl_info = {
     "name": submoduname,
@@ -78,7 +80,7 @@ def set_wxz_nodes_presets():
 def change_nodes_presets():
     change_assets_library_path()
     set_wxz_nodes_presets()
-    print('"WXZ_Pie_Menu" Add Default Nodes Presets')
+    print(f"{addon_name()} Add Default Nodes Presets")
 
 
 def register():
