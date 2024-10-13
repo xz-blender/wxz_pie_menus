@@ -55,8 +55,9 @@ class WXZ_PIE_Prefs_Props:
         default="PILLOW",
     )  # type: ignore
     # 其他插件设置
-    show_other_module_prop: BoolProperty(name="实用小工具设置")  # type: ignore
+    show_other_module_prop: BoolProperty(name="其他小工具设置")  # type: ignore
     modifier_profiling: BoolProperty(name="修改器-耗时统计面板", default=False)  # type: ignore
+    change_overlay_and_shading_sets: BoolProperty(name="个性化更改视图着色", default=False)  # type: ignore
     ## formula to nodes
     show_formula2nodes_submenu: BoolProperty(name="表达式转节点")  # type: ignore
     debug_prints: bpy.props.BoolProperty(name="调试输出", description="在终端中启用调试打印", default=False)  # type: ignore

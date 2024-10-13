@@ -38,8 +38,9 @@ def set_overlay_shading_props(context, attr, set):
 
 @persistent
 def workspace_change_overlay(scene):
-    for context, attr, bool in view3d_handlder_sets:
-        set_overlay_shading_props(context, attr, bool)
+    if get_prefs().change_overlay_and_shading_sets:
+        for context, attr, bool in view3d_handlder_sets:
+            set_overlay_shading_props(context, attr, bool)
 
 
 def change_preferences_settings(context):
@@ -216,13 +217,11 @@ def register():
     bpy.utils.register_class(PIE_Load_XZ_Setting_Presets)
     manage_app_handlers(handler_list_1, run_set_load_xz_setting_presets)
     manage_app_handlers(handler_list_2, workspace_change_overlay)
-    manage_app_handlers(handler_list_2, change_preferences_settings)
 
 
 def unregister():
     manage_app_handlers(handler_list_1, run_set_load_xz_setting_presets, remove=True)
     manage_app_handlers(handler_list_2, workspace_change_overlay, remove=True)
-    manage_app_handlers(handler_list_2, change_preferences_settings, remove=True)
     bpy.utils.unregister_class(PIE_Load_XZ_Setting_Presets)
 
 

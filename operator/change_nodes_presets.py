@@ -9,16 +9,6 @@ import bpy
 
 from ..utils import addon_name
 
-submoduname = __name__.split(".")[-1]
-bl_info = {
-    "name": submoduname,
-    "author": "wxz",
-    "version": (0, 0, 1),
-    "blender": (4, 1, 0),
-    "location": "View3D",
-    "category": "3D View",
-}
-
 
 nodes_dir_path = Path(__file__).parent.parent / "nodes_presets"
 nodes_dir_path_list = {}

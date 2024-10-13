@@ -481,6 +481,7 @@ class WXZ_PIE_Preferences(AddonPreferences, props.WXZ_PIE_Prefs_Props):
             col = box.column(align=True)
             row = col.row()
             row.prop(self, "modifier_profiling")
+            row.prop(self, "change_overlay_and_shading_sets")
 
         # 表达式转节点
         attr, col = prefs_show_sub_panel(self, layout, "show_formula2nodes_submenu")
