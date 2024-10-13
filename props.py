@@ -4,6 +4,7 @@ import bpy
 from bpy.props import *
 from bpy.types import PropertyGroup
 
+from .operator.change_settings import update_force_AutoPackup_props
 from .pie.Translate_key import enum_languages
 from .utils import *
 
@@ -20,7 +21,7 @@ class WXZ_PIE_Prefs_Props:
     )  # type: ignore
 
     # 资源设置
-    load_assets_library_presets: bpy.props.BoolProperty(name="加载资源库预设", default=False)  # type: ignore
+    load_assets_library_presets: bpy.props.BoolProperty(name="加载资源库预设", default=True)  # type: ignore
     assets_library_path_sync: bpy.props.StringProperty(name="资源库-远程路径", subtype="DIR_PATH", default=get_sync_path())  # type: ignore
     assets_library_path_local: bpy.props.StringProperty(name="资源库-本地路径", subtype="DIR_PATH", default=get_local_path())  # type: ignore
     load_xz_keys_presets: bpy.props.BoolProperty(name="加载XZ快捷键预设", default=False)  # type: ignore
@@ -56,10 +57,13 @@ class WXZ_PIE_Prefs_Props:
         ],
         default="PILLOW",
     )  # type: ignore
-    # 其他插件设置
+
+    ### 其他插件设置
     show_other_module_prop: BoolProperty(name="其他小工具设置")  # type: ignore
     modifier_profiling: BoolProperty(name="修改器-耗时统计面板", default=False)  # type: ignore
     change_overlay_and_shading_sets: BoolProperty(name="个性化更改视图着色", default=False)  # type: ignore
+    force_AutoPackup: BoolProperty(name="强制自动打包", default=True, update=update_force_AutoPackup_props())  # type: ignore
+
     ## formula to nodes
     show_formula2nodes_submenu: BoolProperty(name="表达式转节点")  # type: ignore
     debug_prints: bpy.props.BoolProperty(name="调试输出", description="在终端中启用调试打印", default=False)  # type: ignore

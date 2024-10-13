@@ -422,12 +422,13 @@ class WXZ_PIE_Preferences(AddonPreferences, props.WXZ_PIE_Prefs_Props):
             row.prop(self, "download_official_addons", text=text_download_addons)
 
         row = box.row()
-        row.prop(
-            self,
-            "load_assets_library_presets",
-            text="加载预设 - 资源库路径 (会增加许多对您无用的资产路径!)",
-        )
-        if self.load_assets_library_presets:
+        if not self.load_assets_library_presets:
+            row.prop(self, "load_assets_library_presets", text="加载预设 - 资源库路径 (会增加许多对您无用的资产路径!)")
+        else:
+            sp = row.split(factor=0.8)
+            sp.prop(self, "load_assets_library_presets", text="加载预设 - 资源库路径 (会增加许多对您无用的资产路径!)")
+            sp.operator("pie.change_assets_library_path", text="移除路径").remove = True
+
             split = box.split(factor=0.8)
             box_l = split.box()
             row = box_l.row()

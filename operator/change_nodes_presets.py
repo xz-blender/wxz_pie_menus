@@ -2,39 +2,17 @@ import json
 import os
 import subprocess
 import time
+from collections import OrderedDict
 from datetime import datetime
 from pathlib import Path
 
 import bpy
+from bpy.app.handlers import persistent
 
-from ..utils import addon_id, addon_name
+from ..items import *
+from ..utils import *
 
 nodes_dir_path = Path(__file__).parent.parent / "nodes_presets"
-nodes_dir_path_list = {}
-
-for item in nodes_dir_path.iterdir():
-    if item.is_dir():
-        nodes_dir_path_list[item.name] = str(item)
-
-
-app_lib_data = {}
-for lib in bpy.context.preferences.filepaths.asset_libraries:
-    app_lib_data[lib.name] = lib.path
-
-
-def change_assets_library_path():
-    sort_nodes_path_list = dict(sorted(nodes_dir_path_list.items(), key=lambda x: x))
-    for name, path in sort_nodes_path_list.items():
-        asset_libraries = bpy.context.preferences.filepaths.asset_libraries
-        if name not in app_lib_data:
-            bpy.ops.preferences.asset_library_add(directory=path)
-            asset_libraries[-1].name = name
-        else:
-            asset_libraries.get(name).path = path
-
-    nodes_dir_path_list.clear()
-    app_lib_data.clear()
-
 
 wxz_nodes_dir = nodes_dir_path / "wxz_nodes"
 wxz_nodes_script = wxz_nodes_dir / "script.py"
@@ -63,27 +41,26 @@ def set_wxz_nodes_presets():
                             else:
                                 pass
                         else:
-                            # print(f"{name_save_time} 保存时间不存在!")
+                            # print(f"{name_save_time} 文本内无保存时间!")
                             pass
                 else:
                     # print(f"{save_time_file.name} 文件不存在!")
                     subprocess.run([bpy.app.binary_path, full_path, "--background", "--python", wxz_nodes_script])
 
 
-def change_nodes_presets():
-    change_assets_library_path()
-    set_wxz_nodes_presets()
-    print(f"{addon_name()} 已添加默认节点预设")
+@persistent
+def change_nodes_presets(dummy):
+    if get_prefs().load_assets_library_presets:
+        set_wxz_nodes_presets()
+        print(f"{addon_name()} 已刷新wxz_nodes节点!")
 
 
 def register():
-    if not bpy.app.timers.is_registered(change_nodes_presets):
-        bpy.app.timers.register(change_nodes_presets, first_interval=1)
+    manage_app_handlers(handler_on_default_blender_list, change_nodes_presets)
 
 
 def unregister():
-    if bpy.app.timers.is_registered(change_nodes_presets):
-        bpy.app.timers.unregister(change_nodes_presets)
+    manage_app_handlers(handler_on_default_blender_list, change_nodes_presets, True)
 
 
 if __name__ == "__main__":

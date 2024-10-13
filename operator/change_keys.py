@@ -1,6 +1,7 @@
 import bpy
 from bpy.app.handlers import persistent
 
+from ..items import *
 from ..utils import addon_name, get_prefs, manage_app_handlers
 
 submoduname = __name__.split(".")[-1]
@@ -353,16 +354,13 @@ def run_set_load_xz_keys_presets(dummy):
         bpy.ops.pie.load_xz_keys_presets()
 
 
-handler_loads = ["load_pre", "load_post", "load_post_fail", "load_factory_startup_post"]
-
-
 def register():
     bpy.utils.register_class(PIE_Load_XZ_Keys_Presets)
-    manage_app_handlers(handler_loads, run_set_load_xz_keys_presets)
+    manage_app_handlers(handler_on_default_blender_list, run_set_load_xz_keys_presets)
 
 
 def unregister():
-    manage_app_handlers(handler_loads, run_set_load_xz_keys_presets, True)
+    manage_app_handlers(handler_on_default_blender_list, run_set_load_xz_keys_presets, True)
     bpy.utils.unregister_class(PIE_Load_XZ_Keys_Presets)
 
 

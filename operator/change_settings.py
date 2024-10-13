@@ -4,7 +4,8 @@ from pathlib import Path
 import bpy
 from bpy.app.handlers import persistent
 
-from ..utils import addon_name, get_prefs, manage_app_handlers
+from ..items import *
+from ..utils import *
 
 submoduname = __name__.split(".")[-1]
 bl_info = {
@@ -15,15 +16,6 @@ bl_info = {
     "location": "View3D",
     "category": "3D View",
 }
-
-view3d_handlder_sets = [
-    ("overlay", "show_stats", True),
-    ("overlay", "show_light_colors", True),
-    ("overlay", "show_floor", False),
-    ("overlay", "show_ortho_grid", False),
-    ("shading", "show_cavity", True),
-    ("shading", "cavity_type", "BOTH"),
-]
 
 
 def set_overlay_shading_props(context, attr, set):
@@ -38,9 +30,11 @@ def set_overlay_shading_props(context, attr, set):
 
 @persistent
 def workspace_change_overlay(scene):
-    if get_prefs().change_overlay_and_shading_sets:
-        for context, attr, bool in view3d_handlder_sets:
+    for context, attr, bool in view3d_handlder_sets:
+        if get_prefs().change_overlay_and_shading_sets:
             set_overlay_shading_props(context, attr, bool)
+        else:
+            set_overlay_shading_props(context, attr, not bool)
 
 
 def change_preferences_settings(context):
@@ -177,6 +171,13 @@ def change_extensions_repo_list():
         # bpy.ops.extensions.repo_unlock()
 
 
+def update_force_autoPackup_props():
+    prop = bpy.context.preferences.addons[addon_id()].preferences.force_autoPackup
+    bpy.data.use_autopack = prop
+    text: str = "-开启-" if prop else "-关闭-"
+    print(f"{addon_name()} 已强制 {text} 自动打包资源!")
+
+
 class PIE_Load_XZ_Setting_Presets(bpy.types.Operator):
     bl_idname = "pie.load_xz_setting_presets"
     bl_label = "更改为xz的快捷键预设"
@@ -188,11 +189,6 @@ class PIE_Load_XZ_Setting_Presets(bpy.types.Operator):
         return True
 
     def execute(self, context):
-        try:
-            bpy.data.use_autopack = True
-            print(f"{addon_name()} 已开启自动打包资源!")
-        except:
-            pass
         change_preferences_settings(context)
         change_context_settings()
         print(f"{addon_name()} 已更改默认设置!")
@@ -207,19 +203,15 @@ def run_set_load_xz_setting_presets(dummy):
         bpy.ops.pie.load_xz_setting_presets()
 
 
-handler_list_1 = ["load_pre", "load_factory_startup_post", "load_post"]
-handler_list_2 = ["depsgraph_update_post"]
-
-
 def register():
     bpy.utils.register_class(PIE_Load_XZ_Setting_Presets)
-    manage_app_handlers(handler_list_1, run_set_load_xz_setting_presets)
-    manage_app_handlers(handler_list_2, workspace_change_overlay)
+    manage_app_handlers(handler_on_default_blender_list, run_set_load_xz_setting_presets)
+    manage_app_handlers(handler_on_depsgraph, workspace_change_overlay)
 
 
 def unregister():
-    manage_app_handlers(handler_list_1, run_set_load_xz_setting_presets, remove=True)
-    manage_app_handlers(handler_list_2, workspace_change_overlay, remove=True)
+    manage_app_handlers(handler_on_default_blender_list, run_set_load_xz_setting_presets, remove=True)
+    manage_app_handlers(handler_on_depsgraph, workspace_change_overlay, remove=True)
     bpy.utils.unregister_class(PIE_Load_XZ_Setting_Presets)
 
 
