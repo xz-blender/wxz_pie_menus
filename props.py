@@ -26,6 +26,7 @@ class WXZ_PIE_Prefs_Props:
     load_xz_keys_presets: bpy.props.BoolProperty(name="加载XZ快捷键预设", default=False)  # type: ignore
     load_xz_setting_presets: bpy.props.BoolProperty(name="加载XZ配置预设", default=False)  # type: ignore
     download_official_addons: bpy.props.BoolProperty(name="下载常用内置插件", default=False)  # type: ignore
+    enable_addon_presets_items: bpy.props.BoolProperty(name="开启常用插件预设", default=False)  # type: ignore
 
     # 饼菜单面板
     pie_modules: CollectionProperty(type=PropertyGroup)  # type: ignore
@@ -44,13 +45,14 @@ class WXZ_PIE_Prefs_Props:
         name="default package",
         description="本插件需要安装的第三方包",
         items=[
-            # (identifier, pip_name, pip_import_name)
+            # (identifier, pip_display_name, pip_import_name)
             ("PILLOW", "pillow", "PIL"),
             # ("OPENAI", "openai", "openai"),
             # ("HTTPX", "httpx", "httpx"),
             # ("requests", "requests", "requests"),
             ("pyclipper", "pyclipper", "pyclipper"),
             ("pulp", "pulp", "pulp"),
+            ("shapely", "shapely", "shapely"),
         ],
         default="PILLOW",
     )  # type: ignore

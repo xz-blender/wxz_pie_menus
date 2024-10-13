@@ -1,7 +1,7 @@
 import bpy
 from bpy.app.handlers import persistent
 
-from ..utils import get_prefs
+from ..utils import addon_name, get_prefs, manage_app_handlers
 
 submoduname = __name__.split(".")[-1]
 bl_info = {
@@ -342,31 +342,28 @@ class PIE_Load_XZ_Keys_Presets(bpy.types.Operator):
 
         # 其他键位设置
         change_keys_value()
-        print('"WXZ_Pie_Menu" changed keys!')
+        print(f"{addon_name()} 已更改快捷键!!")
 
         return {"FINISHED"}
 
+
+@persistent
 def run_set_load_xz_keys_presets(dummy):
     if get_prefs().load_xz_keys_presets:
         bpy.ops.pie.load_xz_keys_presets()
 
+
+handler_loads = ["load_pre", "load_post", "load_post_fail", "load_factory_startup_post"]
+
+
 def register():
     bpy.utils.register_class(PIE_Load_XZ_Keys_Presets)
-    bpy.app.handlers.load_pre.append(run_set_load_xz_keys_presets)
-    bpy.app.handlers.load_post.append(run_set_load_xz_keys_presets)
-    bpy.app.handlers.load_post_fail.append(run_set_load_xz_keys_presets)
+    manage_app_handlers(handler_loads, run_set_load_xz_keys_presets)
 
 
 def unregister():
-    try:
-        bpy.app.handlers.load_pre.remove(run_set_load_xz_keys_presets)
-        bpy.app.handlers.load_post.remove(run_set_load_xz_keys_presets)
-        bpy.app.handlers.load_post_fail.remove(run_set_load_xz_keys_presets)
-    except:
-        pass
+    manage_app_handlers(handler_loads, run_set_load_xz_keys_presets, True)
     bpy.utils.unregister_class(PIE_Load_XZ_Keys_Presets)
-
-
 
 
 # def register():

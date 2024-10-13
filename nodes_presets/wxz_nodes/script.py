@@ -9,7 +9,7 @@ from pathlib import Path
 
 import bpy
 
-txt_prefix = f"""
+txt_prefix = """
 # This is an Asset Catalog Definition file for Blender.
 #
 # Empty lines and lines starting with `#` will be ignored.
@@ -111,6 +111,7 @@ def write_file(path, text):
 
 
 def change_default_cats_and_blends(all_nodes, cwf_name, cwf_path):
+    bpy.context.preferences.filepaths.save_version = 0
 
     nosign_name = "No Sign"
     others_cat = cwf_name + sep + nosign_name
@@ -160,7 +161,6 @@ def change_default_cats_and_blends(all_nodes, cwf_name, cwf_path):
                     set_cat_uuid(tree, f"{cwf_name}-{nosign_name}")
                 else:
                     set_cat_uuid(tree, f"{cwf_name}-{node.parent.label}")
-
         bpy.ops.wm.save_mainfile()
         write_save_time(cwf_path, savetime_blend_key)
         print(f"WXZ_Default_Nodes:'{cwf_name}'", "File And Cats File Saved Change!")
@@ -175,6 +175,5 @@ def change_default_cats_and_blends(all_nodes, cwf_name, cwf_path):
 if cwf_name == "GN_Nodes":
     all_nodes = bpy.data.node_groups["GN_ALL_NODES"]
     change_default_cats_and_blends(all_nodes, cwf_name, cwf_path)
-
 # elif cwf_name == "SN_Nodes":
 #     all_nodes = bpy.data.materials["SN_ALL_NODES"]

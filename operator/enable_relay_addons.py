@@ -4,10 +4,11 @@ from pathlib import Path
 
 import addon_utils
 import bpy
+from bpy.app.handlers import persistent
 from bpy.types import Operator
 
 from ..download import download_zip
-from ..utils import get_local_path, get_prefs, get_sync_path
+from ..utils import addon_name, get_local_path, get_prefs, get_sync_path, manage_app_handlers
 from .extensions_setting import *
 
 submoduname = __name__.split(".")[-1]
@@ -136,10 +137,12 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
         return {"FINISHED"}
 
 
+@persistent
 def change_addons():
-    bpy.ops.pie.enable_relay_addons()
-    print('"WXZ_Pie_Menu" Enable Relay Addons!')
-    bpy.ops.wm.save_userpref()
+    if get_prefs().enable_addon_presets_items:
+        bpy.ops.pie.enable_relay_addons()
+        print(f"{addon_name()} 已开启依赖插件")
+        bpy.ops.wm.save_userpref()
 
 
 def register():

@@ -1,6 +1,8 @@
 import bpy
-import gpu
-from gpu_extras.batch import batch_for_shader
+
+if not bpy.app.background:
+    import gpu
+    from gpu_extras.batch import batch_for_shader
 
 
 def get_builtin_shader_name(name, prefix="3D"):

@@ -1,9 +1,13 @@
-import gpu
-import bpy
 import blf
-from mathutils import Vector, Matrix, Quaternion
-from gpu_extras.batch import batch_for_shader
+import bpy
+from mathutils import Matrix, Quaternion, Vector
+
 from .utils import *
+
+if not bpy.app.background:
+    import gpu
+    from gpu_extras.batch import batch_for_shader
+
 
 def vert_debug_print(debug, vert, msg, end="\n"):
     if debug:
@@ -12,9 +16,12 @@ def vert_debug_print(debug, vert, msg, end="\n"):
                 print(msg, end=end)
         else:
             print(msg, end=end)
+
+
 def update_HUD_location(self, event, offsetx=20, offsety=20):
     self.HUD_x = event.mouse_x - self.region_offset_x + offsetx
     self.HUD_y = event.mouse_y - self.region_offset_y + offsety
+
 
 def debug_draw_sweeps(self, sweeps, draw_loops=False, draw_handles=False):
     if draw_loops:
@@ -45,9 +52,10 @@ def debug_draw_sweeps(self, sweeps, draw_loops=False, draw_handles=False):
 
                 self.handles.extend([v1_co, handle1_co, v2_co, handle2_co])
 
+
 def draw_stashes_HUD(context, stashes_count, invalid_stashes_count):
     # global machin3tools
-    
+
     # if machin3tools is None:
     #     machin3tools = get_addon('MACHIN3tools')[0]
 
@@ -57,10 +65,10 @@ def draw_stashes_HUD(context, stashes_count, invalid_stashes_count):
 
     if stashes_count > 0 and len(context.selected_objects) > 0 and view.overlay.show_overlays:
         region_overlap = bprefs.system.use_region_overlap
-        header_alpha = bprefs.themes['Default'].view_3d.space.header[3]
+        header_alpha = bprefs.themes["Default"].view_3d.space.header[3]
 
-        top_header = [r for r in context.area.regions if r.type == 'HEADER' and r.alignment == 'TOP']
-        top_tool_header = [r for r in context.area.regions if r.type == 'TOOL_HEADER' and r.alignment == 'TOP']
+        top_header = [r for r in context.area.regions if r.type == "HEADER" and r.alignment == "TOP"]
+        top_tool_header = [r for r in context.area.regions if r.type == "TOOL_HEADER" and r.alignment == "TOP"]
 
         scale = context.preferences.system.ui_scale * get_prefs().modal_hud_scale
 
@@ -90,20 +98,20 @@ def draw_stashes_HUD(context, stashes_count, invalid_stashes_count):
         if invalid_stashes_count:
             full_text += f" ({invalid_stashes_count} invalid)"
 
-        offset_x = (blf.dimensions(font, full_text)[0] / 2)
+        offset_x = blf.dimensions(font, full_text)[0] / 2
 
         left_side = (region.width / 2) - offset_x
 
-        title = 'Stashes: '
+        title = "Stashes: "
         dims = blf.dimensions(font, title)
         blf.color(font, *color, 0.5)
-        blf.position(font,  left_side, region.height - offset_y - fontsize, 0)
+        blf.position(font, left_side, region.height - offset_y - fontsize, 0)
         blf.draw(font, title)
 
         title = f"{stashes_count}"
         blf.color(font, *color, 1)
         dims2 = blf.dimensions(font, title)
-        blf.position(font,  left_side + dims[0], region.height - offset_y - fontsize, 0)
+        blf.position(font, left_side + dims[0], region.height - offset_y - fontsize, 0)
         blf.draw(font, title)
 
         if invalid_stashes_count:
@@ -112,11 +120,23 @@ def draw_stashes_HUD(context, stashes_count, invalid_stashes_count):
             blf.position(font, left_side + dims[0] + dims2[0], region.height - offset_y - fontsize, 0)
             blf.draw(font, title)
 
-def draw_circle(loc=Vector(), rot=Quaternion(), radius=100, segments='AUTO', width=1, color=(1, 1, 1), alpha=1, xray=True, modal=True, screen=False):
+
+def draw_circle(
+    loc=Vector(),
+    rot=Quaternion(),
+    radius=100,
+    segments="AUTO",
+    width=1,
+    color=(1, 1, 1),
+    alpha=1,
+    xray=True,
+    modal=True,
+    screen=False,
+):
     def draw():
         nonlocal segments
 
-        if segments == 'AUTO':
+        if segments == "AUTO":
             segments = max(int(radius), 16)
 
         else:
@@ -135,28 +155,29 @@ def draw_circle(loc=Vector(), rot=Quaternion(), radius=100, segments='AUTO', wid
 
             coords.append(Vector((x, y, 0)))
 
-        gpu.state.depth_test_set('NONE' if xray else 'LESS_EQUAL')
-        gpu.state.blend_set('ALPHA')
+        gpu.state.depth_test_set("NONE" if xray else "LESS_EQUAL")
+        gpu.state.blend_set("ALPHA")
 
-        shader = gpu.shader.from_builtin('POLYLINE_UNIFORM_COLOR')
+        shader = gpu.shader.from_builtin("POLYLINE_UNIFORM_COLOR")
         shader.uniform_float("color", (*color, alpha))
         shader.uniform_float("lineWidth", width)
         shader.uniform_float("viewportSize", gpu.state.scissor_get()[2:])
         shader.bind()
 
-        batch = batch_for_shader(shader, 'LINES', {"pos": [rot @ co for co in coords]}, indices=indices)
+        batch = batch_for_shader(shader, "LINES", {"pos": [rot @ co for co in coords]}, indices=indices)
         batch.draw(shader)
 
     if modal:
         draw()
 
     elif screen:
-        bpy.types.SpaceView3D.draw_handler_add(draw, (), 'WINDOW', 'POST_PIXEL')
+        bpy.types.SpaceView3D.draw_handler_add(draw, (), "WINDOW", "POST_PIXEL")
 
     else:
-        bpy.types.SpaceView3D.draw_handler_add(draw, (), 'WINDOW', 'POST_VIEW')
+        bpy.types.SpaceView3D.draw_handler_add(draw, (), "WINDOW", "POST_VIEW")
 
-def draw_label(context, title='', coords=None, offset=0, center=True, size=12, color=(1, 1, 1), alpha=1):
+
+def draw_label(context, title="", coords=None, offset=0, center=True, size=12, color=(1, 1, 1), alpha=1):
     if not coords:
         region = context.region
         width = region.width / 2

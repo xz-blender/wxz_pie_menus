@@ -5,13 +5,19 @@ from pathlib import Path
 import bpy
 from bpy.app.handlers import persistent
 
+from . import __package__ as base_package
+
 
 def addon_name():
     return "WXZ Pie Menus Addon"
 
 
+def addon_id():
+    return base_package
+
+
 def get_prefs():
-    return bpy.context.preferences.addons[__package__].preferences
+    return bpy.context.preferences.addons[addon_id()].preferences
 
 
 def is_windows():

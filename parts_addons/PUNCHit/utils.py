@@ -2,8 +2,11 @@ import sys
 
 import blf
 import bpy
-import gpu
-from gpu_extras.batch import batch_for_shader
+
+if not bpy.app.background:
+    import gpu
+    from gpu_extras.batch import batch_for_shader
+
 from mathutils import Matrix, Vector
 
 from ...utils import get_prefs

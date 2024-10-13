@@ -26,14 +26,17 @@
         "mesh.primitive_vert_add"
     ],
     "FBX format": [
-        "export.dxf",
-        "import_scene.fbx"
+        "import_scene.fbx",
+        "export_scene.fbx"
     ],
     "Face Cutter": [
         "mesh.face_cutter_operator"
     ],
     "Import AutoCAD DXF Format (.dxf)": [
         "import_scene.dxf"
+    ],
+    "Export Autocad DXF Format (.dxf)": [
+        "export.dxf"
     ],
     "LoopTools": [
         "mesh.looptools_circle",

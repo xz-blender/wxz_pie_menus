@@ -105,7 +105,6 @@ def change_preferences_settings(context):
     filepaths.save_version = 0  # 保存版本0
     filepaths.recent_files = 30  # 查看最近打开文件数量
     filepaths.use_file_compression = True  # 使用文件压缩
-    # bpy.data.use_autopack = True
 
     # 主题
     theme = pref.themes[0]
@@ -125,7 +124,6 @@ def change_context_settings():
     cycles = scene.cycles
     render = scene.render
     v_sets = scene.view_settings
-    space = context.space_data
     # -------渲染设置-------
 
     render.engine = "CYCLES"
@@ -191,7 +189,7 @@ class PIE_Load_XZ_Setting_Presets(bpy.types.Operator):
 
     def execute(self, context):
         try:
-            bpy.ops.file.autopack_toggle()
+            bpy.data.use_autopack = True
             print(f"{addon_name()} 已开启自动打包资源!")
         except:
             pass

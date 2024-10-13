@@ -1,10 +1,13 @@
 import bpy
 import mathutils
 
-from .utils import global_loc, calc_node
-import gpu
-from gpu_extras.presets import draw_circle_2d
-from gpu_extras.batch import batch_for_shader
+from .utils import calc_node, global_loc
+
+if not bpy.app.background:
+    import gpu
+    from gpu_extras.batch import batch_for_shader
+    from gpu_extras.presets import draw_circle_2d
+
 
 DRAW_COLOR = (1, 1, 1, 0.5)
 DRAW_RADIUS = 10
@@ -19,12 +22,12 @@ def draw_callback(self):
             x1, y1 = loc[0] - DRAW_RADIUS, loc[1] + DRAW_RADIUS
             x2, y2 = loc[0] + node.dimensions[0] + DRAW_RADIUS, loc[1] - node.dimensions[1] - DRAW_RADIUS
 
-            shader = gpu.shader.from_builtin('2D_SMOOTH_COLOR')
+            shader = gpu.shader.from_builtin("2D_SMOOTH_COLOR")
 
             vertices = ((x1, y1), (x2, y1), (x2, y2), (x1, y2), (x1, y1))
             vertex_colors = (DRAW_COLOR, DRAW_COLOR, DRAW_COLOR, DRAW_COLOR, DRAW_COLOR)
 
-            batch = batch_for_shader(shader, 'LINE_STRIP', {"pos": vertices, "color": vertex_colors})
+            batch = batch_for_shader(shader, "LINE_STRIP", {"pos": vertices, "color": vertex_colors})
 
             shader.bind()
             batch.draw(shader)
@@ -34,6 +37,7 @@ def draw_callback(self):
 
 class NodeRelaxBrush(bpy.types.Operator):
     """Relax Nodes"""
+
     bl_idname = "node_relax.brush"
     bl_label = "Relax Nodes"
 
@@ -46,19 +50,20 @@ class NodeRelaxBrush(bpy.types.Operator):
         self.cursor_pos = mathutils.Vector((0, 0))
         self.cursor_prev_pos = mathutils.Vector((0, 0))
         self.slide_vec = mathutils.Vector((0, 0))
-        self. drag_mode = False
+        self.drag_mode = False
         self.is_dragging = False
         self.dragging_node = None
 
     @classmethod
     def poll(cls, context):
         space = context.space_data
-        return space.type == 'NODE_EDITOR' and space.node_tree is not None
+        return space.type == "NODE_EDITOR" and space.node_tree is not None
 
     def update_cursor_pos(self, context, event):
         self.cursor_prev_pos = self.cursor_pos
         self.cursor_pos = mathutils.Vector(
-            context.region.view2d.region_to_view(event.mouse_region_x, event.mouse_region_y))
+            context.region.view2d.region_to_view(event.mouse_region_x, event.mouse_region_y)
+        )
 
     def update_radius(self, context, original_radius):
         radiusM = context.region.view2d.region_to_view(original_radius, 0)
@@ -90,7 +95,7 @@ class NodeRelaxBrush(bpy.types.Operator):
             if self.lmb:
                 dist = mathutils.Vector((props.Distance, props.Distance))
                 for node in nodes:
-                    if node.type == 'FRAME':
+                    if node.type == "FRAME":
                         continue
                     # Brush
                     loc = global_loc(node)
@@ -100,14 +105,22 @@ class NodeRelaxBrush(bpy.types.Operator):
                         continue
 
                     # Calculate physics
-                    calc_node(node, nodes, infl, self.slide_vec * props.SlidePower, props.RelaxPower,
-                              props.CollisionPower, dist, False)
+                    calc_node(
+                        node,
+                        nodes,
+                        infl,
+                        self.slide_vec * props.SlidePower,
+                        props.RelaxPower,
+                        props.CollisionPower,
+                        dist,
+                        False,
+                    )
 
     def update_dragging_node(self, nodes):
         self.dragging_node = None
         nearest = 0
         for node in nodes:
-            if node.type == 'FRAME':
+            if node.type == "FRAME":
                 continue
             loc = global_loc(node)
             pos = mathutils.Vector((loc.x, loc.y))
@@ -121,36 +134,36 @@ class NodeRelaxBrush(bpy.types.Operator):
 
     def finish(self, context, props):
         st = bpy.types.SpaceNodeEditor
-        st.draw_handler_remove(self.draw_handler, 'WINDOW')
+        st.draw_handler_remove(self.draw_handler, "WINDOW")
         props.IsRunning = False
 
     def modal(self, context, event):
         props = context.scene.NodeRelax_props
 
-        if event.type in {'MIDDLEMOUSE', 'WHEELUPMOUSE', 'WHEELDOWNMOUSE'}:  # allow navigation shortcuts
-            return {'PASS_THROUGH'}
+        if event.type in {"MIDDLEMOUSE", "WHEELUPMOUSE", "WHEELDOWNMOUSE"}:  # allow navigation shortcuts
+            return {"PASS_THROUGH"}
 
-        if event.type == 'LEFT_SHIFT' or event.type == 'RIGHT_SHIFT': # drag individual node
-            if event.value == 'PRESS':
+        if event.type == "LEFT_SHIFT" or event.type == "RIGHT_SHIFT":  # drag individual node
+            if event.value == "PRESS":
                 self.drag_mode = True
-            if event.value == 'RELEASE':
+            if event.value == "RELEASE":
                 self.drag_mode = False
             self.is_dragging = False
             self.update_dragging_node(self.tree.nodes)
             context.area.tag_redraw()
 
-        if event.type == 'MOUSEMOVE':
+        if event.type == "MOUSEMOVE":
             self.update_cursor_pos(context, event)
             self.update_radius(context, props.BrushSize)
             self.main_operation(context)
 
-        if event.type == 'WHEELUPMOUSE' or event.type == 'WHEELDOWNMOUSE':
+        if event.type == "WHEELUPMOUSE" or event.type == "WHEELDOWNMOUSE":
             self.update_cursor_pos(context, event)
             self.update_radius(context, props.BrushSize)
             context.area.tag_redraw()
 
-        elif event.type == 'LEFTMOUSE':
-            if event.value == 'PRESS':
+        elif event.type == "LEFTMOUSE":
+            if event.value == "PRESS":
                 self.lmb = True
                 if self.drag_mode:
                     self.is_dragging = True
@@ -158,15 +171,15 @@ class NodeRelaxBrush(bpy.types.Operator):
                     self.update_cursor_pos(context, event)
                     self.cursor_prev_pos = self.cursor_pos  # No sliding
                     self.main_operation(context)
-            if event.value == 'RELEASE':
+            if event.value == "RELEASE":
                 self.lmb = False
                 if self.drag_mode:
                     self.is_dragging = False
 
-        elif event.type in {'RIGHTMOUSE', 'ESC'}:
+        elif event.type in {"RIGHTMOUSE", "ESC"}:
             self.finish(context, props)
             context.area.tag_redraw()
-            return {'FINISHED'}
+            return {"FINISHED"}
 
         if event.type == "LEFT_BRACKET":
             props.BrushSize -= 10
@@ -180,17 +193,17 @@ class NodeRelaxBrush(bpy.types.Operator):
             self.update_radius(context, props.BrushSize)
             context.area.tag_redraw()
 
-        return {'RUNNING_MODAL'}
+        return {"RUNNING_MODAL"}
 
     def invoke(self, context, event):
         props = context.scene.NodeRelax_props
         if props.IsRunning:
-            return {'CANCELLED'}
+            return {"CANCELLED"}
 
         self.tree = context.space_data.edit_tree
         context.window_manager.modal_handler_add(self)
         st = bpy.types.SpaceNodeEditor
-        self.draw_handler = st.draw_handler_add(draw_callback, (self,), 'WINDOW', 'POST_VIEW')
+        self.draw_handler = st.draw_handler_add(draw_callback, (self,), "WINDOW", "POST_VIEW")
 
         self.lmb = False
         props.IsRunning = True
@@ -198,4 +211,4 @@ class NodeRelaxBrush(bpy.types.Operator):
         self.update_radius(context, props.BrushSize)
 
         context.area.tag_redraw()
-        return {'RUNNING_MODAL'}
+        return {"RUNNING_MODAL"}

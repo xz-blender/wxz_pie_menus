@@ -7,8 +7,7 @@ from pathlib import Path
 
 import bpy
 
-from ..utils import addon_name
-
+from ..utils import addon_id, addon_name
 
 nodes_dir_path = Path(__file__).parent.parent / "nodes_presets"
 nodes_dir_path_list = {}
@@ -64,13 +63,17 @@ def set_wxz_nodes_presets():
                             else:
                                 pass
                         else:
-                            print(f"{name_save_time} 保存时间不存在")
+                            # print(f"{name_save_time} 保存时间不存在!")
+                            pass
+                else:
+                    # print(f"{save_time_file.name} 文件不存在!")
+                    subprocess.run([bpy.app.binary_path, full_path, "--background", "--python", wxz_nodes_script])
 
 
 def change_nodes_presets():
     change_assets_library_path()
     set_wxz_nodes_presets()
-    print(f"{addon_name()} Add Default Nodes Presets")
+    print(f"{addon_name()} 已添加默认节点预设")
 
 
 def register():

@@ -3,11 +3,13 @@ from random import choice
 
 import bmesh
 import bpy
-import gpu
 from bpy.props import BoolProperty, EnumProperty, FloatProperty, IntProperty
 from bpy.types import Context, Operator, Panel
-from gpu_extras.batch import batch_for_shader
 from mathutils import Matrix, Quaternion, Vector, geometry
+
+if not bpy.app.background:
+    import gpu
+    from gpu_extras.batch import batch_for_shader
 
 from ... import __package__ as base_package
 from .items import *

@@ -1,17 +1,24 @@
 from math import cos, pi, sin
 from pprint import pprint
-from bl_ui.space_toolsystem_toolbar import VIEW3D_PT_tools_active as view3d_tools
+
 import blf
 import bpy
-import gpu
 from bl_ui.space_statusbar import STATUSBAR_HT_header as statusbar
-from bpy_extras.view3d_utils import location_3d_to_region_2d ,region_2d_to_location_3d
-from gpu_extras.batch import batch_for_shader
+from bl_ui.space_toolsystem_toolbar import VIEW3D_PT_tools_active as view3d_tools
+from bpy_extras.view3d_utils import location_3d_to_region_2d, region_2d_to_location_3d
 from mathutils import Matrix, Quaternion, Vector
 
+if not bpy.app.background:
+    import gpu
+    from gpu_extras.batch import batch_for_shader
+
+
 modal_hud_scale = 1
+
+
 def get_prefs():
     return bpy.context.preferences.addons[__package__].preferences
+
 
 red = (1, 0.25, 0.25)
 green = (0.25, 1, 0.25)
@@ -20,6 +27,8 @@ white = (1, 1, 1)
 yellow = (1, 0.9, 0.2)
 axis_items = [("X", "X", ""), ("Y", "Y", ""), ("Z", "Z", "")]
 axis_index_mapping = {"X": 0, "Y": 1, "Z": 2}
+
+
 def get_addon(addon, debug=False):
     import addon_utils
 
@@ -41,14 +50,20 @@ def get_addon(addon, debug=False):
 
             return enabled, foldername, version, path
     return False, None, None, None
+
+
 def get_active_tool(context):
     return view3d_tools.tool_active_from_context(context)
+
+
 def move_mod(mod, index=0):
     obj = mod.id_data
     current_index = list(obj.modifiers).index(mod)
 
     if current_index != index:
         obj.modifiers.move(current_index, index)
+
+
 def get_loc_2d(context, loc):
     loc_2d = location_3d_to_region_2d(context.region, context.region_data, loc)
     return loc_2d if loc_2d else Vector((-1000, -1000))

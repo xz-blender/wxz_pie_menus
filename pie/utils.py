@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 
 import addon_utils
 import bpy
@@ -138,9 +139,7 @@ def operator_exists(idname):
     return True
 
 
-def get_op_id_name_dic():
-    from pathlib import Path
-
+def get_op_id_name_dic() -> dict:
     op_id_filepath = Path(__file__).parent / "operator_id.json"
     with open(op_id_filepath, "r") as file:
         data = json.load(file)

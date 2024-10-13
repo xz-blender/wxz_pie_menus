@@ -59,13 +59,7 @@ if app_path not in sys.path:
     sys.path.append(app_path)
 
 MODULES_FOLDER = Path(bpy.utils.system_resource("SCRIPTS")) / "modules"
-
-if bpy.app.version < (2, 91, 0):
-    python_bin = bpy.app.binary_path_python
-else:
-    python_bin = sys.executable
-
-
+python_bin = sys.executable
 TEXT_OUTPUT = []
 ERROR_OUTPUT = []
 addon_keymaps = []
@@ -410,14 +404,13 @@ class WXZ_PIE_Preferences(AddonPreferences, props.WXZ_PIE_Prefs_Props):
         draw_pie_modules(self, top_row, module_path_name_list)
 
     def draw_resource_config(self, layout):
-        layout.label(text="资源配置设置 (勾选后手动运行 or 重启后自动运行)")
-        layout.label(text="以下选项会严重更改您的软件设置,谨慎选择", icon="ERROR")
+        layout.label(text="以下选项会严重更改您的软件设置,谨慎选择 (重启自动运行 & 勾选并手动运行)", icon="ERROR")
         box = layout.box()
         row = box.row()
         row.alignment = "LEFT"
 
         row = box.row()
-        text_download_addons = "下载插件 - 常用官方插件(27个共计1.1M)"
+        text_download_addons = "加载插件 - 常用外部插件预设 (自动下载)"
         if self.download_official_addons:
             split = row.column().split(factor=0.8)
             split.alignment = "LEFT"

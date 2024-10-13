@@ -1,15 +1,19 @@
 import math
-import numpy as np
 
-from mathutils.bvhtree import BVHTree
-from mathutils import Vector, kdtree, Matrix
-from gpu_extras.batch import batch_for_shader
-from .volume_preserve_smoothing import CommonSmoothMethods, close_bmesh, get_mirrored_verts
-from bpy_extras import view3d_utils
-import gpu
-import bmesh
-import blf
 import bpy
+import numpy as np
+from mathutils import Matrix, Vector, kdtree
+from mathutils.bvhtree import BVHTree
+
+if not bpy.app.background:
+    import gpu
+    from gpu_extras.batch import batch_for_shader
+
+import blf
+import bmesh
+from bpy_extras import view3d_utils
+
+from .volume_preserve_smoothing import CommonSmoothMethods, close_bmesh, get_mirrored_verts
 
 # round_to_n = lambda x, n: round(x, -int(math.floor(math.log10(x))) + (n - 1))
 round_to_first_digit = lambda x: math.pow(10, math.floor(math.log10(x)))

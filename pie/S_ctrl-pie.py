@@ -15,21 +15,6 @@ bl_info = {
     "category": "3D View",
 }
 
-import_export_relay_default_addons = {
-    "STL format": "io_mesh_stl",
-    "FBX format": "io_scene_fbx",
-    "Scalable Vector Graphics (SVG) 1.1 format": "io_curve_svg",
-    "glTF 2.0 format": "io_scene_gltf2",
-    "Import AutoCAD DXF Format (.dxf)": "io_import_dxf",
-    "Export Autocad DXF Format (.dxf)": "io_export_dxf",
-}
-
-for name, path in import_export_relay_default_addons.items():
-    try:
-        bpy.ops.preferences.addon_enable(module=path)
-    except:
-        print("%s插件启用失败,请手动开启!" % (name))
-
 
 class PIE_Click_Deep_Clean_Purge(bpy.types.Operator):
     bl_idname = "pie.one_purge_orphaned_data"
@@ -58,11 +43,11 @@ class VIEW3D_PIE_MT_Bottom_S_ctrl_Files(Menu):
         # 4 - LEFT
         pie.operator("wm.open_mainfile", text="打开文件", icon="FILEBROWSER")
         # 6 - RIGHT
-        pie.operator("wm.read_homefile", text="新建文件", icon="FILE_NEW").app_template = ""
+        pie.operator("wm.read_homefile", text="新建文件", icon="FILE_NEW")
         # 2 - BOTTOM
-        pie.menu("PIE_MT_S_Ctrl_export", text="导出", icon="EXPORT")
+        pie.menu("PIE_MT_S_Ctrl_Export", text="导出", icon="EXPORT")
         # 8 - TOP
-        pie.menu("PIE_MT_S_Ctrl_import", text="导入", icon="IMPORT")
+        pie.menu("PIE_MT_S_Ctrl_Import", text="导入", icon="IMPORT")
 
         # 7 - TOP - LEFT
         col = pie.split().column(align=True)
@@ -105,7 +90,7 @@ class VIEW3D_PIE_MT_Bottom_S_ctrl_Files(Menu):
         # auto_smooth.keep_open = True
 
 
-class PIE_MT_S_Ctrl_import(Menu):
+class PIE_MT_S_Ctrl_Import(Menu):
     bl_idname = __qualname__  # Python 3.3+
     bl_label = ""
 
@@ -138,7 +123,7 @@ class PIE_MT_S_Ctrl_import(Menu):
         add_operator(row, "import_scene.skp", text="—— skp ——", icon="EVENT_S")
 
 
-class PIE_MT_S_Ctrl_export(Menu):
+class PIE_MT_S_Ctrl_Export(Menu):
     bl_idname = __qualname__  # Python 3.3+
     bl_label = ""
 
@@ -170,8 +155,8 @@ class PIE_MT_S_Ctrl_export(Menu):
 
 classes = [
     VIEW3D_PIE_MT_Bottom_S_ctrl_Files,
-    PIE_MT_S_Ctrl_import,
-    PIE_MT_S_Ctrl_export,
+    PIE_MT_S_Ctrl_Import,
+    PIE_MT_S_Ctrl_Export,
     PIE_Click_Deep_Clean_Purge,
 ]
 
