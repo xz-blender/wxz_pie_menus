@@ -171,13 +171,6 @@ def change_extensions_repo_list():
         # bpy.ops.extensions.repo_unlock()
 
 
-def update_force_autoPackup_props():
-    prop = bpy.context.preferences.addons[addon_id()].preferences.force_autoPackup
-    bpy.data.use_autopack = prop
-    text: str = "-开启-" if prop else "-关闭-"
-    print(f"{addon_name()} 已强制 {text} 自动打包资源!")
-
-
 class PIE_Load_XZ_Setting_Presets(bpy.types.Operator):
     bl_idname = "pie.load_xz_setting_presets"
     bl_label = "更改为xz的快捷键预设"
@@ -198,6 +191,14 @@ class PIE_Load_XZ_Setting_Presets(bpy.types.Operator):
 
 
 @persistent
+def force_AutoPackup_handler(dummy):
+    if get_prefs().force_AutoPackup_startup:
+        bpy.data.use_autopack = True
+    elif get_prefs().force_AutoPackup_presave:
+        bpy.ops.file.pack_all()
+
+
+@persistent
 def run_set_load_xz_setting_presets(dummy):
     if get_prefs().load_xz_setting_presets:
         bpy.ops.pie.load_xz_setting_presets()
@@ -207,11 +208,13 @@ def register():
     bpy.utils.register_class(PIE_Load_XZ_Setting_Presets)
     manage_app_handlers(handler_on_default_blender_list, run_set_load_xz_setting_presets)
     manage_app_handlers(handler_on_depsgraph, workspace_change_overlay)
+    manage_app_handlers(handlers_Force_AutoPackup, force_AutoPackup_handler)
 
 
 def unregister():
     manage_app_handlers(handler_on_default_blender_list, run_set_load_xz_setting_presets, remove=True)
     manage_app_handlers(handler_on_depsgraph, workspace_change_overlay, remove=True)
+    manage_app_handlers(handlers_Force_AutoPackup, force_AutoPackup_handler, remove=True)
     bpy.utils.unregister_class(PIE_Load_XZ_Setting_Presets)
 
 

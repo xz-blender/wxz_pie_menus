@@ -4,7 +4,6 @@ import bpy
 from bpy.props import *
 from bpy.types import PropertyGroup
 
-from .operator.change_settings import update_force_AutoPackup_props
 from .pie.Translate_key import enum_languages
 from .utils import *
 
@@ -62,7 +61,8 @@ class WXZ_PIE_Prefs_Props:
     show_other_module_prop: BoolProperty(name="其他小工具设置")  # type: ignore
     modifier_profiling: BoolProperty(name="修改器-耗时统计面板", default=False)  # type: ignore
     change_overlay_and_shading_sets: BoolProperty(name="个性化更改视图着色", default=False)  # type: ignore
-    force_AutoPackup: BoolProperty(name="强制自动打包", default=True, update=update_force_AutoPackup_props())  # type: ignore
+    force_AutoPackup_startup: BoolProperty(name="强制自动打包-启动时", default=True)  # type: ignore
+    force_AutoPackup_presave: BoolProperty(name="强制自动打包-保存时", default=False)  # type: ignore
 
     ## formula to nodes
     show_formula2nodes_submenu: BoolProperty(name="表达式转节点")  # type: ignore
