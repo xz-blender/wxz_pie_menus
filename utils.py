@@ -7,17 +7,15 @@ from bpy.app.handlers import persistent
 
 from . import __package__ as base_package
 
+ADDON_ID = base_package
+
 
 def addon_name():
     return "WXZ Pie Menus Addon"
 
 
-def addon_id():
-    return base_package
-
-
 def get_prefs():
-    return bpy.context.preferences.addons[addon_id()].preferences
+    return bpy.context.preferences.addons[ADDON_ID].preferences
 
 
 def is_windows():

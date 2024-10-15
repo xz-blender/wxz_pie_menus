@@ -364,15 +364,5 @@ def unregister():
     bpy.utils.unregister_class(PIE_Load_XZ_Keys_Presets)
 
 
-# def register():
-#     if not bpy.app.timers.is_registered(changes_keys):
-#         bpy.app.timers.register(changes_keys, first_interval=1)
-
-
-# def unregister():
-#     if bpy.app.timers.is_registered(changes_keys):
-#         bpy.app.timers.unregister(changes_keys)
-
-
 if __name__ == "__main__":
     register()

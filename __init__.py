@@ -19,18 +19,9 @@ from bpy.props import *
 from bpy.types import AddonPreferences, Operator, PropertyGroup, UIList
 
 from . import props
-from .nodes_presets.Higssas import *
+from .panels import *
 from .translation.translate import GetTranslationDict
 from .utils import *
-
-bl_info = {
-    "name": "WXZ Pie Menus Addon",
-    "author": "wxz",
-    "version": (0, 1, 10),
-    "blender": (4, 2, 0),
-    "description": "Pie Menu",
-    "category": "3D View",
-}
 
 except_module_list = [
     "icons",
@@ -41,6 +32,7 @@ except_module_list = [
     "operator_id",
     "operator_id_sort",
     "extensions_setting",
+    "assets_lib_presets",
 ]
 cwd = Path(__file__).parent
 module_path_name_list = {"pie": "pie_modules", "parts_addons": "other_modules", "operator": "setting_modules"}
@@ -290,27 +282,6 @@ class PIE_UL_setting_modules(UIList):
         row.prop(data, "use_" + mod_name, text="")
 
 
-def draw_pie_modules(self, top_row, module_path_name_list):
-    for lable_name, module_name in {
-        "已启用饼菜单:": "pie",
-        "已启用内置插件:": "parts_addons",
-        "已应用设置:": "operator",
-    }.items():
-        split = top_row.split()
-        box = split.box()
-        sub_row = box.row()
-        sub_row.alignment = "CENTER"
-        sub_row.label(text=lable_name)
-        sub_row = box.row()
-        column = sub_row.column()
-
-        name = module_path_name_list[module_name].split("_")[0]
-        # print(module_name, "__________", name)
-        column.template_list(
-            f"PIE_UL_{name}_modules", "", self, f"{name}_modules", self, f"{name}_modules_index", rows=8
-        )
-
-
 class WXZ_PIE_Preferences(AddonPreferences, props.WXZ_PIE_Prefs_Props):
     bl_idname = __package__
 
@@ -320,15 +291,14 @@ class WXZ_PIE_Preferences(AddonPreferences, props.WXZ_PIE_Prefs_Props):
         row.prop(self, "tabs", expand=True)
         row.alignment = "CENTER"
 
-        box = layout.box()
         if self.tabs == "DEPENDENCIES":
-            self.draw_dependencies(box)
+            self.draw_dependencies(layout)
         elif self.tabs == "ADDON_MENUS":
-            self.draw_addon_menus(box, context)
+            draw_addon_menus(self, layout, context, module_path_name_list)
         elif self.tabs == "RESOURCE_CONFIG":
-            self.draw_resource_config(box)
+            draw_resource_config(self, layout)
         elif self.tabs == "Other_Addons_Setting":
-            self.draw_other_addons_setting(box)
+            draw_other_addons_setting(self, layout)
 
     def draw_dependencies(self, layout):
         layout.label(text="依赖包设置")
@@ -398,138 +368,6 @@ class WXZ_PIE_Preferences(AddonPreferences, props.WXZ_PIE_Prefs_Props):
         if TEXT_OUTPUT != [] or ERROR_OUTPUT != []:
             row.operator("pie.pip_cleartext", text="清除文本")
 
-    def draw_addon_menus(self, layout, context):
-        layout.label(text="内置饼菜单 & 内置插件开关")
-        top_row = layout.row()
-        draw_pie_modules(self, top_row, module_path_name_list)
-
-    def draw_resource_config(self, layout):
-        layout.label(text="以下选项会严重更改您的软件设置,谨慎选择 (重启自动运行 & 勾选并手动运行)", icon="ERROR")
-        box = layout.box()
-        row = box.row()
-        row.alignment = "LEFT"
-
-        row = box.row()
-        text_download_addons = "加载插件 - 常用外部插件预设 (自动下载)"
-        if self.download_official_addons:
-            split = row.column().split(factor=0.8)
-            split.alignment = "LEFT"
-            split.prop(self, "download_official_addons", text=text_download_addons)
-            split.alignment = "RIGHT"
-            split.operator("pie.enable_relay_addons", text="手动执行")
-        else:
-            row.alignment = "LEFT"
-            row.prop(self, "download_official_addons", text=text_download_addons)
-
-        row = box.row()
-        if not self.load_assets_library_presets:
-            row.prop(self, "load_assets_library_presets", text="加载预设 - 资源库路径 (会增加许多对您无用的资产路径!)")
-        else:
-            sp = row.split(factor=0.8)
-            sp.prop(self, "load_assets_library_presets", text="加载预设 - 资源库路径 (会增加许多对您无用的资产路径!)")
-            sp.operator("pie.change_assets_library_path", text="移除路径").remove = True
-
-            split = box.split(factor=0.8)
-            box_l = split.box()
-            row = box_l.row()
-            row.prop(self, "assets_library_path_sync")
-            row = box_l.row()
-            row.prop(self, "assets_library_path_local")
-            box_r = split.box()
-            row = box_r.row()
-            row.scale_y = 2.4
-            row.operator("pie.change_assets_library_path", text="手动执行")
-
-        row = box.row()
-        text_hotkey = "加载预设 - 快捷键 (请备份好您的快捷键!)"
-        if self.load_xz_keys_presets:
-            split = row.column().split(factor=0.8)
-            split.alignment = "LEFT"
-            split.prop(self, "load_xz_keys_presets", text=text_hotkey)
-            split.alignment = "RIGHT"
-            split.operator("pie.load_xz_keys_presets", text="手动执行")
-        else:
-            row.alignment = "LEFT"
-            row.prop(self, "load_xz_keys_presets", text=text_hotkey)
-
-        row = box.row()
-        text_setting_presets = "加载预设 - 通用设置 (请备份好您的userpref.blend文件!)"
-        if self.load_xz_setting_presets:
-            split = row.column().split(factor=0.8)
-            split.alignment = "LEFT"
-            split.prop(self, "load_xz_setting_presets", text=text_setting_presets)
-            split.alignment = "RIGHT"
-            split.operator("pie.load_xz_setting_presets", text="手动执行")
-        else:
-            row.alignment = "LEFT"
-            row.prop(self, "load_xz_setting_presets", text=text_setting_presets)
-
-    def draw_other_addons_setting(self, layout):
-        layout.label(text="其他插件设置")
-        layout = self.layout.column(align=False)
-
-        # 实用小工具设置
-        attr, col = prefs_show_sub_panel(self, layout, "show_other_module_prop")
-        if attr:
-            box = col.box()
-            col = box.column(align=True)
-            row = col.row()
-            row.prop(self, "modifier_profiling")
-            row.prop(self, "change_overlay_and_shading_sets")
-
-        # 表达式转节点
-        attr, col = prefs_show_sub_panel(self, layout, "show_formula2nodes_submenu")
-        if attr:
-            box = col.box()
-            box.label(text="检查键映射设置以编辑激活。默认为Ctrl+M")
-            row = box.row(align=True)
-            row.prop(self, "debug_prints")
-            row.prop(self, "generate_previews")
-            row = box.row()
-            row.label(text="变量排序依据...")
-            row.prop(self, "sort_vars", expand=True)
-
-        # meshmachine剥离版
-        attr, col = prefs_show_sub_panel(self, layout, "show_meshmachine_submenu")
-        if attr:
-            box = col.box()
-            col = box.column(align=True)
-            row = col.row()
-            row.prop(self, "modal_hud_color")
-            row.prop(self, "modal_hud_scale")
-            row = col.row()
-            row.prop(self, "modal_hud_hints")
-            row.prop(self, "symmetrize_flick_distance")
-        # 双语切换设置
-        attr, col = prefs_show_sub_panel(self, layout, "show_language_switch_submenu")
-        if attr:
-            box = col.box()
-            col = box.column(align=True)
-            col.label(text="双语切换设置:设置不同的两种语言以供切换", icon="SETTINGS")
-            row = col.row(align=True)
-            row.prop(self, "first_lang")
-            row.separator()
-            row.prop(self, "second_lang")
-        # 资产浏览器缩略图缩放快捷键
-        attr, col = prefs_show_sub_panel(self, layout, "show_asset_browser_scroll")
-        if attr:
-            box = col.box()
-            col = box.column(align=True)
-            row = col.row()
-            row.prop(self, "tby_bsr_multiplier_resize_factor")
-
-        # 挤出流形插件
-        attr, col = prefs_show_sub_panel(self, layout, "show_punchit")
-        if attr:
-            box = col.box()
-            col = box.column(align=True)
-            row = col.row()
-            row.prop(self, "push_default")
-            row.prop(self, "pull_default")
-            row = col.row()
-            row.prop(self, "non_manifold_extrude")
-            row.prop(self, "modal_hud_timeout")
-
 
 for mod in all_modules:
     # info = mod.bl_info
@@ -550,10 +388,7 @@ for mod in all_modules:
         WXZ_PIE_Preferences,
         "use_" + mod_name,
         BoolProperty(
-            # name=info["name"],
             name=mod_name,
-            # name=mod.__name__.split(".")[0],
-            # description=info.get("description", ""),
             update=gen_update(mod),
             default=True,
         ),

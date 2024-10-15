@@ -1,0 +1,24 @@
+{  
+    "sync":{
+        "Simple Cloth": ["Simply Basic Cloth Library", "APPEND"],
+        "GN": ["GN", "APPEND_REUSE"],
+        "GN_Assets": [ "GN_Assets", "APPEND_REUSE"],
+        "Material": ["Material", "APPEND_REUSE"],
+        "Lights": [ "Lights", "APPEND_REUSE"],
+        "GN_Tools": [ "GN_Tools", "APPEND"]
+    },
+    "local":{
+        "Poly Haven": [ "Poly Haven", "LINK"],
+        "Abionic": [  "Abionic", "LINK"],
+        "旧公司资产": [  "company_old_lib", "APPEND_REUSE"],
+        "BagaPie Assets": [  "BagaPie Assets", "LINK"],
+        "室内家具模型": [  "室内家具模型", "LINK"],
+        "Geo-Scatter_library": [  "Geo-Scatter_library", "LINK"],
+        "Trash_kit": [  "Trash_kit", "LINK"],
+        "Tree Assets": [  "Tree Assets", "LINK"],
+        "Motion Animate": [  "Motion Animate", "APPEND"],
+        "RealCloud": [  "RealCloud", "LINK"],
+        "DeepTree": [  "DeepTree", "LINK"],
+        "光影灯光": [  "Gobos Light Textures", "LINK"]
+    }
+}

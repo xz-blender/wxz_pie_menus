@@ -36,7 +36,14 @@ def set_wxz_nodes_presets():
 
                             if abs((json_time - timestamp).total_seconds()) > 60:
                                 subprocess.run(
-                                    [bpy.app.binary_path, full_path, "--background", "--python", wxz_nodes_script]
+                                    [
+                                        bpy.app.binary_path,
+                                        full_path,
+                                        "--background",
+                                        "--factory-startup",
+                                        "--python",
+                                        wxz_nodes_script,
+                                    ]
                                 )
                             else:
                                 pass
@@ -45,7 +52,16 @@ def set_wxz_nodes_presets():
                             pass
                 else:
                     # print(f"{save_time_file.name} 文件不存在!")
-                    subprocess.run([bpy.app.binary_path, full_path, "--background", "--python", wxz_nodes_script])
+                    subprocess.run(
+                        [
+                            bpy.app.binary_path,
+                            full_path,
+                            "--background",
+                            "--factory-startup",
+                            "--python",
+                            wxz_nodes_script,
+                        ]
+                    )
 
 
 @persistent
