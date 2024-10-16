@@ -20,13 +20,15 @@ class WXZ_PIE_Prefs_Props:
     )  # type: ignore
 
     # 资源设置
-    load_assets_library_presets: bpy.props.BoolProperty(name="加载资源库预设", default=True)  # type: ignore
+    load_assets_library_presets: bpy.props.BoolProperty(name="加载资源库预设", default=False)  # type: ignore
     assets_library_path_sync: bpy.props.StringProperty(name="远程路径", subtype="DIR_PATH", default=get_sync_path())  # type: ignore
     assets_library_path_local: bpy.props.StringProperty(name="本地路径", subtype="DIR_PATH", default=get_local_path())  # type: ignore
     load_xz_keys_presets: bpy.props.BoolProperty(name="加载XZ快捷键预设", default=False)  # type: ignore
     load_xz_setting_presets: bpy.props.BoolProperty(name="加载XZ配置预设", default=False)  # type: ignore
     download_official_addons: bpy.props.BoolProperty(name="下载常用内置插件", default=False)  # type: ignore
     enable_addon_presets_items: bpy.props.BoolProperty(name="开启常用插件预设", default=False)  # type: ignore
+    xz_download_offical_extensions: bpy.props.BoolProperty(name="安装常用官方插件", default=False)  # type: ignore
+    xz_download_parts_extensions: bpy.props.BoolProperty(name="安装作者常用插件", default=False)  # type: ignore
 
     # 饼菜单面板
     pie_modules: CollectionProperty(type=PropertyGroup)  # type: ignore

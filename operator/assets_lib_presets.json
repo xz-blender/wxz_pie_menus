@@ -1,24 +1,24 @@
 {  
     "sync":{
-        "Simple Cloth": ["Simply Basic Cloth Library", "APPEND"],
-        "GN": ["GN", "APPEND_REUSE"],
-        "GN_Assets": [ "GN_Assets", "APPEND_REUSE"],
-        "Material": ["Material", "APPEND_REUSE"],
-        "Lights": [ "Lights", "APPEND_REUSE"],
-        "GN_Tools": [ "GN_Tools", "APPEND"]
+        "Simple Cloth": ["Simply Basic Cloth Library", 1],
+        "GN": ["GN", 0],
+        "GN_Assets": [ "GN_Assets", 0],
+        "Material": ["Material", 0],
+        "Lights": [ "Lights", 0],
+        "GN_Tools": [ "GN_Tools", 1]
     },
     "local":{
-        "Poly Haven": [ "Poly Haven", "LINK"],
-        "Abionic": [  "Abionic", "LINK"],
-        "旧公司资产": [  "company_old_lib", "APPEND_REUSE"],
-        "BagaPie Assets": [  "BagaPie Assets", "LINK"],
-        "室内家具模型": [  "室内家具模型", "LINK"],
-        "Geo-Scatter_library": [  "Geo-Scatter_library", "LINK"],
-        "Trash_kit": [  "Trash_kit", "LINK"],
-        "Tree Assets": [  "Tree Assets", "LINK"],
-        "Motion Animate": [  "Motion Animate", "APPEND"],
-        "RealCloud": [  "RealCloud", "LINK"],
-        "DeepTree": [  "DeepTree", "LINK"],
-        "光影灯光": [  "Gobos Light Textures", "LINK"]
+        "Poly Haven": [ "Poly Haven", 2],
+        "Abionic": [  "Abionic", 2],
+        "旧公司资产": [  "company_old_lib", 0],
+        "BagaPie Assets": [  "BagaPie Assets", 2],
+        "室内家具模型": [  "室内家具模型", 2],
+        "Geo-Scatter_library": [  "Geo-Scatter_library", 2],
+        "Trash_kit": [  "Trash_kit", 2],
+        "Tree Assets": [  "Tree Assets", 2],
+        "Motion Animate": [  "Motion Animate", 1],
+        "RealCloud": [  "RealCloud", 2],
+        "DeepTree": [  "DeepTree", 2],
+        "光影灯光": [  "Gobos Light Textures", 2]
     }
 }

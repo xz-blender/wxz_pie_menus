@@ -30,68 +30,63 @@ def draw_pie_modules(self, top_row, module_path_name_list):
 
 def draw_resource_config(self, layout):
     layout.label(text="以下选项会严重更改您的软件设置,谨慎选择 (重启自动运行 & 勾选并手动运行)", icon="ERROR")
-    box = layout.box()
-    row = box.row()
-    row.alignment = "LEFT"
+    box = layout.column()
     split_main_factor = 0.7
 
-    row = box.row()
-    text = "加载插件 - 常用外部插件预设 -- (自动下载)"
+    row = box.row().box()
+    text = "加载插件 - 常用外部插件预设 -- (自动下载安装)"
     if self.download_official_addons:
-        split = row.column().split(factor=split_main_factor)
-        split.alignment = "LEFT"
-        split.prop(self, "download_official_addons", text=text)
-        split.alignment = "RIGHT"
-        split.operator("pie.enable_relay_addons", text="手动执行")
-    else:
-        row.alignment = "LEFT"
         row.prop(self, "download_official_addons", text=text)
 
-    row = box.row()
+        main_split = row.split(factor=split_main_factor)
+        row = main_split.row(align=True)
+        row.operator("pie.enable_relay_addons", text="手动执行")
+        row.operator("pie.enable_relay_addons", text="手动执行")
+        row = main_split.row()
+        row.operator("pie.enable_relay_addons", text="编辑插件列表")
+    else:
+        row.prop(self, "download_official_addons", text=text)
+
+    row = box.row().box()
     text = "加载预设 - 资源库路径 -- (会增加许多对您无用的资产路径!)"
     if not self.load_assets_library_presets:
         row.prop(self, "load_assets_library_presets", text=text)
     else:
-        row.alignment = "LEFT"
         row.prop(self, "load_assets_library_presets", text=text)
-
-        split = box.split(factor=split_main_factor)
-        box_l = split.box().column(align=True)
+        split = row.split(factor=split_main_factor)
+        box_l = split.column(align=True)
         box_l.prop(self, "assets_library_path_sync")
-        box_l.separator(factor=0.8)
+        box_l.separator(factor=0.5)
         box_l.prop(self, "assets_library_path_local")
-        box_r = split.box().column(align=True)
+        box_r = split.column(align=True)
         box_r_split = box_r.split(factor=0.5)
         row = box_r_split.row()
         row.operator("pie.change_assets_library_path", text="手动执行")
-        row.scale_y = 2
+        row.scale_y = 2.15
         box_r_split_col = box_r_split.column(align=True)
-        box_r.separator(factor=0.8)
+        box_r_split_col.scale_y = 1.075
         box_r_split_col.operator("pie.change_assets_library_path", text="移除路径").remove = True
-        box_r_split_col.operator("pie.open_assets_lib_presets_file_in_blender", text="打开文件")
+        box_r_split_col.operator("pie.open_custom_xz_presets_file_in_new_window", text="打开文件").path_enum = "Assets"
 
-    row = box.row()
+    row = box.row().box()
     text = "加载预设 - 快捷键 -- (请备份好您的快捷键!)"
     if self.load_xz_keys_presets:
         split = row.column().split(factor=split_main_factor)
-        split.alignment = "LEFT"
         split.prop(self, "load_xz_keys_presets", text=text)
         split.alignment = "RIGHT"
         split.operator("pie.load_xz_keys_presets", text="手动执行")
     else:
-        row.alignment = "LEFT"
+
         row.prop(self, "load_xz_keys_presets", text=text)
 
-    row = box.row()
+    row = box.row().box()
     text = "加载预设 - 通用设置 -- (请备份好您的userpref.blend文件!)"
     if self.load_xz_setting_presets:
         split = row.column().split(factor=split_main_factor)
-        split.alignment = "LEFT"
         split.prop(self, "load_xz_setting_presets", text=text)
         split.alignment = "RIGHT"
         split.operator("pie.load_xz_setting_presets", text="手动执行")
     else:
-        row.alignment = "LEFT"
         row.prop(self, "load_xz_setting_presets", text=text)
 
 

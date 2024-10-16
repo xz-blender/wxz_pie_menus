@@ -18,7 +18,7 @@ import bpy
 from bpy.props import *
 from bpy.types import AddonPreferences, Operator, PropertyGroup, UIList
 
-from . import props
+from . import operators, props
 from .panels import *
 from .translation.translate import GetTranslationDict
 from .utils import *
@@ -33,6 +33,7 @@ except_module_list = [
     "operator_id_sort",
     "extensions_setting",
     "assets_lib_presets",
+    "addons_lib_presets",
 ]
 cwd = Path(__file__).parent
 module_path_name_list = {"pie": "pie_modules", "parts_addons": "other_modules", "operator": "setting_modules"}
@@ -421,6 +422,7 @@ def add_modules_item(prefs, module_list_name):
 def register():
     class_register()
     props.register()
+    operators.register()
     global ERROR_OUTPUT
     global TEXT_OUTPUT
 
@@ -445,6 +447,7 @@ def register():
 def unregister():
     class_unregister()
     props.unregister()
+    operators.unregister()
 
     for mod in all_modules:
         if mod.__addon_enabled__:

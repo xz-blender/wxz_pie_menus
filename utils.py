@@ -1,3 +1,4 @@
+import importlib
 import os
 import platform
 from pathlib import Path
@@ -75,23 +76,49 @@ def manage_app_handlers(handler_list, func, remove=False):
                 handls.append(func)
 
 
+# def iter_submodules_name(path, except_package_list):
+#     name_list = []
+#     for entry in os.listdir(path):
+#         entry_path = os.path.join(path, entry)
+#         if os.path.isdir(entry_path):
+#             dir_name = os.path.basename(entry_path)
+#             if dir_name not in except_package_list:
+#                 name_list.append(dir_name)
+#         elif os.path.isfile(entry_path):
+#             file_name = os.path.splitext(entry)[0]
+#             if file_name not in except_package_list:
+#                 name_list.append(file_name)
+#     path_base_name = os.path.basename(path).split(".")[0]
+#     sub_modules = []
+#     for submod in name_list:
+#         if not submod.startswith("."):
+#             sub_modules.append(__import__(__package__ + "." + path_base_name + "." + submod, {}, {}, submod))
+#     name_list.clear()
+#     sub_modules.sort(key=lambda mod: (mod.__name__))
+#     return sub_modules
+
+
 def iter_submodules_name(path, except_package_list):
+    path = Path(path)
     name_list = []
-    for entry in os.listdir(path):
-        entry_path = os.path.join(path, entry)
-        if os.path.isdir(entry_path):
-            dir_name = os.path.basename(entry_path)
+
+    for entry in path.iterdir():
+        if entry.is_dir():
+            dir_name = entry.name
             if dir_name not in except_package_list:
                 name_list.append(dir_name)
-        elif os.path.isfile(entry_path):
-            file_name = os.path.splitext(entry)[0]
+        elif entry.is_file():
+            file_name = entry.stem
             if file_name not in except_package_list:
                 name_list.append(file_name)
-    path_base_name = os.path.basename(path).split(".")[0]
+
+    path_base_name = path.name.split(".")[0]
     sub_modules = []
+
     for submod in name_list:
         if not submod.startswith("."):
-            sub_modules.append(__import__(__package__ + "." + path_base_name + "." + submod, {}, {}, submod))
-    name_list.clear()
-    sub_modules.sort(key=lambda mod: (mod.__name__))
+            full_module_name = f"{__package__}.{path_base_name}.{submod}"
+            sub_modules.append(importlib.import_module(full_module_name))
+
+    sub_modules.sort(key=lambda mod: mod.__name__)
     return sub_modules
