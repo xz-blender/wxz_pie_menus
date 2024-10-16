@@ -1,20 +1,10 @@
 import bpy
 
-submoduname = __name__.split(".")[-1]
-bl_info = {
-    "name": submoduname,
-    "author": "wxz",
-    "version": (0, 0, 1),
-    "blender": (4, 1, 0),
-    "location": "View3D",
-    "category": "3D View",
-}
-
 
 class OBJECT_OT_orient_and_origin_to_selection(bpy.types.Operator):
     bl_label = "Orient Origin to Selected"
     bl_idname = "pie.orient_origin_to_selection"
-    bl_description = "Snaps the object's origin to the selected components in Edit Mode"
+    bl_description = "在编辑模式下将对象的原点捕捉到选定的组件"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_options = {"REGISTER", "UNDO"}
@@ -42,7 +32,7 @@ class OBJECT_OT_orient_and_origin_to_selection(bpy.types.Operator):
             bpy.context.scene.transform_orientation_slots[0].type = orientation
             self.report(
                 {"WARNING"},
-                "No orientation could be created because the normals of the selected items exactly cancel each other out",
+                "无法创建方向，因为所选项目的法线完全相互抵消",
             )
             return {"CANCELLED"}
         bpy.ops.object.mode_set(mode="OBJECT")
@@ -63,7 +53,7 @@ class OBJECT_OT_orient_and_origin_to_selection(bpy.types.Operator):
         if obj.animation_data:
             self.report(
                 {"WARNING"},
-                "This object has keyframes. Changing the local orientation will alter any animated rotation",
+                "此对象具有关键帧。更改局部方向将改变任何动画旋转",
             )
         return {"FINISHED"}
 

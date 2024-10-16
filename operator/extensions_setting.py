@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 
-from ..utils import get_local_path, get_sync_path
+from ..utils import *
 
 join = os.path.join
 

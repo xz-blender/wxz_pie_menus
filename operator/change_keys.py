@@ -2,17 +2,7 @@ import bpy
 from bpy.app.handlers import persistent
 
 from ..items import *
-from ..utils import addon_name, get_prefs, manage_app_handlers
-
-submoduname = __name__.split(".")[-1]
-bl_info = {
-    "name": submoduname,
-    "author": "wxz",
-    "version": (0, 0, 1),
-    "blender": (4, 1, 0),
-    "location": "View3D",
-    "category": "3D View",
-}
+from ..utils import *
 
 
 #### def ####

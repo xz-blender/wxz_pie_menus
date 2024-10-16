@@ -7,16 +7,6 @@ from bpy.app.handlers import persistent
 from ..items import *
 from ..utils import *
 
-submoduname = __name__.split(".")[-1]
-bl_info = {
-    "name": submoduname,
-    "author": "wxz",
-    "version": (0, 0, 1),
-    "blender": (4, 1, 0),
-    "location": "View3D",
-    "category": "3D View",
-}
-
 
 def set_overlay_shading_props(context, attr, set):
     for area in bpy.context.screen.areas:

@@ -8,16 +8,6 @@ from bpy.app.handlers import persistent
 from ..items import *
 from ..utils import *
 
-submoduname = __name__.split(".")[-1]
-bl_info = {
-    "name": submoduname,
-    "author": "wxz",
-    "version": (0, 0, 1),
-    "blender": (4, 1, 0),
-    "location": "View3D",
-    "category": "3D View",
-}
-
 
 class PIE_Open_Custom_Assets_lib_presets_file_In_Blender(bpy.types.Operator):
     bl_idname = "pie.open_assets_lib_presets_file_in_blender"

@@ -1,3 +1,4 @@
+
 # This is an Asset Catalog Definition file for Blender.
 #
 # Empty lines and lines starting with `#` will be ignored.
@@ -6,11 +7,11 @@
 
 VERSION 1
 
-97f11553-23be-4e0d-9560-0a5ab6d3d88e:GN_Nodes:GN_Nodes
-0c6a9a7d-1238-4bee-8cfc-06191655b193:GN_Nodes/Base Mesh:GN_Nodes-Base Mesh
-727f9516-491a-472f-914c-99c390b3f157:GN_Nodes/Edit:GN_Nodes-Edit
-f63c3cf3-64d0-404b-b971-c2ad4a1d829c:GN_Nodes/Generate:GN_Nodes-Generate
-3a69a5a9-8c5b-40af-832e-8061f4b686bb:GN_Nodes/Material:GN_Nodes-Material
-752fcf38-7610-41b0-a7be-1dc6e67bab67:GN_Nodes/No Sign:GN_Nodes-No Sign
-4d479fdd-e265-4bfa-8526-e0e454f380e7:GN_Nodes/Preview:GN_Nodes-Preview
-9f146fc5-168f-483e-bc32-d7a4149425b9:GN_Nodes/Read:GN_Nodes-Read
+3018acaf-c565-4dc9-98d6-dedb4f38d2fb:GN_Nodes:GN_Nodes
+47f363ac-0122-4dd7-a7f5-24548cb8cc9c:GN_Nodes/No Sign:GN_Nodes-No Sign
+92a58335-925c-4da1-9ad5-bf36a7d9c4dc:GN_Nodes/Edit:GN_Nodes-Edit
+a942cff9-8c39-41df-934e-a2514eb32bd6:GN_Nodes/Generate:GN_Nodes-Generate
+c71393f4-b474-4fde-b47e-8d855fcb45fb:GN_Nodes/Material:GN_Nodes-Material
+9622e2f3-21e0-4188-a10b-6784946edb10:GN_Nodes/Preview:GN_Nodes-Preview
+8da8628d-bcd6-4726-8f47-2a33129d1f67:GN_Nodes/Base Mesh:GN_Nodes-Base Mesh
+c4ea839f-d4d0-4919-a4f8-3f2aedc9b72c:GN_Nodes/Read:GN_Nodes-Read

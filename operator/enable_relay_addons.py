@@ -8,21 +8,8 @@ from bpy.app.handlers import persistent
 from bpy.types import Operator
 
 from ..download import download_zip
-from ..utils import addon_name, get_local_path, get_prefs, get_sync_path, manage_app_handlers
+from ..utils import *
 from .extensions_setting import *
-
-submoduname = __name__.split(".")[-1]
-bl_info = {
-    "name": submoduname,
-    "author": "wxz",
-    "version": (0, 0, 1),
-    "blender": (4, 1, 0),
-    "location": "View3D",
-    "category": "3D View",
-}
-
-sync_path = get_sync_path()
-local_path = get_local_path()
 
 
 def get_addon_list():
@@ -66,6 +53,8 @@ def enable_addons(self, context, bl_ext_dict, remote_name=None):
                         download_zip(remote_name + "/" + f"{addon_name}.zip", rep_directory)
                     except:
                         print("----", addon_name, " 插件下载失败")
+        # bpy.ops.extensions.package_install
+
         # 检查 rep_directory 下的 xz_ex_check.txt 文件内的存储版本号，如果不匹配则重新下载
         # if Path(rep_directory + "xz_ex_check.txt").exists():
         #     with open(rep_directory + "xz_ex_check.txt", "r") as f:

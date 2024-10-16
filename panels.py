@@ -33,11 +33,12 @@ def draw_resource_config(self, layout):
     box = layout.box()
     row = box.row()
     row.alignment = "LEFT"
+    split_main_factor = 0.7
 
     row = box.row()
     text = "加载插件 - 常用外部插件预设 -- (自动下载)"
     if self.download_official_addons:
-        split = row.column().split(factor=0.8)
+        split = row.column().split(factor=split_main_factor)
         split.alignment = "LEFT"
         split.prop(self, "download_official_addons", text=text)
         split.alignment = "RIGHT"
@@ -51,27 +52,28 @@ def draw_resource_config(self, layout):
     if not self.load_assets_library_presets:
         row.prop(self, "load_assets_library_presets", text=text)
     else:
-        sp = row.split(factor=0.8)
-        sp.prop(self, "load_assets_library_presets", text=text)
-        sp.operator("pie.change_assets_library_path", text="移除路径").remove = True
+        row.alignment = "LEFT"
+        row.prop(self, "load_assets_library_presets", text=text)
 
-        split = box.split(factor=0.8)
-        box_l = split.box()
-        row = box_l.row()
-        row.prop(self, "assets_library_path_sync")
-        row = box_l.row()
-        row.prop(self, "assets_library_path_local")
-        box_r = split.box()
-        row = box_r.row()
-        row.scale_y = 1
+        split = box.split(factor=split_main_factor)
+        box_l = split.box().column(align=True)
+        box_l.prop(self, "assets_library_path_sync")
+        box_l.separator(factor=0.8)
+        box_l.prop(self, "assets_library_path_local")
+        box_r = split.box().column(align=True)
+        box_r_split = box_r.split(factor=0.5)
+        row = box_r_split.row()
         row.operator("pie.change_assets_library_path", text="手动执行")
-        row = box_r.row()
-        row.operator("pie.open_assets_lib_presets_file_in_blender")
+        row.scale_y = 2
+        box_r_split_col = box_r_split.column(align=True)
+        box_r.separator(factor=0.8)
+        box_r_split_col.operator("pie.change_assets_library_path", text="移除路径").remove = True
+        box_r_split_col.operator("pie.open_assets_lib_presets_file_in_blender", text="打开文件")
 
     row = box.row()
     text = "加载预设 - 快捷键 -- (请备份好您的快捷键!)"
     if self.load_xz_keys_presets:
-        split = row.column().split(factor=0.8)
+        split = row.column().split(factor=split_main_factor)
         split.alignment = "LEFT"
         split.prop(self, "load_xz_keys_presets", text=text)
         split.alignment = "RIGHT"
@@ -83,7 +85,7 @@ def draw_resource_config(self, layout):
     row = box.row()
     text = "加载预设 - 通用设置 -- (请备份好您的userpref.blend文件!)"
     if self.load_xz_setting_presets:
-        split = row.column().split(factor=0.8)
+        split = row.column().split(factor=split_main_factor)
         split.alignment = "LEFT"
         split.prop(self, "load_xz_setting_presets", text=text)
         split.alignment = "RIGHT"
