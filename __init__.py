@@ -56,7 +56,6 @@ MODULES_FOLDER = Path(bpy.utils.system_resource("SCRIPTS")) / "modules"
 python_bin = sys.executable
 TEXT_OUTPUT = []
 ERROR_OUTPUT = []
-addon_keymaps = []
 
 
 def run_pip_command(self, *cmds, cols=False, run_module="pip"):
@@ -260,30 +259,6 @@ def unregister_submodule(mod):
                     del prefs[name]
 
 
-class PIE_UL_pie_modules(UIList):
-    def draw_item(self, context, layout, data, item, icon, active_data, active_propname):
-        mod_name = item.name
-        row = layout.row()
-        row.label(text=mod_name)
-        row.prop(data, "use_" + mod_name, text="")
-
-
-class PIE_UL_other_modules(UIList):
-    def draw_item(self, context, layout, data, item, icon, active_data, active_propname):
-        mod_name = item.name
-        row = layout.row()
-        row.label(text=mod_name)
-        row.prop(data, "use_" + mod_name, text="")
-
-
-class PIE_UL_setting_modules(UIList):
-    def draw_item(self, context, layout, data, item, icon, active_data, active_propname):
-        mod_name = item.name
-        row = layout.row()
-        row.label(text=mod_name)
-        row.prop(data, "use_" + mod_name, text="")
-
-
 class WXZ_PIE_Preferences(AddonPreferences, props.WXZ_PIE_Prefs_Props):
     bl_idname = __package__
 
@@ -397,9 +372,6 @@ for mod in all_modules:
     )
 
 classes = (
-    PIE_UL_setting_modules,
-    PIE_UL_pie_modules,
-    PIE_UL_other_modules,
     WXZ_PIE_Preferences,
     PIE_OT_PIPInstall,
     PIE_OT_PIPInstall_Default,
@@ -410,6 +382,12 @@ classes = (
     PIE_OT_UpgradePIP,
 )
 class_register, class_unregister = bpy.utils.register_classes_factory(classes)
+module_classes = [
+    props,
+    operators,
+    panels,
+]
+addon_keymaps = []
 
 
 def add_modules_item(prefs, module_list_name):
@@ -422,8 +400,9 @@ def add_modules_item(prefs, module_list_name):
 
 def register():
     class_register()
-    props.register()
-    operators.register()
+    for mod in module_classes:
+        mod.register()
+
     global ERROR_OUTPUT
     global TEXT_OUTPUT
 
@@ -447,8 +426,8 @@ def register():
 
 def unregister():
     class_unregister()
-    props.unregister()
-    operators.unregister()
+    for mod in module_classes:
+        mod.unregister()
 
     for mod in all_modules:
         if mod.__addon_enabled__:

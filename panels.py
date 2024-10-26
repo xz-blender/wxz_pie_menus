@@ -1,4 +1,31 @@
+import bpy
+from bpy.types import UIList
+
 from .utils import prefs_show_sub_panel
+
+
+class PIE_UL_pie_modules(UIList):
+    def draw_item(self, context, layout, data, item, icon, active_data, active_propname):
+        mod_name = item.name
+        row = layout.row()
+        row.label(text=mod_name)
+        row.prop(data, "use_" + mod_name, text="")
+
+
+class PIE_UL_other_modules(UIList):
+    def draw_item(self, context, layout, data, item, icon, active_data, active_propname):
+        mod_name = item.name
+        row = layout.row()
+        row.label(text=mod_name)
+        row.prop(data, "use_" + mod_name, text="")
+
+
+class PIE_UL_setting_modules(UIList):
+    def draw_item(self, context, layout, data, item, icon, active_data, active_propname):
+        mod_name = item.name
+        row = layout.row()
+        row.label(text=mod_name)
+        row.prop(data, "use_" + mod_name, text="")
 
 
 def draw_addon_menus(self, layout, context, module_path_name_list):
@@ -43,7 +70,7 @@ def draw_resource_config(self, layout):
         row.operator("pie.enable_relay_addons", text="手动执行")
         row.operator("pie.enable_relay_addons", text="手动执行")
         row = main_split.row()
-        row.operator("pie.enable_relay_addons", text="编辑插件列表")
+        row.operator("pie.open_custom_xz_presets_file_in_new_window", text="编辑插件列表").path_name = "Addons"
     else:
         row.prop(self, "download_official_addons", text=text)
 
@@ -155,3 +182,19 @@ def draw_other_addons_setting(self, layout):
         row = col.row()
         row.prop(self, "non_manifold_extrude")
         row.prop(self, "modal_hud_timeout")
+
+
+CLASSES = [
+    PIE_UL_pie_modules,
+    PIE_UL_other_modules,
+    PIE_UL_setting_modules,
+]
+class_register, class_unregister = bpy.utils.register_classes_factory(CLASSES)
+
+
+def register():
+    class_register()
+
+
+def unregister():
+    class_unregister()
