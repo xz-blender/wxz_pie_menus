@@ -6,6 +6,8 @@ import tempfile
 import zipfile
 from pathlib import Path
 
+from .items import *
+
 
 def is_windows():
     return platform.system() == "Windows"
@@ -33,31 +35,6 @@ desktop_path = get_desktop_path()
 source_dir = Path(__file__).parent
 output_path = str(Path(desktop_path) / source_dir.name) + ".zip"
 split_out_path = Path(get_desktop_path()) / "upload"
-
-main_exclude_list = [
-    "__pycache__",
-    "README.md",
-    "LISENCE",
-    ".vscode",
-    ".genaiscript",
-    ".gitignore",
-    ".git",
-]
-split_exclude_list = [
-    "__pycache__",
-    "blender_assets.cats.txt~",
-    "blends_savetime.txt",
-]
-split_file_list = [
-    "ui_font.ttf",
-    "workspace.blend",
-    "workspace_online.blend",
-]
-split_folder_list = [
-    "nodes_presets",
-    "parts_addons",
-    "offical_extension",
-]
 
 
 def remove_duplicates(lst):
@@ -135,7 +112,7 @@ def zip_dir(zip_filename, source_dir, exclude_list):
 def main_zip(exclude_list, source_dir, output_path, main=True):
     if main:
         load_gitignore(exclude_list)
-        exclude_list += split_file_list + split_folder_list
+        exclude_list += packup_split_file_list + packup_split_folder_list
         exclude_list = remove_duplicates(exclude_list)
     else:
         exclude_list = remove_duplicates(exclude_list)
@@ -153,13 +130,13 @@ def main_zip(exclude_list, source_dir, output_path, main=True):
 
 
 if __name__ == "__main__":
-    main_zip(main_exclude_list, source_dir, output_path)
+    main_zip(packup_main_exclude_list, source_dir, output_path)
 
     if not os.path.exists(split_out_path):
         os.makedirs(split_out_path)
-    for dir in split_folder_list:
+    for dir in packup_split_folder_list:
         input_path = Path(__file__).parent / dir
         output_path = str(split_out_path / dir) + ".zip"
-        main_zip(split_exclude_list, input_path, output_path, False)
+        main_zip(packup_split_exclude_list, input_path, output_path, False)
 
-    copy_excluded_files(source_dir, split_out_path, split_file_list)
+    copy_excluded_files(source_dir, split_out_path, packup_split_file_list)

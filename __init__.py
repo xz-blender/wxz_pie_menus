@@ -1,13 +1,13 @@
 from pathlib import Path
 
 from .download import download_file, download_zip
-from .packup import split_file_list, split_folder_list
+from .packup import packup_split_file_list, packup_split_folder_list
 
 down_path = Path(__file__).parent
 xz_url = "addons_file/" + str(down_path.name) + "/"
-for file in split_file_list:
+for file in packup_split_file_list:
     download_file(xz_url + file, down_path)
-for dir in split_folder_list:
+for dir in packup_split_folder_list:
     download_zip(xz_url + dir + ".zip", down_path)
 
 import site

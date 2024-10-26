@@ -109,7 +109,8 @@ def iter_submodules_name(path, except_package_list):
                 name_list.append(dir_name)
         elif entry.is_file():
             file_name = entry.stem
-            if file_name not in except_package_list:
+            file_suffix = entry.suffix
+            if file_name not in except_package_list and file_suffix != ".json":
                 name_list.append(file_name)
 
     path_base_name = path.name.split(".")[0]
