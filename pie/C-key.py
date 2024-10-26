@@ -1,20 +1,7 @@
-import os
-
 import bpy
 from bpy.types import Menu, Operator
 
-from .utils import change_default_keymap, restored_default_keymap, set_pie_ridius
-
-submoduname = __name__.split(".")[-1]
-bl_info = {
-    "name": submoduname,
-    "author": "wxz",
-    "version": (0, 0, 1),
-    "blender": (3, 3, 0),
-    "location": "View3D",
-    "category": "3D View",
-}
-
+from .pie_utils import *
 
 # class PIE_C_KEY(Operator):
 #     bl_idname = "pie.c_key"
@@ -26,13 +13,7 @@ bl_info = {
 #         return True
 
 #     def execute(self, context):
-#         ui = context.area.ui_type
-#         if ui == 'VIEW_3D':
-#             mode = context.object.mode
-#             if mode in ['OBJECT', 'EDIT']:
-#                 bpy.ops.wm.tool_set_by_id(name='builtin.select_circle')
-#         elif ui == 'UV':
-#             bpy.ops.wm.tool_set_by_id(name='builtin.select_circle')
+
 #         return {"FINISHED"}
 
 
@@ -69,16 +50,8 @@ def unregister_keymaps():
 
 
 def register():
-    # for cls in classes:
-    #     bpy.utils.register_class(cls)
     register_keymaps()
 
 
 def unregister():
     unregister_keymaps()
-    # for cls in reversed(classes):
-    #     bpy.utils.unregister_class(cls)
-
-
-# if __name__ == "__main__":
-#     register()

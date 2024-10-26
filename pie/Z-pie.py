@@ -3,28 +3,17 @@ import re
 import bpy
 from bpy.types import Menu, Operator, Panel
 
-from .utils import set_pie_ridius
-
-submoduname = __name__.split(".")[-1]
-bl_info = {
-    "name": submoduname,
-    "author": "wxz",
-    "version": (0, 0, 1),
-    "blender": (3, 3, 0),
-    "location": "View3D",
-    "category": "3D View",
-}
+from .pie_utils import *
 
 
 class VIEW3D_PIE_MT_Bottom_Z_Overlay(Menu):
-    bl_label = submoduname
+    bl_label = get_pyfilename()
 
     def draw(self, context):
         layout = self.layout
         layout.alignment = "CENTER"
         pie = layout.menu_pie()
-
-        set_pie_ridius(context, 100)
+        set_pie_ridius()
 
         # 4 - LEFT
         if context.active_object:
@@ -89,33 +78,6 @@ class VIEW3D_PIE_MT_Bottom_Z_Overlay(Menu):
         )
 
 
-"""
-class VIEW_PIE_PT_AutoSmooth(Panel):
-    bl_idname = __qualname__
-    bl_label = ""
-    bl_space_type = 'VIEW_3D'
-    bl_region_type = 'WINDOW'
-
-    def draw(self, context):
-        layout = self.layout
-
-        row = layout.row()
-        row.scale_y = 1.4
-        row.prop(context.object.data, 'use_auto_smooth', icon='RADIOBUT_ON')
-
-        row = layout.row()
-        row.scale_y = 1.1
-        row.prop(
-            context.object.data,
-            'auto_smooth_angle',
-            text='角度',
-            slider=True,
-            expand=True,
-            invert_checkbox=True,
-        )
-"""
-
-
 class VIEW_PIE_PT_AutoSmooth(Panel):
     bl_idname = __qualname__
     bl_label = ""
@@ -130,20 +92,8 @@ class VIEW_PIE_PT_AutoSmooth(Panel):
         row.scale_y = 1.4
         op = row.operator("pie.gn_autosmooth", icon="RADIOBUT_ON")
         # 显示操作符的属性供编辑
-
         layout.prop(op, "angle", emboss=True, event=True)
         layout.prop(op, "ignore")
-
-        # row = layout.row()
-        # row.scale_y = 1.1
-        # row.prop(
-        #     context.object.data,
-        #     'auto_smooth_angle',
-        #     text='角度',
-        #     slider=True,
-        #     expand=True,
-        #     invert_checkbox=True,
-        # )
 
 
 def add_sm():
@@ -284,9 +234,6 @@ classes = [
     PIE_Update_AutoSmooth_Angle,
     VIEW3D_PIE_MT_Bottom_Z_Shift,
 ]
-
-addon_keymaps = []
-
 
 addon_keymaps = []
 

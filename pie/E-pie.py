@@ -1,5 +1,3 @@
-import os
-
 import bgl
 import blf
 import bmesh
@@ -7,31 +5,20 @@ import bpy
 import numpy as np
 from bpy.types import Context, Menu, Operator, Panel, PropertyGroup
 
-from .utils import *
-
-submoduname = __name__.split(".")[-1]
-bl_info = {
-    "name": submoduname,
-    "author": "wxz",
-    "version": (0, 0, 1),
-    "blender": (3, 3, 0),
-    "location": "View3D",
-    "category": "PIE",
-}
+from .pie_utils import *
 
 
 class VIEW3D_PIE_MT_Bottom_E(Menu):
-    bl_label = submoduname
+    bl_label = get_pyfilename()
 
     def draw(self, context):
         layout = self.layout
         layout.alignment = "CENTER"
         pie = layout.menu_pie()
+        set_pie_ridius()
 
-        ob_type = context.object.type
-        ob_mode = context.object.mode
-
-        set_pie_ridius(context, 100)
+        ob_type = get_ob_type(context)
+        ob_mode = get_ob_mode(context)
 
         if ob_mode == "EDIT" and ob_type == "MESH":
             # 4 - LEFT
@@ -275,8 +262,3 @@ def unregister():
     unregister_keymaps()
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
-
-
-# if __name__ == "__main__":
-#     register()
-#     bpy.ops.wm.call_menu_pie(name="VIEW3D_PIE_MT_Bottom_E")

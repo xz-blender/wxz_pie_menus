@@ -1,30 +1,23 @@
 import bpy
 from bpy.types import Menu, Operator
 
-from .utils import *
-
-
-submoduname = __name__.split(".")[-1]
-bl_info = {
-    "name": submoduname,
-    "author": "wxz",
-    "version": (0, 0, 1),
-    "blender": (3, 3, 0),
-    "location": "View3D",
-    "category": "Interface",
-}
+from .pie_utils import *
 
 
 class VIEW3D_PIE_MT_Bottom_D_Ctrl(Menu):
-    bl_label = submoduname
+    bl_label = get_pyfilename()
 
     def draw(self, context):
         layout = self.layout
         pie = layout.menu_pie()
-        ui = context.area.ui_type
+        set_pie_ridius()
+
+        ob_type = get_ob_type(context)
+        ob_mode = get_ob_mode(context)
+        ui = get_area_ui_type()
+
         if ui == "VIEW_3D":
-            set_pie_ridius(context, 100)
-            if context.object.mode == "OBJECT":
+            if ob_mode == "OBJECT":
                 # 4 - LEFT
                 pie.separator()
                 # 6 - RIGHT
@@ -41,7 +34,7 @@ class VIEW3D_PIE_MT_Bottom_D_Ctrl(Menu):
                 pie.separator()
                 # 3 - BOTTOM - RIGHT
 
-            if context.object.mode == "EDIT":
+            if ob_mode == "EDIT":
                 # 4 - LEFT
                 pie.separator()
                 # 6 - RIGHT

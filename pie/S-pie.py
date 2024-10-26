@@ -1,22 +1,9 @@
-import os
-import typing
-
 import bpy
 from bpy.types import Context, Menu, Operator, Panel
 
 from ..parts_addons.m4_tools.align_helper_npanel import *
 from ..parts_addons.m4_tools.align_helper_utils import *
-from .utils import *
-
-submoduname = __name__.split(".")[-1]
-bl_info = {
-    "name": submoduname,
-    "author": "wxz",
-    "version": (0, 0, 1),
-    "blender": (3, 3, 0),
-    "location": "View3D",
-    "category": "3D View",
-}
+from .pie_utils import *
 
 
 def draw_align_with_axes_uv(pie, m4):
@@ -330,11 +317,12 @@ def draw_align_with_view_edit(pie, m3, sel):
 
 
 class VIEW3D_PIE_MT_Bottom_S(Menu):
-    bl_label = submoduname
+    bl_label = get_pyfilename()
 
     def draw(self, context):
         layout = self.layout
         pie = layout.menu_pie()
+        set_pie_ridius()
 
         m4 = context.scene.M4_split
         active = context.active_object
@@ -342,7 +330,6 @@ class VIEW3D_PIE_MT_Bottom_S(Menu):
 
         ui = context.area.ui_type
         if ui == "VIEW_3D":
-            set_pie_ridius(context, 100)
             if context.object:
                 if context.object.mode == "OBJECT":
                     direction = screen_relevant_direction_3d_axis(context)
@@ -372,8 +359,6 @@ class VIEW3D_PIE_MT_Bottom_S(Menu):
                         draw_align_with_view_edit(pie, m4, sel)
 
         elif ui == "UV":
-            set_pie_ridius(context, 100)
-
             if m4.align_mode == "AXES":
                 draw_align_with_axes_uv(pie, m4)
             elif m4.align_mode == "VIEW":
@@ -490,6 +475,7 @@ classes = [
     PIE_S_Flat_Object,
     PIE_S_Flat_NOdes,
 ]
+class_register, class_unregister = bpy.utils.register_classes_factory(classes)
 
 addon_keymaps = []
 
@@ -519,17 +505,10 @@ def unregister_keymaps():
 
 
 def register():
-    for cls in classes:
-        bpy.utils.register_class(cls)
+    class_register()
     register_keymaps()
 
 
 def unregister():
     unregister_keymaps()
-    for cls in reversed(classes):
-        bpy.utils.unregister_class(cls)
-
-
-# if __name__ == "__main__":
-#     register()
-#     bpy.ops.wm.call_menu_pie(name="VIEW3D_PIE_MT_Bottom_S")
+    class_unregister()

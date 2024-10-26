@@ -1,23 +1,13 @@
 import bpy
 from bpy.types import Menu, Operator
 
-from .utils import change_default_keymap, restored_default_keymap, set_pie_ridius
-
-submoduname = __name__.split(".")[-1]
-bl_info = {
-    "name": submoduname,
-    "author": "wxz",
-    "version": (0, 0, 1),
-    "blender": (3, 3, 0),
-    "location": "View3D",
-    "category": "KEY",
-}
+from .pie_utils import *
 
 
 class PIE_Space_KEY(Operator):
     bl_idname = "pie.key_space"
-    bl_label = submoduname
-    bl_options = {"REGISTER"}
+    bl_label = get_pyfilename()
+    bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):
         # print(context.area.ui_type)
@@ -96,25 +86,6 @@ def register_keymaps():
         addon_keymaps.append(km)
 
 
-"""
-def register_keymaps():
-    addon = bpy.context.window_manager.keyconfigs.addon
-    # KEY:
-    for area in keymap_areas:
-        km = addon.keymaps.new(name=area[0], space_type=area[1])  # ----视频序列播放器
-        kmi = km.keymap_items.new(PIE_Space_KEY.bl_idname, 'SPACE', 'CLICK')  # space
-        if area[0] == '3D View':  # shift-space
-            kmi = km.keymap_items.new('screen.animation_play', 'SPACE', 'CLICK', shift=True)
-        else:
-            kmi = km.keymap_items.new(
-                'screen.animation_play', 'SPACE', 'CLICK', shift=True
-            ).properties.reverse = True  # shift-space
-        kmi = km.keymap_items.new('wm.call_menu_pie', 'SPACE', 'CLICK_DRAG', shift=True)  # 拖拽
-        kmi.properties.name = "VIEW3D_PIE_MT_Space_KEY_shift"
-        addon_keymaps.append(km)
-"""
-
-
 def unregister_keymaps():
     wm = bpy.context.window_manager
     for km in addon_keymaps:
@@ -135,7 +106,3 @@ def unregister():
     unregister_keymaps()
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
-
-
-# if __name__ == "__main__":
-#     register()

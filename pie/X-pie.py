@@ -1,17 +1,7 @@
 import bpy
 from bpy.types import Menu
 
-from .utils import set_pie_ridius
-
-submoduname = __name__.split(".")[-1]
-bl_info = {
-    "name": submoduname,
-    "author": "wxz",
-    "version": (0, 0, 1),
-    "blender": (3, 3, 0),
-    "location": "View3D",
-    "category": "KEY",
-}
+from .pie_utils import *
 
 
 def verties_lenth(context):
@@ -23,17 +13,16 @@ def verties_lenth(context):
 
 
 class VIEW3D_PIE_MT_Bottom_X(Menu):
-    bl_label = submoduname
+    bl_label = get_pyfilename()
 
     def draw(self, context):
         layout = self.layout
         layout.alignment = "CENTER"
         pie = layout.menu_pie()
+        set_pie_ridius()
 
-        ob_type = context.object.type
-        ob_mode = context.object.mode
-
-        set_pie_ridius(context, 100)
+        ob_type = get_ob_type(context)
+        ob_mode = get_ob_mode(context)
 
         if ob_mode == "EDIT":
             if ob_type == "MESH":
@@ -183,7 +172,3 @@ def unregister():
     unregister_keymaps()
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
-
-
-# if __name__ == "__main__":
-#     register()

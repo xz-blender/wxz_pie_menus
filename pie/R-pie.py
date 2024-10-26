@@ -7,29 +7,21 @@ from bpy.props import FloatProperty, IntProperty
 from bpy.types import Menu, Operator
 from mathutils import Matrix, Quaternion, Vector
 
-from .utils import *
-
-submoduname = __name__.split(".")[-1]
-bl_info = {
-    "name": submoduname,
-    "author": "wxz",
-    "version": (0, 0, 1),
-    "blender": (3, 3, 0),
-    "location": "View3D",
-    "category": "3D View",
-}
+from .pie_utils import *
 
 
 class VIEW3D_PIE_MT_Bottom_R(Menu):
-    bl_label = submoduname
+    bl_label = get_pyfilename()
 
     def draw(self, context):
         layout = self.layout
         pie = layout.menu_pie()
+        set_pie_ridius()
 
-        ob_mode = context.object.mode
-        ui = context.area.ui_type
-        set_pie_ridius(context, 100)
+        ob_type = get_ob_type(context)
+        ob_mode = get_ob_mode(context)
+        ui = get_area_ui_type(context)
+
         get_orient = context.scene.transform_orientation_slots[0].type
         if ui == "VIEW_3D":
             if ob_mode == "OBJECT":
@@ -93,7 +85,6 @@ class VIEW3D_PIE_MT_Bottom_R(Menu):
                 ro.rot = 90
 
         elif ui == "UV":
-            set_pie_ridius(context, 100)
             # 4 - LEFT
             pie.operator(PIE_Transform_Rotate_Z.bl_idname, text="左转-90°", icon="TRIA_RIGHT_BAR").degree = -(pi / 2)
             # 6 - RIGHT
@@ -166,12 +157,12 @@ class VIEW3D_PIE_MT_Bottom_R(Menu):
 
 
 class VIEW3D_PIE_MT_Ctrl_Alt_R(Menu):
-    bl_label = submoduname
+    bl_label = get_pyfilename()
 
     def draw(self, context):
         layout = self.layout
         pie = layout.menu_pie()
-        set_pie_ridius(context, 100)
+        set_pie_ridius()
         # 4 - LEFT
         pie.operator("pie.mesh_uv_rotate", text="UV左转90°").angle = 90
         # 6 - RIGHT

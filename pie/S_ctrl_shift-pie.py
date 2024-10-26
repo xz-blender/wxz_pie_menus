@@ -1,31 +1,19 @@
-import os
 from pathlib import Path
 
 import bpy
 from bpy.types import Menu, Operator, Panel
 
-from .utils import set_pie_ridius
-
-submoduname = __name__.split(".")[-1]
-bl_info = {
-    "name": submoduname,
-    "author": "wxz",
-    "version": (0, 0, 1),
-    "blender": (4, 2, 0),
-    "location": "View3D",
-    "category": "3D View",
-}
+from .pie_utils import *
 
 
 class VIEW3D_MT_PIE_S_ctrl_Shift(Menu):
-    bl_label = submoduname
+    bl_label = get_pyfilename()
 
     def draw(self, context):
         layout = self.layout
         layout.alignment = "CENTER"
         pie = layout.menu_pie()
-
-        set_pie_ridius(context, 100)
+        set_pie_ridius()
 
         temp_path = [path for path in Path(bpy.app.tempdir).resolve().parents][:-3]
         file_path = bpy.data.filepath

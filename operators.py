@@ -6,27 +6,25 @@ operator_folder_path = Path(__file__).parent / "operator"
 assets_p_file = operator_folder_path / "assets_lib_presets.json"
 addons_p_file = operator_folder_path / "addons_lib_presets.json"
 
+p_files_dirt = {"Assets": assets_p_file, "Addons": addons_p_file}
+
 
 class PIE_Open_Custom_XZ_presets_file_In_NewWindow(bpy.types.Operator):
     bl_idname = "pie.open_custom_xz_presets_file_in_new_window"
     bl_label = "打开预设文件"
     bl_options = {"REGISTER", "UNDO"}
 
-    path_enum: bpy.props.EnumProperty(
-        items=[
-            ("Assets", str(assets_p_file), ""),
-            ("Addons", str(addons_p_file), ""),
-        ]
-    )  # type: ignore
+    path_name: bpy.props.StringProperty()  # type: ignore
 
     @classmethod
     def poll(cls, context):
         return True
 
     def execute(self, context):
-        file_path = Path(self.path_enum)
+        file_path = Path(p_files_dirt[self.path_name])
+
         if not file_path.exists():
-            self.report({"ERROR"}, f"预设文件 '{file_path.name}' 没有找到!")
+            self.report({"ERROR"}, f"预设文件 '{file_path}' 没有找到!")
             return {"CANCELLED"}
         # 检查文件是否已经加载
         text_name = file_path.name

@@ -1,20 +1,9 @@
-import os
-from pathlib import *
+from pathlib import Path
 
 import bpy
-from bpy.types import AddonPreferences, Menu, Operator
+from bpy.types import Menu, Operator
 
-from .utils import change_default_keymap, restored_default_keymap, set_pie_ridius
-
-submoduname = __name__.split(".")[-1]
-bl_info = {
-    "name": submoduname,
-    "author": "wxz",
-    "version": (0, 0, 1),
-    "blender": (3, 3, 0),
-    "location": "View3D",
-    "category": "PIE",
-}
+from .pie_utils import *
 
 
 class VIEW3D_PIE_MT_Ctrl_Tab(Menu):
@@ -23,13 +12,7 @@ class VIEW3D_PIE_MT_Ctrl_Tab(Menu):
     def draw(self, context):
         layout = self.layout
         pie = layout.menu_pie()
-
-        # ob_type = context.object.type
-        # ob_mode = context.object.mode
-
-        set_pie_ridius(context, 100)
-
-        print(context.area.type, context.area.ui_type)
+        set_pie_ridius()
 
         # 4 - LEFT
         L = pie.operator("pie.workspaceswapper", text="UV", icon="UV_DATA")
@@ -100,17 +83,6 @@ class PIE_WorkspaceSwapOperator(Operator):
         d_spaces = bpy.data.workspaces
 
         path = str(Path(__file__).parent.parent / "workspace.blend")
-        workspaces_dir = {
-            "0-LIB": "Layout",
-            "1-MOD": "Modeling",
-            "2-GN": "Geometry Nodes",
-            "3-MAT": "Shading",
-            "4-UV": "UV Editing",
-            "5-MOTION": "Animation",
-            "6-RENDER": "Rendering",
-            "7-COMPO": "Compositing",
-            "8-SETTING": "Scripting",
-        }
 
         if context.workspace.name == t_name:
             self.report({"INFO"}, "已经为该工作空间！")
@@ -122,20 +94,7 @@ class PIE_WorkspaceSwapOperator(Operator):
             return {"FINISHED"}
 
         if t_name not in d_spaces:
-            # 删除原始工作空间
-            # w = bpy.data.workspaces[workspaces_dir[t_name]]
-            # bpy.ops.workspace.delete({"workspace": w})
-            # 添加指定工作空间
             bpy.ops.workspace.append_activate(idname=t_name, filepath=path)
-            # 重排序工作空间
-            # 获取工作空间列表(固定)
-            # wk_list = [workspace.name for workspace in bpy.data.workspaces]
-            # for name in wk_list:
-            #     bpy.context.window.workspace = bpy.data.workspaces[name]
-            #     w = bpy.data.workspaces[name]
-            #     # 重排序到最前
-            #     bpy.ops.workspace.reorder_to_front({"workspace": w})
-            # # 提示
             context.window.workspace = d_spaces[t_name]
             self.report({"INFO"}, '已添加工作空间:"%s"' % (t_name))
 
@@ -277,8 +236,3 @@ def unregister():
     unregister_keymaps()
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
-
-
-# if __name__ == "__main__":
-#     register()
-#     bpy.ops.wm.call_menu_pie(name="VIEW3D_PIE_MT_Ctrl_Tab")

@@ -1,19 +1,7 @@
-import os
-
 import bpy
 from bpy.types import Menu, Operator
 
-from .utils import *
-
-submoduname = __name__.split(".")[-1]
-bl_info = {
-    "name": submoduname,
-    "author": "wxz",
-    "version": (0, 0, 1),
-    "blender": (3, 3, 0),
-    "location": "View3D",
-    "category": "3D View",
-}
+from .pie_utils import *
 
 
 class PIE_OP_A_alt_shift(Operator):

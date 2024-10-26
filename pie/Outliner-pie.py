@@ -1,32 +1,16 @@
-import os
-
 import bpy
 from bpy.types import Menu, Operator, Panel
 
-from .utils import change_default_keymap, restored_default_keymap, set_pie_ridius
-
-submoduname = __name__.split(".")[-1]
-bl_info = {
-    "name": submoduname,
-    "author": "wxz",
-    "version": (0, 0, 1),
-    "blender": (3, 3, 0),
-    "location": "View3D",
-    "category": "3D View",
-}
+from .pie_utils import *
 
 
 class OUTLINER_PIE_MT_Bottom_A(Menu):
-    bl_label = submoduname
+    bl_label = get_pyfilename()
 
     def draw(self, context):
         layout = self.layout
         pie = layout.menu_pie()
-
-        # ob_type = context.object.type
-        # ob_mode = context.object.mode
-
-        set_pie_ridius(context, 20)
+        set_pie_ridius(20)
 
         pie.operator("outliner.show_one_level", icon="REMOVE", text="").open = False
         # 6 - RIGHT
@@ -46,16 +30,12 @@ class OUTLINER_PIE_MT_Bottom_A(Menu):
 
 
 class OUTLINER_PIE_MT_Bottom_X(Menu):
-    bl_label = submoduname
+    bl_label = get_pyfilename()
 
     def draw(self, context):
         layout = self.layout
         pie = layout.menu_pie()
-
-        # ob_type = context.object.type
-        # ob_mode = context.object.mode
-
-        set_pie_ridius(context, 20)
+        set_pie_ridius(20)
 
         pie.separator()
         # 6 - RIGHT
@@ -181,8 +161,3 @@ def register():
 def unregister():
     unregister_keymaps()
     class_unregister()
-
-
-# if __name__ == "__main__":
-#     register()
-#     bpy.ops.wm.call_menu_pie(name="OUTLINER_PIE_MT_Bottom_A")

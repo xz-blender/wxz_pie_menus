@@ -1,20 +1,7 @@
-import os
-
 import bpy
 from bpy.types import Menu, Operator, Panel
 
-from ..operator.change_keys import change_key_value_base
-from .utils import set_pie_ridius
-
-submoduname = __name__.split(".")[-1]
-bl_info = {
-    "name": submoduname,
-    "author": "wxz",
-    "version": (0, 0, 1),
-    "blender": (4, 1, 0),
-    "location": "View3D",
-    "category": "3D View",
-}
+from .pie_utils import *
 
 
 class PIE_Set_Ctrl_B_HotKey(Operator):
@@ -43,17 +30,16 @@ class PIE_Set_Ctrl_B_HotKey(Operator):
 
 
 class VIEW3D_PIE_MT_Ctrl_B(Menu):
-    bl_label = submoduname
+    bl_label = get_pyfilename()
 
     def draw(self, context):
         layout = self.layout
         layout.alignment = "CENTER"
         pie = layout.menu_pie()
+        set_pie_ridius()
 
-        ob_type = context.object.type
-        ob_mode = context.object.mode
-
-        set_pie_ridius(context, 100)
+        ob_type = get_ob_type(context)
+        ob_mode = get_ob_mode(context)
 
         if ob_mode == "EDIT":
             if ob_type == "MESH":
@@ -116,7 +102,3 @@ def unregister():
     unregister_keymaps()
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
-
-
-# if __name__ == "__main__":
-#     register()

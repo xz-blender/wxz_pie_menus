@@ -66,7 +66,7 @@ def draw_resource_config(self, layout):
         box_r_split_col = box_r_split.column(align=True)
         box_r_split_col.scale_y = 1.075
         box_r_split_col.operator("pie.change_assets_library_path", text="移除路径").remove = True
-        box_r_split_col.operator("pie.open_custom_xz_presets_file_in_new_window", text="打开文件").path_enum = "Assets"
+        box_r_split_col.operator("pie.open_custom_xz_presets_file_in_new_window", text="打开文件").path_name = "Assets"
 
     row = box.row().box()
     text = "加载预设 - 快捷键 -- (请备份好您的快捷键!)"

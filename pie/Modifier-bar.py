@@ -2,17 +2,7 @@ import bpy
 from bpy.types import Context, Event, Menu, Operator
 
 from ..utils import get_prefs
-from .utils import set_pie_ridius
-
-submoduname = __name__.split(".")[-1]
-bl_info = {
-    "name": submoduname,
-    "author": "wxz",
-    "version": (0, 0, 1),
-    "blender": (3, 3, 0),
-    "location": "Properties > Modifiers",
-    "category": "BAR",
-}
+from .pie_utils import *
 
 numbers = ("ZERO", "ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN", "EIGHT", "NINE")
 modifier_props = {
@@ -263,7 +253,7 @@ class Bar_Add_New_Modifier(Operator):
 
 class Bar_Quick_Decimate(Operator):
     bl_idname = "bar.quick_decimate"
-    bl_label = submoduname
+    bl_label = get_pyfilename()
     bl_options = {"REGISTER", "UNDO"}
 
     ratio: bpy.props.FloatProperty(name="Decimate Ratio", min=0, max=1, default=1)  # type: ignore

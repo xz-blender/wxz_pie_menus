@@ -1,22 +1,12 @@
 import bpy
 from bpy.types import Operator
 
-from .utils import change_default_keymap, restored_default_keymap
-
-submoduname = __name__.split(".")[-1]
-bl_info = {
-    "name": submoduname,
-    "author": "wxz",
-    "version": (0, 0, 1),
-    "blender": (3, 3, 0),
-    "location": "View3D",
-    "category": "KEY",
-}
+from .pie_utils import *
 
 
 class Mesh_Delete_By_mode(Operator):
     bl_idname = "pie.x_key"
-    bl_label = submoduname
+    bl_label = get_pyfilename()
     bl_options = {"REGISTER", "UNDO"}
 
     @classmethod
@@ -107,7 +97,3 @@ def unregister():
     unregister_keymaps()
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
-
-
-# if __name__ == "__main__":
-#     register()

@@ -1,33 +1,21 @@
 import bpy
 from bpy.types import Menu, Operator
 
-from .utils import change_default_keymap, restored_default_keymap, set_pie_ridius
-
-submoduname = __name__.split(".")[-1]
-bl_info = {
-    "name": submoduname,
-    "author": "wxz",
-    "version": (0, 0, 1),
-    "blender": (3, 3, 0),
-    "location": "View3D",
-    "category": "3D View",
-}
+from .pie_utils import *
 
 
 class VIEW3D_PIE_MT_XZ_Shift_G(Menu):
-    bl_label = submoduname
+    bl_label = get_pyfilename()
 
     def draw(self, context):
         layout = self.layout
         pie = layout.menu_pie()
 
-        if context.area.ui_type == "VIEW_3D":
+        ob_type = get_ob_type(context)
+        ob_mode = get_ob_mode(context)
+        ui = get_area_ui_type(context)
 
-            ob_type = context.object.type
-            ob_mode = context.object.mode
-
-            set_pie_ridius(context, 100)
-
+        if ui == "VIEW_3D":
             if ob_mode == "OBJECT":
                 # 4 - LEFT
                 pie.separator()
@@ -53,10 +41,9 @@ class VIEW3D_PIE_MT_XZ_Shift_G(Menu):
                 # 1 - BOTTOM - LEFT
                 # 3 - BOTTOM - RIGHT
 
-        elif context.area.ui_type == "UV":
-
-            set_pie_ridius(context, 100)
+        elif ui == "UV":
             # 4 - LEFT
+            pie.separator()
             # 6 - RIGHT
             # 2 - BOTTOM
             # 8 - TOP

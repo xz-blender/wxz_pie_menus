@@ -4,17 +4,7 @@ import bpy
 import bpy.utils.previews
 from bpy.types import Menu, Operator
 
-from .utils import change_default_keymap, restored_default_keymap, set_pie_ridius
-
-submoduname = __name__.split(".")[-1]
-bl_info = {
-    "name": submoduname,
-    "author": "wxz",
-    "version": (0, 0, 1),
-    "blender": (3, 3, 0),
-    "location": "View3D",
-    "category": "Interface",
-}
+from .pie_utils import *
 
 preview_dict = None
 
@@ -30,16 +20,15 @@ def load_previews():
 
 
 class VIEW3D_PIE_MT_Bottom_Q(Menu):
-    bl_label = submoduname
+    bl_label = get_pyfilename()
 
     def draw(self, context):
         layout = self.layout
         pie = layout.menu_pie()
+        set_pie_ridius()
 
-        set_pie_ridius(context, 100)
+        ui = get_area_ui_type(context)
 
-        ui = context.area.ui_type
-        # print(ui)
         if preview_dict is not None:
             if ui == "VIEW_3D":
                 # 4 - LEFT
@@ -174,16 +163,16 @@ class VIEW3D_PIE_MT_Bottom_Q(Menu):
 
 
 class VIEW3D_PIE_MT_Bottom_Ctrl_Alt_Q(Menu):
-    bl_label = submoduname
+    bl_label = get_pyfilename()
 
     def draw(self, context):
         layout = self.layout
         pie = layout.menu_pie()
+        set_pie_ridius()
 
-        set_pie_ridius(context, 100)
+        ui = get_area_ui_type(context)
+        # print(ui)
 
-        ui = context.area.ui_type
-        print(ui)
         if ui == "VIEW_3D":
             # 4 - LEFT
             pie.separator()
@@ -353,9 +342,3 @@ def unregister():
     unregister_keymaps()
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
-
-
-# if __name__ == "__main__":
-#     register()
-
-#     bpy.ops.wm.call_menu(name="PIE_MT_Bottom_Q_favorite")

@@ -1,32 +1,20 @@
-import math
-from math import pi, radians
-
 import bmesh
 import bpy
 from bpy.props import FloatProperty, IntProperty
 from bpy.types import Menu, Operator
 from mathutils import Matrix, Quaternion, Vector
 
-from .utils import change_default_keymap, restored_default_keymap, set_pie_ridius
-
-submoduname = __name__.split(".")[-1]
-bl_info = {
-    "name": submoduname,
-    "author": "wxz",
-    "version": (0, 0, 1),
-    "blender": (3, 3, 0),
-    "location": "View3D",
-    "category": "3D View",
-}
+from .pie_utils import *
 
 
 class VIEW3D_PIE_MT_Ctrl_Alt_S(Menu):
-    bl_label = submoduname
+    bl_label = get_pyfilename()
 
     def draw(self, context):
         layout = self.layout
         pie = layout.menu_pie()
-        set_pie_ridius(context, 100)
+        set_pie_ridius()
+
         # 4 - LEFT
         pie.operator("pie.uv_scale_operator", text="UV缩小0.5倍").scale = 2
         # 6 - RIGHT

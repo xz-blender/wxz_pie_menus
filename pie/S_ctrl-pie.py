@@ -1,19 +1,7 @@
-import os
-
 import bpy
 from bpy.types import Menu, Operator, Panel
 
-from .utils import *
-
-submoduname = __name__.split(".")[-1]
-bl_info = {
-    "name": submoduname,
-    "author": "wxz",
-    "version": (0, 0, 1),
-    "blender": (3, 3, 0),
-    "location": "View3D",
-    "category": "3D View",
-}
+from .pie_utils import *
 
 
 class PIE_Click_Deep_Clean_Purge(bpy.types.Operator):
@@ -28,17 +16,13 @@ class PIE_Click_Deep_Clean_Purge(bpy.types.Operator):
 
 
 class VIEW3D_PIE_MT_Bottom_S_ctrl_Files(Menu):
-    bl_label = submoduname
+    bl_label = get_pyfilename()
 
     def draw(self, context):
         layout = self.layout
         layout.alignment = "CENTER"
         pie = layout.menu_pie()
-
-        # ob_type = context.object.type
-        # ob_mode = context.object.mode
-
-        set_pie_ridius(context, 100)
+        set_pie_ridius()
 
         # 4 - LEFT
         pie.operator("wm.open_mainfile", text="打开文件", icon="FILEBROWSER")

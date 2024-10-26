@@ -118,6 +118,10 @@ B_dir = [
     (["Mesh", "mesh.bevel", "Bevel"], [("value", "CLICK")], []),
     (["3D View", "view3d.render_border", "Set Render Region"], [("value", "CLICK")], []),
     (["Object Mode", "object.hide_collection", "Hide Collection"], [("active", False)], []),
+    (["Object Mode", "object.hide_view_set", "Hide Objects"], [("value", "CLICK")], []),
+    (["Curve", "curve.hide", "Hide Selected"], [("value", "CLICK")], []),
+    (["Mesh", "mesh.hide", "Hide Selected"], [("value", "CLICK")], []),
+    # (["UV Editor", "uv.hide", "Hide Selected"], [("value", "CLICK")], []),
 ]
 Brush_dir = [
     (["Sculpt", "wm.call_menu_pie", "Mask Edit"], [("value", "CLICK_DRAG")], []),  # A

@@ -1,32 +1,21 @@
 import bpy
 from bpy.types import Menu, Operator
 
-from .utils import *
-
-submoduname = __name__.split(".")[-1]
-bl_info = {
-    "name": submoduname,
-    "author": "wxz",
-    "version": (0, 0, 1),
-    "blender": (3, 3, 0),
-    "location": "View3D",
-    "category": "Interface",
-}
+from .pie_utils import *
 
 
 class VIEW3D_PIE_MT_Bottom_W(Menu):
-    bl_label = submoduname
+    bl_label = get_pyfilename()
 
     def draw(self, context):
 
         layout = self.layout
         layout.alignment = "CENTER"
         pie = layout.menu_pie()
+        set_pie_ridius()
 
-        ob_type = context.object.type
-        ob_mode = context.object.mode
-
-        set_pie_ridius(context, 100)
+        ob_type = get_ob_type(context)
+        ob_mode = get_ob_mode(context)
 
         if ob_mode == "OBJECT":
             # 4 - LEFT
@@ -131,15 +120,6 @@ class VIEW3D_PIE_MT_Bottom_W(Menu):
 
             # 3 - BOTTOM - RIGHT
             pie.prop(context.scene.tool_settings, "use_transform_correct_face_attributes")
-            # if context.scene.tool_settings.use_transform_correct_face_attributes == False:
-            #     pie.prop(context.scene.tool_settings, 'use_transform_correct_face_attributes')
-            # else:
-            #     col = pie.split().column(align=True)
-            #     col.scale_y = 1.2
-            #     row = col.row()
-            #     row.prop(context.scene.tool_settings, 'use_transform_correct_face_attributes')
-            #     row = col.row()
-            #     row.prop(context.scene.tool_settings, 'use_transform_correct_keep_connected')
 
 
 class Proportional_Edit_Falloff(Operator):
@@ -186,13 +166,6 @@ def register_keymaps():
     kmi.properties.name = "VIEW3D_PIE_MT_Bottom_W"
     addon_keymaps.append(km)
 
-    # change_keys = [
-    #     ['3D View','wm.tool_set_by_id','value','CLICK'],
-    #     ['UV Editor','wm.tool_set_by_id','value','CLICK'],
-    # ]
-    # global stored
-    # stored = change_keys_value(change_keys)
-
 
 def unregister_keymaps():
     keyconfigs = bpy.context.window_manager.keyconfigs.default
@@ -202,7 +175,6 @@ def unregister_keymaps():
             km.keymap_items.remove(kmi)
         # wm.keyconfigs.addon.keymaps.remove(km)
     addon_keymaps.clear()
-
     # restore_keys_value(stored)
 
 
@@ -216,8 +188,3 @@ def unregister():
     unregister_keymaps()
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
-
-
-# if __name__ == "__main__":
-#     register()
-#     bpy.ops.wm.call_menu_pie(name="VIEW3D_PIE_MT_Bottom_W")

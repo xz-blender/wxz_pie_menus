@@ -1,4 +1,3 @@
-import os
 import tempfile
 from datetime import datetime
 from pathlib import Path
@@ -6,32 +5,22 @@ from pathlib import Path
 import bpy
 from bpy.types import Menu, Operator
 
-from .utils import change_default_keymap, restored_default_keymap, set_pie_ridius
-
-submoduname = __name__.split(".")[-1]
-bl_info = {
-    "name": submoduname,
-    "author": "wxz",
-    "version": (0, 0, 1),
-    "blender": (3, 3, 0),
-    "location": "View3D",
-    "category": "3D View",
-}
+from .pie_utils import *
 
 
 class VIEW3D_PIE_MT_Bottom_C(Menu):
-    bl_label = submoduname
+    bl_label = get_pyfilename()
 
     def draw(self, context):
         layout = self.layout
         layout.alignment = "CENTER"
         pie = layout.menu_pie()
 
-        ob_type = context.object.type
-        ob_mode = context.object.mode
-        region = context.space_data.region_3d.view_perspective
+        ob_type = get_ob_type(context)
+        ob_mode = get_ob_mode(context)
+        set_pie_ridius()
 
-        set_pie_ridius(context, 100)
+        region = context.space_data.region_3d.view_perspective
 
         # 4 - LEFT
         pie.separator()
@@ -91,12 +80,12 @@ class PIE_Paste_ClipBord_as_Image_Plane(bpy.types.Operator):
                 # 保存图像到临时文件夹并返回路径
                 current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
                 image_name = f"clipboard_image_{current_time}.png"
-                image_path = os.path.join(temp_dir, image_name)
+                image_path = str(Path(temp_dir) / image_name)
                 image.save(image_path)
                 print(f"Image saved to: {image_path}")
             elif isinstance(image, list):
                 # 如果剪贴板包含文件，则打印其绝对路径
-                file_paths = [os.path.abspath(file) for file in image]
+                file_paths = [str(Path(file).absolute) for file in image]
                 for file_path in file_paths:
                     print(f"File path: {file_path}")
             else:

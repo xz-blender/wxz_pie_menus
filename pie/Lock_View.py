@@ -1,16 +1,6 @@
 import bpy
 from bpy.types import Operator, Panel
 
-submoduname = __name__.split(".")[-1]
-bl_info = {
-    "name": submoduname,
-    "author": "wxz",
-    "version": (0, 0, 1),
-    "blender": (3, 3, 0),
-    "location": "View3D",
-    "category": "3D View",
-}
-
 
 class Window_Lock_View(Operator):
     bl_idname = "window.lock_view"

@@ -1,33 +1,20 @@
 import bpy
 from bpy.types import Menu, Operator
 
-from .utils import *
-
-submoduname = __name__.split(".")[-1]
-bl_info = {
-    "name": submoduname,
-    "author": "wxz",
-    "version": (0, 0, 1),
-    "blender": (3, 3, 0),
-    "location": "View3D",
-    "category": "Interface",
-}
+from .pie_utils import *
 
 
 class VIEW3D_PIE_MT_Bottom_D(Menu):
-    bl_label = submoduname
+    bl_label = get_pyfilename()
 
     def draw(self, context):
         layout = self.layout
         pie = layout.menu_pie()
+        set_pie_ridius()
 
-        ui = context.area.ui_type
+        ui = get_area_ui_type()
 
         if ui == "VIEW_3D":
-            # ob_type = context.object.type
-            # ob_mode = context.object.mode
-
-            set_pie_ridius(context, 100)
 
             # 4 - LEFT
             sp = pie.split()
@@ -79,7 +66,6 @@ class VIEW3D_PIE_MT_Bottom_D(Menu):
             # 3 - BOTTOM - RIGHT
             pie.operator("pie.transform_pivot", text="游标", icon="PIVOT_CURSOR").pivot = "CURSOR"
         elif ui == "UV":
-            set_pie_ridius(context, 100)
             # 4 - LEFT
             pie.separator()
             # 6 - RIGHT
@@ -121,7 +107,7 @@ class VIEW3D_PIE_MT_Transform_Orientation(Operator):
 class VIEW3D_PIE_MT_Transform_Pivot(Operator):
     bl_idname = "pie.transform_pivot"
     bl_label = ""
-    bl_options = {"REGISTER"}
+    bl_options = {"REGISTER", "UNDO"}
 
     pivot: bpy.props.StringProperty(name="Pivot", default="BOUNDING_BOX_CENTER")  # type: ignore
 
@@ -137,7 +123,7 @@ class VIEW3D_PIE_MT_Transform_Pivot(Operator):
 class VIEW3D_PIE_MT_Transform_Pivot_UV(Operator):
     bl_idname = "pie.transform_pivot_uv"
     bl_label = ""
-    bl_options = {"REGISTER"}
+    bl_options = {"REGISTER", "UNDO"}
 
     pivot: bpy.props.StringProperty(name="Pivot", default="CENTER")  # type: ignore
 
@@ -224,8 +210,3 @@ def unregister():
     unregister_keymaps()
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
-
-
-# if __name__ == "__main__":
-#     register()
-#     bpy.ops.wm.call_menu_pie(name="VIEW3D_PIE_MT_Bottom_D")

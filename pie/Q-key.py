@@ -3,17 +3,7 @@ import os
 import bpy
 from bpy.types import Menu, Operator
 
-from .utils import change_default_keymap, restored_default_keymap
-
-submoduname = __name__.split(".")[-1]
-bl_info = {
-    "name": submoduname,
-    "author": "wxz",
-    "version": (0, 0, 1),
-    "blender": (3, 3, 0),
-    "location": "View3D",
-    "category": "Interface",
-}
+from .pie_utils import *
 
 
 class PIE_MT_Bottom_Q_favorite(Menu):
@@ -70,7 +60,7 @@ class Render_Viewport_OpenGL(Operator):
 
 class PIE_Q_key(Operator):
     bl_idname = "pie.q_key"
-    bl_label = submoduname
+    bl_label = get_pyfilename()
     bl_description = ""
     bl_options = {"REGISTER", "UNDO"}
 
@@ -109,7 +99,7 @@ class PIE_Q_key(Operator):
 
 class PIE_Q_key_shift(Operator):
     bl_idname = "pie.q_key_shift"
-    bl_label = submoduname
+    bl_label = get_pyfilename()
     bl_description = ""
     bl_options = {"REGISTER", "UNDO"}
 
@@ -147,7 +137,7 @@ class PIE_Q_key_shift(Operator):
 
 class PIE_Q_key_ctrl(Operator):
     bl_idname = "pie.q_key_shift"
-    bl_label = submoduname
+    bl_label = get_pyfilename()
     bl_description = ""
     bl_options = {"REGISTER"}
 

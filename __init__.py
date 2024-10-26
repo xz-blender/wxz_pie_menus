@@ -31,12 +31,10 @@ except_module_list = [
     "__pycache__",
     ".DS_Store",
     "utils",
+    "pie_utils",
     "Brush-key",
-    "operator_id",
     "operator_id_sort",
     "extensions_setting",
-    "assets_lib_presets",
-    "addons_lib_presets",
 ]
 cwd = Path(__file__).parent
 module_path_name_list = {"pie": "pie_modules", "parts_addons": "other_modules", "operator": "setting_modules"}
