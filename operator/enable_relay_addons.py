@@ -131,7 +131,7 @@ class_register, class_unrigister = bpy.utils.register_classes_factory(CLASSES)
 
 
 @persistent
-def change_addons():
+def change_addons(dummy):
     if get_prefs().enable_addon_presets_items:
         bpy.ops.pie.enable_relay_addons()
         print(f"{addon_name()} 已开启依赖插件")

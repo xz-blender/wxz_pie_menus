@@ -1,7 +1,8 @@
 import bpy
 from bpy.types import UIList
 
-from .utils import prefs_show_sub_panel
+from .pip_package import ERROR_OUTPUT, TEXT_OUTPUT
+from .utils import *
 
 
 class PIE_UL_pie_modules(UIList):
@@ -26,6 +27,84 @@ class PIE_UL_setting_modules(UIList):
         row = layout.row()
         row.label(text=mod_name)
         row.prop(data, "use_" + mod_name, text="")
+
+
+def draw_dependencies(self, layout):
+    main_factor = 0.65
+
+    layout.label(text="依赖包设置")
+    layout = self.layout
+    row = layout.row()
+    row.alignment = "RIGHT"
+    split = row.split(factor=main_factor)
+    row = split.row().box().row()
+    row.prop(self, "pip_user_flag", text="使用本地Python路径")
+    row.prop(self, "pip_use_china_sources", text="使用清华镜像源安装")
+    row = split.row().box().row()
+    row.prop(self, "debug")
+
+    layout = self.layout.box()
+
+    row = layout.row()
+    split = row.split(factor=main_factor)
+    row_l = split.row()
+    row_l.operator("pie.ensure_pip")
+    row_r = split.row(align=True)
+    row_r.operator("pie.upgrade_pip")
+    row_r.operator("pie.pip_show_list")
+
+    row = layout.row(align=True)
+    split = row.split(factor=main_factor)
+    split.scale_y = 1.4
+    row_l = split.row()
+    split_l = row_l.split(factor=0.4, align=True)
+    row_ll = split_l.row()
+    row_ll.label(text="输入包名(空格分割):")
+    row_lr = split_l.row()
+    row_lr.prop(self, "pip_module_name", text="")
+    row_r = split.row(align=True)
+    row_r.operator("pie.pip_install")
+    row_r.operator("pie.pip_remove")
+
+    row = layout.row()
+    split = row.split(factor=main_factor)
+    split_l = split.row(align=True)
+    for item in self.bl_rna.properties["default_pkg"].enum_items:
+        box = split_l.box()
+        try:
+            __import__(item.description)
+            icon = "CHECKMARK"
+        except ImportError:
+            icon = "PANEL_CLOSE"
+        box.label(text=item.name, icon=icon)
+    split_r = split.row()
+    split_r.scale_y = 1.4
+    split_r.operator("pie.pip_install_default")
+
+    if TEXT_OUTPUT != []:
+        row = layout.row(align=True)
+        box = row.box()
+        box = box.column(align=True)
+        for i in TEXT_OUTPUT:
+            row = box.row()
+            for s in i:
+                col = row.column()
+                col.label(text=s)
+        row = layout.row()
+
+    if ERROR_OUTPUT != []:
+        row = layout.row(align=True)
+        box = row.box()
+        box = box.column(align=True)
+        for i in ERROR_OUTPUT:
+            row = box.row()
+            for s in i:
+                col = row.column()
+                col.label(text=s)
+        row = layout.row()
+
+    if TEXT_OUTPUT != [] or ERROR_OUTPUT != []:
+        row.operator("pie.pip_cleartext", text="清除文本")
 
 
 def draw_addon_menus(self, layout, context, module_path_name_list):

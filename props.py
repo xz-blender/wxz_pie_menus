@@ -19,6 +19,8 @@ class WXZ_PIE_Prefs_Props:
         default="ADDON_MENUS",
     )  # type: ignore
 
+    debug: bpy.props.BoolProperty(name="调试", default=True)  # type: ignore
+
     # 资源设置
     load_assets_library_presets: bpy.props.BoolProperty(name="加载资源库预设", default=False)  # type: ignore
     assets_library_path_sync: bpy.props.StringProperty(name="远程路径", subtype="DIR_PATH", default=get_sync_path())  # type: ignore
