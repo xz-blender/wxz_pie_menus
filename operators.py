@@ -1,6 +1,10 @@
 from pathlib import Path
 
 import bpy
+from bpy.types import Operator
+
+from .items import oneclick_enable_preset_prop_list
+from .utils import get_prefs
 
 operator_folder_path = Path(__file__).parent / "operator"
 assets_p_file = operator_folder_path / "assets_lib_presets.json"
@@ -9,7 +13,7 @@ addons_p_file = operator_folder_path / "addons_lib_presets.json"
 p_files_dirt = {"Assets": assets_p_file, "Addons": addons_p_file}
 
 
-class PIE_Open_Custom_XZ_presets_file_In_NewWindow(bpy.types.Operator):
+class PIE_Open_Custom_XZ_presets_file_In_NewWindow(Operator):
     bl_idname = "pie.open_custom_xz_presets_file_in_new_window"
     bl_label = "打开预设文件"
     bl_options = {"REGISTER", "UNDO"}
@@ -48,7 +52,37 @@ class PIE_Open_Custom_XZ_presets_file_In_NewWindow(bpy.types.Operator):
         return {"FINISHED"}
 
 
-CLASSES = [PIE_Open_Custom_XZ_presets_file_In_NewWindow]
+class PIE_OneClick_Enable_All_Presets(Operator):
+    bl_idname = "pie.one_click_enable_all_presets"
+    bl_label = "一键启用所有预设"
+    bl_description = "一键启用所有预设"
+    bl_options = {"REGISTER", "UNDO"}
+
+    @classmethod
+    def poll(cls, context):
+        return True
+
+    def invoke(self, context, event):
+        return context.window_manager.invoke_props_dialog(self)
+
+    def draw(self, context):
+        layout = self.layout
+        row = layout.row()
+        row.label(text="即将重启,是否执行?", icon="QUESTION")
+
+    def execute(self, context):
+        prefs = get_prefs()
+        for prop in oneclick_enable_preset_prop_list:
+            setattr(prefs, prop, True)
+        bpy.ops.wm.save_userpref()
+        bpy.ops.wm.relaunch_blender()
+        return {"FINISHED"}
+
+
+CLASSES = [
+    PIE_Open_Custom_XZ_presets_file_In_NewWindow,
+    PIE_OneClick_Enable_All_Presets,
+]
 
 
 def register():

@@ -19,7 +19,7 @@ class WXZ_PIE_Prefs_Props:
         default="ADDON_MENUS",
     )  # type: ignore
 
-    debug: BoolProperty(name="调试", default=True)  # type: ignore
+    debug: BoolProperty(name="调试输出", default=True)  # type: ignore
 
     # 资源设置
     load_assets_library_presets: BoolProperty(name="加载资源库预设", default=False)  # type: ignore
@@ -40,7 +40,7 @@ class WXZ_PIE_Prefs_Props:
     setting_modules: CollectionProperty(type=PropertyGroup)  # type: ignore
     setting_modules_index: IntProperty()  # type: ignore
     # 依赖包面板
-    pip_use_china_sources: BoolProperty(name="使用清华镜像源", default=False)  # type: ignore
+    pip_use_china_sources: BoolProperty(name="使用清华镜像源", default=True)  # type: ignore
     pip_modules_home: BoolProperty(default=False)  # type: ignore
     pip_user_flag: BoolProperty(default=True)  # type: ignore
     pip_advanced_toggle: BoolProperty(default=False)  # type: ignore

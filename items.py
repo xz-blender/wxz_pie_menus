@@ -43,3 +43,10 @@ RETRUNCODE_DICT = {
     127: "命令未找到",
     128: "无效的参数",
 }
+
+oneclick_enable_preset_prop_list = [
+    # "download_official_addons",
+    "load_assets_library_presets",
+    "load_xz_keys_presets",
+    "load_xz_setting_presets",
+]

@@ -29,22 +29,29 @@ class PIE_UL_setting_modules(UIList):
 
 
 def draw_dependencies(self, layout):
+    prefs = get_prefs()
     pip_output = bpy.context.scene.PIE_pip_output
     output: bool = any([pip_output.TEXT_OUTPUT, pip_output.ERROR_OUTPUT, pip_output.RETRUNCODE_OUTPUT])
     main_sp_fac = 0.65
-
     layout.label(text="依赖包设置")
-    layout = self.layout
-    row = layout.row()
-    row.alignment = "RIGHT"
-    split = row.split(factor=main_sp_fac)
-    row = split.row().box().row()
-    row.prop(self, "pip_user_flag", text="使用本地Python路径")
-    row.prop(self, "pip_use_china_sources", text="使用清华镜像源安装")
-    row.prop(self, "debug")
-    row = split.row().box()
-    row.operator("pie.ensure_pip")
 
+    # ---
+    layout = self.layout
+    row = layout.box().row()
+    split = row.split(factor=main_sp_fac)
+
+    row = split.row()
+
+    sub_split = row.split(factor=0.7)
+    row = sub_split.row()
+    row.prop(self, "pip_user_flag", text="本地Py路径")
+    row.prop(self, "pip_use_china_sources", text="清华镜像源")
+    row = sub_split.row()
+    row.prop(self, "debug")
+
+    row = split.row()
+    row.operator("pie.pip_install_default")
+    # ---
     layout = self.layout.box()
 
     row = layout.row()
@@ -68,24 +75,23 @@ def draw_dependencies(self, layout):
     row_r.operator("pie.pip_install")
     row_r.operator("pie.pip_remove")
 
-    row = layout.row()
-    split = row.split(factor=main_sp_fac)
-    split.scale_y = 1.4
-    split_l = split.row(align=True)
+    row = layout.row(align=True)
     for item in self.bl_rna.properties["default_pkg"].enum_items:
-        box = split_l.box()
+        box = row.box()
         try:
             __import__(item.description)
             icon = "CHECKMARK"
         except ImportError:
             icon = "PANEL_CLOSE"
         box.label(text=item.name, icon=icon)
-    split_r = split.row()
-    split_r.operator("pie.pip_install_default")
 
+    # ---
     row = layout.row()
     row.label(text="最后一次输出:", icon="CONSOLE")
     if output:
+        row = layout.row()
+        row.operator("pie.pip_cleartext", text="清除文本")
+
         row = layout.row()
         box = row.box().column(align=True)
 
@@ -105,16 +111,13 @@ def draw_dependencies(self, layout):
 
         box.separator()
 
-        if pip_output.ERROR_OUTPUT:
+        if pip_output.ERROR_OUTPUT and prefs.debug:
             row = box.row().box().column(align=True)
             row.label(text="错误信息:")
             for item in pip_output.ERROR_OUTPUT:
                 # row = box.row()
                 col = row.column()
                 col.label(text=item.line)
-
-        row = layout.row()
-        row.operator("pie.pip_cleartext", text="清除文本")
 
 
 def draw_addon_menus(self, layout, context, module_path_name_list):
@@ -145,7 +148,13 @@ def draw_pie_modules(self, top_row, module_path_name_list):
 
 
 def draw_resource_config(self, layout):
-    layout.label(text="以下选项会严重更改您的软件设置,谨慎选择 (重启自动运行 & 勾选并手动运行)", icon="ERROR")
+    row = layout.row()
+    split = row.split(factor=0.8)
+    row = split.row()
+    row.label(text="这会严重更改您的软件设置!请备份配置!(重启自动运行)", icon="ERROR")
+    row = split.row()
+    row.operator("pie.one_click_enable_all_presets", text="一键启用")
+
     box = layout.column()
     split_main_factor = 0.7
 

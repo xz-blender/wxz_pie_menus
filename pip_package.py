@@ -8,7 +8,7 @@ import bpy
 from bpy.types import Operator
 
 from .items import RETRUNCODE_DICT
-from .utils import full_justify, get_prefs
+from .utils import get_prefs
 
 sys.stdout.reconfigure(encoding="utf-8")
 
@@ -36,7 +36,7 @@ def run_pip_command(self, *cmds, cols=False, run_module="pip"):
     cmds = [c for c in cmds if c is not None]
     command = [python_bin, "-m", run_module, *cmds]
 
-    if prefs.pip_use_china_sources:
+    if prefs.pip_use_china_sources and run_module == "pip":
         command += ["-i", "https://pypi.tuna.tsinghua.edu.cn/simple"]
 
     output = subprocess.run(command, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding="utf-8")
@@ -62,22 +62,6 @@ def run_pip_command(self, *cmds, cols=False, run_module="pip"):
         print(">>> STD信息 :\n", output.stderr)
 
 
-def save_text(text, cols=False):
-    """将输入文本字符串转换为对齐后的字符串列表"""
-    out = []
-    for i in text.split("\n"):
-        if len(i.strip()) == 0:
-            continue
-        subs = i.split()
-        if cols:
-            # 将整行的单词列表传递给 full_justify
-            justified_lines = full_justify(subs, 40)  # 返回的是字符串列表
-            out.extend(justified_lines)
-        else:
-            out.append(" ".join(subs))
-    return out
-
-
 class PIE_OT_PIPInstall(Operator):
     bl_idname = "pie.pip_install"
     bl_label = "安装"
@@ -96,7 +80,7 @@ class PIE_OT_PIPInstall(Operator):
 
 class PIE_OT_PIPInstall_Default(Operator):
     bl_idname = "pie.pip_install_default"
-    bl_label = "安装本插件需要的包"
+    bl_label = "一键安装本插件需要的包"
     bl_description = "安装本插件需要的PIP默认包"
 
     def execute(self, context):
