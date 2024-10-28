@@ -41,19 +41,23 @@ def register():
     bpy.types.Scene.vps_gizmo_show = bpy.props.BoolProperty(default=True)
     bpy.types.VIEW3D_MT_edit_mesh_context_menu.append(smooth_menu_last)
     bpy.types.VIEW3D_MT_edit_mesh_vertices.append(smooth_menu_last)
-    # try:
-    bpy.utils.register_tool(ToolVpsSmooting, after={"builtin.smooth"}, separator=True, group=True)
-    # except:
-    #     pass
+    try:
+        bpy.utils.register_tool(ToolVpsSmooting, after={"builtin.smooth"}, separator=True, group=True)
+    except:
+        pass
 
 
 def unregister():
-    for cls in reversed(classes):
-        bpy.utils.unregister_class(cls)
-    bpy.utils.unregister_tool(ToolVpsSmooting)
     bpy.types.VIEW3D_MT_edit_mesh_context_menu.remove(smooth_menu_last)
     bpy.types.VIEW3D_MT_edit_mesh_vertices.remove(smooth_menu_last)
     del bpy.types.Scene.vps_gizmo_show
+
+    try:
+        bpy.utils.unregister_tool(ToolVpsSmooting)
+    except:
+        pass
+    for cls in reversed(classes):
+        bpy.utils.unregister_class(cls)
 
 
 if __name__ == "__main__":

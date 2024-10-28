@@ -65,11 +65,11 @@ class tby_WheelDown(bpy.types.Operator):
         return {"FINISHED"}
 
 
-classes = (
+CLASSES = (
     tby_WheelDown,
     tby_WheelUp,
 )
-class_register, class_unregister = bpy.utils.register_classes_factory(classes)
+
 addon_keymaps = []
 
 
@@ -80,7 +80,8 @@ def key(dfbool, km, kmi):
 
 
 def register():
-    class_register()
+    for cls in CLASSES:
+        bpy.utils.register_class(cls)
 
     # KEYMAP
     wm = bpy.context.window_manager
@@ -96,13 +97,9 @@ def register():
 
 
 def unregister():
-    class_unregister()
-
-    # KEYMAP
     for km, kmi in addon_keymaps:
         km.keymap_items.remove(kmi)
     addon_keymaps.clear()
 
-
-if __name__ == "__main__":
-    register()
+    for cls in reversed(CLASSES):
+        bpy.utils.unregister_class(cls)

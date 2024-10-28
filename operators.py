@@ -49,16 +49,13 @@ class PIE_Open_Custom_XZ_presets_file_In_NewWindow(bpy.types.Operator):
 
 
 CLASSES = [PIE_Open_Custom_XZ_presets_file_In_NewWindow]
-class_register, class_unregister = bpy.utils.register_classes_factory(CLASSES)
 
 
 def register():
-    class_register()
+    for cls in CLASSES:
+        bpy.utils.register_class(cls)
 
 
 def unregister():
-    class_unregister()
-
-
-if __name__ == "__main__":
-    register()
+    for cls in reversed(CLASSES):
+        bpy.utils.unregister_class(cls)

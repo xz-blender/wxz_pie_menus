@@ -9,7 +9,7 @@ from .utils import *
 
 
 class WXZ_PIE_Prefs_Props:
-    tabs: bpy.props.EnumProperty(
+    tabs: EnumProperty(
         items=(
             ("DEPENDENCIES", "依赖包", ""),
             ("ADDON_MENUS", "饼菜单&插件", ""),
@@ -19,33 +19,33 @@ class WXZ_PIE_Prefs_Props:
         default="ADDON_MENUS",
     )  # type: ignore
 
-    debug: bpy.props.BoolProperty(name="调试", default=True)  # type: ignore
+    debug: BoolProperty(name="调试", default=True)  # type: ignore
 
     # 资源设置
-    load_assets_library_presets: bpy.props.BoolProperty(name="加载资源库预设", default=False)  # type: ignore
-    assets_library_path_sync: bpy.props.StringProperty(name="远程路径", subtype="DIR_PATH", default=get_sync_path())  # type: ignore
-    assets_library_path_local: bpy.props.StringProperty(name="本地路径", subtype="DIR_PATH", default=get_local_path())  # type: ignore
-    load_xz_keys_presets: bpy.props.BoolProperty(name="加载XZ快捷键预设", default=False)  # type: ignore
-    load_xz_setting_presets: bpy.props.BoolProperty(name="加载XZ配置预设", default=False)  # type: ignore
-    download_official_addons: bpy.props.BoolProperty(name="下载常用内置插件", default=False)  # type: ignore
-    enable_addon_presets_items: bpy.props.BoolProperty(name="开启常用插件预设", default=False)  # type: ignore
-    xz_download_offical_extensions: bpy.props.BoolProperty(name="安装常用官方插件", default=False)  # type: ignore
-    xz_download_parts_extensions: bpy.props.BoolProperty(name="安装作者常用插件", default=False)  # type: ignore
+    load_assets_library_presets: BoolProperty(name="加载资源库预设", default=False)  # type: ignore
+    assets_library_path_sync: StringProperty(name="远程路径", subtype="DIR_PATH", default=get_sync_path())  # type: ignore
+    assets_library_path_local: StringProperty(name="本地路径", subtype="DIR_PATH", default=get_local_path())  # type: ignore
+    load_xz_keys_presets: BoolProperty(name="加载XZ快捷键预设", default=False)  # type: ignore
+    load_xz_setting_presets: BoolProperty(name="加载XZ配置预设", default=False)  # type: ignore
+    download_official_addons: BoolProperty(name="下载常用内置插件", default=False)  # type: ignore
+    enable_addon_presets_items: BoolProperty(name="开启常用插件预设", default=False)  # type: ignore
+    xz_download_offical_extensions: BoolProperty(name="安装常用官方插件", default=False)  # type: ignore
+    xz_download_parts_extensions: BoolProperty(name="安装作者常用插件", default=False)  # type: ignore
 
     # 饼菜单面板
     pie_modules: CollectionProperty(type=PropertyGroup)  # type: ignore
-    pie_modules_index: bpy.props.IntProperty()  # type: ignore
+    pie_modules_index: IntProperty()  # type: ignore
     other_modules: CollectionProperty(type=PropertyGroup)  # type: ignore
-    other_modules_index: bpy.props.IntProperty()  # type: ignore
+    other_modules_index: IntProperty()  # type: ignore
     setting_modules: CollectionProperty(type=PropertyGroup)  # type: ignore
-    setting_modules_index: bpy.props.IntProperty()  # type: ignore
+    setting_modules_index: IntProperty()  # type: ignore
     # 依赖包面板
-    pip_use_china_sources: bpy.props.BoolProperty(name="使用清华镜像源", default=False)  # type: ignore
-    pip_modules_home: bpy.props.BoolProperty(default=False)  # type: ignore
-    pip_user_flag: bpy.props.BoolProperty(default=True)  # type: ignore
-    pip_advanced_toggle: bpy.props.BoolProperty(default=False)  # type: ignore
-    pip_module_name: bpy.props.StringProperty()  # type: ignore
-    default_pkg: bpy.props.EnumProperty(
+    pip_use_china_sources: BoolProperty(name="使用清华镜像源", default=False)  # type: ignore
+    pip_modules_home: BoolProperty(default=False)  # type: ignore
+    pip_user_flag: BoolProperty(default=True)  # type: ignore
+    pip_advanced_toggle: BoolProperty(default=False)  # type: ignore
+    pip_module_name: StringProperty()  # type: ignore
+    default_pkg: EnumProperty(
         name="default package",
         description="本插件需要安装的第三方包",
         items=[
@@ -70,11 +70,11 @@ class WXZ_PIE_Prefs_Props:
 
     ## formula to nodes
     show_formula2nodes_submenu: BoolProperty(name="表达式转节点")  # type: ignore
-    debug_prints: bpy.props.BoolProperty(name="调试输出", description="在终端中启用调试打印", default=False)  # type: ignore
-    generate_previews: bpy.props.BoolProperty(name="生成逻辑预览树", description="在创建节点树之前生成节点树的预览", default=True)  # type: ignore
+    debug_prints: BoolProperty(name="调试输出", description="在终端中启用调试打印", default=False)  # type: ignore
+    generate_previews: BoolProperty(name="生成逻辑预览树", description="在创建节点树之前生成节点树的预览", default=True)  # type: ignore
     from .parts_addons.formula_to_nodes import VariableSortMode
 
-    sort_vars: bpy.props.EnumProperty(items=VariableSortMode, name="变量排序模式", description="对变量进行排序的顺序", default="INSERTION")  # type: ignore
+    sort_vars: EnumProperty(items=VariableSortMode, name="变量排序模式", description="对变量进行排序的顺序", default="INSERTION")  # type: ignore
     ## MeshMachine
     show_meshmachine_submenu: BoolProperty(name="MeshMachine-剥离版")  # type: ignore
     modal_hud_color: FloatVectorProperty(name="显示字体颜色", subtype="COLOR", default=[1, 1, 1], size=3, min=0, max=1)  # type: ignore
@@ -124,24 +124,37 @@ class M4_split_SceneProperties(bpy.types.PropertyGroup):
     focus_history: CollectionProperty(type=PIE_HistoryEpochCollection)  # type: ignore
 
 
-classes = [
+class PIE_PIPOutput_LINE(bpy.types.PropertyGroup):
+    line: StringProperty()  # type: ignore
+
+
+class PIE_PIP_OutputItem(bpy.types.PropertyGroup):
+    RETRUNCODE_OUTPUT: StringProperty(default="")  # type: ignore
+    ERROR_OUTPUT: CollectionProperty(type=PIE_PIPOutput_LINE)  # type: ignore
+    TEXT_OUTPUT: CollectionProperty(type=PIE_PIPOutput_LINE)  # type: ignore
+
+
+CLASSES = [
     PIE_HistoryObjectsCollection,
     PIE_HistoryUnmirroredCollection,
     PIE_HistoryEpochCollection,
     M4_split_SceneProperties,
+    PIE_PIPOutput_LINE,
+    PIE_PIP_OutputItem,
 ]
-
-class_register, class_unregister = bpy.utils.register_classes_factory(classes)
 
 
 def register():
-    class_register()
-    # if "bpy" in locals():
-    #     importlib.reload(M4_split_SceneProperties)
+    for cls in CLASSES:
+        bpy.utils.register_class(cls)
 
-    bpy.types.Scene.M4_split = bpy.props.PointerProperty(type=M4_split_SceneProperties)
+    bpy.types.Scene.M4_split = PointerProperty(type=M4_split_SceneProperties)
+    bpy.types.Scene.PIE_pip_output = PointerProperty(type=PIE_PIP_OutputItem)
 
 
 def unregister():
-    class_unregister()
     del bpy.types.Scene.M4_split
+    del bpy.types.Scene.PIE_pip_output
+
+    for cls in reversed(CLASSES):
+        bpy.utils.unregister_class(cls)

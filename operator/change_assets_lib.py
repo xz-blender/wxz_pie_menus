@@ -96,17 +96,18 @@ def run_set_assets_library_path(dummy):
 CLASSES = [
     PIE_Change_Assets_library_Path,
 ]
-class_register, class_unregister = bpy.utils.register_classes_factory(CLASSES)
 
 
 def register():
-    class_register()
+    for cls in CLASSES:
+        bpy.utils.register_class(cls)
     manage_app_handlers(handler_on_default_blender_list, run_set_assets_library_path)
 
 
 def unregister():
     manage_app_handlers(handler_on_default_blender_list, run_set_assets_library_path, True)
-    class_unregister()
+    for cls in reversed(CLASSES):
+        bpy.utils.unregister_class(cls)
 
 
 if __name__ == "__main__":

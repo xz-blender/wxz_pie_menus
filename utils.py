@@ -1,6 +1,7 @@
 import importlib
 import os
 import platform
+import re
 from pathlib import Path
 
 import bpy
@@ -101,3 +102,39 @@ def iter_submodules_name(path, except_package_list):
 
     sub_modules.sort(key=lambda mod: mod.__name__)
     return sub_modules
+
+
+def glb_classes_register(CLASSES):
+    filename = os.path.splitext(os.path.basename(__file__))[0]
+    safe_filename = re.sub(r"\W|^(?=\d)", "_", filename)
+
+    class_register_var_name = f"{safe_filename}_class_register"
+    class_unregister_var_name = f"{safe_filename}_class_unregister"
+
+    globals()[class_register_var_name], globals()[class_unregister_var_name] = bpy.utils.register_classes_factory(
+        CLASSES
+    )
+
+    return (globals()[class_register_var_name], globals()[class_unregister_var_name])
+
+
+def full_justify(line, max_width):
+    """对单行文本进行两端对齐"""
+    words = line.split()
+    if not words:
+        return ""  # 空行直接返回
+    if len(words) == 1:
+        # 只有一个单词，左对齐
+        return words[0].ljust(max_width)
+    total_chars = sum(len(word) for word in words)
+    total_spaces = max_width - total_chars
+    spaces_between_words = len(words) - 1
+    min_spaces, extra_spaces = divmod(total_spaces, spaces_between_words)
+    # 构建对齐后的行
+    justified_line = ""
+    for i, word in enumerate(words):
+        justified_line += word
+        if i < spaces_between_words:
+            # 添加最小空格数
+            justified_line += " " * (min_spaces + (1 if i < extra_spaces else 0))
+    return justified_line

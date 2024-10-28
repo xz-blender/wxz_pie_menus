@@ -1,7 +1,6 @@
 import bpy
 from bpy.types import UIList
 
-from .pip_package import ERROR_OUTPUT, TEXT_OUTPUT
 from .utils import *
 
 
@@ -30,23 +29,26 @@ class PIE_UL_setting_modules(UIList):
 
 
 def draw_dependencies(self, layout):
-    main_factor = 0.65
+    pip_output = bpy.context.scene.PIE_pip_output
+    output: bool = any([pip_output.TEXT_OUTPUT, pip_output.ERROR_OUTPUT, pip_output.RETRUNCODE_OUTPUT])
+    main_sp_fac = 0.65
 
     layout.label(text="依赖包设置")
     layout = self.layout
     row = layout.row()
     row.alignment = "RIGHT"
-    split = row.split(factor=main_factor)
+    split = row.split(factor=main_sp_fac)
     row = split.row().box().row()
     row.prop(self, "pip_user_flag", text="使用本地Python路径")
     row.prop(self, "pip_use_china_sources", text="使用清华镜像源安装")
-    row = split.row().box().row()
     row.prop(self, "debug")
+    row = split.row().box()
+    row.operator("pie.ensure_pip")
 
     layout = self.layout.box()
 
     row = layout.row()
-    split = row.split(factor=main_factor)
+    split = row.split(factor=main_sp_fac)
     row_l = split.row()
     row_l.operator("pie.ensure_pip")
     row_r = split.row(align=True)
@@ -54,7 +56,7 @@ def draw_dependencies(self, layout):
     row_r.operator("pie.pip_show_list")
 
     row = layout.row(align=True)
-    split = row.split(factor=main_factor)
+    split = row.split(factor=main_sp_fac)
     split.scale_y = 1.4
     row_l = split.row()
     split_l = row_l.split(factor=0.4, align=True)
@@ -67,7 +69,8 @@ def draw_dependencies(self, layout):
     row_r.operator("pie.pip_remove")
 
     row = layout.row()
-    split = row.split(factor=main_factor)
+    split = row.split(factor=main_sp_fac)
+    split.scale_y = 1.4
     split_l = split.row(align=True)
     for item in self.bl_rna.properties["default_pkg"].enum_items:
         box = split_l.box()
@@ -78,32 +81,39 @@ def draw_dependencies(self, layout):
             icon = "PANEL_CLOSE"
         box.label(text=item.name, icon=icon)
     split_r = split.row()
-    split_r.scale_y = 1.4
     split_r.operator("pie.pip_install_default")
 
-    if TEXT_OUTPUT != []:
-        row = layout.row(align=True)
-        box = row.box()
-        box = box.column(align=True)
-        for i in TEXT_OUTPUT:
-            row = box.row()
-            for s in i:
-                col = row.column()
-                col.label(text=s)
+    row = layout.row()
+    row.label(text="最后一次输出:", icon="CONSOLE")
+    if output:
         row = layout.row()
+        box = row.box().column(align=True)
 
-    if ERROR_OUTPUT != []:
-        row = layout.row(align=True)
-        box = row.box()
-        box = box.column(align=True)
-        for i in ERROR_OUTPUT:
-            row = box.row()
-            for s in i:
+        if pip_output.RETRUNCODE_OUTPUT:
+            row = box.row().box()
+            row.label(text=f"执行结果:   {pip_output.RETRUNCODE_OUTPUT}")
+
+        box.separator()
+
+        if pip_output.TEXT_OUTPUT:
+            row = box.row().box().column(align=True)
+            row.label(text="输出结果:")
+            for item in pip_output.TEXT_OUTPUT:
+                # row = box.row()
                 col = row.column()
-                col.label(text=s)
-        row = layout.row()
+                col.label(text=item.line)
 
-    if TEXT_OUTPUT != [] or ERROR_OUTPUT != []:
+        box.separator()
+
+        if pip_output.ERROR_OUTPUT:
+            row = box.row().box().column(align=True)
+            row.label(text="错误信息:")
+            for item in pip_output.ERROR_OUTPUT:
+                # row = box.row()
+                col = row.column()
+                col.label(text=item.line)
+
+        row = layout.row()
         row.operator("pie.pip_cleartext", text="清除文本")
 
 
@@ -268,12 +278,13 @@ CLASSES = [
     PIE_UL_other_modules,
     PIE_UL_setting_modules,
 ]
-class_register, class_unregister = bpy.utils.register_classes_factory(CLASSES)
 
 
 def register():
-    class_register()
+    for cls in CLASSES:
+        bpy.utils.register_class(cls)
 
 
 def unregister():
-    class_unregister()
+    for cls in reversed(CLASSES):
+        bpy.utils.unregister_class(cls)

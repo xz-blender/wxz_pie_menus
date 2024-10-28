@@ -7,7 +7,8 @@ from pathlib import Path
 import bpy
 from bpy.types import Operator
 
-from .utils import get_prefs
+from .items import RETRUNCODE_DICT
+from .utils import full_justify, get_prefs
 
 sys.stdout.reconfigure(encoding="utf-8")
 
@@ -23,59 +24,57 @@ if app_path not in sys.path:
     sys.path.append(app_path)
 
 
-global ERROR_OUTPUT
-global TEXT_OUTPUT
-ERROR_OUTPUT = []
-TEXT_OUTPUT = []
-RETRUNCODE_OUTPUT = []
-RETRUNCODE_DICT = {
-    0: "成功",
-    1: "通用错误",
-    2: "误用 shell 命令",
-    126: "命令不可执行",
-    127: "命令未找到",
-    128: "无效的参数",
-}
-
-
 def run_pip_command(self, *cmds, cols=False, run_module="pip"):
     """使用user spec命令运行P IP进程"""
-    global ERROR_OUTPUT
-    global TEXT_OUTPUT
+    prefs = get_prefs()
+    pip_output = bpy.context.scene.PIE_pip_output
+
+    pip_output.RETRUNCODE_OUTPUT = ""
+    pip_output.ERROR_OUTPUT.clear()
+    pip_output.TEXT_OUTPUT.clear()
 
     cmds = [c for c in cmds if c is not None]
-
     command = [python_bin, "-m", run_module, *cmds]
 
-    if get_prefs().pip_use_china_sources:
+    if prefs.pip_use_china_sources:
         command += ["-i", "https://pypi.tuna.tsinghua.edu.cn/simple"]
-    print("RUN_CMD:", command)
+
     output = subprocess.run(command, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding="utf-8")
 
-    if get_prefs().debug:
-        print(">>>------------ 错误 ------------")
-        print(">>> 返回代码 :", output.returncode)
-        print(">>> 输出信息 :", output.stdout)
-        print(">>> STD信息 :", output.stderr)
+    pip_output.RETRUNCODE_OUTPUT = RETRUNCODE_DICT.get(output.returncode, "其他错误")
+    for line in output.stderr.splitlines():
+        if line.strip() == "":
+            continue
+        item = pip_output.ERROR_OUTPUT.add()
+        item.line = line
 
-    ERROR_OUTPUT = save_text(output.stderr)
-    TEXT_OUTPUT = save_text(output.stdout, cols=cols)
+    for line in output.stdout.splitlines():
+        if line.strip() == "":
+            continue
+        item = pip_output.TEXT_OUTPUT.add()
+        item.line = line
+
+    if prefs.debug:
+        print(">>> run_pip_command调试信息 <<<")
+        print("RUN_CMD:", command)
+        print(">>> 返回代码 :\n", output.returncode)
+        print(">>> 输出信息 :\n", output.stdout)
+        print(">>> STD信息 :\n", output.stderr)
 
 
 def save_text(text, cols=False):
-    """将输入文本字符串转换为2列的列表"""
+    """将输入文本字符串转换为对齐后的字符串列表"""
     out = []
     for i in text.split("\n"):
-        if len(i) <= 1:
+        if len(i.strip()) == 0:
             continue
         subs = i.split()
-        parts = []
         if cols:
-            for s in subs:
-                parts.append(s)
+            # 将整行的单词列表传递给 full_justify
+            justified_lines = full_justify(subs, 40)  # 返回的是字符串列表
+            out.extend(justified_lines)
         else:
-            parts.append(" ".join(subs))
-        out.append(parts)
+            out.append(" ".join(subs))
     return out
 
 
@@ -132,10 +131,10 @@ class PIE_OT_ClearText(Operator):
     bl_description = "清除输出的文本"
 
     def execute(self, context):
-        global TEXT_OUTPUT
-        TEXT_OUTPUT = []
-        global ERROR_OUTPUT
-        ERROR_OUTPUT = []
+        pip_output = context.scene.PIE_pip_output
+        pip_output.RETRUNCODE_OUTPUT = ""
+        pip_output.TEXT_OUTPUT.clear()
+        pip_output.ERROR_OUTPUT.clear()
         return {"FINISHED"}
 
 
@@ -172,7 +171,7 @@ class PIE_OT_UpgradePIP(Operator):
         return {"FINISHED"}
 
 
-classes = [
+CLASSES = [
     PIE_OT_PIPInstall,
     PIE_OT_PIPInstall_Default,
     PIE_OT_PIPRemove,
@@ -181,18 +180,13 @@ classes = [
     PIE_OT_EnsurePIP,
     PIE_OT_UpgradePIP,
 ]
-class_register, class_unregister = bpy.utils.register_classes_factory(classes)
 
 
 def register():
-    global ERROR_OUTPUT
-    global TEXT_OUTPUT
-    class_register()
+    for cls in CLASSES:
+        bpy.utils.register_class(cls)
 
 
 def unregister():
-    class_unregister()
-
-
-if __name__ == "__main__":
-    register()
+    for cls in reversed(CLASSES):
+        bpy.utils.unregister_class(cls)

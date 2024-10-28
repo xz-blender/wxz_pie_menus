@@ -127,7 +127,6 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
 
 
 CLASSES = [Enable_Pie_Menu_Relay_Addons]
-class_register, class_unrigister = bpy.utils.register_classes_factory(CLASSES)
 
 
 @persistent
@@ -139,14 +138,12 @@ def change_addons(dummy):
 
 
 def register():
-    class_register()
+    for cls in CLASSES:
+        bpy.utils.register_class(cls)
     manage_app_handlers(handler_on_default_blender_list, change_addons)
 
 
 def unregister():
     manage_app_handlers(handler_on_default_blender_list, change_addons, True)
-    class_unrigister()
-
-
-if __name__ == "__main__":
-    register()
+    for cls in reversed(CLASSES):
+        bpy.utils.unregister_class(cls)

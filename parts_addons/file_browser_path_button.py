@@ -7,11 +7,12 @@ bl_info = {
     "description": "当前文件夹 & 在资源管理器中打开当前文件夹",
     "category": "System",
 }
+import sys
+from os.path import basename, dirname, exists, isfile, normpath, realpath, split
+from shutil import which
+
 import bpy
 from bpy.types import Operator, Panel
-from os.path import dirname, basename, realpath, split, exists, isfile, normpath
-import sys
-from shutil import which
 
 
 def openFolder(folderpath):
@@ -115,13 +116,18 @@ class PATH_PT_top_filebrowser_ui(Panel):
         row.operator("path.open_filepath", text="从外部打开", icon="FILE_FOLDER")
 
 
-classes = (PATH_OT_browser_to_blend_folder, PATH_OT_open_filepath_folder, PATH_PT_top_filebrowser_ui)
-class_register, class_unregister = bpy.utils.register_classes_factory(classes)
+CLASSES = [
+    PATH_OT_browser_to_blend_folder,
+    PATH_OT_open_filepath_folder,
+    PATH_PT_top_filebrowser_ui,
+]
 
 
 def register():
-    class_register()
+    for cls in CLASSES:
+        bpy.utils.register_class(cls)
 
 
 def unregister():
-    class_unregister()
+    for cls in reversed(CLASSES):
+        bpy.utils.unregister_class(cls)

@@ -34,3 +34,12 @@ view3d_handlder_sets = [
     ("shading", "show_cavity", True),
     ("shading", "cavity_type", "BOTH"),
 ]
+
+RETRUNCODE_DICT = {
+    0: "成功",
+    1: "通用错误",
+    2: "误用 shell 命令",
+    126: "命令不可执行",
+    127: "命令未找到",
+    128: "无效的参数",
+}

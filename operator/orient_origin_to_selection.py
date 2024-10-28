@@ -70,5 +70,5 @@ def register():
 
 
 def unregister():
-    bpy.utils.unregister_class(OBJECT_OT_orient_and_origin_to_selection)
     bpy.types.VIEW3D_MT_snap.remove(draw_orient_and_origin_to_selection_menu)
+    bpy.utils.unregister_class(OBJECT_OT_orient_and_origin_to_selection)

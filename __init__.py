@@ -152,13 +152,11 @@ for mod in all_modules:
         ),
     )
 
-classes = (WXZ_PIE_Preferences,)
-class_register, class_unregister = bpy.utils.register_classes_factory(classes)
 module_classes = [
     props,
     operators,
-    panels,
     pip_package,
+    panels,
 ]
 addon_keymaps = []
 
@@ -172,9 +170,10 @@ def add_modules_item(prefs, module_list_name):
 
 
 def register():
-    class_register()
     for mod in module_classes:
         mod.register()
+
+    bpy.utils.register_class(WXZ_PIE_Preferences)
 
     prefs = get_addon_preferences()
     for mod in all_modules:
@@ -195,9 +194,10 @@ def register():
 
 
 def unregister():
-    class_unregister()
-    for mod in module_classes:
+    for mod in reversed(module_classes):
         mod.unregister()
+
+    bpy.utils.unregister_class(WXZ_PIE_Preferences)
 
     for mod in all_modules:
         if mod.__addon_enabled__:
@@ -206,7 +206,3 @@ def unregister():
         bpy.app.translations.unregister(__package__)
     except Exception as e:
         print(e)
-
-
-if __name__ == "__main__":
-    register()
