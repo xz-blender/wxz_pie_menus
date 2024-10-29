@@ -24,13 +24,15 @@ class VIEW3D_PIE_MT_Bottom_X(Menu):
         ob_type = get_ob_type(context)
         ob_mode = get_ob_mode(context)
 
+        main_ap_fac = 1.2
+
         if ob_mode == "EDIT":
             if ob_type == "MESH":
                 ed_mode = context.tool_settings.mesh_select_mode
                 col = pie.split().box().column(align=True)
 
                 row = col.row(align=True)
-                row.scale_y = 1.2
+                row.scale_y = main_ap_fac
                 if ed_mode[0] == True:
                     try:
                         row.operator("mesh.merge", text="首点", icon="DOT").type = "FIRST"
@@ -52,7 +54,7 @@ class VIEW3D_PIE_MT_Bottom_X(Menu):
                 op.type = "COLLAPSE"
                 col.separator(factor=0.4)
                 row = col.row()
-                row.scale_y = 1.2
+                row.scale_y = main_ap_fac
                 row.operator("mesh.remove_doubles", text="按间距合并")
                 # 6 - RIGHT
                 col = pie.split().box().column(align=True)
@@ -78,28 +80,34 @@ class VIEW3D_PIE_MT_Bottom_X(Menu):
                 row.operator("mesh.dissolve_limited", text="有限融并")
 
                 # 2 - BOTTOM
-                col = pie.split()
-                row = col.box().row(align=True)
-                row.scale_x = 0.9
-                row.operator("mesh.mark_sharp", text="清除锐边").clear = True
-                row.operator("mesh.mark_seam", text="清除边缝合").clear = True
-                row.operator("transform.edge_crease", text="清除边折痕").value = 0
-                row.operator("transform.edge_bevelweight", text="清除边权重").value = 0
+                pie.operator("mesh.edge_collapse", text="塌陷边面")
                 # 8 - TOP
                 box = pie.split().box()
-                box.scale_y = 1.4
+                box.scale_x = 1.2
+                box.scale_y = main_ap_fac
                 col = box.column(align=True)
-                col.operator("mesh.delete", text="仅面", icon="SNAP_FACE_CENTER").type = "ONLY_FACE"
-                col.operator("mesh.delete", text="仅边", icon="MOD_EDGESPLIT").type = "EDGE_FACE"
+                row = col.row()
+                row.operator("mesh.delete", text="仅面", icon="SNAP_FACE_CENTER").type = "ONLY_FACE"
+                row = col.row()
+                row.operator("mesh.delete", text="仅边", icon="MOD_EDGESPLIT").type = "EDGE_FACE"
                 # 7 - TOP - LEFT
+                col = pie.split()
+                box = col.box().column(align=True)
+                box.scale_x = 0.7
+                box.scale_y = main_ap_fac
+                row = box.row(align=True)
+                row.operator("pie.empty_operator", text="清除", emboss=False)
+                row.operator("mesh.mark_sharp", text="锐边").clear = True
+                row.operator("mesh.mark_seam", text="缝合").clear = True
+                row.operator("transform.edge_crease", text="折痕").value = 0
+                row.operator("transform.edge_bevelweight", text="权重").value = 0
 
-                pie.separator()
                 # 9 - TOP - RIGHT
                 pie.separator()
                 # 1 - BOTTOM - LEFT
                 pie.separator()
                 # 3 - BOTTOM - RIGHT
-                pie.operator("mesh.edge_collapse", text="塌陷边面")
+                pie.separator()
 
             if ob_type == "CURVE":
                 # 4 - LEFT
