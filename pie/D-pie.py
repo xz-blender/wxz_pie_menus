@@ -12,7 +12,7 @@ class VIEW3D_PIE_MT_Bottom_D(Menu):
         pie = layout.menu_pie()
         set_pie_ridius()
 
-        ui = get_area_ui_type()
+        ui = get_area_ui_type(context)
 
         if ui == "VIEW_3D":
 

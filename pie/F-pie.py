@@ -28,12 +28,14 @@ class VIEW3D_PIE_MT_Bottom_F(Menu):
             if ob_type == "ARMATURE":
                 pie.operator("armature.parent_clear")
             else:
-                pie.operator("object.parent_clear")
+                pie.operator("object.parent_clear").type = "CLEAR_KEEP_TRANSFORM"
             # 9 - TOP - RIGHT
             if ob_type == "ARMATURE":
                 pie.operator("armature.parent_set")
             else:
-                pie.operator("object.parent_set")
+                op = pie.operator("object.parent_set")
+                op.type = "OBJECT"
+                op.keep_transform = False
             # 1 - BOTTOM - LEFT
             pie.separator()
             # 3 - BOTTOM - RIGHT

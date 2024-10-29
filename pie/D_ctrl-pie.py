@@ -14,7 +14,7 @@ class VIEW3D_PIE_MT_Bottom_D_Ctrl(Menu):
 
         ob_type = get_ob_type(context)
         ob_mode = get_ob_mode(context)
-        ui = get_area_ui_type()
+        ui = get_area_ui_type(context)
 
         if ui == "VIEW_3D":
             if ob_mode == "OBJECT":

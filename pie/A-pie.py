@@ -147,7 +147,7 @@ class PIE_MT_Bottom_A(Menu):
                         icon="MOD_DATA_TRANSFER",
                     )
 
-        elif get_area_ui_type() == "UV":
+        elif get_area_ui_type(context) == "UV":
             # 4 - LEFT
             pie.operator("uv.select_less", text="缩减选择", icon="REMOVE")
             # 6 - RIGHT
