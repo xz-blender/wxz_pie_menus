@@ -1,10 +1,12 @@
-import bpy
-import bmesh
-from mathutils import Vector
 import os
-from .mirror_utils import draw_label
+
+import bmesh
+import bpy
+from mathutils import Vector
+
+from .items import alt, ctrl, green, red, white, yellow
 from .material_pincker_utils import *
-from .items import white, yellow, green, red, alt, ctrl
+from .mirror_utils import draw_label
 
 
 def draw_material_pick_status(op):
@@ -57,7 +59,10 @@ class PIE_MaterialPicker(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        if context.mode in ["OBJECT", "EDIT_MESH"]:
+        if context.mode in [
+            "OBJECT",
+            # "EDIT_MESH",
+        ]:
             return context.area.type == "VIEW_3D"
 
     def draw_HUD(self, context):

@@ -67,6 +67,7 @@ class WXZ_PIE_Prefs_Props:
     change_overlay_and_shading_sets: BoolProperty(name="个性化更改视图着色", default=False)  # type: ignore
     force_AutoPackup_startup: BoolProperty(name="强制自动打包-启动时", default=True)  # type: ignore
     force_AutoPackup_presave: BoolProperty(name="强制自动打包-保存时", default=False)  # type: ignore
+    AutoSwitch_ActiveCam_Default: BoolProperty(name="自动切换选择相机", default=True)  # type: ignore
 
     ## formula to nodes
     show_formula2nodes_submenu: BoolProperty(name="表达式转节点")  # type: ignore

@@ -23,7 +23,7 @@ class VIEW3D_PIE_MT_Bottom_C(Menu):
         region = context.space_data.region_3d.view_perspective
 
         # 4 - LEFT
-        pie.separator()
+        pie.prop(context.scene.pie_auto_active_camera_props, text="自动激活相机")
         # 6 - RIGHT
         pie.operator("view3d.walk", text="行走漫游", icon="MOD_DYNAMICPAINT")
         # 2 - BOTTOM

@@ -86,20 +86,22 @@ def draw_dependencies(self, layout):
         box.label(text=item.name, icon=icon)
 
     # ---
+    layout = layout.box()
+
     row = layout.row()
+    sub_row = row.split(factor=0.65)
+    row = sub_row.row()
     row.label(text="最后一次输出:", icon="CONSOLE")
+    row = sub_row.row()
+    row.operator("pie.pip_cleartext", text="清除文本")
+
     if output:
         row = layout.row()
-        row.operator("pie.pip_cleartext", text="清除文本")
-
-        row = layout.row()
-        box = row.box().column(align=True)
+        box = row.column(align=True)
 
         if pip_output.RETRUNCODE_OUTPUT:
             row = box.row().box()
             row.label(text=f"执行结果:   {pip_output.RETRUNCODE_OUTPUT}")
-
-        box.separator()
 
         if pip_output.TEXT_OUTPUT:
             row = box.row().box().column(align=True)
@@ -108,8 +110,6 @@ def draw_dependencies(self, layout):
                 # row = box.row()
                 col = row.column()
                 col.label(text=item.line)
-
-        box.separator()
 
         if pip_output.ERROR_OUTPUT and prefs.debug:
             row = box.row().box().column(align=True)
@@ -218,15 +218,22 @@ def draw_resource_config(self, layout):
 def draw_other_addons_setting(self, layout):
     layout.label(text="其他插件设置")
     layout = self.layout.column(align=False)
+    sep_deffac = 0.4
 
     # 实用小工具设置
     attr, col = prefs_show_sub_panel(self, layout, "show_other_module_prop")
     if attr:
         box = col.box()
         col = box.column(align=True)
-        row = col.row()
-        row.prop(self, "modifier_profiling")
+        row = col.row().box().row()
+        row.label(text="强制自动打包资源:")
+        row.prop(self, "force_AutoPackup_startup", text="启动时")
+        row.prop(self, "force_AutoPackup_presave", text="保存时")
+        row.separator(factor=sep_deffac)
+        row = col.row().box().row()
+        row.prop(self, "modifier_profiling", text="显示修改器耗时")
         row.prop(self, "change_overlay_and_shading_sets")
+        row.prop(self, "AutoSwitch_ActiveCam_Default")
 
     # 表达式转节点
     attr, col = prefs_show_sub_panel(self, layout, "show_formula2nodes_submenu")
