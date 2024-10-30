@@ -1,7 +1,8 @@
 import bpy
 from bpy.types import Menu, Operator
 
-from .pie_utils import *
+from ..utils import safe_register_class, safe_unregister_class
+from .utils import *
 
 
 class VIEW3D_PIE_MT_Space_KEY_shift(Menu):
@@ -31,7 +32,7 @@ class VIEW3D_PIE_MT_Space_KEY_shift(Menu):
         pie.prop(asfmytool, "asfmy_bool", text="仅播放一次")
 
 
-classes = [
+CLASSES = [
     VIEW3D_PIE_MT_Space_KEY_shift,
 ]
 
@@ -78,12 +79,10 @@ def unregister_keymaps():
 
 
 def register():
-    for cls in classes:
-        bpy.utils.register_class(cls)
+    safe_register_class(CLASSES)
     register_keymaps()
 
 
 def unregister():
-    unregister_keymaps()
-    for cls in reversed(classes):
-        bpy.utils.unregister_class(cls)
+    keymap_safe_unregister(addon_keymaps)
+    safe_unregister_class(CLASSES)

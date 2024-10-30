@@ -5,8 +5,8 @@ from pathlib import Path
 import bpy
 from bpy.types import Menu, Operator
 
-from ..utils import get_prefs
-from .pie_utils import *
+from ..utils import get_prefs, safe_register_class, safe_unregister_class
+from .utils import *
 
 
 class VIEW3D_PIE_MT_Bottom_C(Menu):
@@ -33,23 +33,18 @@ class VIEW3D_PIE_MT_Bottom_C(Menu):
         else:
             pie.operator("pie.material_pincker")
         # 8 - TOP
-        pie.operator("mesh.select_mode", text="边").type = "EDGE"
+        pie.separator()
         # 7 - TOP - LEFT
-        pie.operator("mesh.select_mode", text="点").type = "VERT"
+        pie.separator()
         # 9 - TOP - RIGHT
-        pie.operator("mesh.select_mode", text="面").type = "FACE"
+        pie.separator()
         # 1 - BOTTOM - LEFT
         pie.operator("view3d.camera_to_view", text="对齐相机至视图")
         # 3 - BOTTOM - RIGHT
         if ob_type == "CAMERA":
             pie.operator("view3d.object_as_camera", text="激活选择相机")
         else:
-            col = pie.split().column()
-            col.scale_y = 1.7
-            col.operator(
-                "pie.paste_clipboard_as_image_plane", text="剪切板 - 参考图", icon="IMAGE_REFERENCE"
-            ).is_ref = True
-            col.operator("pie.paste_clipboard_as_image_plane", text="剪切板 - 平面", icon="MESH_PLANE").is_ref = False
+            pie.separator()
 
 
 class PIE_Paste_ClipBord_as_Image_Plane(bpy.types.Operator):
@@ -122,7 +117,7 @@ class PIE_Paste_ClipBord_as_Image_Plane(bpy.types.Operator):
         return {"FINISHED"}
 
 
-classes = [
+CLASSES = [
     VIEW3D_PIE_MT_Bottom_C,
     PIE_Paste_ClipBord_as_Image_Plane,
 ]
@@ -133,37 +128,17 @@ addon_keymaps = []
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
 
-    # km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
-    # kmi = km.keymap_items.new("pie.paste_clipboard_as_image_plane", "R", "PRESS", ctrl=True, shift=True)
-
     km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
     kmi = km.keymap_items.new("wm.call_menu_pie", "C", "CLICK_DRAG")
     kmi.properties.name = "VIEW3D_PIE_MT_Bottom_C"
     addon_keymaps.append(km)
 
 
-def unregister_keymaps():
-    wm = bpy.context.window_manager
-    for km in addon_keymaps:
-        for kmi in km.keymap_items:
-            km.keymap_items.remove(kmi)
-        # wm.keyconfigs.addon.keymaps.remove(km)
-    addon_keymaps.clear()
-
-
 def register():
-    for cls in classes:
-        bpy.utils.register_class(cls)
+    safe_register_class(CLASSES)
     register_keymaps()
 
 
 def unregister():
-
-    unregister_keymaps()
-    for cls in reversed(classes):
-        bpy.utils.unregister_class(cls)
-
-
-# if __name__ == "__main__":
-#     register()
-#     bpy.ops.wm.call_menu_pie(name="VIEW3D_PIE_MT_Bottom_C")
+    keymap_safe_unregister(addon_keymaps)
+    safe_unregister_class(CLASSES)

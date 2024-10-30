@@ -5,7 +5,8 @@ import numpy as np
 from bpy.types import Menu, Operator, Panel
 from mathutils import Matrix, Vector
 
-from .pie_utils import *
+from ..utils import safe_register_class, safe_unregister_class
+from .utils import *
 
 
 class VIEW3D_PIE_MT_Bottom_X_ctrl_shift(Menu):
@@ -372,7 +373,7 @@ class PIE_Geometry_To_Origin_Edit(Operator):
         return {"FINISHED"}
 
 
-classes = (
+CLASSES = (
     VIEW3D_PIE_MT_Bottom_X_ctrl_shift,
     PIE_Origin_TO_Bottom_No_Apply,
     PIE_Origin_TO_Bottom_Apply_Object,
@@ -404,22 +405,11 @@ def register_keymaps():
         addon_keymaps.append(km)
 
 
-def unregister_keymaps():
-    wm = bpy.context.window_manager
-    for km in addon_keymaps:
-        for kmi in km.keymap_items:
-            km.keymap_items.remove(kmi)
-        # wm.keyconfigs.addon.keymaps.remove(km)
-    addon_keymaps.clear()
-
-
 def register():
-    for cls in classes:
-        bpy.utils.register_class(cls)
+    safe_register_class(CLASSES)
     register_keymaps()
 
 
 def unregister():
-    unregister_keymaps()
-    for cls in reversed(classes):
-        bpy.utils.unregister_class(cls)
+    keymap_safe_unregister(addon_keymaps)
+    safe_unregister_class(CLASSES)

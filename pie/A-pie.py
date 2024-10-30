@@ -7,7 +7,8 @@ import bpy
 from bpy.types import Context, Menu, Operator
 from mathutils import Matrix
 
-from .pie_utils import *
+from ..utils import safe_register_class, safe_unregister_class
+from .utils import *
 
 
 class PIE_MT_Bottom_A(Menu):
@@ -384,14 +385,13 @@ class Creat_Costom_Asset_Preview(Operator):
         return {"FINISHED"}
 
 
-classes = [
+CLASSES = [
     PIE_MT_Bottom_A,
     PIE_MT_Bottom_A_Ctrl,
     PIE_Image_usefaker,
     PIE_Apply_MultiObjects_Scale,
     Creat_Costom_Asset_Preview,
 ]
-class_register, class_unregister = bpy.utils.register_classes_factory(classes)
 
 addon_keymaps = []
 
@@ -414,22 +414,11 @@ def register_keymaps():
     addon_keymaps.append((km, kmi))
 
 
-def unregister_keymaps():
-    for km, kmi in addon_keymaps:
-        km.keymap_items.remove(kmi)
-    addon_keymaps.clear()
-
-
 def register():
-    class_register()
+    safe_register_class(CLASSES)
     register_keymaps()
 
 
 def unregister():
-    class_unregister()
-    # unregister_keymaps()
-
-
-# if __name__ == "__main__":
-#     register()
-#     bpy.ops.wm.call_menu_pie(name="VIEW3D_PIE_MT_Bottom_W")
+    keymap_safe_unregister(addon_keymaps)
+    safe_unregister_class(CLASSES)

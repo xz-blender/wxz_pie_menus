@@ -3,7 +3,8 @@ from bpy.types import Context, Menu, Operator, Panel
 
 from ..parts_addons.m4_tools.align_helper_npanel import *
 from ..parts_addons.m4_tools.align_helper_utils import *
-from .pie_utils import *
+from ..utils import safe_register_class, safe_unregister_class
+from .utils import *
 
 
 def draw_align_with_axes_uv(pie, m4):
@@ -469,13 +470,12 @@ class PIE_S_Flat_Object(Operator):
         return {"FINISHED"}
 
 
-classes = [
+CLASSES = [
     VIEW3D_PIE_MT_Bottom_S,
     PIE_S_Flat_Mesh,
     PIE_S_Flat_Object,
     PIE_S_Flat_NOdes,
 ]
-class_register, class_unregister = bpy.utils.register_classes_factory(classes)
 
 addon_keymaps = []
 
@@ -495,20 +495,11 @@ def register_keymaps():
         addon_keymaps.append(km)
 
 
-def unregister_keymaps():
-    wm = bpy.context.window_manager
-    for km in addon_keymaps:
-        for kmi in km.keymap_items:
-            km.keymap_items.remove(kmi)
-        # wm.keyconfigs.addon.keymaps.remove(km)
-    addon_keymaps.clear()
-
-
 def register():
-    class_register()
+    safe_register_class(CLASSES)
     register_keymaps()
 
 
 def unregister():
-    unregister_keymaps()
-    class_unregister()
+    keymap_safe_unregister(addon_keymaps)
+    safe_unregister_class(CLASSES)

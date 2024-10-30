@@ -1,7 +1,8 @@
 import bpy
 from bpy.types import Menu, Operator
 
-from .pie_utils import *
+from ..utils import safe_register_class, safe_unregister_class
+from .utils import *
 
 
 class PIE_Space_KEY(Operator):
@@ -49,7 +50,7 @@ class PIE_Space_KEY(Operator):
         return {"FINISHED"}
 
 
-classes = [
+CLASSES = [
     PIE_Space_KEY,
 ]
 
@@ -78,31 +79,17 @@ def register_keymaps():
         kmi = km.keymap_items.new("wm.search_menu", "SPACE", "DOUBLE_CLICK")  # 搜索栏
 
         if area[0] == "3D View" or "Node Editor":  # shift-space
-            kmi = km.keymap_items.new("screen.animation_play", "SPACE", "CLICK", shift=True)
+            km.keymap_items.new("screen.animation_play", "SPACE", "CLICK", shift=True)
         else:
-            kmi = km.keymap_items.new("screen.animation_play", "SPACE", "CLICK", shift=True).properties.reverse = (
-                True  # shift-space
-            )
+            km.keymap_items.new("screen.animation_play", "SPACE", "CLICK", shift=True).properties.reverse = True
         addon_keymaps.append(km)
 
 
-def unregister_keymaps():
-    wm = bpy.context.window_manager
-    for km in addon_keymaps:
-        for kmi in km.keymap_items:
-            km.keymap_items.remove(kmi)
-        # wm.keyconfigs.addon.keymaps.remove(km)
-    addon_keymaps.clear()
-
-
 def register():
-    for cls in classes:
-        bpy.utils.register_class(cls)
+    safe_register_class(CLASSES)
     register_keymaps()
 
 
 def unregister():
-
-    unregister_keymaps()
-    for cls in reversed(classes):
-        bpy.utils.unregister_class(cls)
+    keymap_safe_unregister(addon_keymaps)
+    safe_unregister_class(CLASSES)

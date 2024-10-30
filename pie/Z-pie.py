@@ -3,7 +3,8 @@ import re
 import bpy
 from bpy.types import Menu, Operator, Panel
 
-from .pie_utils import *
+from ..utils import safe_register_class, safe_unregister_class
+from .utils import *
 
 
 class VIEW3D_PIE_MT_Bottom_Z_Overlay(Menu):
@@ -227,7 +228,7 @@ class VIEW3D_PIE_MT_Bottom_Z_Shift(Menu):
         pie.separator()
 
 
-classes = [
+CLASSES = [
     VIEW3D_PIE_MT_Bottom_Z_Overlay,
     VIEW_PIE_PT_AutoSmooth,
     PIE_GN_AutoSmooth,
@@ -250,27 +251,13 @@ def register_keymaps():
     addon_keymaps.append(km)
 
 
-def unregister_keymaps():
-    for km in addon_keymaps:
-        for kmi in km.keymap_items:
-            km.keymap_items.remove(kmi)
-        # wm.keyconfigs.addon.keymaps.remove(km)
-    addon_keymaps.clear()
-
-
 def register():
+    safe_register_class(CLASSES)
     bpy.types.Scene.pie_smooth_prop = bpy.props.FloatProperty(name="angle")
-    for cls in classes:
-        bpy.utils.register_class(cls)
     register_keymaps()
 
 
 def unregister():
-    for cls in reversed(classes):
-        bpy.utils.unregister_class(cls)
-    unregister_keymaps()
+    keymap_safe_unregister(addon_keymaps)
     del bpy.types.Scene.pie_smooth_prop
-
-
-if __name__ == "__main__":
-    register()
+    safe_unregister_class(CLASSES)

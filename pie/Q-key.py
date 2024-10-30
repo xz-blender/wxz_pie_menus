@@ -3,7 +3,8 @@ import os
 import bpy
 from bpy.types import Menu, Operator
 
-from .pie_utils import *
+from ..utils import safe_register_class, safe_unregister_class
+from .utils import *
 
 
 class PIE_MT_Bottom_Q_favorite(Menu):
@@ -171,7 +172,7 @@ class PIE_Translate_Nodes(Operator):
         return {"FINISHED"}
 
 
-classes = [
+CLASSES = [
     PIE_MT_Bottom_Q_favorite,
     PIE_Q_key,
     PIE_Q_key_shift,
@@ -202,28 +203,11 @@ def register_keymaps():
     addon_keymaps.append(km)
 
 
-def unregister_keymaps():
-    wm = bpy.context.window_manager
-    for km in addon_keymaps:
-        for kmi in km.keymap_items:
-            km.keymap_items.remove(kmi)
-        # wm.keyconfigs.addon.keymaps.remove(km)
-    addon_keymaps.clear()
-
-
 def register():
-    for cls in classes:
-        bpy.utils.register_class(cls)
+    safe_register_class(CLASSES)
     register_keymaps()
 
 
 def unregister():
-    unregister_keymaps()
-    for cls in reversed(classes):
-        bpy.utils.unregister_class(cls)
-
-
-# if __name__ == "__main__":
-#     register()
-
-#     bpy.ops.wm.call_menu(name="PIE_MT_Bottom_Q_favorite")
+    keymap_safe_unregister(addon_keymaps)
+    safe_unregister_class(CLASSES)

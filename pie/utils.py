@@ -174,3 +174,15 @@ def get_pyfilename() -> str:  # 获取当前运行脚本的文件名
     caller_frame = inspect.stack()[1]
     caller_filename = caller_frame.filename  # 调用者文件的完整路径
     return Path(caller_filename).stem  # 提取文件名（不包含路径和扩展名）
+
+
+def keymap_safe_unregister(addon_keymaps: list):
+    try:
+        wm = bpy.context.window_manager
+        for km in addon_keymaps:
+            for kmi in km.keymap_items:
+                km.keymap_items.remove(kmi)
+            wm.keyconfigs.addon.keymaps.remove(km)
+        addon_keymaps.clear()
+    except:
+        pass

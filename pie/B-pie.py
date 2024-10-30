@@ -1,7 +1,8 @@
 import bpy
 from bpy.types import Menu, Operator, Panel
 
-from .pie_utils import *
+from ..utils import safe_register_class, safe_unregister_class
+from .utils import *
 
 
 class VIEW3D_PIE_MT_Bottom_B(Menu):
@@ -23,7 +24,7 @@ class VIEW3D_PIE_MT_Bottom_B(Menu):
                 # 6 - RIGHT
                 pie.operator("uv.cube_project", text="块面投影")
                 # 2 - BOTTOM
-                pie.operator("uv.muv_uvw_box_map").assign_uvmap = True
+                pie.separator()
                 # 8 - TOP
                 pie.operator("uv.project_from_view", text="视角投影")
                 # 7 - TOP - LEFT
@@ -37,7 +38,7 @@ class VIEW3D_PIE_MT_Bottom_B(Menu):
         elif ob_mode == "OBJECT":
             if ob_type == "MESH":
                 # 4 - LEFT
-                pie.operator("object.shade_smooth", text="视角投影")
+                pie.separator()
                 # 6 - RIGHT
                 pie.separator()
                 # 2 - BOTTOM
@@ -54,7 +55,7 @@ class VIEW3D_PIE_MT_Bottom_B(Menu):
                 pie.separator()
 
 
-classes = [
+CLASSES = [
     VIEW3D_PIE_MT_Bottom_B,
 ]
 
@@ -77,22 +78,11 @@ def register_keymaps():
     addon_keymaps.append(km)
 
 
-def unregister_keymaps():
-    wm = bpy.context.window_manager
-    for km in addon_keymaps:
-        for kmi in km.keymap_items:
-            km.keymap_items.remove(kmi)
-        # wm.keyconfigs.addon.keymaps.remove(km)
-    addon_keymaps.clear()
-
-
 def register():
-    for cls in classes:
-        bpy.utils.register_class(cls)
+    safe_register_class(CLASSES)
     register_keymaps()
 
 
 def unregister():
-    unregister_keymaps()
-    for cls in reversed(classes):
-        bpy.utils.unregister_class(cls)
+    keymap_safe_unregister(addon_keymaps)
+    safe_unregister_class(CLASSES)

@@ -3,7 +3,8 @@ from pathlib import Path
 import bpy
 from bpy.types import Menu, Operator
 
-from .pie_utils import *
+from ..utils import safe_register_class, safe_unregister_class
+from .utils import *
 
 
 class VIEW3D_PIE_MT_Ctrl_Tab(Menu):
@@ -146,7 +147,7 @@ class PIE_Workspace_Import_Online_Operator(Operator):
         return {"FINISHED"}
 
 
-classes = [
+CLASSES = [
     VIEW3D_PIE_MT_Ctrl_Tab,
     PIE_WorkspaceSwapOperator,
     PIE_Workspace_Import_Online_Operator,
@@ -217,22 +218,11 @@ def register_keymaps():
     addon_keymaps.append(km)
 
 
-def unregister_keymaps():
-    wm = bpy.context.window_manager
-    for km in addon_keymaps:
-        for kmi in km.keymap_items:
-            km.keymap_items.remove(kmi)
-        # wm.keyconfigs.addon.keymaps.remove(km)
-    addon_keymaps.clear()
-
-
 def register():
-    for cls in classes:
-        bpy.utils.register_class(cls)
+    safe_register_class(CLASSES)
     register_keymaps()
 
 
 def unregister():
-    unregister_keymaps()
-    for cls in reversed(classes):
-        bpy.utils.unregister_class(cls)
+    keymap_safe_unregister(addon_keymaps)
+    safe_unregister_class(CLASSES)

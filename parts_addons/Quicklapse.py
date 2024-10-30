@@ -4,41 +4,14 @@ import webbrowser
 
 import bpy
 
-# License Information
-"""
-Quicklapse Lite Addon
-Copyright (c) 2024 KING ZEN STUDIOS
-
-This software is licensed under the Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License.
-
-1. Grant of License:
-You are free to use this software for personal, educational, or commercial projects. You may not modify, redistribute, or sell the source code or binary code of the software.
-
-2. Restrictions:
-You may not:
-- Sell, redistribute, or sublicense the source code or binary code of the software.
-- Modify or create derivative works based on the software.
-- Use the software for any commercial purpose beyond personal or internal use.
-
-3. Ownership:
-The software remains the property of KING ZEN STUDIOS. This license does not grant any ownership rights to the software or its source code.
-
-4. No Warranty:
-The software is provided "as is" without any warranties. KING ZEN STUDIOS disclaims all warranties, including implied warranties of merchantability or fitness for a particular purpose.
-
-5. Termination:
-This license will terminate automatically if you fail to comply with any terms of this agreement.
-
-By using this software, you agree to the terms and conditions set forth in this license agreement.
-"""
+from ..utils import safe_register_class, safe_unregister_class
 
 bl_info = {
     "name": "Quicklapse Lite",
     "description": "Repeatedly takes screenshots of a 3D View. Useful for creating timelapses.",
     "author": "KING ZEN STUDIOS",
     "location": "View3D > Sidebar > Quicklapse",
-    "blender": (4, 2, 0),
-    "version": (0, 1, 0),
+    "blender": (4, 0),
 }
 
 i = 0
@@ -81,11 +54,12 @@ class auto_timelapse_settings(bpy.types.PropertyGroup):
     )
 
 
-class VIEW3D_OT_auto_timelapse_panel(bpy.types.Panel):
+class VIEW3D_PT_auto_timelapse_panel(bpy.types.Panel):
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
-    bl_category = "Item"
+    bl_category = "XZ"
     bl_label = "Quicklapse Lite"
+    bl_options = {"DEFAULT_CLOSED"}
 
     def draw(self, context):
         layout = self.layout
@@ -117,15 +91,6 @@ class VIEW3D_OT_auto_timelapse_panel(bpy.types.Panel):
         else:
             col.alert = True
             col.operator("autotimelapse.auto_timelapse_viewport_end", text="Done", icon="CHECKMARK")
-
-        layout.separator()
-        col = layout.column(align=True)
-        col.operator("quicklapse.visit_facebook", text="Visit Facebook Page", icon="URL").url = (
-            "https://web.facebook.com/kingzen0000"
-        )
-        col.operator("quicklapse.visit_blendermarket", text="Visit Blender Market", icon="URL").url = (
-            "https://blendermarket.com/creators/kingzen"
-        )
 
 
 class StartAutoTimelapseViewport(bpy.types.Operator):
@@ -228,27 +193,22 @@ def auto_timelapse_on_depsgraph_update(scene):
     return {"FINISHED"}
 
 
-classes = [
+CLASSES = [
     auto_timelapse_settings,
-    # VIEW3D_OT_auto_timelapse_panel,
+    auto_timelapse_settings,
+    VIEW3D_PT_auto_timelapse_panel,
     StartAutoTimelapseViewport,
     EndAutoTimelapseViewport,
     VisitFacebookPageOperator,
     VisitBlenderMarketOperator,
 ]
 
-class_register, class_unregister = bpy.utils.register_classes_factory(classes)
-
 
 def register():
-    class_register()
+    safe_register_class(CLASSES)
     bpy.types.Scene.auto_timelapse_settings = bpy.props.PointerProperty(type=auto_timelapse_settings)
 
 
 def unregister():
-    class_unregister()
     del bpy.types.Scene.auto_timelapse_settings
-
-
-if __name__ == "__main__":
-    register()
+    safe_unregister_class(CLASSES)

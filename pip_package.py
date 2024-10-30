@@ -14,10 +14,10 @@ sys.stdout.reconfigure(encoding="utf-8")
 
 MODULES_FOLDER = Path(bpy.utils.system_resource("SCRIPTS")) / "modules"
 python_bin = sys.executable
-print("python_bin:", python_bin)
+# print("python_bin:", python_bin)
 
 app_path = site.getusersitepackages()
-print("Blender PIP user site:", app_path)
+# print("Blender PIP user site:", app_path)
 
 if app_path not in sys.path:
     print("已添加用户模块包目录到 sys.path 路径中")

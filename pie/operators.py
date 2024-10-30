@@ -1,6 +1,8 @@
 import bpy
 from bpy.types import Operator
 
+from ..utils import safe_register_class, safe_unregister_class
+
 
 class Empty_Operator(Operator):
     bl_idname = "pie.empty_operator"
@@ -11,15 +13,14 @@ class Empty_Operator(Operator):
         return {"CANCELLED"}
 
 
-classes = [
+CLASSES = [
     Empty_Operator,
 ]
-class_register, class_unregister = bpy.utils.register_classes_factory(classes)
 
 
 def register():
-    class_register()
+    safe_register_class(CLASSES)
 
 
 def unregister():
-    class_unregister()
+    safe_unregister_class(CLASSES)

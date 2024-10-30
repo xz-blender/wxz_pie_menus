@@ -5,7 +5,8 @@ from bpy.app import translations
 from bpy.types import Menu, Operator, Panel
 
 from .. import __package__ as base_package
-from ..utils import get_prefs
+from ..utils import get_prefs, safe_register_class, safe_unregister_class
+from .utils import *
 
 bl_info = {
     "name": "Translate",
@@ -115,12 +116,11 @@ class VIEW3D_PIE_MT_Translate_Tooltips_Key(Operator):
         return {"FINISHED"}
 
 
-classes = [
+CLASSES = [
     PIE_OT_toggle_language,
     VIEW3D_PIE_MT_Translate_Tooltips_Key,
     PIE_ToggleLanguageSettings,
 ]
-class_register, class_unregister = bpy.utils.register_classes_factory(classes)
 
 addon_keymaps = []
 
@@ -152,24 +152,15 @@ def register_keymaps():
     addon_keymaps.append(km)
 
 
-def unregister_keymaps():
-    wm = bpy.context.window_manager
-    for km in addon_keymaps:
-        for kmi in km.keymap_items:
-            km.keymap_items.remove(kmi)
-        # wm.keyconfigs.addon.keymaps.remove(km)
-    addon_keymaps.clear()
-
-
 def register():
-    class_register()
+    safe_register_class(CLASSES)
     bpy.types.Scene.pie_switch_language = bpy.props.PointerProperty(type=PIE_ToggleLanguageSettings)
     # bpy.types.TOPBAR_MT_editor_menus.append(draw_ui)
     register_keymaps()
 
 
 def unregister():
-    unregister_keymaps()
-    class_unregister()
+    keymap_safe_unregister(addon_keymaps)
     del bpy.types.Scene.pie_switch_language
+    safe_unregister_class(CLASSES)
     # bpy.types.TOPBAR_MT_editor_menus.remove(draw_ui)

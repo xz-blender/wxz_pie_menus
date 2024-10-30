@@ -1,7 +1,8 @@
 import bpy
 from bpy.types import Menu, Operator
 
-from .pie_utils import *
+from ..utils import safe_register_class, safe_unregister_class
+from .utils import *
 
 
 class VIEW3D_PIE_MT_Bottom_D(Menu):
@@ -152,7 +153,7 @@ class PIE_Mesh_OriginToGeometry(Operator):
         return {"FINISHED"}
 
 
-classes = [
+CLASSES = [
     VIEW3D_PIE_MT_Bottom_D,
     VIEW3D_PIE_MT_Transform_Orientation,
     VIEW3D_PIE_MT_Transform_Pivot,
@@ -191,22 +192,11 @@ def register_keymaps():
     addon_keymaps.append(km)
 
 
-def unregister_keymaps():
-    wm = bpy.context.window_manager
-    for km in addon_keymaps:
-        for kmi in km.keymap_items:
-            km.keymap_items.remove(kmi)
-        # wm.keyconfigs.addon.keymaps.remove(km)
-    addon_keymaps.clear()
-
-
 def register():
-    for cls in classes:
-        bpy.utils.register_class(cls)
+    safe_register_class(CLASSES)
     register_keymaps()
 
 
 def unregister():
-    unregister_keymaps()
-    for cls in reversed(classes):
-        bpy.utils.unregister_class(cls)
+    keymap_safe_unregister(addon_keymaps)
+    safe_unregister_class(CLASSES)

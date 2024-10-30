@@ -1,7 +1,8 @@
 import bpy
 from bpy.types import Menu, Operator, Panel
 
-from .pie_utils import *
+from ..utils import safe_register_class, safe_unregister_class
+from .utils import *
 
 
 class PIE_Set_Ctrl_B_HotKey(Operator):
@@ -61,7 +62,7 @@ class VIEW3D_PIE_MT_Ctrl_B(Menu):
                 pie.separator()
 
 
-classes = [
+CLASSES = [
     VIEW3D_PIE_MT_Ctrl_B,
     PIE_Set_Ctrl_B_HotKey,
 ]
@@ -83,22 +84,11 @@ def register_keymaps():
     addon_keymaps.append(km)
 
 
-def unregister_keymaps():
-    wm = bpy.context.window_manager
-    for km in addon_keymaps:
-        for kmi in km.keymap_items:
-            km.keymap_items.remove(kmi)
-        # wm.keyconfigs.addon.keymaps.remove(km)
-    addon_keymaps.clear()
-
-
 def register():
-    for cls in classes:
-        bpy.utils.register_class(cls)
+    safe_register_class(CLASSES)
     register_keymaps()
 
 
 def unregister():
-    unregister_keymaps()
-    for cls in reversed(classes):
-        bpy.utils.unregister_class(cls)
+    keymap_safe_unregister(addon_keymaps)
+    safe_unregister_class(CLASSES)

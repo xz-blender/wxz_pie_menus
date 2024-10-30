@@ -1,7 +1,8 @@
 import bpy
 from bpy.types import Menu, Operator, Panel
 
-from .pie_utils import *
+from ..utils import safe_register_class, safe_unregister_class
+from .utils import *
 
 
 class OUTLINER_PIE_MT_Bottom_A(Menu):
@@ -116,13 +117,13 @@ class PIE_Collection_Remove_Empty(Operator):
         return {"FINISHED"}
 
 
-classes = [
+CLASSES = [
     OUTLINER_PIE_MT_Bottom_A,
     Collection_Enable_Toggle,
     PIE_Collection_Remove_Empty,
     OUTLINER_PIE_MT_Bottom_X,
 ]
-class_register, class_unregister = bpy.utils.register_classes_factory(classes)
+
 addon_keymaps = []
 
 
@@ -144,20 +145,11 @@ def register_keymaps():
     addon_keymaps.append(km)
 
 
-def unregister_keymaps():
-    wm = bpy.context.window_manager
-    for km in addon_keymaps:
-        for kmi in km.keymap_items:
-            km.keymap_items.remove(kmi)
-        wm.keyconfigs.addon.keymaps.remove(km)
-    addon_keymaps.clear()
-
-
 def register():
-    class_register()
+    safe_register_class(CLASSES)
     register_keymaps()
 
 
 def unregister():
-    unregister_keymaps()
-    class_unregister()
+    keymap_safe_unregister(addon_keymaps)
+    safe_unregister_class(CLASSES)

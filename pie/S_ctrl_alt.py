@@ -4,7 +4,8 @@ from bpy.props import FloatProperty, IntProperty
 from bpy.types import Menu, Operator
 from mathutils import Matrix, Quaternion, Vector
 
-from .pie_utils import *
+from ..utils import safe_register_class, safe_unregister_class
+from .utils import *
 
 
 class VIEW3D_PIE_MT_Ctrl_Alt_S(Menu):
@@ -216,14 +217,13 @@ def uv_menu_func(self, context):
     self.layout.operator(Mesh_UVScaleModalOperator.bl_idname)
 
 
-classes = [
+CLASSES = [
     Mesh_UVScaleModalOperator,
     Mesh_UVScaleOperator,
     VIEW3D_PIE_MT_Ctrl_Alt_S,
     PIE_ScaleUVOperator,
 ]
 addon_keymaps = []
-class_register, class_unregister = bpy.utils.register_classes_factory(classes)
 
 
 def register_keymaps():
@@ -238,19 +238,13 @@ def register_keymaps():
     addon_keymaps.append((km, kmi))
 
 
-def unregister_keymaps():
-    for km in addon_keymaps:
-        for kmi in km.keymap_items:
-            km.keymap_items.remove(kmi)
-    addon_keymaps.clear()
-
-
 def register():
-    class_register()
+    safe_register_class(CLASSES)
     bpy.types.VIEW3D_MT_uv_map.append(uv_menu_func)
     register_keymaps()
 
 
 def unregister():
+    keymap_safe_unregister(addon_keymaps)
     bpy.types.VIEW3D_MT_uv_map.remove(uv_menu_func)
-    class_unregister()
+    safe_unregister_class(CLASSES)

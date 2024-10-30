@@ -3,7 +3,8 @@ from pathlib import Path
 import bpy
 from bpy.types import Menu, Operator, Panel
 
-from .pie_utils import *
+from ..utils import safe_register_class, safe_unregister_class
+from .utils import *
 
 
 class VIEW3D_MT_PIE_S_ctrl_Shift(Menu):
@@ -47,10 +48,10 @@ class VIEW3D_MT_PIE_S_ctrl_Shift(Menu):
         pie.operator("pie.estimate_memory_usage", text="展示场景内存使用量", icon="MEMORY")
 
 
-classes = [
+CLASSES = [
     VIEW3D_MT_PIE_S_ctrl_Shift,
 ]
-class_register, class_unregister = bpy.utils.register_classes_factory(classes)
+
 addon_keymaps = []
 
 
@@ -62,17 +63,11 @@ def register_keymaps():
     addon_keymaps.append((km, kmi))
 
 
-def unregister_keymaps():
-    for km, kmi in addon_keymaps:
-        km.keymap_items.remove(kmi)
-    addon_keymaps.clear()
-
-
 def register():
-    class_register()
+    safe_register_class(CLASSES)
     register_keymaps()
 
 
 def unregister():
-    class_unregister()
-    # unregister_keymaps()
+    keymap_safe_unregister(addon_keymaps)
+    safe_unregister_class(CLASSES)

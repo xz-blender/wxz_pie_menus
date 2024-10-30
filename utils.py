@@ -102,3 +102,20 @@ def iter_submodules_name(path, except_package_list):
 
     sub_modules.sort(key=lambda mod: mod.__name__)
     return sub_modules
+
+
+def safe_register_class(classes):
+    for cls in classes:
+        try:
+            bpy.utils.unregister_class(cls)
+        except RuntimeError:
+            pass
+        bpy.utils.register_class(cls)
+
+
+def safe_unregister_class(classes):
+    for cls in reversed(classes):
+        try:
+            bpy.utils.unregister_class(cls)
+        except RuntimeError:
+            pass

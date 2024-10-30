@@ -1,8 +1,8 @@
 import bpy
 from bpy.types import Context, Event, Menu, Operator
 
-from ..utils import get_prefs
-from .pie_utils import *
+from ..utils import get_prefs, safe_register_class, safe_unregister_class
+from .utils import *
 
 numbers = ("ZERO", "ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN", "EIGHT", "NINE")
 modifier_props = {
@@ -411,7 +411,7 @@ def costom_modifier_bar(self, context):
     # lattice.type = "LATTICE"
 
 
-classes = [
+CLASSES = [
     Bar_Quick_Decimate,
     Bar_Add_New_Modifier,
     PIE_PT_Bar_AddCustomModifier,
@@ -420,18 +420,10 @@ classes = [
 
 
 def register():
-    for cls in classes:
-        bpy.utils.register_class(cls)
+    safe_register_class(CLASSES)
     bpy.types.DATA_PT_modifiers.prepend(costom_modifier_bar)
-    # bpy.types.DATA_PT_modifiers.append(menu)  # 区别 prepend 和 append
 
 
 def unregister():
     bpy.types.DATA_PT_modifiers.remove(costom_modifier_bar)
-    # bpy.types.DATA_PT_modifiers.remove(menu)
-    for cls in reversed(classes):
-        bpy.utils.unregister_class(cls)
-
-
-# if __name__ == "__main__":
-#     register()
+    safe_unregister_class(CLASSES)

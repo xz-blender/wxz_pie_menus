@@ -7,7 +7,8 @@ from bpy.props import FloatProperty, IntProperty
 from bpy.types import Menu, Operator
 from mathutils import Matrix, Quaternion, Vector
 
-from .pie_utils import *
+from ..utils import safe_register_class, safe_unregister_class
+from .utils import *
 
 
 class VIEW3D_PIE_MT_Bottom_R(Menu):
@@ -394,7 +395,7 @@ class PIE_Mesh_UV_Rotate_Modal(Operator):
         bmesh.update_edit_mesh(me)
 
 
-classes = [
+CLASSES = [
     VIEW3D_PIE_MT_Bottom_R,
     PIE_Transform_Rotate_Z,
     PIE_Transform_Rotate_XY,
@@ -429,22 +430,11 @@ def register_keymaps():
     kmi = km.keymap_items.new(idname="pie.mesh_uv_rotate_modal", type="R", value="CLICK", ctrl=True, alt=True)
 
 
-def unregister_keymaps():
-    wm = bpy.context.window_manager
-    for km in addon_keymaps:
-        for kmi in km.keymap_items:
-            km.keymap_items.remove(kmi)
-        # wm.keyconfigs.addon.keymaps.remove(km)
-    addon_keymaps.clear()
-
-
 def register():
-    for cls in classes:
-        bpy.utils.register_class(cls)
+    safe_register_class(CLASSES)
     register_keymaps()
 
 
 def unregister():
-    unregister_keymaps()
-    for cls in reversed(classes):
-        bpy.utils.unregister_class(cls)
+    keymap_safe_unregister(addon_keymaps)
+    safe_unregister_class(CLASSES)

@@ -20,8 +20,9 @@ import bpy
 from bpy.props import *
 from bpy.types import AddonPreferences, Operator, PropertyGroup, UIList
 
-from . import operators, pip_package, props
-from .panels import *
+from . import operators, panels, pip_package, props
+
+# from .panels import *
 from .translation.translate import GetTranslationDict
 from .utils import *
 
@@ -118,13 +119,13 @@ class WXZ_PIE_Preferences(AddonPreferences, props.WXZ_PIE_Prefs_Props):
         row.alignment = "CENTER"
 
         if self.tabs == "DEPENDENCIES":
-            draw_dependencies(self, layout)
+            panels.draw_dependencies(self, layout)
         elif self.tabs == "ADDON_MENUS":
-            draw_addon_menus(self, layout, context, module_path_name_list)
+            panels.draw_addon_menus(self, layout, context, module_path_name_list)
         elif self.tabs == "RESOURCE_CONFIG":
-            draw_resource_config(self, layout)
+            panels.draw_resource_config(self, layout)
         elif self.tabs == "Other_Addons_Setting":
-            draw_other_addons_setting(self, layout)
+            panels.draw_other_addons_setting(self, layout)
 
 
 for mod in all_modules:

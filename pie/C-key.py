@@ -1,7 +1,8 @@
 import bpy
 from bpy.types import Menu, Operator
 
-from .pie_utils import *
+from ..utils import safe_register_class, safe_unregister_class
+from .utils import *
 
 # class PIE_C_KEY(Operator):
 #     bl_idname = get_pyfilename()
@@ -17,7 +18,7 @@ from .pie_utils import *
 #         return {"FINISHED"}
 
 
-classes = [
+CLASSES = [
     # PIE_C_KEY,
 ]
 
@@ -40,18 +41,11 @@ def register_keymaps():
         addon_keymaps.append(km)
 
 
-def unregister_keymaps():
-    wm = bpy.context.window_manager
-    for km in addon_keymaps:
-        for kmi in km.keymap_items:
-            km.keymap_items.remove(kmi)
-        # wm.keyconfigs.addon.keymaps.remove(km)
-    addon_keymaps.clear()
-
-
 def register():
+    safe_register_class(CLASSES)
     register_keymaps()
 
 
 def unregister():
-    unregister_keymaps()
+    keymap_safe_unregister(addon_keymaps)
+    safe_unregister_class(CLASSES)

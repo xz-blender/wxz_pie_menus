@@ -1,7 +1,8 @@
 import bpy
 from bpy.types import Menu, Operator
 
-from .pie_utils import *
+from ..utils import safe_register_class, safe_unregister_class
+from .utils import *
 
 
 class VIEW3D_PIE_MT_XZ_Shift_G(Menu):
@@ -53,10 +54,10 @@ class VIEW3D_PIE_MT_XZ_Shift_G(Menu):
             # 3 - BOTTOM - RIGHT
 
 
-classes = [
+CLASSES = [
     VIEW3D_PIE_MT_XZ_Shift_G,
 ]
-class_register, class_unregister = bpy.utils.register_classes_factory(classes)
+
 addon_keymaps = []
 
 
@@ -75,20 +76,11 @@ def register_keymaps():
         addon_keymaps.append((km, kmi))
 
 
-def unregister_keymaps():
-    wm = bpy.context.window_manager
-    kc = wm.keyconfigs.addon
-    if kc:
-        for km, kmi in addon_keymaps:
-            km.keymap_items.remove(kmi)
-    addon_keymaps.clear()
-
-
 def register():
-    class_register()
+    safe_register_class(CLASSES)
     register_keymaps()
 
 
 def unregister():
-    class_unregister()
-    # unregister_keymaps()
+    keymap_safe_unregister(addon_keymaps)
+    safe_unregister_class(CLASSES)

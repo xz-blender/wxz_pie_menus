@@ -1,7 +1,8 @@
 import bpy
 from bpy.types import Menu, Operator
 
-from .pie_utils import *
+from ..utils import safe_register_class, safe_unregister_class
+from .utils import *
 
 
 class PIE_OP_A_alt_shift(Operator):
@@ -21,8 +22,7 @@ class PIE_OP_A_alt_shift(Operator):
         return {"FINISHED"}
 
 
-classes = [PIE_OP_A_alt_shift]
-class_register, class_unregister = bpy.utils.register_classes_factory(classes)
+CLASSES = [PIE_OP_A_alt_shift]
 
 addon_keymaps = []
 
@@ -34,17 +34,11 @@ def register_keymaps():
     addon_keymaps.append((km, kmi))
 
 
-def unregister_keymaps():
-    for km, kmi in addon_keymaps:
-        km.keymap_items.remove(kmi)
-    addon_keymaps.clear()
-
-
 def register():
-    class_register()
+    safe_register_class(CLASSES)
     register_keymaps()
 
 
 def unregister():
-    class_unregister()
-    # unregister_keymaps()
+    keymap_safe_unregister(addon_keymaps)
+    safe_unregister_class(CLASSES)

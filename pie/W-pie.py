@@ -1,7 +1,8 @@
 import bpy
 from bpy.types import Menu, Operator
 
-from .pie_utils import *
+from ..utils import safe_register_class, safe_unregister_class
+from .utils import *
 
 
 class VIEW3D_PIE_MT_Bottom_W(Menu):
@@ -12,10 +13,12 @@ class VIEW3D_PIE_MT_Bottom_W(Menu):
         layout = self.layout
         layout.alignment = "CENTER"
         pie = layout.menu_pie()
+
         set_pie_ridius()
 
         ob_type = get_ob_type(context)
         ob_mode = get_ob_mode(context)
+        ui_type = get_area_ui_type(context)
 
         if ob_mode == "OBJECT":
             # 4 - LEFT
@@ -139,7 +142,7 @@ class Proportional_Edit_Falloff(Operator):
         return {"FINISHED"}
 
 
-classes = [
+CLASSES = [
     VIEW3D_PIE_MT_Bottom_W,
     Proportional_Edit_Falloff,
 ]
@@ -167,24 +170,11 @@ def register_keymaps():
     addon_keymaps.append(km)
 
 
-def unregister_keymaps():
-    keyconfigs = bpy.context.window_manager.keyconfigs.default
-    wm = bpy.context.window_manager
-    for km in addon_keymaps:
-        for kmi in km.keymap_items:
-            km.keymap_items.remove(kmi)
-        # wm.keyconfigs.addon.keymaps.remove(km)
-    addon_keymaps.clear()
-    # restore_keys_value(stored)
-
-
 def register():
-    for cls in classes:
-        bpy.utils.register_class(cls)
+    safe_register_class(CLASSES)
     register_keymaps()
 
 
 def unregister():
-    unregister_keymaps()
-    for cls in reversed(classes):
-        bpy.utils.unregister_class(cls)
+    keymap_safe_unregister(addon_keymaps)
+    safe_unregister_class(CLASSES)
