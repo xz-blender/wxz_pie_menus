@@ -2,14 +2,22 @@ bl_info = {
     "name": "NB 666",
     "author": "下前下前拳",
     "category": "NB",
-    "blender": (4, 0, 0),
+    "blender": (4, 00, 0),
     "location": "Sidebar > 牛逼",
     "description": "牛逼插件 谁用谁牛逼",
     "wiki_url": "https://space.bilibili.com/67482199",
     "tracker_url": "https://space.bilibili.com/67482199",
-    "version": (1, 0, 9),
+    "version": (1, 1, 1),
 }
 
+
+from . import nb_grease_pencil_to_bbone_ctrl_ops
+from . import nb_grease_pencil_to_bonechain_ops
+from . import nb_pick_put_bake_action_ops
+from . import nb_pick_put_clear_ops
+from . import nb_pick_up_ops
+from . import nb_put_down_ops
+from . import nb_add_lattice_bbone_ctrl_wave_ops
 from . import nb_obj_mirror_copy_ops
 from . import nb_obj_bone_ctrl_ops
 from . import nb_nla_ops
@@ -46,6 +54,13 @@ import bpy
 
 
 mods = (
+nb_grease_pencil_to_bbone_ctrl_ops,
+nb_grease_pencil_to_bonechain_ops,
+nb_pick_put_bake_action_ops,
+nb_pick_put_clear_ops,
+nb_pick_up_ops,
+nb_put_down_ops,
+nb_add_lattice_bbone_ctrl_wave_ops,
 nb_obj_mirror_copy_ops,
 nb_obj_bone_ctrl_ops,
 nb_nla_ops,

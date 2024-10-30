@@ -102,17 +102,3 @@ def iter_submodules_name(path, except_package_list):
 
     sub_modules.sort(key=lambda mod: mod.__name__)
     return sub_modules
-
-
-def glb_classes_register(CLASSES):
-    filename = os.path.splitext(os.path.basename(__file__))[0]
-    safe_filename = re.sub(r"\W|^(?=\d)", "_", filename)
-
-    class_register_var_name = f"{safe_filename}_class_register"
-    class_unregister_var_name = f"{safe_filename}_class_unregister"
-
-    globals()[class_register_var_name], globals()[class_unregister_var_name] = bpy.utils.register_classes_factory(
-        CLASSES
-    )
-
-    return (globals()[class_register_var_name], globals()[class_unregister_var_name])

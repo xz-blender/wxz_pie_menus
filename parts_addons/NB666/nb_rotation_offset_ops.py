@@ -26,6 +26,10 @@ class NB_RotationOffset_Operator(bpy.types.Operator):
         Armature =C.object
         #bone =C.active_pose_bone#获取激活骨骼
         bone =C.selected_pose_bones[0]#获取选择骨骼
+        
+        cInfluence=bpy.context.scene.Prop_nb_666.cInfluence
+        cuoFrame=bpy.context.scene.Prop_nb_666.cuoFrame
+        velocity_weight=bpy.context.scene.Prop_nb_666.velocity_weight
 
 
         # 获取当前场景
@@ -97,7 +101,7 @@ class NB_RotationOffset_Operator(bpy.types.Operator):
             sce = bpy.context.scene
             bpy.ops.nla.bake(frame_start=sce.frame_start-1, frame_end=sce.frame_end+1,only_selected=True, visual_keying=True, clear_constraints=True, use_current_action=True,bake_types={'OBJECT'})#烘焙动画
             #下面这一串是错帧用的
-            val = bpy.context.scene.Prop_nb_666.cuoFrame
+            val = cuoFrame
             sel = [o for o in bpy.context.selected_objects if o.animation_data]
 
             for obj in sel:
@@ -129,7 +133,7 @@ class NB_RotationOffset_Operator(bpy.types.Operator):
                 distance = (pos2 - pos1).length
                 velocities.append(distance)
             
-            Velocity_weight =bpy.context.scene.Prop_nb_666.velocity_weight
+            Velocity_weight =velocity_weight
             for frame in range(frame_start, frame_end):
                 bpy.context.scene.frame_set(frame)
                 bonecons.influence = (velocities[bpy.context.scene.frame_current-frame_start]/max(max(velocities),0.001)*Velocity_weight+(1-Velocity_weight))*gensuiAmp
@@ -203,7 +207,7 @@ class NB_RotationOffset_Operator(bpy.types.Operator):
 
         selboneS=C.selected_pose_bones
         for i in selboneS:            
-            xuanZHCuoZhen(i,bpy.context.scene.Prop_nb_666.cInfluence)   
+            xuanZHCuoZhen(i,cInfluence)   
         for i in selboneS: 
             bpy.context.object.data.bones[i.name].select=1
             

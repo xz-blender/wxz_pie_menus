@@ -4,7 +4,7 @@ from bpy.types import Menu, Operator
 from .pie_utils import *
 
 # class PIE_C_KEY(Operator):
-#     bl_idname = "pie.c_key"
+#     bl_idname = get_pyfilename()
 #     bl_label = "C-key"
 #     bl_options = {"REGISTER"}
 

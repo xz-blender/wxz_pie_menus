@@ -34,6 +34,11 @@ class NbBboneOperator(bpy.types.Operator):
         selBoneName_s =[]
         childBoneName_s =[]
         parentBoneName_s =[]
+        chainrootBoneName_s =[]
+        chaintailBoneName_s =[]
+        chainroot_child_BoneName_s =[]
+        chaintail_parent_BoneName_s =[]
+        
         
         bpy.ops.object.mode_set(mode='POSE')
         bpy.ops.object.mode_set(mode='EDIT')
@@ -92,7 +97,29 @@ class NbBboneOperator(bpy.types.Operator):
                 if bone1.use_connect == True:
                     childBoneName_s.append(bone1.name)
                     parentBoneName_s.append(bone1.parent.name)
-
+                    if bone1.parent.use_connect == False:
+                        chainrootBoneName_s.append(bone1.parent.name)
+                    is_zuihou =True
+                    for b in bone1.children[:]:
+                        if b.use_connect:
+                            is_zuihou =False  
+                    if is_zuihou:
+                        chaintailBoneName_s.append(bone1.name)
+                      
+#        print(chainrootBoneName_s)
+#        print(chaintailBoneName_s)
+            
+        for i in chainrootBoneName_s:
+            bone1=arm.edit_bones.get(i)
+            chainroot_child_BoneName_s.append(bone1.children[0].name)
+            
+        for i in chaintailBoneName_s:
+            bone1=arm.edit_bones.get(i)
+            chaintail_parent_BoneName_s.append(bone1.parent.name)
+            
+            
+        for i in selBoneName_s:
+            bone1=arm.edit_bones.get(i)
             
             if bpy.app.version[0]==3:
                 bone1.layers[7] = True
@@ -239,10 +266,33 @@ class NbBboneOperator(bpy.types.Operator):
             bonet.length =sum(All_ctrl_length_s)/len(All_ctrl_length_s)
         
         
-        if childBoneName_s:
-            bone_zuihou=arm.edit_bones.get(adv_rename(childBoneName_s[-1],"_t_Ctrl"))
-            bone1 = arm.edit_bones.get(childBoneName_s[-1])
-            bone2 = arm.edit_bones.get(parentBoneName_s[-1])
+#        if childBoneName_s:
+#            bone_zuihou=arm.edit_bones.get(adv_rename(childBoneName_s[-1],"_t_Ctrl"))
+#            bone1 = arm.edit_bones.get(childBoneName_s[-1])
+#            bone2 = arm.edit_bones.get(parentBoneName_s[-1])
+#            dir1 = get_bone_direction(bone1)
+#            dir2 = get_bone_direction(bone2)
+#            average_direction = (dir1 + dir2) / 2.0
+#            average_direction.normalize()
+#            ref_direction=reflect_vector(-average_direction,dir1)
+#            bone_zuihou.tail = bone_zuihou.head + ref_direction*boneh.length
+#            bone_zuihou.align_roll((bone1.z_axis+bone2.z_axis)/2)
+#        
+#            bone_zuiqian=arm.edit_bones.get(adv_rename(parentBoneName_s[0],"_h_Ctrl"))
+#            bone2 = arm.edit_bones.get(childBoneName_s[0])
+#            bone1 = arm.edit_bones.get(parentBoneName_s[0])
+#            dir1 = get_bone_direction(bone1)
+#            dir2 = get_bone_direction(bone2)
+#            average_direction = (dir1 + dir2) / 2.0
+#            average_direction.normalize()
+#            ref_direction=reflect_vector(-average_direction,dir1)
+#            bone_zuiqian.tail = bone_zuiqian.head + ref_direction*boneh.length
+#            bone_zuiqian.align_roll((bone1.z_axis+bone2.z_axis)/2)
+            
+        for i,b in enumerate(chaintailBoneName_s):
+            bone_zuihou=arm.edit_bones.get(adv_rename(b,"_t_Ctrl"))
+            bone1 = arm.edit_bones.get(b)
+            bone2 = arm.edit_bones.get(chaintail_parent_BoneName_s[i])
             dir1 = get_bone_direction(bone1)
             dir2 = get_bone_direction(bone2)
             average_direction = (dir1 + dir2) / 2.0
@@ -250,19 +300,20 @@ class NbBboneOperator(bpy.types.Operator):
             ref_direction=reflect_vector(-average_direction,dir1)
             bone_zuihou.tail = bone_zuihou.head + ref_direction*boneh.length
             bone_zuihou.align_roll((bone1.z_axis+bone2.z_axis)/2)
-        
-            bone_zuiqian=arm.edit_bones.get(adv_rename(parentBoneName_s[0],"_h_Ctrl"))
-            bone2 = arm.edit_bones.get(childBoneName_s[0])
-            bone1 = arm.edit_bones.get(parentBoneName_s[0])
+            
+        for i,b in enumerate(chainrootBoneName_s):
+            bone_zuiqian=arm.edit_bones.get(adv_rename(b,"_h_Ctrl"))
+            chainroot_child_BoneName_s
+            bone2 = arm.edit_bones.get(chainroot_child_BoneName_s[i])
+            bone1 = arm.edit_bones.get(b)
             dir1 = get_bone_direction(bone1)
             dir2 = get_bone_direction(bone2)
             average_direction = (dir1 + dir2) / 2.0
             average_direction.normalize()
             ref_direction=reflect_vector(-average_direction,dir1)
             bone_zuiqian.tail = bone_zuiqian.head + ref_direction*boneh.length
-            bone_zuiqian.align_roll((bone1.z_axis+bone2.z_axis)/2)
-            
-            arm.edit_bones.get(adv_rename(parentBoneName_s[0],"_t_Ctrl")).length =sum(All_ctrl_length_s)/len(All_ctrl_length_s)
+            bone_zuiqian.align_roll((bone1.z_axis+bone2.z_axis)/2)                
+            arm.edit_bones.get(adv_rename(b,"_t_Ctrl")).length =sum(All_ctrl_length_s)/len(All_ctrl_length_s)
             
             
         bpy.ops.object.mode_set(mode='POSE')
