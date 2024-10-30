@@ -21,8 +21,9 @@ class PIE_MT_Bottom_A(Menu):
 
         ob_type = get_ob_type(context)
         ob_mode = get_ob_mode(context)
+        ui_type = get_area_ui_type(context)
 
-        if context.area.ui_type == "VIEW_3D":
+        if ui_type == "VIEW_3D":
             if ob_mode == "OBJECT":
                 # 4 - LEFT
                 add_operator(pie, "object.distribute", text="排列物体", icon="MOD_ARRAY")
@@ -148,7 +149,7 @@ class PIE_MT_Bottom_A(Menu):
                         icon="MOD_DATA_TRANSFER",
                     )
 
-        elif get_area_ui_type(context) == "UV":
+        elif ui_type == "UV":
             # 4 - LEFT
             pie.operator("uv.select_less", text="缩减选择", icon="REMOVE")
             # 6 - RIGHT
@@ -257,11 +258,11 @@ class PIE_MT_Bottom_A_Ctrl(Menu):
         layout = self.layout
         pie = layout.menu_pie()
         set_pie_ridius()
+        ob_type = get_ob_type(context)
+        ob_mode = get_ob_mode(context)
+        ui_type = get_area_ui_type(context)
 
-        if context.selected_objects != None:
-            ob_type = context.object.type
-            ob_mode = context.object.mode
-
+        if context.selected_objects:
             # 4 - LEFT
             rotation = pie.operator(PIE_Apply_MultiObjects_Scale.bl_idname, text="旋转-跳过实例")
             rotation.rotation = True

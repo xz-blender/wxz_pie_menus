@@ -36,7 +36,7 @@ class VIEW3D_PIE_MT_Bottom_F(Menu):
             else:
                 op = pie.operator("object.parent_set")
                 op.type = "OBJECT"
-                op.keep_transform = False
+                op.keep_transform = True
             # 1 - BOTTOM - LEFT
             pie.separator()
             # 3 - BOTTOM - RIGHT
