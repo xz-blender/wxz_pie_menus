@@ -39,7 +39,7 @@ class DROPIT_OT_drop_it(bpy.types.Operator):
     )  # type: ignore
 
     bpy.types.WindowManager.surf_align = bpy.props.BoolProperty(
-        default=True, name="对齐到表面", description="将物体对齐到碰撞表面的法线"
+        default=False, name="对齐到表面", description="将物体对齐到碰撞表面的法线"
     )
 
     rand_zrot: bpy.props.IntProperty(
