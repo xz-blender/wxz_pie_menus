@@ -150,23 +150,24 @@ class PIE_Custom_Scripts_LinkSameObjectData_BySelects(Operator):
 class PIE_Custom_Scripts_SelectSameVertexObject(Operator):
     bl_idname = "pie.selectsamevertexobject"
     bl_label = "选择同顶点数网格物体"
-    bl_description = "选择同顶点数网格物体"
+    bl_description = "选择与当前激活对象有相同顶点数的所有网格对象"
     bl_options = {"REGISTER", "UNDO"}
 
     @classmethod
     def poll(cls, context):
-        if context.active_object:
-            return True
+        return context.active_object is not None and context.active_object.type == "MESH"
 
     def execute(self, context):
-        if context.active_object.type == "MESH":
-            ac_len = len(context.active_object.data.vertices)
-            for ob in bpy.data.objects:
-                if ob.type == "MESH":
-                    if len(ob.data.vertices) == ac_len:
-                        ob.data.select_set(False)
-        else:
-            self.report({"INFO"}, "激活物体必须为网格物体")
+        ac_len = len(context.active_object.data.vertices)
+
+        # 取消选择所有对象
+        bpy.ops.object.select_all(action="DESELECT")
+
+        # 遍历所有对象，选择具有相同顶点数的网格对象
+        for ob in bpy.data.objects:
+            if ob.type == "MESH" and len(ob.data.vertices) == ac_len:
+                ob.select_set(True)
+
         return {"FINISHED"}
 
 
