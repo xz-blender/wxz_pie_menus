@@ -158,15 +158,17 @@ class PIE_Custom_Scripts_SelectSameVertexObject(Operator):
         return context.active_object is not None and context.active_object.type == "MESH"
 
     def execute(self, context):
-        ac_len = len(context.active_object.data.vertices)
-
+        active_obj = bpy.context.active_object
+        vertex_count = len(active_obj.data.vertices)
         # 取消选择所有对象
-        bpy.ops.object.select_all(action="DESELECT")
-
-        # 遍历所有对象，选择具有相同顶点数的网格对象
-        for ob in bpy.data.objects:
-            if ob.type == "MESH" and len(ob.data.vertices) == ac_len:
-                ob.select_set(True)
+        for obj in bpy.context.scene.objects:
+            obj.select_set(False)
+        # 选择具有相同顶点数的对象
+        for obj in bpy.context.scene.objects:
+            if obj.type == "MESH" and len(obj.data.vertices) == vertex_count:
+                obj.select_set(True)
+        # 确保激活对象仍然是原始激活对象
+        bpy.context.view_layer.objects.active = active_obj
 
         return {"FINISHED"}
 

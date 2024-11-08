@@ -69,21 +69,33 @@ class PIE_Paste_ClipBord_as_Image_Plane(bpy.types.Operator):
 
         try:
             image_path = None
-            file_paths = None
+            file_paths = []
             temp_dir = tempfile.gettempdir()
-            image = ImageGrab.grabclipboard()
-            if isinstance(image, Image.Image):
+            clopboard = ImageGrab.grabclipboard()
+            if isinstance(clopboard, Image.Image):
                 # 保存图像到临时文件夹并返回路径
-                current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
-                image_name = f"clipboard_image_{current_time}.png"
+                current_time = datetime.now().strftime("%m%d_%H%M")
+                image_name = f"xz_clipboard_image_{current_time}.png"
                 image_path = str(Path(temp_dir) / image_name)
-                image.save(image_path)
-                print(f"Image saved to: {image_path}")
-            elif isinstance(image, list):
+                clopboard.save(image_path)
+                print(f"剪切板图像缓存到: {image_path}")
+            elif isinstance(clopboard, list):
                 # 如果剪贴板包含文件，则打印其绝对路径
-                file_paths = [str(Path(file).absolute) for file in image]
-                for file_path in file_paths:
-                    print(f"File path: {file_path}")
+                for file in clopboard:
+                    file = Path(file)
+                    if file.suffix.lower() in [
+                        ".png",
+                        ".jpg",
+                        ".jpeg",
+                        ".bmp",
+                        ".gif",
+                        ".webp",
+                        ".tif",
+                        ".exr",
+                        ".hdri",
+                    ]:
+                        file_paths.append(Path(file))
+                        print(f"文件路径: {file}")
             else:
                 self.report({"ERROR"}, "剪贴板不包含图像或文件")
                 return {"CANCELLED"}
@@ -93,11 +105,11 @@ class PIE_Paste_ClipBord_as_Image_Plane(bpy.types.Operator):
 
         def add_plane(file_path, image_name, dir):
             bpy.ops.image.import_as_mesh_planes(
-                relative=False, filepath=file_path, files=[{"name": image_name, "name": image_name}], directory=dir
+                relative=False, filepath=str(file_path), files=[{"name": image_name, "name": image_name}], directory=dir
             )
 
         def add_ref(file_path):
-            bpy.ops.object.empty_image_add(filepath=file_path, align="VIEW")
+            bpy.ops.object.empty_image_add(filepath=str(file_path), align="VIEW")
 
         if self.is_ref:
             if image_path:
@@ -114,6 +126,9 @@ class PIE_Paste_ClipBord_as_Image_Plane(bpy.types.Operator):
                     image_name = Path(file_path).name
                     add_plane(file_path, image_name, dir)
 
+        file_paths.clear()
+        image_path = None
+        file_paths = []
         return {"FINISHED"}
 
 
