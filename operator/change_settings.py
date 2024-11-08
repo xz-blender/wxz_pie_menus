@@ -23,8 +23,6 @@ def workspace_change_overlay(scene):
     for context, attr, bool in view3d_handlder_sets:
         if get_prefs().change_overlay_and_shading_sets:
             set_overlay_shading_props(context, attr, bool)
-        else:
-            set_overlay_shading_props(context, attr, not bool)
 
 
 def change_preferences_settings(context):
