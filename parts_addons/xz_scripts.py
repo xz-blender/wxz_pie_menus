@@ -397,7 +397,7 @@ class PIE_Custom_Scripts_Context_Translate(Operator):
             row.prop(self, "baidu_secret_key")
         if check_api or check_sec:
             row = box.row()
-            row.label(text="密钥将储存在(详情查看控制台):")
+            row.label(text="密钥将储存在Config文件夹(详情查看控制台):")
             row = box.row()
             row.label(text=str(settings_file_path))
         row = layout.box().row()

@@ -266,6 +266,7 @@ V_dir = [
     (["UV Editor", "uv.rip_move", "UV Rip Move"], [("value", "CLICK")], []),
     (["3D View", "view3d.pastebuffer", "Paste Objects"], [("value", "CLICK")], []),  # ctrl V
     (["3D View", "object.fl_paste_in_place", "Paste in place"], [("active", False)], []),  # ctrl shift V
+    (["Node Editor", "node.backimage_zoom", "Background Image Zoom"], [("value", "CLICK")], []),  # ctrl V
 ]
 W_dir = [
     (["3D View", "wm.tool_set_by_id", "Set Tool by Name"], [("active", False)], []),  # W

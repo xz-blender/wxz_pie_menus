@@ -108,6 +108,10 @@ class PIE_Paste_ClipBord_Images_As_Nodes(bpy.types.Operator):
     def poll(cls, context):
         return True
 
+    def __init__(self):
+        self.single_image = None
+        self.file_paths = []
+
     def init_clipboard(self, context):
         try:
             from PIL import Image, ImageGrab
@@ -119,7 +123,7 @@ class PIE_Paste_ClipBord_Images_As_Nodes(bpy.types.Operator):
             clopboard = ImageGrab.grabclipboard()
             if isinstance(clopboard, Image.Image):
                 # 保存图像到临时文件夹并返回路径
-                current_time = datetime.now().strftime("%H%M%S")
+                current_time = datetime.now().strftime("%Y%m%d,%H%M%S")
                 image_name = f"xz_clipboard_image_{current_time}.png"
                 self.single_image = str(Path(temp_dir) / image_name)
                 clopboard.save(self.single_image)
@@ -140,7 +144,7 @@ class PIE_Paste_ClipBord_Images_As_Nodes(bpy.types.Operator):
                         ".hdri",
                     ]:
                         self.file_paths.append(Path(file))
-                        print(f"文件路径: {file}")
+                        # print(f"文件路径: {file}")
             else:
                 self.report({"ERROR"}, "剪贴板不包含图像或文件")
                 return {"CANCELLED"}
@@ -152,8 +156,8 @@ class PIE_Paste_ClipBord_Images_As_Nodes(bpy.types.Operator):
         space = context.area.spaces.active
         node_tree = space.node_tree
         if node_tree is not None:
-            print("当前节点树名称: ", node_tree.name)
-            print("节点树类型: ", node_tree.bl_idname)
+            # print("当前节点树名称: ", node_tree.name)
+            # print("节点树类型: ", node_tree.bl_idname)
             return node_tree
         else:
             self.report({"ERROR"}, "未找到节点树")
@@ -167,40 +171,62 @@ class PIE_Paste_ClipBord_Images_As_Nodes(bpy.types.Operator):
             return {"CANCELLED"}
 
         def get_location(self, context, event):
+            # 获取节点编辑器的区域和视图
+            area = context.area
+            region = None
+            for reg in area.regions:
+                if reg.type == "WINDOW":
+                    region = reg
+                    break
+            if not region:
+                self.report({"WARNING"}, "未找到节点编辑器的视图区域")
+                return 0, 0  # 或者其他默认值
+            # 获取 View2D 对象
+            view2d = region.view2d
             # 获取鼠标在区域内的坐标
             region_x = event.mouse_region_x
             region_y = event.mouse_region_y
-            # 将区域坐标转换为节点编辑器中的视图坐标
-            view2d = context.region.view2d
+            # 将区域坐标转换为视图坐标
             node_x, node_y = view2d.region_to_view(region_x, region_y)
+
             return node_x, node_y
 
-        def add_image_node(node_tree):
-            node_type = None
+        def get_inamge_node_type(node_tree):
             if node_tree.bl_idname == "ShaderNodeTree":
-                node_type = "ShaderNodeTexImage"
+                return "ShaderNodeTexImage"
             elif node_tree.bl_idname == "GeometryNodeTree":
-                node_type = "GeometryNodeImageTexture"
+                return "GeometryNodeImageTexture"
             elif node_tree.bl_idname == "CompositorNodeTree":
-                node_type = "CompositorNodeImage"
+                return "CompositorNodeImage"
             else:
                 self.report({"ERROR"}, f"不支持的节点树类型: {node_tree.bl_idname}")
                 return None
+
+        def set_inamge_node_image(node_tree, image_node, image):
+            if node_tree.bl_idname in ["ShaderNodeTree", "CompositorNodeTree"]:
+                setattr(image_node, "image", image)
+            elif node_tree.bl_idname == "GeometryNodeTree":
+                setattr(image_node, "inputs['Image'].default_value", image)
+            else:
+                self.report({"ERROR"}, f"不支持的节点树类型: {node_tree.bl_idname}")
+                return None
+
+        def add_image_node(node_tree):
+            node_type = get_inamge_node_type(node_tree)
             try:
                 image_node = node_tree.nodes.new(type=node_type)
-                node_x, node_y = get_location(context, event)
-                image_node.location = (node_x, node_y)
                 return image_node
             except Exception as e:
                 self.report({"ERROR"}, f"创建节点时出错: {e}")
                 return None
 
         def node_load_image(image_node, image):
-            if image in bpy.data.images:
-                image = bpy.data.images[image]
+            if Path(image).name in bpy.data.images:
+                image = bpy.data.images[image.name]
             else:
-                image = bpy.data.images.load(image)
-            image_node.image = image
+                image = bpy.data.images.load(str(image))
+
+            set_inamge_node_image(node_tree, image_node, image)
 
         def select_nodes(node_tree, image_nodes, is_single_image=True):
             for node in node_tree.nodes:
@@ -220,14 +246,19 @@ class PIE_Paste_ClipBord_Images_As_Nodes(bpy.types.Operator):
             node = add_image_node(node_tree)
             if node is None:
                 return {"CANCELLED"}
+            node_x, node_y = get_location(self, context, event)
+            node.location = (node_x, node_y)
             node_load_image(node, self.single_image)
             select_nodes(node_tree, node, is_single_image=True)
             move_node()
 
         def finish_images_nodes(self, node_tree):
             nodes = []
-            for file_path in self.file_paths:
+            offset = 30
+            node_x, node_y = get_location(self, context, event)
+            for iter, file_path in enumerate(self.file_paths):
                 node = add_image_node(node_tree)
+                node.location = (node_x + iter * offset, node_y + iter * offset)
                 node_load_image(node, file_path)
                 nodes.append(node)
             select_nodes(node_tree, nodes, is_single_image=False)

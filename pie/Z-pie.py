@@ -21,15 +21,15 @@ class VIEW3D_PIE_MT_Bottom_Z_Overlay(Menu):
             col = pie.column()
 
             row = col.row(align=True)
-            row.alignment = "RIGHT"
+            row.alignment = "CENTER"
             row.scale_y = 1.4
-            row.scale_x = 1.8
+            row.scale_x = 2
             row.prop(context.object, "show_bounds", icon="SHADING_BBOX", icon_only=True)
             row.prop(context.object, "show_wire", icon="CUBE", icon_only=True)
 
             row = col.row(align=True)
-            row.scale_x = 0.8
-            row.scale_y = 1.2
+            row.scale_x = 0.9
+            row.scale_y = 1.4
             row.prop(context.object, "display_type", expand=True, invert_checkbox=True)
         else:
             pie.separator()

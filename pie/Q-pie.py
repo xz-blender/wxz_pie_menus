@@ -33,6 +33,7 @@ class VIEW3D_PIE_MT_Bottom_Q(Menu):
         set_pie_ridius()
 
         ui = get_area_ui_type(context)
+        # print("UI:", ui)
         if ui == "VIEW_3D":
             # 4 - LEFT
             pie.operator("view3d.view_axis", text="左", icon_value=get_icon_id("a4")).type = "LEFT"
