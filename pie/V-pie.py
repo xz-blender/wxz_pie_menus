@@ -293,7 +293,8 @@ def register_keymaps():
         kmi.properties.name = "VIEW3D_PIE_MT_Bottom_V"
         addon_keymaps.append(km)
 
-    kmi = km.keymap_items.new("pie.drop_it", "V", "CLICK")
+    km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
+    km.keymap_items.new("pie.drop_it", "V", "CLICK")
     addon_keymaps.append(km)
 
 
