@@ -147,12 +147,10 @@ class PIE_Q_key_ctrl(Operator):
         return True
 
     def execute(self, context):
-        ob_mode = context.object.mode
-        ob_type = context.object.type
+        ob_mode = get_ob_mode(context)
         area_type = context.area.type
-        if area_type == "VIEW_3D":
-            if ob_mode == "OBJECT":
-                bpy.ops.wm.call_menu(name="VIEW3D_MT_make_links")
+        if area_type == "VIEW_3D" and ob_mode == "OBJECT":
+            bpy.ops.wm.call_menu(name="VIEW3D_MT_make_links")
 
         return {"FINISHED"}
 

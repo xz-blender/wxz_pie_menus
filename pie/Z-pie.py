@@ -113,71 +113,55 @@ class PIE_GN_AutoSmooth(Operator):
 
     angle: bpy.props.FloatProperty(default=0.52359, name="Angle", min=0, soft_max=3.14159, subtype="ANGLE")  # type: ignore
     ignore: bpy.props.BoolProperty(default=False, name="Ignore Sharpness")  # type: ignore
+    only_one: bpy.props.BoolProperty(default=True, name="Only One")  # type: ignore
 
     @classmethod
     def poll(cls, context):
-        return True
+        if bpy.ops.selected_objects:
+            return True
 
     def execute(self, context):
         # 编译一个正则表达式来匹配以“Smooth by Angle”开头的所有修改器名称
         pattern = re.compile(r"^Smooth by Angle(\.\d+)?$")
         s_name = "Smooth by Angle"
+        ob_mode = get_ob_mode(context)
+        ob_type = get_ob_type(context)
 
-        store_active_ob = context.active_object
-        for obj in context.selected_objects:
-            context.view_layer.objects.active = obj
-            modifiers = obj.modifiers  # 获取该物体修改器属性
-            # 遍历每个选定物体的修改器
-
-            if bool(modifiers) == True:
-
-                # 初始化变量以保留找到的第一个“Smooth by Angle”修改器
-                primary_modifier = None
-
-                # 遍历所有修改器的副本列表（使用列表副本以避免在遍历时修改列表）
-                for modifier in obj.modifiers[:]:
-                    # 检查修改器名称是否完全匹配“Smooth by Angle”
-                    if modifier.name == s_name:
-                        if primary_modifier is None:
-                            # 如果找到第一个“Smooth by Angle”修改器，保留它
-                            primary_modifier = modifier
-                        else:
-                            # 如果已经找到一个“Smooth by Angle”，则删除当前这个
-                            obj.modifiers.remove(modifier)
-                    # 对于其他匹配正则表达式的修改器（即以“Smooth by Angle.”开头的），直接删除
-                    elif pattern.match(modifier.name):
-                        obj.modifiers.remove(modifier)
-                    # 删除空的节点修改器
-                    elif modifier.type == "NODES" and modifier.node_group == None:
-                        obj.modifiers.remove(modifier)
-
-                # 如果找到了“Smooth by Angle”修改器，将其移动到堆栈底部
-                if primary_modifier:
-                    primary_modifier.use_pin_to_last = True
+        if ob_mode == "OBJECT":
+            for obj in context.selected_objects:
+                modifiers = obj.modifiers  # 获取该物体修改器属性
+                # 遍历每个选定物体的修改器
+                if modifiers:
+                    # 初始化变量以保留找到的第一个“Smooth by Angle”修改器
+                    primary_modifier = None
+                    # 遍历所有修改器的副本列表（使用列表副本以避免在遍历时修改列表）
+                    for modifier in modifiers:
+                        # 检查修改器名称是否完全匹配“Smooth by Angle”
+                        if modifier.type == "NODES":
+                            if modifier.node_group == None:
+                                modifiers.remove(modifier)
+                            elif modifier.node_group.name == s_name:
+                                if primary_modifier is None:
+                                    # 如果找到第一个“Smooth by Angle”修改器，保留它
+                                    primary_modifier = modifier
+                                else:
+                                    if self.only_one:
+                                        # 如果已经找到一个“Smooth by Angle”，则删除当前这个
+                                        modifiers.remove(modifier)
+                            # 对于其他匹配正则表达式的修改器（即以“Smooth by Angle.”开头的）
+                            elif pattern.match(modifier.node_group.name):
+                                modifiers.remove(modifier)
+                    # 如果找到了“Smooth by Angle”修改器，将其移动到堆栈底部
+                    if primary_modifier:
+                        primary_modifier["Input_1"] = self.angle
+                        primary_modifier["Socket_1"] = self.ignore
                 else:
-                    if bpy.data.node_groups.get(s_name):
-                        new_modifier = obj.modifiers.new(name="GeometryNodes", type="NODES")
-                        new_modifier.node_group = bpy.data.node_groups.get(s_name)
-                        new_modifier.name = s_name
-                        new_modifier.show_group_selector = False
-                        new_modifier.use_pin_to_last = True
-                    else:
-                        add_sm()
-
-                try:
-                    modifiers[s_name]["Input_1"] = self.angle
-                    modifiers[s_name]["Socket_1"] = self.ignore
-                except KeyError:
-                    pass
-                # 更新视图，确保修改生效
-            else:
-                add_sm()
-                if context.object.mode == "EDIT_MESH":
-                    bpy.ops.object.mode_set(mode="OBJECT")
-                    modifier[s_name].use_pin_to_last = True
-                    bpy.ops.object.mode_set(mode="EDIT_MESH")
+                    bpy.ops.object.shade_auto_smooth(angle=self.angle)
+        elif ob_mode == "EDIT" and ob_type == "MESH":
+            bpy.ops.object.mode_set(mode="OBJECT")
+            bpy.ops.object.shade_auto_smooth(angle=self.angle)
+            bpy.ops.object.mode_set(mode="EDIT")
             bpy.context.view_layer.update()
-        context.view_layer.objects.active = store_active_ob
         return {"FINISHED"}
 
 

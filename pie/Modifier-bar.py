@@ -18,8 +18,12 @@ modifier_props = {
         "NUMBERS": ("segments", 1),
     },
     "ARRAY": {
-        "DEFAULT_PROP": [("use_merge_vertices_cap", True)],
-        "shift": [("use_constant_offset", True), ("use_relative_offset", False)],
+        "DEFAULT_PROP": [
+            ("use_merge_vertices_cap", True),
+            ("relative_offset_displace", (0, 0, 0)),
+            ("constant_offset_displace", (0, 0, 0)),
+        ],
+        "shift": [("use_constant_offset", True), ("use_relative_offset", True)],
         "X": [("relative_offset_displace", (1, 0, 0)), ("constant_offset_displace", (1, 0, 0))],
         "Y": [("relative_offset_displace", (0, 1, 0)), ("constant_offset_displace", (0, 1, 0))],
         "Z": [("relative_offset_displace", (0, 0, 1)), ("constant_offset_displace", (0, 0, 1))],
@@ -55,54 +59,11 @@ modifier_props = {
         "shift": [("decimate_type", "DISSOLVE"), ("angle_limit", 0.0174533)],
         "NUMBERS": ("ratio", 0.1),
     },
+    "EDGE_SPLIT": {
+        "DEFAULT_PROP": [("use_edge_sharp", False)],
+        "shift": [("split_angle", 0)],
+    },
 }
-
-
-def add_set_modifier_prop(self, context, add_modifier):
-    prop_bool = self.prop_bool
-    prop_float = self.prop_float
-    prop_int = self.prop_int
-    prop_string = self.prop_string
-    # 转化自定义修改器参数
-    if prop_bool != "":
-        prop_bool_list = prop_bool.split(",")
-        for prop in prop_bool_list:
-            split = prop.split("=")
-            prop_name = split[0]
-            prop_value = split[1] == "True"
-            # 设置自定义参数，布尔类型
-            setattr(add_modifier, prop_name, prop_value)
-    elif prop_float != "":
-        prop_float_list = prop_float.split(",")
-        for prop in prop_float_list:
-            split = prop.split("=")
-            prop_name = split[0]
-            prop_value = float(split[1])
-            # 设置自定义参数，浮点类型
-            setattr(add_modifier, prop_name, prop_value)
-    elif prop_int != "":
-        prop_int_list = prop_int.split(",")
-        for prop in prop_int_list:
-            split = prop.split("=")
-            prop_name = split[0]
-            prop_value = int(split[1])
-            # 设置自定义参数，浮点类型
-            setattr(add_modifier, prop_name, prop_value)
-    elif prop_string != "":
-        prop_string_list = prop_string.split(",")
-        for prop in prop_string_list:
-            split = prop.split("=")
-            prop_name = split[0]
-            prop_value = split[1]
-            # 设置自定义参数,文本类型
-            setattr(add_modifier, prop_name, prop_value)
-
-
-def set_default_props(self):
-    self.prop_bool = ""
-    self.prop_float = ""
-    self.prop_int = ""
-    self.prop_string = ""
 
 
 def add_custom_boolean(context):
@@ -192,63 +153,6 @@ class PIE_PT_Bar_AddCustomModifier(Operator):
             modifier_list.clear()
 
         return {"FINISHED"}
-
-
-id = PIE_PT_Bar_AddCustomModifier.bl_idname
-
-
-class Bar_Add_New_Modifier(Operator):
-    bl_idname = "bar.add_new_modifier"
-    bl_label = "Add New Modifier"
-    bl_description = ""
-    bl_options = {"REGISTER", "UNDO"}
-
-    name: bpy.props.StringProperty()  # type: ignore
-    prop_bool: bpy.props.StringProperty()  # type: ignore
-    prop_float: bpy.props.StringProperty()  # type: ignore
-    prop_int: bpy.props.StringProperty()  # type: ignore
-    prop_string: bpy.props.StringProperty()  # type: ignore
-
-    @classmethod
-    def poll(cls, context: Context) -> bool:
-        return super().poll(context)
-
-    def execute(self, context):
-        name = self.name
-        ob_modifiers = context.active_object.modifiers
-        active_modifier = ob_modifiers.active
-
-        if active_modifier is not None:
-            # 获取当前激活修改器位置
-            active_modifier_name = active_modifier.name
-
-            modifier_list = []
-            for md in ob_modifiers:
-                modifier_list.append(md.name)
-            # 添加修改器
-            add = bpy.context.active_object.modifiers.new(name="", type=name)
-            add_name = add.name
-
-            add_set_modifier_prop(self, context, add)
-            set_default_props(self)
-
-            # 移动修改器到激活位置+1
-            bpy.ops.object.modifier_move_to_index(
-                modifier=add_name, index=modifier_list.index(active_modifier_name) + 1
-            )
-            modifier_list.clear()
-        else:
-            add = bpy.context.active_object.modifiers.new(name="", type=name)
-
-            add_set_modifier_prop(self, context, add)
-            set_default_props(self)
-
-        return {"FINISHED"}
-
-    # def invoke(self, context, event):
-    #     if event.ctrl:
-    #         print("!!!!!!")
-    #     return self.execute(context)
 
 
 class Bar_Quick_Decimate(Operator):
@@ -348,6 +252,9 @@ def draw_modifier_times(self, context):
     row.column().label(text=time_to_string(sum(times)))
 
 
+id = PIE_PT_Bar_AddCustomModifier.bl_idname
+
+
 # Modifier Bar
 def costom_modifier_bar(self, context):
     col = self.layout.column(align=True)
@@ -413,7 +320,6 @@ def costom_modifier_bar(self, context):
 
 CLASSES = [
     Bar_Quick_Decimate,
-    Bar_Add_New_Modifier,
     PIE_PT_Bar_AddCustomModifier,
     PIE_Modifier_Profiling_Panel,
 ]
