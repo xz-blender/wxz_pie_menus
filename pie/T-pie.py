@@ -55,7 +55,7 @@ def register_keymaps():
         km = addon.keymaps.new(name=name)
         kmi = km.keymap_items.new("wm.call_menu_pie", "T", "CLICK_DRAG")
         kmi.properties.name = "VIEW3D_PIE_MT_Bottom_T"
-        addon_keymaps.append(km)
+        addon_keymaps.append((km, kmi))
 
 
 def register():

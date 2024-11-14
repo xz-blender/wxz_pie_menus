@@ -38,7 +38,7 @@ def register_keymaps():
         km = addon.keymaps.new(name=name, space_type=space)
         kmi = km.keymap_items.new("wm.tool_set_by_id", "C", "CLICK")
         kmi.properties.name = "builtin.select_circle"
-        addon_keymaps.append(km)
+        addon_keymaps.append((km, kmi))
 
 
 def register():

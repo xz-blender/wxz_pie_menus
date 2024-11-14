@@ -8,7 +8,7 @@ import bpy
 from bpy.types import Operator
 
 from .items import RETRUNCODE_DICT
-from .utils import get_prefs
+from .utils import get_prefs, safe_register_class, safe_unregister_class
 
 sys.stdout.reconfigure(encoding="utf-8")
 
@@ -167,10 +167,8 @@ CLASSES = [
 
 
 def register():
-    for cls in CLASSES:
-        bpy.utils.register_class(cls)
+    safe_register_class(CLASSES)
 
 
 def unregister():
-    for cls in reversed(CLASSES):
-        bpy.utils.unregister_class(cls)
+    safe_unregister_class(CLASSES)

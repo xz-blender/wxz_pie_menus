@@ -176,20 +176,20 @@ def register_keymaps():
         km = addon.keymaps.new(name=space[0], space_type=space[1])
         kmi = km.keymap_items.new("wm.call_menu_pie", "D", "CLICK_DRAG")
         kmi.properties.name = "VIEW3D_PIE_MT_Bottom_D"
-        addon_keymaps.append(km)
+        addon_keymaps.append((km, kmi))
 
     km = addon.keymaps.new(name="Mesh")
     kmi = km.keymap_items.new("mesh.snap_utilities_line", "D", "CLICK")
-    addon_keymaps.append(km)
+    addon_keymaps.append((km, kmi))
 
     km = addon.keymaps.new(name="Mesh")
     kmi = km.keymap_items.new("pie.mesh_origin_to_geometry", "D", "DOUBLE_CLICK")
-    addon_keymaps.append(km)
+    addon_keymaps.append((km, kmi))
 
     km = addon.keymaps.new(name="Object Mode")
     kmi = km.keymap_items.new("object.origin_set", "D", "DOUBLE_CLICK")
     kmi.properties.type = "ORIGIN_GEOMETRY"
-    addon_keymaps.append(km)
+    addon_keymaps.append((km, kmi))
 
 
 def register():

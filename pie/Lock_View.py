@@ -42,7 +42,7 @@ def register_keymaps():
         shift=True,
         alt=True,
     )
-    addon_keymaps.append(km)
+    addon_keymaps.append((km, kmi))
 
 
 def register():

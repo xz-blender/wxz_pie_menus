@@ -82,7 +82,7 @@ def register_keymaps():
             km.keymap_items.new("screen.animation_play", "SPACE", "CLICK", shift=True)
         else:
             km.keymap_items.new("screen.animation_play", "SPACE", "CLICK", shift=True).properties.reverse = True
-        addon_keymaps.append(km)
+        addon_keymaps.append((km, kmi))
 
 
 def register():

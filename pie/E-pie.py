@@ -286,17 +286,17 @@ def register_keymaps():
     km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
     kmi = km.keymap_items.new("wm.call_menu_pie", "E", "CLICK_DRAG")
     kmi.properties.name = "VIEW3D_PIE_MT_Bottom_E"
-    addon_keymaps.append(km)
+    addon_keymaps.append((km, kmi))
 
     km = addon.keymaps.new(name="Mesh")
     kmi = km.keymap_items.new("pie.shift_e", "E", "PRESS", shift=True)
     kmi.properties.attr_name = "crease"
-    addon_keymaps.append(km)
+    addon_keymaps.append((km, kmi))
 
     km = addon.keymaps.new(name="Mesh")
     kmi = km.keymap_items.new("pie.shift_e", "E", "PRESS", ctrl=True, shift=True)
     kmi.properties.attr_name = "bevel_weight"
-    addon_keymaps.append(km)
+    addon_keymaps.append((km, kmi))
 
 
 def register():

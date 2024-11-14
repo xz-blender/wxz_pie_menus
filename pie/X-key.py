@@ -76,7 +76,7 @@ def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
     km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
     kmi = km.keymap_items.new(Mesh_Delete_By_mode.bl_idname, "X", "CLICK")
-    addon_keymaps.append(km)
+    addon_keymaps.append((km, kmi))
 
 
 def unregister_keymaps():

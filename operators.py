@@ -4,7 +4,7 @@ import bpy
 from bpy.types import Operator
 
 from .items import oneclick_enable_preset_prop_list
-from .utils import get_prefs
+from .utils import get_prefs, safe_register_class, safe_unregister_class
 
 operator_folder_path = Path(__file__).parent / "operator"
 assets_p_file = operator_folder_path / "assets_lib_presets.json"
@@ -86,10 +86,8 @@ CLASSES = [
 
 
 def register():
-    for cls in CLASSES:
-        bpy.utils.register_class(cls)
+    safe_register_class(CLASSES)
 
 
 def unregister():
-    for cls in reversed(CLASSES):
-        bpy.utils.unregister_class(cls)
+    safe_unregister_class(CLASSES)

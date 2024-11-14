@@ -66,7 +66,7 @@ def register_keymaps():
         km = addon.keymaps.new(name=area)
         kmi = km.keymap_items.new("wm.call_menu_pie", "SPACE", "CLICK_DRAG", shift=True)
         kmi.properties.name = "VIEW3D_PIE_MT_Space_KEY_shift"
-        addon_keymaps.append(km)
+        addon_keymaps.append((km, kmi))
 
 
 def unregister_keymaps():

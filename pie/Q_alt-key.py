@@ -31,7 +31,7 @@ def register_keymaps():
 
     km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
     kmi = km.keymap_items.new(PIE_Bottom_Q_alt.bl_idname, "Q", "CLICK", alt=True)
-    addon_keymaps.append(km)
+    addon_keymaps.append((km, kmi))
 
 
 def register():

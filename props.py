@@ -52,7 +52,7 @@ class WXZ_PIE_Prefs_Props:
             # (identifier, pip_display_name, pip_import_name)
             ("PILLOW", "pillow", "PIL"),
             # ("OPENAI", "openai", "openai"),
-            # ("HTTPX", "httpx", "httpx"),
+            ("HTTPX", "httpx", "httpx"),
             # ("requests", "requests", "requests"),
             ("pyclipper", "pyclipper", "pyclipper"),
             ("pulp", "pulp", "pulp"),
@@ -147,7 +147,11 @@ CLASSES = [
 
 def register():
     for cls in CLASSES:
-        bpy.utils.register_class(cls)
+        try:
+            bpy.utils.register_class(cls)
+        except:
+            bpy.utils.unregister_class(cls)
+            bpy.utils.register_class(cls)
 
     bpy.types.Scene.M4_split = PointerProperty(type=M4_split_SceneProperties)
     bpy.types.Scene.PIE_pip_output = PointerProperty(type=PIE_PIP_OutputItem)

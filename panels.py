@@ -75,8 +75,12 @@ def draw_dependencies(self, layout):
     row_r.operator("pie.pip_install")
     row_r.operator("pie.pip_remove")
 
-    row = layout.row(align=True)
-    for item in self.bl_rna.properties["default_pkg"].enum_items:
+    col = layout.column(align=True)
+    col.scale_y = 0.8
+    row = col.row(align=True)
+    for index, item in enumerate(self.bl_rna.properties["default_pkg"].enum_items):
+        if (index) % 6 == 0:
+            row = col.row(align=True)
         box = row.box()
         try:
             __import__(item.description)
@@ -297,10 +301,8 @@ CLASSES = [
 
 
 def register():
-    for cls in CLASSES:
-        bpy.utils.register_class(cls)
+    safe_register_class(CLASSES)
 
 
 def unregister():
-    for cls in reversed(CLASSES):
-        bpy.utils.unregister_class(cls)
+    safe_unregister_class(CLASSES)

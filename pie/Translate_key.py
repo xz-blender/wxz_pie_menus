@@ -134,14 +134,15 @@ def draw_ui(self, context):
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
     km = addon.keymaps.new(name="Window", space_type="EMPTY")
-    km.keymap_items.new(
+    kmi = km.keymap_items.new(
         idname=PIE_OT_toggle_language.bl_idname,
         type="T",
         value="CLICK",
         shift=True,
         alt=True,
     )
-    km.keymap_items.new(
+    addon_keymaps.append((km, kmi))
+    kmi = km.keymap_items.new(
         idname=VIEW3D_PIE_MT_Translate_Tooltips_Key.bl_idname,
         type="T",
         value="CLICK",
@@ -149,7 +150,7 @@ def register_keymaps():
         shift=True,
         alt=True,
     )
-    addon_keymaps.append(km)
+    addon_keymaps.append((km, kmi))
 
 
 def register():

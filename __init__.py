@@ -16,15 +16,21 @@ except Exception:
 
 import inspect
 
-import bpy
-from bpy.props import *
-from bpy.types import AddonPreferences, Operator, PropertyGroup, UIList
+if "bpy" in locals():
+    import importlib
 
-from . import operators, panels, pip_package, props
+    importlib.reload(props)
+    importlib.reload(operators)
+    importlib.reload(panels)
+    importlib.reload(pip_package)
+else:
+    import bpy
+    from bpy.props import *
+    from bpy.types import AddonPreferences, Operator, PropertyGroup
 
-# from .panels import *
-from .translation.translate import GetTranslationDict
-from .utils import *
+    from . import operators, panels, pip_package, props
+    from .translation import translate
+    from .utils import *
 
 except_module_list = [
     "icons",
@@ -171,10 +177,9 @@ def add_modules_item(prefs, module_list_name):
 
 
 def register():
+    bpy.utils.register_class(WXZ_PIE_Preferences)
     for mod in module_classes:
         mod.register()
-
-    bpy.utils.register_class(WXZ_PIE_Preferences)
 
     prefs = get_addon_preferences()
     for mod in all_modules:
@@ -188,22 +193,17 @@ def register():
     add_modules_item(prefs, "other_modules")
     add_modules_item(prefs, "pie_modules")
 
-    try:
-        bpy.app.translations.register(__package__, GetTranslationDict())
-    except Exception as e:
-        print(e)
+    translate.register()
 
 
 def unregister():
+
     for mod in reversed(module_classes):
         mod.unregister()
-
-    bpy.utils.unregister_class(WXZ_PIE_Preferences)
 
     for mod in all_modules:
         if mod.__addon_enabled__:
             unregister_submodule(mod)
-    try:
-        bpy.app.translations.unregister(__package__)
-    except Exception as e:
-        print(e)
+
+    bpy.utils.unregister_class(WXZ_PIE_Preferences)
+    translate.unregister()

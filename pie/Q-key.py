@@ -193,12 +193,12 @@ def register_keymaps():
         km = addon.keymaps.new(name=space[0], space_type=space[1])
         kmi = km.keymap_items.new("pie.q_key", "Q", "CLICK")
         kmi = km.keymap_items.new("pie.q_key_shift", "Q", "CLICK", shift=True)
-        addon_keymaps.append(km)
+        addon_keymaps.append((km, kmi))
 
     km = addon.keymaps.new(name="Object Mode")
     kmi = km.keymap_items.new("wm.call_menu", "Q", "CLICK", ctrl=True)
     kmi.properties.name = "VIEW3D_MT_make_links"
-    addon_keymaps.append(km)
+    addon_keymaps.append((km, kmi))
 
 
 def register():

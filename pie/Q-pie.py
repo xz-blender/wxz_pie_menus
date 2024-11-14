@@ -278,16 +278,16 @@ def register_keymaps():
         km = addon.keymaps.new(name=space[0], space_type=space[1])
         kmi = km.keymap_items.new("wm.call_menu_pie", "Q", "CLICK_DRAG")
         kmi.properties.name = "VIEW3D_PIE_MT_Bottom_Q"
-        addon_keymaps.append(km)
+        addon_keymaps.append((km, kmi))
 
-    addon_keymaps.append(km)
+    addon_keymaps.append((km, kmi))
 
     km = addon.keymaps.new(name="Window", space_type="EMPTY")
     kmi = km.keymap_items.new(
         idname="wm.call_menu_pie", type="Q", value="CLICK_DRAG", shift=False, ctrl=True, alt=True, oskey=False
     )
     kmi.properties.name = "VIEW3D_PIE_MT_Bottom_Ctrl_Alt_Q"
-    addon_keymaps.append(km)
+    addon_keymaps.append((km, kmi))
 
 
 def register():

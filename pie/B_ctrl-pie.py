@@ -81,7 +81,7 @@ def register_keymaps():
     km = addon.keymaps.new(name="MESH")
     kmi = km.keymap_items.new("pie.set_render_region", "B", "CLICK", ctrl=True)
 
-    addon_keymaps.append(km)
+    addon_keymaps.append((km, kmi))
 
 
 def register():

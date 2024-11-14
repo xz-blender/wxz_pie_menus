@@ -402,7 +402,7 @@ def register_keymaps():
         km = addon.keymaps.new(name=name)
         kmi = km.keymap_items.new("wm.call_menu_pie", "X", "CLICK_DRAG", ctrl=True, alt=True)
         kmi.properties.name = "VIEW3D_PIE_MT_Bottom_X_ctrl_shift"
-        addon_keymaps.append(km)
+        addon_keymaps.append((km, kmi))
 
 
 def register():

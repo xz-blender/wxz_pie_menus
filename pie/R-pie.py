@@ -420,7 +420,7 @@ def register_keymaps():
         km = addon.keymaps.new(name=space[0], space_type=space[1])
         kmi = km.keymap_items.new(idname="wm.call_menu_pie", type="R", value="CLICK_DRAG")
         kmi.properties.name = "VIEW3D_PIE_MT_Bottom_R"
-        addon_keymaps.append(km)
+        addon_keymaps.append((km, kmi))
 
     km = addon.keymaps.new(name="Mesh")
     kmi = km.keymap_items.new(idname="wm.call_menu_pie", type="R", value="CLICK_DRAG", ctrl=True, alt=True)

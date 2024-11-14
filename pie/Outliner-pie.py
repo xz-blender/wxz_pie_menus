@@ -142,7 +142,7 @@ def register_keymaps():
     kmi = km.keymap_items.new("outliner.collection_duplicate", "D", "CLICK", shift=True)
     kmi = km.keymap_items.new("outliner.collection_duplicate_linked", "D", "CLICK", alt=True)
 
-    addon_keymaps.append(km)
+    addon_keymaps.append((km, kmi))
 
 
 def register():

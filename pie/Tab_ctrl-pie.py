@@ -178,7 +178,7 @@ def register_keymaps():
             alt=False,
         )
         kmi.properties.name = "VIEW3D_PIE_MT_Ctrl_Tab"
-        addon_keymaps.append(km)
+        addon_keymaps.append((km, kmi))
 
     wspace_names = {
         "0-LIB": "ZERO",
@@ -203,7 +203,7 @@ def register_keymaps():
             alt=True,
         )
         kmi.properties.target_workspace = name
-    addon_keymaps.append(km)
+    addon_keymaps.append((km, kmi))
 
     km = addon.keymaps.new(name="Window")
     kmi = km.keymap_items.new(
@@ -215,7 +215,7 @@ def register_keymaps():
         alt=True,
     )
 
-    addon_keymaps.append(km)
+    addon_keymaps.append((km, kmi))
 
 
 def register():
