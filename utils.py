@@ -1,4 +1,5 @@
 import importlib
+import inspect
 import os
 import platform
 import re
@@ -6,10 +7,11 @@ from pathlib import Path
 
 import bpy
 from bpy.app.handlers import persistent
+from bpy.types import PointerProperty, PropertyGroup
+from mathutils import Euler, Matrix, Vector
 
-from . import __package__ as base_package
-
-ADDON_ID = base_package
+from . import __package__ as ADDON_ID
+from .items import All_Pie_keymaps, ignore_op_props
 
 
 def addon_name():
@@ -56,12 +58,20 @@ def get_desktop_path():
         return os.path.join(os.path.expanduser("~"), "Desktop")
 
 
-def prefs_show_sub_panel(self, layout, show_prop):
-    attr = getattr(self, show_prop)
+def prefs_show_sub_panel(self, layout, show_prop, prop_name=""):
+    if not show_prop in self.keys():
+        # 如果属性不存在，使用 ID 属性（自定义属性）来存储
+        self[show_prop] = False  # 设置默认值为 False
+    attr = self[show_prop]
+    # 创建 UI 布局
     col = layout.box().column()
     col.scale_y = 1.1
     col.use_property_split = False
-    col.prop(self, show_prop, icon="TRIA_RIGHT" if attr else "TRIA_DOWN")
+    name: str = prop_name if prop_name != "" else show_prop
+    # 旧方法 col.prop(self, show_prop, icon="")
+    # 新方法 使用 ID 属性的语法访问属性
+    col.prop(self, f'["{show_prop}"]', text=name, icon="TRIA_DOWN" if attr else "TRIA_RIGHT")
+
     return (attr, col)
 
 
@@ -119,3 +129,38 @@ def safe_unregister_class(classes):
             bpy.utils.unregister_class(cls)
         except RuntimeError:
             pass
+
+
+def extend_keymaps_list(keymaps: list):
+    All_Pie_keymaps.extend(keymaps)
+
+
+def get_kmi_operator_properties(kmi: "bpy.types.KeyMapItem") -> dict:
+    """获取kmi操作符的属性"""
+    properties = kmi.properties
+    prop_keys = dict(properties.items()).keys()
+    dictionary = {i: getattr(properties, i, None) for i in prop_keys}
+    del_key = []
+    for item in dictionary:
+        prop = getattr(properties, item, None)
+        typ = type(prop)
+        if prop:
+            if typ == Vector:
+                # 属性阵列-浮点数组
+                dictionary[item] = dictionary[item].to_tuple()
+            elif typ == Euler:
+                dictionary[item] = dictionary[item][:]
+            elif typ == Matrix:
+                dictionary[item] = tuple(i[:] for i in dictionary[item])
+            elif typ == bpy.types.bpy_prop_array:
+                dictionary[item] = dictionary[item][:]
+            elif typ in (str, bool, float, int, set, list, tuple):
+                pass
+            elif typ.__name__ in ignore_op_props:  # 一些奇怪的操作符属性,不太好解析也用不上
+                del_key.append(item)
+            else:
+                print("emm 未知属性,", typ, dictionary[item])
+                # del_key.append(item)
+    for i in del_key:
+        dictionary.pop(i)
+    return dictionary

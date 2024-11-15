@@ -6,8 +6,6 @@ from bl_ui.space_statusbar import STATUSBAR_HT_header as statusbar
 from bpy_extras.view3d_utils import location_3d_to_region_2d, region_2d_to_location_3d
 from mathutils import Matrix, Vector
 
-from ... import get_prefs
-
 
 def popup_message(message, title="Info", icon="INFO", terminal=True):
     def draw_message(self, context):

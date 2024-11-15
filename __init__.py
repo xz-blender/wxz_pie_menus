@@ -38,7 +38,7 @@ except_module_list = [
     ".DS_Store",
     "utils",
     "pie_utils",
-    "Brush-key",
+    "Brush_key",
     "operator_id_sort",
     "extensions_setting",
 ]
@@ -177,7 +177,7 @@ def add_modules_item(prefs, module_list_name):
 
 
 def register():
-    bpy.utils.register_class(WXZ_PIE_Preferences)
+    safe_register_class([WXZ_PIE_Preferences])
     for mod in module_classes:
         mod.register()
 

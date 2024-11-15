@@ -2,7 +2,7 @@ import importlib
 
 import bpy
 from bpy.props import *
-from bpy.types import PropertyGroup
+from bpy.types import *
 
 from .pie.Translate_key import enum_languages
 from .utils import *
@@ -25,7 +25,7 @@ class WXZ_PIE_Prefs_Props:
     load_assets_library_presets: BoolProperty(name="加载资源库预设", default=False)  # type: ignore
     assets_library_path_sync: StringProperty(name="远程路径", subtype="DIR_PATH", default=get_sync_path())  # type: ignore
     assets_library_path_local: StringProperty(name="本地路径", subtype="DIR_PATH", default=get_local_path())  # type: ignore
-    load_xz_keys_presets: BoolProperty(name="加载XZ快捷键预设", default=False)  # type: ignore
+    load_xz_keys_presets: BoolProperty(name="加载XZ快捷键预设", default=True)  # type: ignore
     load_xz_setting_presets: BoolProperty(name="加载XZ配置预设", default=False)  # type: ignore
     download_official_addons: BoolProperty(name="下载常用内置插件", default=False)  # type: ignore
     enable_addon_presets_items: BoolProperty(name="开启常用插件预设", default=False)  # type: ignore
@@ -62,7 +62,6 @@ class WXZ_PIE_Prefs_Props:
     )  # type: ignore
 
     ### 其他插件设置
-    show_other_module_prop: BoolProperty(name="其他小工具设置")  # type: ignore
     modifier_profiling: BoolProperty(name="修改器-耗时统计面板", default=False)  # type: ignore
     change_overlay_and_shading_sets: BoolProperty(name="个性化更改视图着色", default=False)  # type: ignore
     force_AutoPackup_startup: BoolProperty(name="强制自动打包-启动时", default=True)  # type: ignore
@@ -70,24 +69,20 @@ class WXZ_PIE_Prefs_Props:
     AutoSwitch_ActiveCam_Default: BoolProperty(name="自动切换选择相机", default=False)  # type: ignore
 
     ## formula to nodes
-    show_formula2nodes_submenu: BoolProperty(name="表达式转节点")  # type: ignore
     debug_prints: BoolProperty(name="调试输出", description="在终端中启用调试打印", default=False)  # type: ignore
     generate_previews: BoolProperty(name="生成逻辑预览树", description="在创建节点树之前生成节点树的预览", default=True)  # type: ignore
     from .parts_addons.formula_to_nodes import VariableSortMode
 
     sort_vars: EnumProperty(items=VariableSortMode, name="变量排序模式", description="对变量进行排序的顺序", default="INSERTION")  # type: ignore
     ## MeshMachine
-    show_meshmachine_submenu: BoolProperty(name="MeshMachine-剥离版")  # type: ignore
     modal_hud_color: FloatVectorProperty(name="显示字体颜色", subtype="COLOR", default=[1, 1, 1], size=3, min=0, max=1)  # type: ignore
     modal_hud_scale: FloatProperty(name="显示图形缩放", default=1, min=0.5, max=10)  # type: ignore
     modal_hud_hints: BoolProperty(name="显示提示", default=True)  # type: ignore
     symmetrize_flick_distance: IntProperty(name="轻拂确认距离", default=75, min=20, max=1000)  # type: ignore
     ## language swith
-    show_language_switch_submenu: BoolProperty(name="双语切换设置")  # type: ignore
     first_lang: EnumProperty(name="首选语言", default="zh_HANS", items=enum_languages)  # type: ignore
     second_lang: EnumProperty(name="次选语言", default="en_US", items=enum_languages)  # type: ignore
     ## 资产浏览器滚动放大缩小预览图
-    show_asset_browser_scroll: BoolProperty(name="资产浏览器-滚轮缩放快捷键")  # type: ignore
     tby_bsr_multiplier_resize_factor: IntProperty(name="缩放因子", default=10)  # type: ignore
     ## M4功能合集
     show_m4_submenu: BoolProperty(name="M4功能")  # type: ignore
@@ -100,29 +95,30 @@ class WXZ_PIE_Prefs_Props:
     pull_default: IntProperty(name="拉-默认值", description="拉动最初选择的面并后退一点,解决精度问题", default=1, min=0)  # type: ignore
     non_manifold_extrude: BoolProperty(name="支持非流形网格", description="允许在非流形网格上进行拉伸", default=False)  # type: ignore
     modal_hud_timeout: FloatProperty(name="HUD 超时", description="HUD元素的持续时间", default=1, min=0.1, max=10)  # type: ignore
+    show_text: BoolProperty(name="Show Button Text", default=True)  # type: ignore
 
 
 class PIE_HistoryObjectsCollection(bpy.types.PropertyGroup):
     name: StringProperty()  # type: ignore
-    obj: PointerProperty(name="History Object", type=bpy.types.Object)  # type: ignore
+    obj: bpy.props.PointerProperty(name="History Object", type=bpy.types.Object)  # type: ignore
 
 
 class PIE_HistoryUnmirroredCollection(bpy.types.PropertyGroup):
     name: StringProperty()  # type: ignore
-    obj: PointerProperty(name="History Unmirror", type=bpy.types.Object)  # type: ignore
+    obj: bpy.props.PointerProperty(name="History Unmirror", type=bpy.types.Object)  # type: ignore
 
 
 class PIE_HistoryEpochCollection(bpy.types.PropertyGroup):
     name: StringProperty()  # type: ignore
-    objects: CollectionProperty(type=PIE_HistoryObjectsCollection)  # type: ignore
-    unmirrored: CollectionProperty(type=PIE_HistoryUnmirroredCollection)  # type: ignore
+    objects: bpy.props.CollectionProperty(type=PIE_HistoryObjectsCollection)  # type: ignore
+    unmirrored: bpy.props.CollectionProperty(type=PIE_HistoryUnmirroredCollection)  # type: ignore
 
 
 class M4_split_SceneProperties(bpy.types.PropertyGroup):
     align_mode: EnumProperty(
         name="Align Mode", items=[("VIEW", "View", ""), ("AXES", "Axes", "")], default="VIEW"
     )  # type: ignore
-    focus_history: CollectionProperty(type=PIE_HistoryEpochCollection)  # type: ignore
+    focus_history: bpy.props.CollectionProperty(type=PIE_HistoryEpochCollection)  # type: ignore
 
 
 class PIE_PIPOutput_LINE(bpy.types.PropertyGroup):
@@ -131,8 +127,8 @@ class PIE_PIPOutput_LINE(bpy.types.PropertyGroup):
 
 class PIE_PIP_OutputItem(bpy.types.PropertyGroup):
     RETRUNCODE_OUTPUT: StringProperty(default="")  # type: ignore
-    ERROR_OUTPUT: CollectionProperty(type=PIE_PIPOutput_LINE)  # type: ignore
-    TEXT_OUTPUT: CollectionProperty(type=PIE_PIPOutput_LINE)  # type: ignore
+    ERROR_OUTPUT: bpy.props.CollectionProperty(type=PIE_PIPOutput_LINE)  # type: ignore
+    TEXT_OUTPUT: bpy.props.CollectionProperty(type=PIE_PIPOutput_LINE)  # type: ignore
 
 
 CLASSES = [
@@ -153,13 +149,11 @@ def register():
             bpy.utils.unregister_class(cls)
             bpy.utils.register_class(cls)
 
-    bpy.types.Scene.M4_split = PointerProperty(type=M4_split_SceneProperties)
-    bpy.types.Scene.PIE_pip_output = PointerProperty(type=PIE_PIP_OutputItem)
+    bpy.types.Scene.M4_split = bpy.props.PointerProperty(type=M4_split_SceneProperties)
+    bpy.types.Scene.PIE_pip_output = bpy.props.PointerProperty(type=PIE_PIP_OutputItem)
 
 
 def unregister():
-    del bpy.types.Scene.M4_split
     del bpy.types.Scene.PIE_pip_output
 
-    for cls in reversed(CLASSES):
-        bpy.utils.unregister_class(cls)
+    safe_unregister_class(CLASSES)

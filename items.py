@@ -28,7 +28,7 @@ SPACE_NAME_DIC = [
     ("SPREADSHEET", "电子表格", ""),  # 20
     ("PREFERENCES", "偏好设置", ""),  # 21
 ]
-
+All_Pie_keymaps = []
 packup_main_exclude_list = [
     "__pycache__",
     "README.md",
@@ -79,4 +79,21 @@ oneclick_enable_preset_prop_list = [
     "load_assets_library_presets",
     "load_xz_keys_presets",
     "load_xz_setting_presets",
+]
+
+ignore_op_props = [
+    "TRANSFORM_OT_shrink_fatten",
+    "TRANSFORM_OT_translate",
+    "TRANSFORM_OT_edge_slide",
+    "NLA_OT_duplicate",
+    "ACTION_OT_duplicate",
+    "GRAPH_OT_duplicate",
+    "TRANSFORM_OT_translate",
+    "OBJECT_OT_duplicate",
+    "MESH_OT_loopcut",
+    "MESH_OT_rip_edge",
+    "MESH_OT_rip",
+    "MESH_OT_duplicate",
+    "MESH_OT_offset_edge_loops",
+    "MESH_OT_extrude_faces_indiv",
 ]

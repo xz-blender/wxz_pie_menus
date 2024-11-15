@@ -1,6 +1,8 @@
 import bpy
+import rna_keymap_ui
 from bpy.types import UIList
 
+from .pie.S_pie import addon_keymaps as s_pie_keymaps
 from .utils import *
 
 
@@ -129,6 +131,32 @@ def draw_addon_menus(self, layout, context, module_path_name_list):
     top_row = layout.row()
     draw_pie_modules(self, top_row, module_path_name_list)
 
+    # box = layout.row().box()
+    # box.label(text="饼菜单快捷键配置:")
+    # col = box.column()
+    # from .items import All_Pie_keymaps
+
+    # kc = bpy.context.window_manager.keyconfigs.addon
+
+    # for km, kmi in All_Pie_keymaps:
+    #     col.context_pointer_set("keymap", km)
+    #     km = kc.keymaps.get(km.name)
+    #     if km:
+    #         try:
+    #             kmi = km.keymap_items.get(kmi.idname, get_kmi_operator_properties(kmi))
+    #             if kmi:
+    #                 rna_keymap_ui.draw_kmi(["ADDON", "DEFAULT"], kc, km, kmi, col, 0)
+    #         except:
+    #             pass
+
+    # for km, kmi in All_Pie_keymaps:
+    #     km = km.active()
+    #     col.context_pointer_set("keymap", km)
+    #     try:
+    #         rna_keymap_ui.draw_kmi([], kc, kc.keymaps.get(km.name), kmi, col, 0)
+    #     except:
+    #         pass
+
 
 def draw_pie_modules(self, top_row, module_path_name_list):
     for lable_name, module_name in {
@@ -225,7 +253,7 @@ def draw_other_addons_setting(self, layout):
     sep_deffac = 0.4
 
     # 实用小工具设置
-    attr, col = prefs_show_sub_panel(self, layout, "show_other_module_prop")
+    attr, col = prefs_show_sub_panel(self, layout, "show_other_module_prop", "其他小工具设置")
     if attr:
         box = col.box()
         col = box.column(align=True)
@@ -240,7 +268,7 @@ def draw_other_addons_setting(self, layout):
         row.prop(self, "AutoSwitch_ActiveCam_Default")
 
     # 表达式转节点
-    attr, col = prefs_show_sub_panel(self, layout, "show_formula2nodes_submenu")
+    attr, col = prefs_show_sub_panel(self, layout, "show_formula2nodes_submenu", "表达式转节点")
     if attr:
         box = col.box()
         box.label(text="检查键映射设置以编辑激活。默认为Ctrl+M")
@@ -252,7 +280,7 @@ def draw_other_addons_setting(self, layout):
         row.prop(self, "sort_vars", expand=True)
 
     # meshmachine剥离版
-    attr, col = prefs_show_sub_panel(self, layout, "show_meshmachine_submenu")
+    attr, col = prefs_show_sub_panel(self, layout, "show_meshmachine_submenu", "MeshMachine-剥离版")
     if attr:
         box = col.box()
         col = box.column(align=True)
@@ -263,7 +291,7 @@ def draw_other_addons_setting(self, layout):
         row.prop(self, "modal_hud_hints")
         row.prop(self, "symmetrize_flick_distance")
     # 双语切换设置
-    attr, col = prefs_show_sub_panel(self, layout, "show_language_switch_submenu")
+    attr, col = prefs_show_sub_panel(self, layout, "show_language_switch_submenu", "双语切换设置")
     if attr:
         box = col.box()
         col = box.column(align=True)
@@ -273,24 +301,45 @@ def draw_other_addons_setting(self, layout):
         row.separator()
         row.prop(self, "second_lang")
     # 资产浏览器缩略图缩放快捷键
-    attr, col = prefs_show_sub_panel(self, layout, "show_asset_browser_scroll")
+    attr, col = prefs_show_sub_panel(self, layout, "show_asset_browser_scroll", "资产浏览器-滚轮缩放快捷键")
     if attr:
         box = col.box()
         col = box.column(align=True)
         row = col.row()
         row.prop(self, "tby_bsr_multiplier_resize_factor")
 
-    # 挤出流形插件
-    attr, col = prefs_show_sub_panel(self, layout, "show_punchit")
+    # MACHIN4 功能集合
+    attr, col = prefs_show_sub_panel(self, layout, "show_MACHIN4_tools", "MACHIN4 功能集合")
     if attr:
         box = col.box()
         col = box.column(align=True)
-        row = col.row()
+
+        row = col.row().box()
+        row.label(text="Punch It 设置")
+        row = row.row()
         row.prop(self, "push_default")
         row.prop(self, "pull_default")
-        row = col.row()
+        row = row.row()
         row.prop(self, "non_manifold_extrude")
         row.prop(self, "modal_hud_timeout")
+
+        row = col.row().box()
+        row.label(text="对齐插件设置")
+        row = row.row()
+        row.prop(self, "show_text", text="POPOTI对齐助手")
+
+    # 拖动UV孤岛快捷键设置
+    attr, col = prefs_show_sub_panel(self, layout, "show_drag_uv_island", "拖动UV孤岛快捷键设置")
+    if attr:
+        box = col.box()
+        col = box.column()
+        kc = bpy.context.window_manager.keyconfigs.addon
+        from .parts_addons.uv_drag_island import addon_keymaps
+
+        for km, kmi in addon_keymaps:
+            km = km.active()
+            col.context_pointer_set("keymap", km)
+            rna_keymap_ui.draw_kmi([], kc, km, kmi, col, 0)
 
 
 CLASSES = [
