@@ -12,13 +12,10 @@ class Mesh_Delete_By_mode(Operator):
 
     @classmethod
     def poll(cls, context):
-        if context.object.mode == "EDIT":
-            return True
-        else:
-            return False
+        return context.object is not None
 
     def execute(self, context):
-        ob_type = context.object.type
+        ob_type = get_ob_type(context)
         if ob_type == "MESH":
             mode = context.tool_settings.mesh_select_mode
             # 选择模式 [点,线,面]
@@ -32,7 +29,6 @@ class Mesh_Delete_By_mode(Operator):
 
         obj = context.active_object
         if obj.type == "CURVE":
-
             # 获取当前编辑模式下的选中顶点
             curve_data = obj.data
             # 获取曲线对象的所有控制点

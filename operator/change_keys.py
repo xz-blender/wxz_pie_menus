@@ -270,6 +270,7 @@ V_dir = [
 ]
 W_dir = [
     (["3D View", "wm.tool_set_by_id", "Set Tool by Name"], [("active", False)], []),  # W
+    (["UV Editor", "wm.tool_set_by_id", "Set Tool by Name"], [("active", False)], []),  # W
     (["Window", "wm.toolbar_fallback_pie", "Fallback Tool Pie Menu"], [("value", "CLICK_DRAG")], []),  # alt W Pie
     (
         ["Object Non-modal", "object.transfer_mode", "Transfer Mode"],

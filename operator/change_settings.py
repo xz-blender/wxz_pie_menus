@@ -144,6 +144,7 @@ def change_context_settings():
     scene.tool_settings.transform_pivot_point = "BOUNDING_BOX_CENTER"  # 变换中心点
     # 吸附到点模式
     scene.tool_settings.snap_elements_base = {"FACE", "EDGE_MIDPOINT", "VERTEX", "EDGE", "EDGE_PERPENDICULAR"}
+    scene.tool_settings.snap_uv_element = {"VERTEX"}
 
 
 def change_extensions_repo_list():

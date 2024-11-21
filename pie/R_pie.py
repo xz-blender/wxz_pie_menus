@@ -91,15 +91,15 @@ class VIEW3D_PIE_MT_Bottom_R(Menu):
             # 6 - RIGHT
             pie.operator(PIE_Transform_Rotate_Z.bl_idname, text="右转+90°", icon="TRIA_RIGHT_BAR").degree = pi / 2
             # 2 - BOTTOM
-            pie.separator()
+            pie.operator("uv.uv_squares_by_shape")
             # 8 - TOP
-            pie.operator("pie.uv_mirror", text="镜像Y轴").axis = "Y"
+            pie.separator()
             # 7 - TOP - LEFT
-            pie.separator()
-            # 9 - TOP - RIGHT
-            pie.separator()
-            # 1 - BOTTOM - LEFT
             pie.operator("pie.uv_mirror", text="镜像X轴").axis = "X"
+            # 9 - TOP - RIGHT
+            pie.operator("pie.uv_mirror", text="镜像Y轴").axis = "Y"
+            # 1 - BOTTOM - LEFT
+            pie.separator()
             # 3 - BOTTOM - RIGHT
             pie.separator()
 

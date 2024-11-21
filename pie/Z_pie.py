@@ -155,8 +155,8 @@ class PIE_GN_AutoSmooth(Operator):
                     if primary_modifier:
                         primary_modifier["Input_1"] = self.angle
                         primary_modifier["Socket_1"] = self.ignore
-                else:
-                    bpy.ops.object.shade_auto_smooth(angle=self.angle)
+                    else:
+                        bpy.ops.object.shade_auto_smooth(angle=self.angle)
         elif ob_mode == "EDIT" and ob_type == "MESH":
             bpy.ops.object.mode_set(mode="OBJECT")
             bpy.ops.object.shade_auto_smooth(angle=self.angle)

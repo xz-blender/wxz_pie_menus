@@ -84,7 +84,7 @@ def add_hotkey():
     kc = bpy.context.window_manager.keyconfigs.addon
 
     km = kc.keymaps.new(name="UV Editor", space_type="EMPTY")
-    kmi = km.keymap_items.new("uvdrag.drag_island", "LEFTMOUSE", "ANY", alt=True)
+    kmi = km.keymap_items.new("uvdrag.drag_island", "LEFTMOUSE", "ANY", alt=True, shift=True)
     kmi.active = True
     addon_keymaps.append((km, kmi))
 

@@ -11,32 +11,34 @@ class PIE_Space_KEY(Operator):
     bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):
+        ob_mode = get_ob_mode(context)
+        ob_type = get_ob_type(context)
+        ui_type = get_area_ui_type(context)
         # print(context.area.ui_type)
         # 3D视图
-        if context.area.ui_type == "VIEW_3D":
-            if context.selected_objects:
-                mode = context.object.mode
-                if mode in ["OBJECT", "EDIT"]:
+        if ui_type == "VIEW_3D":
+            if context.object is not None:
+                if ob_mode in ["OBJECT", "EDIT"]:
                     bpy.ops.wm.tool_set_by_id(name="builtin.select_box")
-                elif mode in ["SCULPT", "WEIGHT_PAINT", "TEXTURE_PAINT", "VERTEX_PAINT"]:
+                elif ob_mode in ["SCULPT", "WEIGHT_PAINT", "TEXTURE_PAINT", "VERTEX_PAINT"]:
                     bpy.ops.wm.tool_set_by_index(index=1)
             else:
                 bpy.ops.wm.tool_set_by_id(name="builtin.select_box")
         # UV编辑器
-        elif context.area.ui_type == "UV":
+        elif ui_type == "UV":
             bpy.ops.wm.tool_set_by_id(name="builtin.select_box")
         # 图像编辑器
-        elif context.area.ui_type == "IMAGE_EDITOR":
+        elif ui_type == "IMAGE_EDITOR":
             if bpy.context.space_data.ui_mode == "VIEW":
                 bpy.ops.wm.tool_set_by_index(index=1)
             elif bpy.context.space_data.ui_mode == "MASK":
                 bpy.ops.screen.animation_play()
-        elif context.area.ui_type in ["GeometryNodeTree", "ShaderNodeTree", "CompositorNodeTree"]:
+        elif ui_type in ["GeometryNodeTree", "ShaderNodeTree", "CompositorNodeTree"]:
             bpy.ops.wm.tool_set_by_id(name="builtin.select_box")
             # elif bpy.context.space_data.ui_mode == 'PAINT':
             #     bpy.ops.wm.tool_set_by_id(name="builtin_brush.Draw")
         # 动画类
-        elif context.area.ui_type in [
+        elif ui_type in [
             "SEQUENCE_EDITOR",
             "NODE_EDITOR",
             "CLIP_EDITOR",
