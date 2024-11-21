@@ -182,10 +182,13 @@ def draw_pie_modules(self, top_row, module_path_name_list):
 def draw_resource_config(self, layout):
     row = layout.row()
     split = row.split(factor=0.8)
-    row = split.row()
-    row.label(text="这会严重更改您的软件设置!请备份配置!(重启自动运行)", icon="ERROR")
-    row = split.row()
-    row.operator("pie.one_click_enable_all_presets", text="一键启用")
+    if get_prefs().debug:
+        row = split.row()
+        row.label(text="这会严重更改您的软件设置!请备份配置!(重启自动运行)", icon="ERROR")
+        row = split.row()
+        row.operator("pie.one_click_enable_all_presets", text="一键启用")
+    else:
+        row.label(text="这会严重更改您的软件设置!请备份配置!(重启自动运行)", icon="ERROR")
 
     box = layout.column()
     split_main_factor = 0.7
@@ -200,7 +203,7 @@ def draw_resource_config(self, layout):
         row.operator("pie.enable_relay_addons", text="手动执行")
         row.operator("pie.enable_relay_addons", text="手动执行")
         row = main_split.row()
-        row.operator("pie.open_custom_xz_presets_file_in_new_window", text="编辑插件列表").path_name = "Addons"
+        row.operator("pie.open_custom_xz_presets_file_in_new_window", text="编辑列表").path_name = "Addons"
     else:
         row.prop(self, "download_official_addons", text=text)
 
@@ -223,7 +226,7 @@ def draw_resource_config(self, layout):
         box_r_split_col = box_r_split.column(align=True)
         box_r_split_col.scale_y = 1.075
         box_r_split_col.operator("pie.change_assets_library_path", text="移除路径").remove = True
-        box_r_split_col.operator("pie.open_custom_xz_presets_file_in_new_window", text="打开文件").path_name = "Assets"
+        box_r_split_col.operator("pie.open_custom_xz_presets_file_in_new_window", text="编辑路径").path_name = "Assets"
 
     row = box.row().box()
     text = "加载预设 - 快捷键 -- (请备份好您的快捷键!)"

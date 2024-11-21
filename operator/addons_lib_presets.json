@@ -1,0 +1,42 @@
+{
+    "sys_ex": {
+        "node_wrangler": {}
+    },
+    "org_ex": {
+        "curve_tools": [],
+        "extra_mesh_objects": [],
+        "extra_curve_objectes": [],
+        "simplify_curves_plus": [],
+        "boltfactory": [],
+        "edit_operator_source": [],
+        "icon_viewer": [],
+        "copy_attributes_menu": []
+    },
+    "third_ex": {
+        "photographer": [],
+        "engon": {
+            "keymap": [
+                {
+                    "space_name": "Mesh",
+                    "keymap_id": "wm.call_menu",
+                    "keymap_name": "Keymap_Name",
+                    "active": "True",
+                    "type": "Q",
+                    "value": "CLICK",
+                    "shift": "True",
+                    "ctrl": "False",
+                    "alt": "False",
+                    "keymap_props": {
+                        "name": "Node Wrangler",
+                        "prop": "True"
+                    }
+                },
+                {}
+            ],
+            "prefs": {
+                "value": "CLICK"
+            },
+            "runOP": {}
+        }
+    }
+}
