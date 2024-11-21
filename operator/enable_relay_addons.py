@@ -65,6 +65,23 @@ def is_BlenderVersion_gthan(version: tuple = (4, 2, 0)):
     return bpy.app.version >= version
 
 
+def fix_no_userdefalt_folder():
+    try:
+        path = Path(bpy.utils.user_resource("EXTENSIONS")) / "user_default"
+    except Exception as e:
+        print(f"检索 User Default 路径时出错: {e}")
+        path = None
+
+    if path and not path.exists():
+        try:
+            path.mkdir(parents=True, exist_ok=True)
+            print(f"已创建目录: {path}")
+        except PermissionError as e:
+            print(f"权限被拒绝: {e}")
+        except OSError as e:
+            print(f"创建目录时出错: {e}")
+
+
 def install_addons_subfunction(self, json_file_data):
     for addon_id, addon_sets in json_file_data[self.ex_dirs].items():
         full_ext_id = f"{org_ext_id}.{addon_id}"
@@ -100,11 +117,13 @@ def install_addons(self):
                         try:
                             download_zip(f"{org_repo_name}/{addon_id}.zip", org_dirPath)
                             addon_utils.modules_refresh()
+                            print(f"已安装 - {addon_id} - 插件!")
                             bpy.ops.preferences.addon_enable(module=full_ext_id)
                         except:
                             self.report({"ERROR"}, "联网下载失败，请检查网络连接")
                     else:
-                        if addon_utils.check(full_ext_id)[0]:
+                        print(full_ext_id, "!!!", addon_utils.check(full_ext_id))
+                        if not addon_utils.check(full_ext_id)[0]:
                             bpy.ops.preferences.addon_enable(module=full_ext_id)
                     set_ex_settings(addon_sets)
 
@@ -129,7 +148,7 @@ def install_addons(self):
                         except:
                             self.report({"INFO"}, f"插件 {addon_id} 安装错误!")
                     else:
-                        if addon_utils.check(full_ext_id)[0]:
+                        if not addon_utils.check(full_ext_id)[0]:
                             bpy.ops.preferences.addon_enable(module=full_ext_id)
                     set_ex_settings(addon_sets)
             else:
@@ -139,10 +158,10 @@ def install_addons(self):
         return {"CANCELLED"}
 
 
-def set_ex_settings(change_dic):
+def set_ex_settings(addon_id, addon_sets):
     set_interface_translate(False)
     keymaps = get_keymaps_class()
-    for sets_type, sets_data in change_dic:
+    for sets_type, sets_data in addon_sets.items():
         if sets_type == "keymaps":
             for sets in sets_data:
                 keymap_items = keymaps.get(sets["space_name"]).keymap_items
@@ -153,7 +172,12 @@ def set_ex_settings(change_dic):
                     else:
                         pass
         elif sets_type == "prefs":
-            ...
+            prefs = bpy.context.preferences.addons[addon_id].preferences
+            for prop_name, prop_value in sets_data.items():
+                try:
+                    setattr(prefs, prop_name, prop_value)
+                except:
+                    print(addon_id, "--插件属性设置错误-->", prop_name, ":", prop_value)
 
 
 def change_addon_key_value(change_dir):
@@ -288,7 +312,8 @@ def change_addons(dummy):
 def register():
     for cls in CLASSES:
         bpy.utils.register_class(cls)
-    # get_addon_list()
+    # 修复找不到用户默认路径
+    fix_no_userdefalt_folder()
 
     manage_app_handlers(handler_on_default_blender_list, change_addons)
 

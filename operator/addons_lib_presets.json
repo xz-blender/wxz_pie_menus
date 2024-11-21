@@ -13,7 +13,7 @@
         "copy_attributes_menu": []
     },
     "third_ex": {
-        "photographer": [],
+        "photographer": {},
         "engon": {
             "keymap": [
                 {
@@ -37,6 +37,15 @@
                 "value": "CLICK"
             },
             "runOP": {}
+        },
+        "simple_tabs": {
+            "prefs": {
+                "popover_width": 20,
+                "Sstartup_delay":10
+            },
+            "runOP": {
+                "simpletabs.import_settings":{"filepath":""}
+            }
         }
     }
 }
