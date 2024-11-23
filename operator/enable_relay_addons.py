@@ -1,4 +1,5 @@
 import json
+import string
 import time
 from pathlib import Path
 
@@ -28,6 +29,15 @@ third_ext_id = f"bl_ext.{get_repo_module_name(third_repo_name)}"
 
 org_dirPath = Path(repos.get(org_repo_name).directory)
 third_dirPath = Path(repos.get(third_repo_name).directory)
+# print(f"{third_ext_id=}")
+
+
+def replace_substitute(op_args, placeholders):
+    # 替换占位符
+    for key, value in op_args.items():
+        template = string.Template(value)
+        if isinstance(value, str):
+            op_args[key] = template.safe_substitute(placeholders)
 
 
 def get_addon_list() -> tuple:
@@ -82,24 +92,14 @@ def fix_no_userdefalt_folder():
             print(f"创建目录时出错: {e}")
 
 
-def install_addons_subfunction(self, json_file_data):
-    for addon_id, addon_sets in json_file_data[self.ex_dirs].items():
-        full_ext_id = f"{org_ext_id}.{addon_id}"
-        if full_ext_id not in get_addon_list():
-            try:
-                download_zip(f"{org_repo_name}/{addon_id}.zip", org_dirPath)
-                addon_utils.modules_refresh()
-                addon_utils.enable(addon_id, default_set=True)
-            except:
-                self.report({"ERROR"}, "联网下载失败，请检查网络连接")
-                return {"CANCELLED"}
-        else:
-            if addon_utils.check(full_ext_id)[0]:
-                addon_utils.enable(full_ext_id)
-        set_ex_settings(addon_sets)
+def convert_value2bool(value):
+    if value in ["True", "False"]:
+        return value == "True"
+    else:
+        return value
 
 
-def install_addons(self):
+def install_addons(self, context):
     set_online()
     if is_BlenderVersion_gthan():
         with ex_presets_file.open(encoding="utf-8") as json_file:
@@ -122,10 +122,10 @@ def install_addons(self):
                         except:
                             self.report({"ERROR"}, "联网下载失败，请检查网络连接")
                     else:
-                        print(full_ext_id, "!!!", addon_utils.check(full_ext_id))
+                        # print(full_ext_id, "!!!", addon_utils.check(full_ext_id))
                         if not addon_utils.check(full_ext_id)[0]:
                             bpy.ops.preferences.addon_enable(module=full_ext_id)
-                    set_ex_settings(addon_sets)
+                    set_ex_settings(context, full_ext_id, addon_sets)
 
             elif self.ex_dirs == "third_ex":
                 if get_repos_class().get(third_repo_name) is None:
@@ -133,13 +133,13 @@ def install_addons(self):
                 else:
                     enable_repos(third_repo_name)
                 for addon_id, addon_sets in json_file_data[self.ex_dirs].items():
-                    full_ext_id = f"{org_ext_id}.{addon_id}"
+                    full_ext_id = f"{third_ext_id}.{addon_id}"
                     if full_ext_id not in get_addon_list():
                         repo_directory = repos.get(third_repo_name).directory
                         repo_index = repos.find(third_repo_name)
                         try:
                             bpy.ops.extensions.package_install(
-                                "INVOKE_DEFAULT",
+                                "EXEC_DEFAULT",
                                 repo_directory=repo_directory,
                                 repo_index=repo_index,
                                 pkg_id=addon_id,
@@ -147,10 +147,27 @@ def install_addons(self):
                             self.report({"INFO"}, f"已安装 - {addon_id} - 插件!")
                         except:
                             self.report({"INFO"}, f"插件 {addon_id} 安装错误!")
+                        # Register the timer function to wait for installation
+                        try:
+                            bpy.app.timers.register(wait_for_addon_install(context, full_ext_id, addon_sets))
+                        except:
+                            pass
+                    print(bpy.app.timers.is_registered(wait_for_addon_install))
+                    if bpy.app.timers.is_registered(wait_for_addon_install):
+                        bpy.app.timers.unregister(wait_for_addon_install)
                     else:
                         if not addon_utils.check(full_ext_id)[0]:
-                            bpy.ops.preferences.addon_enable(module=full_ext_id)
-                    set_ex_settings(addon_sets)
+                            try:
+                                bpy.ops.preferences.addon_enable(module=full_ext_id)
+                            except:
+                                print(f"插件开启错误:{full_ext_id}")
+                                pass
+                        try:
+                            set_ex_settings(context, full_ext_id, addon_sets)
+                        except:
+                            print(f"插件未开启，无法设置插件配置:{full_ext_id}")
+                            pass
+
             else:
                 return {"CANCELLED"}
         return {"FINISHED"}
@@ -158,103 +175,80 @@ def install_addons(self):
         return {"CANCELLED"}
 
 
-def set_ex_settings(addon_id, addon_sets):
-    set_interface_translate(False)
+def wait_for_addon_install(context, full_ext_id, addon_sets):
+    def _wait():
+        if full_ext_id in get_addon_list():
+            set_ex_settings(context, full_ext_id, addon_sets)
+            return None  # 停止计时器
+        else:
+            return 0.2  # 再次重新检查，0.2秒
+
+    return _wait
+
+
+def set_ex_settings(context, full_ext_id, addon_sets):
     keymaps = get_keymaps_class()
+    placeholders = {
+        "CONFIG_PATH": get_config_path(),
+        "SYNC_PATH": str(Path(get_prefs().assets_library_path_sync)),
+        "LOCAL_PATH": str(Path(get_prefs().assets_library_path_local)),
+        # 可以添加更多占位符
+    }
     for sets_type, sets_data in addon_sets.items():
         if sets_type == "keymaps":
-            for sets in sets_data:
-                keymap_items = keymaps.get(sets["space_name"]).keymap_items
-                for keys_id, keys_data in keymap_items.items():
-                    if sets.get("keymap_props") is None:
-                        if all(keys_id == sets["keymap_id"], keys_data.name == sets["keymap_name"]):
-                            setattr(keys_data, sets["keymap_prop"], sets["keymap_value"])
-                    else:
-                        pass
+            set_interface_translate(False)
+            for keymaps_items in sets_data:
+                # 区分识别键列表和设置键列表
+                key_identities = keymaps_items["identity"]
+                key_key_set = keymaps_items["key_set"]
+                identity_dict = {identity.split(":")[0]: identity.split(":")[1] for identity in key_identities}
+                keysets_dict = {identity.split(":")[0]: identity.split(":")[1] for identity in key_key_set}
+                converted_keysets_dict = {
+                    k: (v == "True" if v in ["True", "False"] else v) for k, v in keysets_dict.items()
+                }
+                # print(f"{converted_keysets_dict=}")
+                keymaps_name = identity_dict.pop("keymaps_name")
+                keymap_items = keymaps.get(keymaps_name).keymap_items
+                keymap_iter = [
+                    keymap
+                    for keymap in keymap_items
+                    if all(
+                        [
+                            getattr(keymap, ident_name) == ident_value
+                            for ident_name, ident_value in identity_dict.items()
+                        ]
+                    )
+                ]
+                if keymap_iter:
+                    # print(f"{keymap_iter=}")
+                    for key in keymap_iter:
+                        for key_name, key_value in converted_keysets_dict.items():
+                            try:
+                                setattr(key, key_name, convert_value2bool(key_value))
+                            except:
+                                print(f"键位设置错误：{key}::{key_name}::{key_value}")
+                else:
+                    print(f"{full_ext_id}键位设置，未找到键名！已跳过设置")
+            set_interface_translate(True)
+
         elif sets_type == "prefs":
-            prefs = bpy.context.preferences.addons[addon_id].preferences
+            prefs = context.preferences.addons[full_ext_id].preferences
+            replace_substitute(sets_data, placeholders)
             for prop_name, prop_value in sets_data.items():
                 try:
-                    setattr(prefs, prop_name, prop_value)
+                    setattr(prefs, prop_name, convert_value2bool(prop_value))
                 except:
-                    print(addon_id, "--插件属性设置错误-->", prop_name, ":", prop_value)
+                    print(full_ext_id, "--插件属性设置错误-->", prop_name, ":", prop_value)
 
+        elif sets_type == "runOP":
+            for op_name, op_args in sets_data.items():
+                replace_substitute(op_args, placeholders)
 
-def change_addon_key_value(change_dir):
-    bpy.context.preferences.view.use_translate_interface = False
-    for dir_list in change_dir:
-        keymaps = bpy.context.window_manager.keyconfigs["Blender addon"].keymaps
-        for ks_name, ks_data in keymaps.items():
-            if ks_name == dir_list[0][0]:
-                list_keymaps = []
-                for id_name, id_data in ks_data.keymap_items.items():
-                    if id_name == dir_list[0][1] and id_data.name == dir_list[0][2]:
-                        list_keymaps.append(id_data)
-                for data in list_keymaps:
-                    for value in dir_list[1]:
-                        setattr(data, value[0], value[1])
-                    if dir_list[2] != None:
-                        for prop in dir_list[2]:
-                            setattr(data.properties, prop[0], prop[1])
-                list_keymaps.clear()
-    bpy.context.preferences.view.use_translate_interface = True
-
-
-def enable_addons(self, context, bl_ext_dict, remote_name=None):
-    if bpy.app.version >= (4, 2, 0):
-        if remote_name == "":
-            rep_directory = context.preferences.extensions.repos[remote_name].directory + "/"
-            # print("-----------", rep_directory)
-            # print(xz_url)
-            for addon_name in blender_org_extensions.keys():
-                if get_prefs().download_official_addons:
-                    try:
-                        download_zip(remote_name + "/" + f"{addon_name}.zip", rep_directory)
-                    except:
-                        print("----", addon_name, " 插件下载失败")
-        # bpy.ops.extensions.package_install
-
-        # 检查 rep_directory 下的 xz_ex_check.txt 文件内的存储版本号，如果不匹配则重新下载
-        # if Path(rep_directory + "xz_ex_check.txt").exists():
-        #     with open(rep_directory + "xz_ex_check.txt", "r") as f:
-        #         local_version = f.read()
-        #     if local_version != blender_org_extensions["xz_ex_check"]:
-        #         print("----", "插件版本号不匹配，正在重新下载")
-        #         for addon_name in blender_org_extensions.keys():
-        #             try:
-        #                 download_zip(remote_name + "/" + f"{addon_name}.zip", rep_directory)
-        #             except:
-        #                 print("----", addon_name, " 插件下载失败")
-
-        repos_keys = context.preferences.extensions.repos.keys()
-        if remote_name not in repos_keys:
-            bpy.ops.preferences.extension_repo_add(remote_url="https://" + remote_name + "/xz", type="REMOTE")
-        elif remote_name in repos_keys:
-            context.preferences.extensions.repos[remote_name].enabled = True
-            # bpy.ops.extensions.repo_sync_all()
-            bpy.ops.preferences.addon_refresh()
-            prefix = "bl_ext." + remote_name.split(".", 1)[1].replace(".", "_") + "."
-        else:
-            prefix = ""
-
-        if bl_ext_dict:
-            for addon_name, addon_change in bl_ext_dict.items():
-                addon_name = prefix + addon_name
-                if addon_name in get_addon_list():
-                    if addon_utils.check(addon_name)[0] == False:
-                        #  # check addon is enabled
-                        try:
-                            bpy.ops.preferences.addon_enable(module=addon_name)
-                            print(addon_name, "插件已经打开")
-                        except:
-                            print(addon_name, "插件加载错误")
-                    if addon_change[0]:
-                        for pref_change in addon_change[0]:
-                            setattr(context.preferences.addons[addon_name].preferences, pref_change[0], pref_change[1])
-                    if addon_change[1]:
-                        change_addon_key_value(addon_change[1])
-
-            self.report({"INFO"}, "已开启预设插件")
+                op_class, op_func = op_name.split(".")
+                try:
+                    getattr(getattr(bpy.ops, op_class), op_func)(**op_args)
+                except:
+                    print("自动执行插件操作错误:\n", f"操作符:{op_name}\n", f"操作参数:{op_args}")
 
 
 class Enable_Pie_Menu_Relay_Addons(Operator):
@@ -282,20 +276,17 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
         elif self.ex_dirs == "org_ex":
             text, icon = "下载常用官方插件,大小2MB", "INFO"
         elif self.ex_dirs == "third_ex":
-            text, icon = "下载作者常用插件,会短暂卡住! 请耐心等待...", "ERROR"
+            text, icon = "配置作者常用插件预设,会较长卡住! 请耐心等待...", "ERROR"
         row = layout.row()
 
         row.label(text=text, icon=icon)
 
     def execute(self, context):
-        # try:
-        #     enable_addons(self, context, blender_org_extensions, "extensions.blender.org")
-        #     enable_addons(self, context, None, "blender4.com")
-        #     enable_addons(self, context, system_extensions)
-        # except:
-        #     pass
-        install_addons(self)
-        return {"FINISHED"}
+        if self.ex_dirs != "":
+            install_addons(self, context)
+            return {"FINISHED"}
+        else:
+            return {"CANCELLED"}
 
 
 CLASSES = [Enable_Pie_Menu_Relay_Addons]
@@ -304,7 +295,9 @@ CLASSES = [Enable_Pie_Menu_Relay_Addons]
 @persistent
 def change_addons(dummy):
     if get_prefs().enable_addon_presets_items:
-        bpy.ops.pie.enable_relay_addons()
+        bpy.ops.pie.enable_relay_addons(ex_dirs="sys_ex")
+        bpy.ops.pie.enable_relay_addons(ex_dirs="org_ex")
+        bpy.ops.pie.enable_relay_addons(ex_dirs="third_ex")
         print(f"{addon_name()} 已开启依赖插件")
         bpy.ops.wm.save_userpref()
 

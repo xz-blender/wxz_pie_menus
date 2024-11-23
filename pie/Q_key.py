@@ -43,12 +43,12 @@ class PIE_MT_Bottom_Q_favorite(Menu):
         col.operator("pie.linksameobjectdata_byselects")
         col.operator("pie.selectsamevertexobject")
         col.operator("pie.context_translate", icon="FILE_TEXT")
-        col.separator()
         if get_prefs().debug:
+            col.separator()
             col.operator("pie.test_operator")
-            col.operator("pie.enable_relay_addons").ex_dirs = "sys_ex"
-            col.operator("pie.enable_relay_addons").ex_dirs = "org_ex"
-            col.operator("pie.enable_relay_addons").ex_dirs = "third_ex"
+        #     col.operator("pie.enable_relay_addons").ex_dirs = "sys_ex"
+        #     col.operator("pie.enable_relay_addons").ex_dirs = "org_ex"
+        #     col.operator("pie.enable_relay_addons").ex_dirs = "third_ex"
 
 
 class Render_Viewport_OpenGL(Operator):

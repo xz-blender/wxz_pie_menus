@@ -19,7 +19,12 @@ def addon_name():
 
 
 def get_prefs():
-    return bpy.context.preferences.addons[ADDON_ID].preferences
+    addon = bpy.context.preferences.addons.get(ADDON_ID)
+    if addon and addon.preferences:
+        return addon.preferences
+    else:
+        print(f"插件 '{ADDON_ID}' 未加载或启用，或没有偏好设置。")
+        return None
 
 
 def is_windows():
@@ -28,6 +33,10 @@ def is_windows():
 
 def is_macos():
     return platform.system() == "Darwin"
+
+
+def get_config_path():
+    return bpy.utils.user_resource("CONFIG")
 
 
 def get_sync_path():

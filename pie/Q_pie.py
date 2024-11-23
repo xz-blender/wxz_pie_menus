@@ -291,7 +291,11 @@ def register_keymaps():
 
 
 def register():
-    load_custom_icon()
+    try:
+        load_custom_icon()
+    except:
+        bpy.utils.previews.remove(preview_collections[pview_pcoll_name])
+        load_custom_icon()
     safe_register_class(CLASSES)
     register_keymaps()
 
