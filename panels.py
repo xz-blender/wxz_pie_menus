@@ -202,6 +202,7 @@ def draw_resource_config(self, layout):
         row = main_split.row(align=True)
         row.operator("pie.enable_relay_addons", text="内置插件").ex_dirs = "sys_ex"
         row.operator("pie.enable_relay_addons", text="官方插件").ex_dirs = "org_ex"
+        row.operator("pie.enable_relay_addons", text="自建源插件").ex_dirs = "pan_ex"
         row.operator("pie.enable_relay_addons", text="作者预设").ex_dirs = "third_ex"
         row = main_split.row()
         row.operator("pie.open_custom_xz_presets_file_in_new_window", text="编辑列表").path_name = "Addons"

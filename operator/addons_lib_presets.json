@@ -2,7 +2,8 @@
     "sys_ex": {
         "node_wrangler": {}
     },
-    "org_ex": {
+    "org_ex": {"simple_deform_helper":{}},
+    "pan_ex": {
         "curve_tools": {},
         "extra_mesh_objects": {},
         "extra_curve_objectes": {},

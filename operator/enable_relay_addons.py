@@ -109,7 +109,7 @@ def install_addons(self, context):
                 for addon_id, addon_sets in json_file_data[self.ex_dirs].items():
                     addon_utils.enable(addon_id, default_set=True)
 
-            elif self.ex_dirs == "org_ex":
+            elif self.ex_dirs == "pan_ex":
                 enable_repos(org_repo_name)
                 for addon_id, addon_sets in json_file_data[self.ex_dirs].items():
                     full_ext_id = f"{org_ext_id}.{addon_id}"
@@ -126,6 +126,43 @@ def install_addons(self, context):
                         if not addon_utils.check(full_ext_id)[0]:
                             bpy.ops.preferences.addon_enable(module=full_ext_id)
                     set_ex_settings(context, full_ext_id, addon_sets)
+
+            elif self.ex_dirs == "org_ex":
+                for addon_id, addon_sets in json_file_data[self.ex_dirs].items():
+                    full_ext_id = f"{org_ext_id}.{addon_id}"
+                    if full_ext_id not in get_addon_list():
+                        repo_directory = repos.get(org_repo_name).directory
+                        repo_index = repos.find(org_repo_name)
+                        try:
+                            bpy.ops.extensions.package_install(
+                                "EXEC_DEFAULT",
+                                repo_directory=repo_directory,
+                                repo_index=repo_index,
+                                pkg_id=addon_id,
+                            )
+                            self.report({"INFO"}, f"已安装 - {addon_id} - 插件!")
+                        except:
+                            self.report({"INFO"}, f"插件 {addon_id} 安装错误!")
+                        # Register the timer function to wait for installation
+                        try:
+                            bpy.app.timers.register(wait_for_addon_install(context, full_ext_id, addon_sets))
+                        except:
+                            pass
+                    print(bpy.app.timers.is_registered(wait_for_addon_install))
+                    if bpy.app.timers.is_registered(wait_for_addon_install):
+                        bpy.app.timers.unregister(wait_for_addon_install)
+                    else:
+                        if not addon_utils.check(full_ext_id)[0]:
+                            try:
+                                bpy.ops.preferences.addon_enable(module=full_ext_id)
+                            except:
+                                print(f"插件开启错误:{full_ext_id}")
+                                pass
+                        try:
+                            set_ex_settings(context, full_ext_id, addon_sets)
+                        except:
+                            print(f"插件未开启，无法设置插件配置:{full_ext_id}")
+                            pass
 
             elif self.ex_dirs == "third_ex":
                 if get_repos_class().get(third_repo_name) is None:
