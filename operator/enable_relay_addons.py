@@ -99,6 +99,19 @@ def convert_value2bool(value):
         return value
 
 
+def set_all_addon_presets(self, context):
+    ex_var_dict = {"pan_ex": org_repo_name, "org_ex": org_repo_name, "third_ext": third_repo_name}
+    with ex_presets_file.open(encoding="utf-8") as json_file:
+        json_file_data = json.load(json_file)
+        for ex_var_dict_Name, ex_var_dict_Value in ex_var_dict.items():
+            for addon_id, addon_sets in json_file_data[ex_var_dict_Name].items():
+                full_ext_id = f"{ex_var_dict_Value}.{addon_id}"
+                try:
+                    set_ex_settings(context, full_ext_id, addon_sets)
+                except:
+                    self.report({"INFO"}, f"(配置所有插件预设)其中{addon_id}配置预设失败!")
+
+
 def install_addons(self, context):
     set_online()
     if is_BlenderVersion_gthan():
@@ -120,7 +133,7 @@ def install_addons(self, context):
                             print(f"已安装 - {addon_id} - 插件!")
                             bpy.ops.preferences.addon_enable(module=full_ext_id)
                         except:
-                            self.report({"ERROR"}, "联网下载失败，请检查网络连接")
+                            self.report({"ERROR"}, f"{addon_id}联网下载失败，请检查网络连接")
                     else:
                         # print(full_ext_id, "!!!", addon_utils.check(full_ext_id))
                         if not addon_utils.check(full_ext_id)[0]:
@@ -148,7 +161,7 @@ def install_addons(self, context):
                             bpy.app.timers.register(wait_for_addon_install(context, full_ext_id, addon_sets))
                         except:
                             pass
-                    print(bpy.app.timers.is_registered(wait_for_addon_install))
+                    # print(bpy.app.timers.is_registered(wait_for_addon_install))
                     if bpy.app.timers.is_registered(wait_for_addon_install):
                         bpy.app.timers.unregister(wait_for_addon_install)
                     else:
@@ -189,7 +202,7 @@ def install_addons(self, context):
                             bpy.app.timers.register(wait_for_addon_install(context, full_ext_id, addon_sets))
                         except:
                             pass
-                    print(bpy.app.timers.is_registered(wait_for_addon_install))
+                    # print(bpy.app.timers.is_registered(wait_for_addon_install))
                     if bpy.app.timers.is_registered(wait_for_addon_install):
                         bpy.app.timers.unregister(wait_for_addon_install)
                     else:
@@ -288,6 +301,21 @@ def set_ex_settings(context, full_ext_id, addon_sets):
                     print("自动执行插件操作错误:\n", f"操作符:{op_name}\n", f"操作参数:{op_args}")
 
 
+class PIE_Set_All_Addons_presets(Operator):
+    bl_idname = "pie.set_all_addons_presets"
+    bl_label = "更改所有额外安装插件的配置及快捷键"
+    bl_description = "更改所有额外安装插件的配置及快捷键"
+    bl_options = {"REGISTER"}
+
+    @classmethod
+    def poll(cls, context):
+        return True
+
+    def execute(self, context):
+        set_all_addon_presets(self, context)
+        return {"FINISHED"}
+
+
 class Enable_Pie_Menu_Relay_Addons(Operator):
     bl_idname = "pie.enable_relay_addons"
     bl_label = "一键安装或打开插件!"
@@ -308,34 +336,40 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
 
     def draw(self, context):
         layout = self.layout
+        row = layout.row()
+
         if self.ex_dirs == "sys_ex":
             text, icon = "一键开启内置插件", "INFO"
         elif self.ex_dirs == "org_ex":
             text, icon = "下载常用官方插件,大小2MB", "INFO"
+        elif self.ex_dirs == "pan_ex":
+            text, icon = "下载官方插件(123pan源),大小2MB", "INFO"
         elif self.ex_dirs == "third_ex":
             text, icon = "配置作者常用插件预设,会较长卡住! 请耐心等待...", "ERROR"
-        row = layout.row()
 
         row.label(text=text, icon=icon)
 
     def execute(self, context):
         if self.ex_dirs != "":
             install_addons(self, context)
+            bpy.ops.wm.save_userpref()
             return {"FINISHED"}
         else:
             return {"CANCELLED"}
 
 
-CLASSES = [Enable_Pie_Menu_Relay_Addons]
+CLASSES = [Enable_Pie_Menu_Relay_Addons, PIE_Set_All_Addons_presets]
 
 
 @persistent
 def change_addons(dummy):
     if get_prefs().enable_addon_presets_items:
-        bpy.ops.pie.enable_relay_addons(ex_dirs="sys_ex")
-        bpy.ops.pie.enable_relay_addons(ex_dirs="org_ex")
-        bpy.ops.pie.enable_relay_addons(ex_dirs="third_ex")
-        print(f"{addon_name()} 已开启依赖插件")
+        bpy.ops.pie.set_all_addons_presets()
+        # bpy.ops.pie.enable_relay_addons(ex_dirs="sys_ex")
+        # bpy.ops.pie.enable_relay_addons(ex_dirs="org_ex")
+        # bpy.ops.pie.enable_relay_addons(ex_dirs="pan_ex")
+        # bpy.ops.pie.enable_relay_addons(ex_dirs="third_ex")
+        print(f"{addon_name()} 已完成配置额外插件预设!")
         bpy.ops.wm.save_userpref()
 
 

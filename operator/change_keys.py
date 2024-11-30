@@ -23,8 +23,7 @@ def change_key_value(A_dir, value):
 
 
 def change_key_value_base(change_dir):
-    # 访问快捷键的名称会因翻译而改变,先改变为英文状态
-    bpy.context.preferences.view.use_translate_interface = False
+
     # stored_value_list = {}
     # stored_prop_list = {}
     for dir_list in change_dir:
@@ -51,8 +50,7 @@ def change_key_value_base(change_dir):
                             except:
                                 print(data.name, "--keys_prop_error-->", prop[0], ":", prop[1])
                 list_keymaps.clear()
-    # 更改完之后切换回中文翻译
-    bpy.context.preferences.view.use_translate_interface = True
+
     # return (stored_value_list, stored_prop_list)
 
 
@@ -79,6 +77,17 @@ def change_keys_value():
             for key_name, key_data in keys_data.keymap_items.items():
                 if key_name == "object.hide_collection" and key_data.type != "H":
                     key_data.active = False
+
+
+def change_Asset_Shelf_Popover_Key():
+    bpy.context.preferences.view.use_translate_interface = False
+    keys = bpy.context.window_manager.keyconfigs.default.keymaps
+    for _, keys_data in keys.items():
+        for key_idname, key_data in keys_data.keymap_items.items():
+            if key_idname == "wm.call_asset_shelf_popover":
+                if key_data.name == "Call Asset Shelf Popover":
+                    setattr(key_data, "value", "CLICK")
+    bpy.context.preferences.view.use_translate_interface = True
 
 
 A_select_dir = [
@@ -310,6 +319,11 @@ class PIE_Load_XZ_Keys_Presets(bpy.types.Operator):
         return True
 
     def execute(self, context):
+        # 访问快捷键的名称会因翻译而改变,先改变为英文状态
+        view = bpy.context.preferences.view
+        stored_trans: bool = view.use_translate_interface
+        view.use_translate_interface = False
+
         change_key_value(A_select_dir, "CLICK")
 
         for _dir in [
@@ -340,6 +354,11 @@ class PIE_Load_XZ_Keys_Presets(bpy.types.Operator):
 
         # 其他键位设置
         change_keys_value()
+        change_Asset_Shelf_Popover_Key()
+
+        # 更改完之后切换回中文翻译
+        if stored_trans:
+            view.use_translate_interface = True
         print(f"{addon_name()} 已更改快捷键!!")
 
         return {"FINISHED"}

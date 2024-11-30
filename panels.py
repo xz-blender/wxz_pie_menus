@@ -182,21 +182,28 @@ def draw_pie_modules(self, top_row, module_path_name_list):
 def draw_resource_config(self, layout):
     row = layout.row()
     split = row.split(factor=0.8)
+    text = "这会严重更改您的软件设置!请备份配置!(重启自动运行)"
     if get_prefs().debug:
         row = split.row()
-        row.label(text="这会严重更改您的软件设置!请备份配置!(重启自动运行)", icon="ERROR")
+        row.label(text=text, icon="ERROR")
         row = split.row()
         row.operator("pie.one_click_enable_all_presets", text="一键启用")
     else:
-        row.label(text="这会严重更改您的软件设置!请备份配置!(重启自动运行)", icon="ERROR")
+        row.label(text=text, icon="ERROR")
 
     box = layout.column()
     split_main_factor = 0.7
 
-    row = box.row().box()
+    row = box.row().box().row()
     text = "加载插件 - 常用外部插件预设 -- (自动下载安装)"
     if self.download_official_addons:
-        row.prop(self, "download_official_addons", text=text)
+        split = row.split(factor=split_main_factor)
+        row_sp = split.row()
+        row_sp.prop(self, "download_official_addons", text=text)
+        row_sp = split.row()
+        row_sp.operator("pie.set_all_addons_presets", text="应用插件设置")
+
+        row = box.row().box()
 
         main_split = row.split(factor=split_main_factor)
         row = main_split.row(align=True)

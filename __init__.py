@@ -1,18 +1,6 @@
-from pathlib import Path
+from .download import downloading
 
-from .download import download_file, download_zip
-from .packup import packup_split_file_list, packup_split_folder_list
-
-down_path = Path(__file__).parent
-xz_url = "addons_file/" + str(down_path.name) + "/"
-try:
-    for file in packup_split_file_list:
-        download_file(xz_url + file, down_path)
-    for dir in packup_split_folder_list:
-        download_zip(xz_url + dir + ".zip", down_path)
-except Exception:
-    print(file, "子插件下载失败,请检查网络!")
-
+downloading()
 
 import inspect
 

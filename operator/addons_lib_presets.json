@@ -130,8 +130,7 @@
                 }
             ]
         },
-        "Text_input": {},
-        "bb_Nodes": {},
+        "bb_nodes": {},
         "ETK_core": {},
         "b3dsdf": {}
     }

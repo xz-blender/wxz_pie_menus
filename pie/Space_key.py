@@ -32,7 +32,7 @@ class PIE_Space_KEY(Operator):
             if bpy.context.space_data.ui_mode == "VIEW":
                 bpy.ops.wm.tool_set_by_index(index=1)
             elif bpy.context.space_data.ui_mode == "MASK":
-                bpy.ops.screen.animation_play()
+                bpy.ops.screen.animation_play("INVOKE_DEFAULT")
         elif ui_type in ["GeometryNodeTree", "ShaderNodeTree", "CompositorNodeTree"]:
             bpy.ops.wm.tool_set_by_id(name="builtin.select_box")
             # elif bpy.context.space_data.ui_mode == 'PAINT':
@@ -48,7 +48,7 @@ class PIE_Space_KEY(Operator):
             "DRIVERS",
             "NLA_EDITOR",
         ]:
-            bpy.ops.screen.animation_play()
+            bpy.ops.screen.animation_play("INVOKE_DEFAULT")
         return {"FINISHED"}
 
 
@@ -77,14 +77,17 @@ def register_keymaps():
     for area in keymap_areas:
         km = addon.keymaps.new(name=area[0], space_type=area[1])  # ----视频序列播放器
         kmi = km.keymap_items.new(PIE_Space_KEY.bl_idname, "SPACE", "CLICK")  # space
-
+        addon_keymaps.append((km, kmi))
         kmi = km.keymap_items.new("wm.search_menu", "SPACE", "DOUBLE_CLICK")  # 搜索栏
+        addon_keymaps.append((km, kmi))
 
         if area[0] == "3D View" or "Node Editor":  # shift-space
             km.keymap_items.new("screen.animation_play", "SPACE", "CLICK", shift=True)
+            addon_keymaps.append((km, kmi))
         else:
-            km.keymap_items.new("screen.animation_play", "SPACE", "CLICK", shift=True).properties.reverse = True
-        addon_keymaps.append((km, kmi))
+            kmi = km.keymap_items.new("screen.animation_play", "SPACE", "CLICK", shift=True)
+            kmi.properties.reverse = True
+            addon_keymaps.append((km, kmi))
 
 
 def register():

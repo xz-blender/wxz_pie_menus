@@ -19,13 +19,13 @@ class WXZ_PIE_Prefs_Props:
         default="ADDON_MENUS",
     )  # type: ignore
 
-    debug: BoolProperty(name="调试模式", default=True)  # type: ignore
+    debug: BoolProperty(name="调试模式", default=False)  # type: ignore
 
     # 资源设置
     load_assets_library_presets: BoolProperty(name="加载资源库预设", default=False)  # type: ignore
     assets_library_path_sync: StringProperty(name="远程路径", subtype="DIR_PATH", default=get_sync_path())  # type: ignore
     assets_library_path_local: StringProperty(name="本地路径", subtype="DIR_PATH", default=get_local_path())  # type: ignore
-    load_xz_keys_presets: BoolProperty(name="加载XZ快捷键预设", default=True)  # type: ignore
+    load_xz_keys_presets: BoolProperty(name="加载XZ快捷键预设", default=False)  # type: ignore
     load_xz_setting_presets: BoolProperty(name="加载XZ配置预设", default=False)  # type: ignore
     download_official_addons: BoolProperty(name="下载常用内置插件", default=False)  # type: ignore
     enable_addon_presets_items: BoolProperty(name="开启常用插件预设", default=False)  # type: ignore

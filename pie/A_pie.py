@@ -162,6 +162,19 @@ class PIE_MT_Bottom_A(Menu):
             # 9 - TOP - RIGHT
             # 1 - BOTTOM - LEFT
             # 3 - BOTTOM - RIGHT
+        elif ui_type == "GRAPH_EDITOR":
+            # 4 - LEFT
+            pie.operator("graph.select_less", text="缩减选择", icon="REMOVE")
+            # 6 - RIGHT
+            pie.operator("graph.select_more", text="扩展选择", icon="ADD")
+            # 2 - BOTTOM
+            pie.separator()
+            # 8 - TOP
+            pie.operator("graph.select_all", text="反选", icon="EMPTY_SINGLE_ARROW").action = "INVERT"
+            # 7 - TOP - LEFT
+            # 9 - TOP - RIGHT
+            # 1 - BOTTOM - LEFT
+            # 3 - BOTTOM - RIGHT
 
 
 class PIE_Image_usefaker(Operator):

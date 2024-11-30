@@ -80,6 +80,7 @@ class PIE_Q_key(Operator):
             ob_mode = context.object.mode
             ob_type = context.object.type
             area_type = context.area.type
+            # print(f"{area_type=}")
 
             if area_type == "VIEW_3D":
                 if ob_mode == "OBJECT":
@@ -98,6 +99,8 @@ class PIE_Q_key(Operator):
                 bpy.ops.uv.select_linked_pick("INVOKE_DEFAULT", extend=True)
             elif area_type == "NODE_EDITOR":
                 bpy.ops.pie.translate_nodes("INVOKE_DEFAULT")
+            elif area_type == "GRAPH_EDITOR":
+                bpy.ops.graph.select_linked("INVOKE_DEFAULT")
         else:
             bpy.ops.wm.call_menu(name="PIE_MT_Bottom_Q_favorite")
 
@@ -138,7 +141,8 @@ class PIE_Q_key_shift(Operator):
         elif area_type == "IMAGE_EDITOR":
             # print("UVyes")
             bpy.ops.uv.select_linked_pick("INVOKE_DEFAULT", extend=True, deselect=True)
-
+        # elif area_type == "GRAPH_EDITOR":
+        #     bpy.ops.graph.select_linked("INVOKE_DEFAULT")
         return {"FINISHED"}
 
 
@@ -194,6 +198,7 @@ def register_keymaps():
         ("3D View", "VIEW_3D"),
         ("UV Editor", "EMPTY"),
         ("Node Editor", "NODE_EDITOR"),
+        ("Graph Editor", "GRAPH_EDITOR"),
     ]
     for space in space_name:
         km = addon.keymaps.new(name=space[0], space_type=space[1])
