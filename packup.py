@@ -6,7 +6,10 @@ import tempfile
 import zipfile
 from pathlib import Path
 
-from .items import *
+try:
+    from .items import *
+except ImportError:
+    from items import *
 
 
 def is_windows():
@@ -26,7 +29,7 @@ def get_desktop_path():
             winreg.HKEY_CURRENT_USER, r"Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders"
         ) as key:
             desktop_path, _ = winreg.QueryValueEx(key, "Desktop")
-            return desktop_path
+            return os.path.expanduser(os.path.expandvars(desktop_path))
     elif is_macos():
         return os.path.join(os.path.expanduser("~"), "Desktop")
 
@@ -122,6 +125,8 @@ def main_zip(exclude_list, source_dir, output_path, main=True):
 
     try:
         zip_dir(temp_zip_filename, source_dir, exclude_list)
+        output_path = os.path.expanduser(os.path.expandvars(str(output_path)))
+        Path(output_path).parent.mkdir(parents=True, exist_ok=True)
         shutil.move(temp_zip_filename, output_path)
         print(f"Created {output_path}")
     finally:
