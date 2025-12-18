@@ -11,7 +11,9 @@ from .nb_add_ik_ctrl_ops import NbIKBoneOperator
 from .nb_add_lattice_bbone2_ctrl_ops import Nb2LatticeBoneOperator
 from .nb_add_lattice_bbone_ctrl_ops import NbLatticeBoneOperator
 from .nb_add_lattice_bbone_ctrl_plus_ops import NbLatticeBonePlusOperator
-from .nb_add_lattice_bbone_ctrl_squash_stretch_ops import NbLatticeBoneSquashStretchOperator
+from .nb_add_lattice_bbone_ctrl_squash_stretch_ops import (
+    NbLatticeBoneSquashStretchOperator,
+)
 from .nb_add_lattice_bbone_ctrl_wave_ops import NbLatticeBoneWaveOperator
 from .nb_add_lattice_ctrl_ops import NbLatticeAndBoneOperator
 from .nb_bboxlattice_ops import NbLatticeAAOperator
@@ -131,7 +133,10 @@ def get_translation(key):
     if "zh" in get_language():
         language = "zh"
     if language in translations:
-        if key in translations[language] and bpy.context.preferences.view.use_translate_interface:
+        if (
+            key in translations[language]
+            and bpy.context.preferences.view.use_translate_interface
+        ):
             return translations[language][key]
     # 如果未找到对应语言的文本资源，则默认使用英文
     return translations["en"][key]
@@ -140,7 +145,9 @@ def get_translation(key):
 class Prop_nb_666(bpy.types.PropertyGroup):
     cuoFrame: bpy.props.IntProperty(default=1, name="Frame", min=-10, max=10)
     cInfluence: bpy.props.FloatProperty(default=1.0, name="Influence", min=0, max=1)
-    velocity_weight: bpy.props.FloatProperty(default=0.666, name="velocity weight", min=0, max=1)
+    velocity_weight: bpy.props.FloatProperty(
+        default=0.666, name="velocity weight", min=0, max=1
+    )
 
     LOC: bpy.props.BoolProperty(default=True, name="LOC")
     ROT: bpy.props.BoolProperty(default=True, name="ROT")
@@ -171,63 +178,135 @@ class NB_PT_666_3dview(bpy.types.Panel):
         row.prop(bpy.context.scene.Prop_nb_666, "ROT", text="Rotation", toggle=True)
         row.prop(bpy.context.scene.Prop_nb_666, "SIZE", text="Scale", toggle=True)
         row = box.row(align=True)
-        row.operator(NB_AN_overshoot.bl_idname, icon="IPO_ELASTIC", text=get_translation("Overshoot"))
+        row.operator(
+            NB_AN_overshoot.bl_idname,
+            icon="IPO_ELASTIC",
+            text=get_translation("Overshoot"),
+        )
 
         row = layout.row(align=True)
         row.prop(bpy.context.scene.Prop_nb_666, "cuoFrame", toggle=True)
         row.prop(bpy.context.scene.Prop_nb_666, "cInfluence", toggle=True)
-        row.prop(bpy.context.scene.Prop_nb_666, "velocity_weight", toggle=True, text=get_translation("velocity weight"))
+        row.prop(
+            bpy.context.scene.Prop_nb_666,
+            "velocity_weight",
+            toggle=True,
+            text=get_translation("velocity weight"),
+        )
         row = layout.row(align=True)
-        row.operator(NB_LoctionOffset_Operator.bl_idname, text=get_translation("Location Offset"))
-        row.operator(NB_RotationOffset_Operator.bl_idname, text=get_translation("Rotation Offset"))
+        row.operator(
+            NB_LoctionOffset_Operator.bl_idname, text=get_translation("Location Offset")
+        )
+        row.operator(
+            NB_RotationOffset_Operator.bl_idname,
+            text=get_translation("Rotation Offset"),
+        )
         row = layout.row(align=True)
-        row.operator(NB_TrackOffset_Operator.bl_idname, text=get_translation("Track Offset"))
-        row.operator(NB_TrackOffset_BoneChain_Operator.bl_idname, text=get_translation("Track Offset(BoneChain)"))
+        row.operator(
+            NB_TrackOffset_Operator.bl_idname, text=get_translation("Track Offset")
+        )
+        row.operator(
+            NB_TrackOffset_BoneChain_Operator.bl_idname,
+            text=get_translation("Track Offset(BoneChain)"),
+        )
         row = layout.row(align=True)
         row.operator(NbBboneOperator.bl_idname, text=get_translation("+1bbone"))
         row.operator(NbBbonePlusOperator.bl_idname, text=get_translation("+1bbone+"))
         row.operator(Nb2BboneOperator.bl_idname, text=get_translation("+2bbone"))
         row = layout.row(align=True)
-        row.operator(NbLatticeBoneOperator.bl_idname, text=get_translation("Lattice +1 ctrl"))
-        row.operator(NbLatticeBonePlusOperator.bl_idname, text=get_translation("Lattice +1 ctrl+"))
-        row.operator(Nb2LatticeBoneOperator.bl_idname, text=get_translation("Lattice +2 ctrl"))
+        row.operator(
+            NbLatticeBoneOperator.bl_idname, text=get_translation("Lattice +1 ctrl")
+        )
+        row.operator(
+            NbLatticeBonePlusOperator.bl_idname,
+            text=get_translation("Lattice +1 ctrl+"),
+        )
+        row.operator(
+            Nb2LatticeBoneOperator.bl_idname, text=get_translation("Lattice +2 ctrl")
+        )
 
         row = layout.row(align=True)
-        row.operator(NbLatticeBoneSquashStretchOperator.bl_idname, text=get_translation("Lattice ss ctrl"))
-        row.operator(NbLatticeBoneWaveOperator.bl_idname, text=get_translation("Lattice Wave ctrl"))
+        row.operator(
+            NbLatticeBoneSquashStretchOperator.bl_idname,
+            text=get_translation("Lattice ss ctrl"),
+        )
+        row.operator(
+            NbLatticeBoneWaveOperator.bl_idname,
+            text=get_translation("Lattice Wave ctrl"),
+        )
         row = layout.row(align=True)
-        row.operator(NbLatticeAndBoneOperator.bl_idname, text=get_translation("Lattice +B"))
+        row.operator(
+            NbLatticeAndBoneOperator.bl_idname, text=get_translation("Lattice +B")
+        )
 
         layout.operator(NbIKBoneOperator.bl_idname, text=get_translation("NBIK"))
-        layout.operator(fibonacciBoneOperator.bl_idname, text=get_translation("fibonacci"))
+        layout.operator(
+            fibonacciBoneOperator.bl_idname, text=get_translation("fibonacci")
+        )
 
         layout.operator(NbLatticeAAOperator.bl_idname, text=get_translation("Lattice+"))
-        layout.operator(NbLatticeRemoveOperator.bl_idname, text=get_translation("Lattice-"))
+        layout.operator(
+            NbLatticeRemoveOperator.bl_idname, text=get_translation("Lattice-")
+        )
         row = layout.row(align=True)
-        row.operator(NbCurveLatticeOperator.bl_idname, text=get_translation("Lattice Curve"))
-        row.operator(NbSphereLatticeOperator.bl_idname, text=get_translation("Sphere Lattice"))
+        row.operator(
+            NbCurveLatticeOperator.bl_idname, text=get_translation("Lattice Curve")
+        )
+        row.operator(
+            NbSphereLatticeOperator.bl_idname, text=get_translation("Sphere Lattice")
+        )
         box = layout.box()
         row = box.row(align=True)
-        row.operator(NB_selall_update_driver_Operator.bl_idname, text=get_translation("select update driver"))
-        row.operator(NbSubdivisionBottomOperator.bl_idname, text=get_translation("Subdivision Bottom"))
+        row.operator(
+            NB_selall_update_driver_Operator.bl_idname,
+            text=get_translation("select update driver"),
+        )
+        row.operator(
+            NbSubdivisionBottomOperator.bl_idname,
+            text=get_translation("Subdivision Bottom"),
+        )
         row = layout.row(align=True)
-        row.operator(NB_actionctrl_Operator.bl_idname, text=get_translation("Action Ctrl"))
+        row.operator(
+            NB_actionctrl_Operator.bl_idname, text=get_translation("Action Ctrl")
+        )
         row = layout.row(align=True)
-        row.operator(NB_FaceToBoneChain_Operator.bl_idname, text=get_translation("Face To Bone Chain"))
-        row.operator(NbObjectMirrorCopyOperator.bl_idname, text=get_translation("Mirror Copy"))
+        row.operator(
+            NB_FaceToBoneChain_Operator.bl_idname,
+            text=get_translation("Face To Bone Chain"),
+        )
+        row.operator(
+            NbObjectMirrorCopyOperator.bl_idname, text=get_translation("Mirror Copy")
+        )
         row = layout.row(align=True)
-        row.operator(OBJECT_OT_grease_pencil_to_armature.bl_idname, text=get_translation("grease pencil To Bone Chain"))
-        row.operator(OBJECT_OT_grease_pencil_to_bbone_ctrl.bl_idname, text=get_translation("grease pencil To +1bbone"))
+        row.operator(
+            OBJECT_OT_grease_pencil_to_armature.bl_idname,
+            text=get_translation("grease pencil To Bone Chain"),
+        )
+        row.operator(
+            OBJECT_OT_grease_pencil_to_bbone_ctrl.bl_idname,
+            text=get_translation("grease pencil To +1bbone"),
+        )
         row = layout.row(align=True)
-        row.operator(NB_simpleparent_Operator.bl_idname, text=get_translation("nb simple parent"))
-        row.operator(NbObjectBoneOperator.bl_idname, text=get_translation("Object Bone"))
+        row.operator(
+            NB_simpleparent_Operator.bl_idname, text=get_translation("nb simple parent")
+        )
+        row.operator(
+            NbObjectBoneOperator.bl_idname, text=get_translation("Object Bone")
+        )
         box = layout.box()
         row = box.row(align=True)
         row.operator(NB_Pick_Up_Operator.bl_idname, text=get_translation("Pick Up(1)"))
-        row.operator(NB_Put_Down_Operator.bl_idname, text=get_translation("Put Down(0)"))
-        row.operator(NB_Pick_Put_Clear_Operator.bl_idname, text=get_translation("Clear Mark"))
+        row.operator(
+            NB_Put_Down_Operator.bl_idname, text=get_translation("Put Down(0)")
+        )
+        row.operator(
+            NB_Pick_Put_Clear_Operator.bl_idname, text=get_translation("Clear Mark")
+        )
         row = box.row(align=True)
-        row.operator(NB_Pick_Put_Bake_Action_Operator.bl_idname, text=get_translation("Pick Put Animation Bake"))
+        row.operator(
+            NB_Pick_Put_Bake_Action_Operator.bl_idname,
+            text=get_translation("Pick Put Animation Bake"),
+        )
 
 
 ##        layout.operator(NbLatticeBoneOperator.bl_idname, text="晶格添加控制")
@@ -244,9 +323,16 @@ class NB_PT_666_TIMELINE(bpy.types.Panel):
         layout = self.layout
         box = layout.box()
         box.operator(NB_Pick_Up_Operator.bl_idname, text=get_translation("Pick Up(1)"))
-        box.operator(NB_Put_Down_Operator.bl_idname, text=get_translation("Put Down(0)"))
-        box.operator(NB_Pick_Put_Clear_Operator.bl_idname, text=get_translation("Clear Mark"))
-        box.operator(NB_Pick_Put_Bake_Action_Operator.bl_idname, text=get_translation("Pick Put Animation Bake"))
+        box.operator(
+            NB_Put_Down_Operator.bl_idname, text=get_translation("Put Down(0)")
+        )
+        box.operator(
+            NB_Pick_Put_Clear_Operator.bl_idname, text=get_translation("Clear Mark")
+        )
+        box.operator(
+            NB_Pick_Put_Bake_Action_Operator.bl_idname,
+            text=get_translation("Pick Put Animation Bake"),
+        )
 
 
 class nbnb_Prefs(bpy.types.AddonPreferences):
@@ -255,33 +341,35 @@ class nbnb_Prefs(bpy.types.AddonPreferences):
     def draw(self, context):
         lay = self.layout
         row = lay.row()
-        row.operator("wm.url_open", text="插件视频1", icon="FILE_MOVIE").url = (
-            "https://www.bilibili.com/video/BV1KN41127y8"
-        )
-        row.operator("wm.url_open", text="插件视频2", icon="FILE_MOVIE").url = (
-            "https://www.bilibili.com/video/BV12w4m1Z7UG"
-        )
-        row.operator("wm.url_open", text="插件视频3", icon="FILE_MOVIE").url = (
-            "https://www.bilibili.com/video/BV17u4m1F7ia"
-        )
+        row.operator(
+            "wm.url_open", text="插件视频1", icon="FILE_MOVIE"
+        ).url = "https://www.bilibili.com/video/BV1KN41127y8"
+        row.operator(
+            "wm.url_open", text="插件视频2", icon="FILE_MOVIE"
+        ).url = "https://www.bilibili.com/video/BV12w4m1Z7UG"
+        row.operator(
+            "wm.url_open", text="插件视频3", icon="FILE_MOVIE"
+        ).url = "https://www.bilibili.com/video/BV17u4m1F7ia"
         row = lay.row()
-        row.operator("wm.url_open", text="插件视频4", icon="FILE_MOVIE").url = (
-            "https://www.bilibili.com/video/BV1LH4y1g73M"
-        )
-        row.operator("wm.url_open", text="插件视频5", icon="FILE_MOVIE").url = (
-            "https://www.bilibili.com/video/BV16T421a7Ri"
-        )
-        row.operator("wm.url_open", text="插件视频6", icon="FILE_MOVIE").url = (
-            "https://www.bilibili.com/video/BV1bj421Q7HE"
-        )
+        row.operator(
+            "wm.url_open", text="插件视频4", icon="FILE_MOVIE"
+        ).url = "https://www.bilibili.com/video/BV1LH4y1g73M"
+        row.operator(
+            "wm.url_open", text="插件视频5", icon="FILE_MOVIE"
+        ).url = "https://www.bilibili.com/video/BV16T421a7Ri"
+        row.operator(
+            "wm.url_open", text="插件视频6", icon="FILE_MOVIE"
+        ).url = "https://www.bilibili.com/video/BV1bj421Q7HE"
         row = lay.row()
-        row.operator("wm.url_open", text="插件视频7", icon="FILE_MOVIE").url = (
-            "https://www.bilibili.com/video/BV19kafecEQe"
-        )
-        row.operator("wm.url_open", text="听歌", icon="FILE_MOVIE").url = "https://www.bilibili.com/video/BV1XmsLepE8e"
-        row.operator("wm.url_open", text="插件视频8", icon="FILE_MOVIE").url = (
-            "https://www.bilibili.com/video/BV1kN4meFE16"
-        )
+        row.operator(
+            "wm.url_open", text="插件视频7", icon="FILE_MOVIE"
+        ).url = "https://www.bilibili.com/video/BV19kafecEQe"
+        row.operator(
+            "wm.url_open", text="听歌", icon="FILE_MOVIE"
+        ).url = "https://www.bilibili.com/video/BV1XmsLepE8e"
+        row.operator(
+            "wm.url_open", text="插件视频8", icon="FILE_MOVIE"
+        ).url = "https://www.bilibili.com/video/BV1kN4meFE16"
 
 
 def draw_menu(self, context):
@@ -304,18 +392,16 @@ classes = (
 
 
 def register():
-
     for cls in classes:
         bpy.utils.register_class(cls)
 
     bpy.types.Scene.Prop_nb_666 = bpy.props.PointerProperty(type=Prop_nb_666)
-    bpy.types.TIME_MT_marker.append(draw_menu)
+    bpy.types.TIME_PT_playback.append(draw_menu)
 
 
 def unregister():
-
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
 
     del bpy.types.Scene.Prop_nb_666
-    bpy.types.TIME_MT_marker.remove(draw_menu)
+    bpy.types.TIME_PT_playback.remove(draw_menu)

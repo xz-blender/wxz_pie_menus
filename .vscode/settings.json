@@ -1,16 +1,18 @@
 {
-    "[python]": {
-        "editor.defaultFormatter": "ms-python.black-formatter",
-        "editor.formatOnSave": true, // new
-        "editor.codeActionsOnSave": {
-            "source.organizeImports": "explicit"
-        },
+"emeraldwalk.runonsave": {
+"commands": [
+    // 1) 先按 isort 规则整理 import（Ruff 规则 I）
+    { "match": "\\.py$", "cmd": ".venv\\Scripts\\python.exe -m ruff check --select I --fix \"${file}\"" },
+    // 2) 再统一代码格式
+    { "match": "\\.py$", "cmd": ".venv\\Scripts\\python.exe -m ruff format \"${file}\"" }
+]},
+"[python]": {
+    "editor.formatOnSave": true, // new
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": "explicit"
     },
-    "black-formatter.args": [
-        "--line-length",
-        "120",
-    ],
-    "python.formatting.provider": "black",
-    "CodeGPT.apiKey": "CodeGPT Plus Beta",
-    "commentTranslate.hover.enabled": true,
+},
 }
+    
+  
+ 

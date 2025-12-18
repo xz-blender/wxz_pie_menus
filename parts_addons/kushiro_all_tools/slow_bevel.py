@@ -18,23 +18,17 @@
 # Created by Kushiro
 
 
-import itertools
-import math
-from functools import reduce
 
-import bgl
 import blf
 import bmesh
 import bpy
-from bpy.props import BoolProperty, EnumProperty, FloatProperty, IntProperty
-from bpy_extras import view3d_utils
-from mathutils import Matrix, Quaternion, Vector, bvhtree, geometry
+from bpy.props import BoolProperty, FloatProperty, IntProperty
+from mathutils import Vector, geometry
 
 from . import gui
 
 if not bpy.app.background:
     import gpu
-    from gpu_extras.batch import batch_for_shader
 
     shader = gpu.shader.from_builtin("POLYLINE_UNIFORM_COLOR")
     shader.bind()

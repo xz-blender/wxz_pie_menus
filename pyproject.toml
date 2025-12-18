@@ -1,0 +1,18 @@
+# VS Code Ruff 扩展使用的配置段
+[tool.ruff]
+# 目标 Python 版本
+target-version = "py311"
+# 最大行宽
+line-length = 120
+# 与旧版保持一致的忽略规则
+ignore = ["E722", "F401", "F403", "F405", "F811","E741"]
+# 排除不需要分析的路径
+exclude = [
+    ".git",
+    ".venv",
+    "build",
+    "dist",
+    "__pycache__",
+]
+# 允许 Ruff 自动修复可修复的问题
+fix = true

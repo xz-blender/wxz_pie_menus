@@ -1,6 +1,5 @@
 import json
 import string
-import time
 from pathlib import Path
 
 import addon_utils
@@ -21,6 +20,23 @@ repos = bpy.context.preferences.extensions.repos
 
 
 def get_repo_module_name(repo_name):
+    repos = bpy.context.preferences.extensions.repos
+    module_name = repos.get(repo_name)
+    if module_name is None:
+        bpy.ops.preferences.extension_repo_add(
+            name=repo_name,
+            remote_url=f"https://{repo_name}",
+            type="REMOTE",
+        )
+        repos[repo_name].use_sync_on_startup = False
+        module_name = repos.get(repo_name)
+
+        # 刚添加的远程库可能还未正确初始化 module，返回空字符串避免报错
+        if module_name is None:
+            return ""
+
+        return module_name.module
+
     return repos[repo_name].module
 
 
@@ -100,7 +116,11 @@ def convert_value2bool(value):
 
 
 def set_all_addon_presets(self, context):
-    ex_var_dict = {"pan_ex": org_repo_name, "org_ex": org_repo_name, "third_ext": third_repo_name}
+    ex_var_dict = {
+        "pan_ex": org_repo_name,
+        "org_ex": org_repo_name,
+        "third_ext": third_repo_name,
+    }
     with ex_presets_file.open(encoding="utf-8") as json_file:
         json_file_data = json.load(json_file)
         for ex_var_dict_Name, ex_var_dict_Value in ex_var_dict.items():
@@ -109,7 +129,9 @@ def set_all_addon_presets(self, context):
                 try:
                     set_ex_settings(context, full_ext_id, addon_sets)
                 except:
-                    self.report({"INFO"}, f"(配置所有插件预设)其中{addon_id}配置预设失败!")
+                    self.report(
+                        {"INFO"}, f"(配置所有插件预设)其中{addon_id}配置预设失败!"
+                    )
 
 
 def install_addons(self, context):
@@ -133,7 +155,9 @@ def install_addons(self, context):
                             print(f"已安装 - {addon_id} - 插件!")
                             bpy.ops.preferences.addon_enable(module=full_ext_id)
                         except:
-                            self.report({"ERROR"}, f"{addon_id}联网下载失败，请检查网络连接")
+                            self.report(
+                                {"ERROR"}, f"{addon_id}联网下载失败，请检查网络连接"
+                            )
                     else:
                         # print(full_ext_id, "!!!", addon_utils.check(full_ext_id))
                         if not addon_utils.check(full_ext_id)[0]:
@@ -158,7 +182,9 @@ def install_addons(self, context):
                             self.report({"INFO"}, f"插件 {addon_id} 安装错误!")
                         # Register the timer function to wait for installation
                         try:
-                            bpy.app.timers.register(wait_for_addon_install(context, full_ext_id, addon_sets))
+                            bpy.app.timers.register(
+                                wait_for_addon_install(context, full_ext_id, addon_sets)
+                            )
                         except:
                             pass
                     # print(bpy.app.timers.is_registered(wait_for_addon_install))
@@ -179,7 +205,9 @@ def install_addons(self, context):
 
             elif self.ex_dirs == "third_ex":
                 if get_repos_class().get(third_repo_name) is None:
-                    bpy.ops.preferences.extension_repo_add(remote_url=f"https://{third_repo_name}/xz", type="REMOTE")
+                    bpy.ops.preferences.extension_repo_add(
+                        remote_url=f"https://{third_repo_name}/xz", type="REMOTE"
+                    )
                 else:
                     enable_repos(third_repo_name)
                 for addon_id, addon_sets in json_file_data[self.ex_dirs].items():
@@ -199,7 +227,9 @@ def install_addons(self, context):
                             self.report({"INFO"}, f"插件 {addon_id} 安装错误!")
                         # Register the timer function to wait for installation
                         try:
-                            bpy.app.timers.register(wait_for_addon_install(context, full_ext_id, addon_sets))
+                            bpy.app.timers.register(
+                                wait_for_addon_install(context, full_ext_id, addon_sets)
+                            )
                         except:
                             pass
                     # print(bpy.app.timers.is_registered(wait_for_addon_install))
@@ -251,10 +281,17 @@ def set_ex_settings(context, full_ext_id, addon_sets):
                 # 区分识别键列表和设置键列表
                 key_identities = keymaps_items["identity"]
                 key_key_set = keymaps_items["key_set"]
-                identity_dict = {identity.split(":")[0]: identity.split(":")[1] for identity in key_identities}
-                keysets_dict = {identity.split(":")[0]: identity.split(":")[1] for identity in key_key_set}
+                identity_dict = {
+                    identity.split(":")[0]: identity.split(":")[1]
+                    for identity in key_identities
+                }
+                keysets_dict = {
+                    identity.split(":")[0]: identity.split(":")[1]
+                    for identity in key_key_set
+                }
                 converted_keysets_dict = {
-                    k: (v == "True" if v in ["True", "False"] else v) for k, v in keysets_dict.items()
+                    k: (v == "True" if v in ["True", "False"] else v)
+                    for k, v in keysets_dict.items()
                 }
                 # print(f"{converted_keysets_dict=}")
                 keymaps_name = identity_dict.pop("keymaps_name")
@@ -262,12 +299,10 @@ def set_ex_settings(context, full_ext_id, addon_sets):
                 keymap_iter = [
                     keymap
                     for keymap in keymap_items
-                    if all(
-                        [
-                            getattr(keymap, ident_name) == ident_value
-                            for ident_name, ident_value in identity_dict.items()
-                        ]
-                    )
+                    if all([
+                        getattr(keymap, ident_name) == ident_value
+                        for ident_name, ident_value in identity_dict.items()
+                    ])
                 ]
                 if keymap_iter:
                     # print(f"{keymap_iter=}")
@@ -288,7 +323,9 @@ def set_ex_settings(context, full_ext_id, addon_sets):
                 try:
                     setattr(prefs, prop_name, convert_value2bool(prop_value))
                 except:
-                    print(full_ext_id, "--插件属性设置错误-->", prop_name, ":", prop_value)
+                    print(
+                        full_ext_id, "--插件属性设置错误-->", prop_name, ":", prop_value
+                    )
 
         elif sets_type == "runOP":
             for op_name, op_args in sets_data.items():
@@ -298,7 +335,11 @@ def set_ex_settings(context, full_ext_id, addon_sets):
                 try:
                     getattr(getattr(bpy.ops, op_class), op_func)(**op_args)
                 except:
-                    print("自动执行插件操作错误:\n", f"操作符:{op_name}\n", f"操作参数:{op_args}")
+                    print(
+                        "自动执行插件操作错误:\n",
+                        f"操作符:{op_name}\n",
+                        f"操作参数:{op_args}",
+                    )
 
 
 class PIE_Set_All_Addons_presets(Operator):
