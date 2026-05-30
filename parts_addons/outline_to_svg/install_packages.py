@@ -32,7 +32,7 @@ def ensure_pip():
 
 def module_has_loader(module_name) -> bool:
     """Test whether module is missing"""
-    return importlib.find_loader(module_name) is not None
+    return importlib.util.find_spec(module_name) is not None
 
 
 def install_package(package_name: str, location: Union[Path, None] = None):

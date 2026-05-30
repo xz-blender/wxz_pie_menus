@@ -1,7 +1,7 @@
 schema_version = "1.0.0"
 
 id = "wxz_pie_menus"
-version = "0.2.1"
+version = "0.2.2"
 name = "XZ-Blender作者预设"
 tagline = "包含众多饼菜单和实用工具,启用预设前请备份好您的个人配置"
 maintainer = "WXZ <wxz03111997@gmail.com>"
@@ -12,4 +12,13 @@ blender_version_min = "4.2.0"
 license = [
   "SPDX:GPL-2.0-or-later",
 ]
-wheels = [ "wheels/requests-2.32.3-py3-none-any.whl"]
+wheels = [
+  "wheels/certifi-2026.5.20-py3-none-any.whl",
+  "wheels/charset_normalizer-3.4.7-cp313-cp313-win_amd64.whl",
+  "wheels/idna-3.17-py3-none-any.whl",
+  "wheels/numpy-2.4.6-cp313-cp313-win_amd64.whl",
+  "wheels/pillow-12.2.0-cp313-cp313-win_amd64.whl",
+  "wheels/requests-2.34.2-py3-none-any.whl",
+  "wheels/shapely-2.1.2-cp313-cp313-win_amd64.whl",
+  "wheels/urllib3-2.7.0-py3-none-any.whl",
+]

@@ -142,7 +142,7 @@ def draw_left(layout, context):
 
 
 class ObjectAlignPanel(Panel):
-    bl_idname = "ALIGN_PT_Panel"
+    bl_idname = "M4TOOLS_PT_object_align"
     bl_label = "对齐工具"
 
     bl_space_type = "VIEW_3D"

@@ -25,6 +25,29 @@ def workspace_change_overlay(scene):
             set_overlay_shading_props(context, attr, bool)
 
 
+def set_optional_property(data, attr, value):
+    if not hasattr(data, attr):
+        return False
+
+    try:
+        setattr(data, attr, value)
+    except (AttributeError, TypeError):
+        return False
+
+    return True
+
+
+def set_shader_compilation_workers(system, count):
+    if set_optional_property(system, "max_shader_compilation_subprocesses", count):
+        return
+
+    if set_optional_property(system, "gpu_shader_workers", count):
+        if hasattr(system, "shader_compilation_method"):
+            method_prop = system.bl_rna.properties["shader_compilation_method"]
+            if any(item.identifier == "SUBPROCESS" for item in method_prop.enum_items):
+                set_optional_property(system, "shader_compilation_method", "SUBPROCESS")
+
+
 def change_preferences_settings(context):
     C = bpy.context
     pref = bpy.context.preferences
@@ -41,7 +64,7 @@ def change_preferences_settings(context):
     view.color_picker_type = "SQUARE_SV"  # 拾色器类型
     view.show_statusbar_memory = True  # 内存使用量
     if sys.platform == "win32":
-        view.show_statusbar_vram = True  # 显存使用量
+        set_optional_property(view, "show_statusbar_vram", True)  # 显存使用量
     view.show_statusbar_version = True  # 显示版本
     view.use_mouse_over_open = True  # 鼠标划过开启菜单
 
@@ -66,7 +89,7 @@ def change_preferences_settings(context):
 
     # 系统
     system = pref.system
-    system.max_shader_compilation_subprocesses = 8
+    set_shader_compilation_workers(system, 8)
 
     if sys.platform == "win32":
         pref.addons["cycles"].preferences.compute_device_type = "OPTIX"  # 设置渲染设备

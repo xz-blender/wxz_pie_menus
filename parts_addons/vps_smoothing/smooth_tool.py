@@ -9,6 +9,12 @@ if not bpy.app.background:
     import gpu
     from gpu_extras.batch import batch_for_shader
 
+    shader_3d_uniform = gpu.shader.from_builtin("UNIFORM_COLOR")
+else:
+    gpu = None
+    batch_for_shader = None
+    shader_3d_uniform = None
+
 import blf
 import bmesh
 from bpy_extras import view3d_utils
@@ -106,10 +112,10 @@ def circle_coords_calc(circle_resol):
 
 circle_co = circle_coords_calc(32)
 
-shader_3d_uniform = gpu.shader.from_builtin("UNIFORM_COLOR")
-
 
 def draw_circle_px(self, color):
+    if shader_3d_uniform is None:
+        return
     gpu.state.line_width_set(2)
     gpu.state.blend_set("ALPHA")
     with gpu.matrix.push_pop():
@@ -125,6 +131,8 @@ def draw_circle_px(self, color):
 
 # function that draws gls text in 2d mouse position
 def draw_text_px(self, color):
+    if gpu is None:
+        return
     gpu.state.blend_set("ALPHA")
     font_id = 0
     blf.color(font_id, *color)

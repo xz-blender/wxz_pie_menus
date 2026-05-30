@@ -19,8 +19,6 @@
 
 import math
 
-from numpy.core.function_base import linspace
-from numpy.lib.function_base import average
 import bpy
 import bmesh
 

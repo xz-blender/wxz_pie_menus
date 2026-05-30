@@ -1,7 +1,3 @@
-from .download import downloading
-
-downloading()
-
 import inspect
 
 if "bpy" in locals():
@@ -174,12 +170,13 @@ def register():
         if not hasattr(mod, "__addon_enabled__"):
             mod.__addon_enabled__ = False
         name = mod.__name__.split(".")[-1]
-        if getattr(prefs, "use_" + name):
+        if prefs is None or getattr(prefs, "use_" + name):
             register_submodule(mod)
 
-    add_modules_item(prefs, "setting_modules")
-    add_modules_item(prefs, "other_modules")
-    add_modules_item(prefs, "pie_modules")
+    if prefs is not None:
+        add_modules_item(prefs, "setting_modules")
+        add_modules_item(prefs, "other_modules")
+        add_modules_item(prefs, "pie_modules")
 
     translate.register()
 

@@ -26,41 +26,44 @@ import bpy
 from . import install_packages, ui_helpers
 
 restart_required = False
+registered_classes = ()
 EXTRA_MODULES = [
     ("shapely", "shapely"),
     # ("loguru", "loguru"),
 ]
-# install_packages.ensure_packages(extra_packages)
-installed_packages = install_packages.ensure_packages(EXTRA_MODULES)
-NEW_PACKAGES_INSTALLED = installed_packages != []
-if NEW_PACKAGES_INSTALLED:
-    for package in installed_packages:
-        print("Installed", package)
+MISSING_MODULES = [module for _package, module in EXTRA_MODULES if not install_packages.module_has_loader(module)]
+NEW_PACKAGES_INSTALLED = False
 
 # Local Modules
-try:
-    from . import operators, props, ui
-
-    registered_classes = (
-        props,
-        operators,
-        ui,
-    )
-
-except Exception as e:
-    print("遇到异常")
-    print(e)
-    print("需要重新启动")
+if MISSING_MODULES:
+    print("Outline To SVG 缺少依赖:", ", ".join(MISSING_MODULES))
     restart_required = True
+else:
+    try:
+        from . import operators, props, ui
+
+        registered_classes = (
+            props,
+            operators,
+            ui,
+        )
+
+    except Exception as e:
+        print("遇到异常")
+        print(e)
+        print("需要重新启动")
+        restart_required = True
 
 
 def register():
-    if restart_required and NEW_PACKAGES_INSTALLED:
+    if restart_required:
         try:
+            missing_text = ", ".join(MISSING_MODULES) if MISSING_MODULES else "pip 软件包"
             message = "".join(
                 (
-                    "已安装但无法识别新的pip软件包,",
-                    "请重新启动Blender",
+                    "Outline To SVG 依赖未就绪: ",
+                    missing_text,
+                    "，请安装后重新启动Blender",
                 )
             )
             ui_helpers.pop_message(message)

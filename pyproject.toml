@@ -1,7 +1,17 @@
+[project]
+name = "wxz-pie-menus"
+version = "0.1.0"
+requires-python = "==3.13.9"
+dependencies = [
+    "requests",
+    "shapely",
+    "pillow",
+]
+
 # VS Code Ruff 扩展使用的配置段
 [tool.ruff]
 # 目标 Python 版本
-target-version = "py311"
+target-version = "py313"
 # 最大行宽
 line-length = 120
 # 与旧版保持一致的忽略规则

@@ -101,7 +101,7 @@ def add_sm():
     bpy.ops.object.modifier_add_node_group(
         asset_library_type="ESSENTIALS",
         asset_library_identifier="",
-        relative_asset_identifier="geometry_nodes\\smooth_by_angle.blend\\NodeTree\Smooth by Angle",
+        relative_asset_identifier=r"geometry_nodes\smooth_by_angle.blend\NodeTree\Smooth by Angle",
     )
 
 

@@ -148,7 +148,7 @@ def draw_right(layout, context):
 
 
 class ObjectAlignPanel(Panel):
-    bl_idname = "ALIGN_PT_Panel"
+    bl_idname = "POPOTI_PT_object_align_helper"
     bl_label = "POPOTI Align Helper"
 
     bl_space_type = "VIEW_3D"
