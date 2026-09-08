@@ -144,7 +144,6 @@ for mod in all_modules:
     )
 
 module_classes = [
-    props,
     operators,
     pip_package,
     panels,
@@ -161,6 +160,8 @@ def add_modules_item(prefs, module_list_name):
 
 
 def register():
+    # Register collection item types before the preferences that reference them.
+    props.register()
     safe_register_class([WXZ_PIE_Preferences])
     for mod in module_classes:
         mod.register()
@@ -191,4 +192,5 @@ def unregister():
             unregister_submodule(mod)
 
     bpy.utils.unregister_class(WXZ_PIE_Preferences)
+    props.unregister()
     translate.unregister()

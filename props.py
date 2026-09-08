@@ -8,6 +8,10 @@ from .pie.Translate_key import enum_languages
 from .utils import *
 
 
+class PIE_ModuleItem(PropertyGroup):
+    name: StringProperty()  # type: ignore
+
+
 class WXZ_PIE_Prefs_Props:
     tabs: EnumProperty(
         items=(
@@ -33,11 +37,11 @@ class WXZ_PIE_Prefs_Props:
     xz_download_parts_extensions: BoolProperty(name="安装作者常用插件", default=False)  # type: ignore
 
     # 饼菜单面板
-    pie_modules: CollectionProperty(type=PropertyGroup)  # type: ignore
+    pie_modules: CollectionProperty(type=PIE_ModuleItem)  # type: ignore
     pie_modules_index: IntProperty()  # type: ignore
-    other_modules: CollectionProperty(type=PropertyGroup)  # type: ignore
+    other_modules: CollectionProperty(type=PIE_ModuleItem)  # type: ignore
     other_modules_index: IntProperty()  # type: ignore
-    setting_modules: CollectionProperty(type=PropertyGroup)  # type: ignore
+    setting_modules: CollectionProperty(type=PIE_ModuleItem)  # type: ignore
     setting_modules_index: IntProperty()  # type: ignore
     # 依赖包面板
     pip_use_china_sources: BoolProperty(name="使用清华镜像源", default=True)  # type: ignore
@@ -62,6 +66,14 @@ class WXZ_PIE_Prefs_Props:
     )  # type: ignore
 
     ### 其他插件设置
+    show_other_module_prop: BoolProperty(name="其他小工具设置", default=False)  # type: ignore
+    show_formula2nodes_submenu: BoolProperty(name="表达式转节点", default=False)  # type: ignore
+    show_meshmachine_submenu: BoolProperty(name="MeshMachine-剥离版", default=False)  # type: ignore
+    show_language_switch_submenu: BoolProperty(name="双语切换设置", default=False)  # type: ignore
+    show_asset_browser_scroll: BoolProperty(name="资产浏览器-滚轮缩放快捷键", default=False)  # type: ignore
+    show_MACHIN4_tools: BoolProperty(name="MACHIN4 功能集合", default=False)  # type: ignore
+    show_drag_uv_island: BoolProperty(name="拖动UV孤岛快捷键设置", default=False)  # type: ignore
+
     modifier_profiling: BoolProperty(name="修改器-耗时统计面板", default=False)  # type: ignore
     change_overlay_and_shading_sets: BoolProperty(name="个性化更改视图着色", default=False)  # type: ignore
     force_AutoPackup_startup: BoolProperty(name="强制自动打包-启动时", default=True)  # type: ignore
@@ -132,6 +144,7 @@ class PIE_PIP_OutputItem(bpy.types.PropertyGroup):
 
 
 CLASSES = [
+    PIE_ModuleItem,
     PIE_HistoryObjectsCollection,
     PIE_HistoryUnmirroredCollection,
     PIE_HistoryEpochCollection,

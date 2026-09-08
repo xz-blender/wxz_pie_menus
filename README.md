@@ -17,6 +17,16 @@
 </h4>
 
 # wxz_pie_menus
+
+## 整包分发
+
+插件随完整发行包提供，使用本地随包资源；不再单独打包插件，也不会在首次启用或资源缺失时从 123 盘补下载本体或节点库。
+分发时请包含 `nodes_presets/`、`wheels/`、工作区文件和字体等运行资源；依赖由 Blender 根据 `blender_manifest.toml` 安装随包 wheel。
+缺少文件时请重新获取完整发行包。
+
+外部插件清单及其配置保存在 `operator/addons_lib_presets.json` 的 `org_ex` 中，包含原自建源清单。
+在资源配置中点击“安装所需插件（官方源）”，即可通过 Blender 默认官方扩展源安装、启用并应用预设；单项失败会提示并继续处理其余插件。
+
 ## -偏好设置菜单-
 <div align="center">
     <img src="https://img.picgo.net/2024/07/12/pref_1e65a9cba62b0014a.png" style="width:80%"/>

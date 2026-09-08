@@ -21,11 +21,14 @@ bl_info = {
     "warning": "",
     "category": "Import-Export",
 }
+import traceback
+
 import bpy
 
 from . import install_packages, ui_helpers
 
 restart_required = False
+LOAD_ERROR = ""
 registered_classes = ()
 EXTRA_MODULES = [
     ("shapely", "shapely"),
@@ -49,23 +52,22 @@ else:
         )
 
     except Exception as e:
-        print("遇到异常")
-        print(e)
-        print("需要重新启动")
+        LOAD_ERROR = f"{type(e).__name__}: {e}"
+        print("Outline To SVG 加载失败:", LOAD_ERROR)
+        traceback.print_exc()
         restart_required = True
 
 
 def register():
     if restart_required:
         try:
-            missing_text = ", ".join(MISSING_MODULES) if MISSING_MODULES else "pip 软件包"
-            message = "".join(
-                (
-                    "Outline To SVG 依赖未就绪: ",
-                    missing_text,
-                    "，请安装后重新启动Blender",
+            if MISSING_MODULES:
+                message = (
+                    f"Outline To SVG 依赖未就绪: {', '.join(MISSING_MODULES)}"
+                    "，请安装后重新启动Blender"
                 )
-            )
+            else:
+                message = f"Outline To SVG 加载失败: {LOAD_ERROR}（详见系统控制台）"
             ui_helpers.pop_message(message)
         except Exception as e:
             print("Exception encountered in registration")

@@ -7,7 +7,6 @@ import bpy
 from bpy.app.handlers import persistent
 from bpy.types import Operator
 
-from ..download import download_zip
 from ..items import *
 from ..utils import *
 from .extensions_setting import *
@@ -43,8 +42,6 @@ def get_repo_module_name(repo_name):
 org_ext_id = f"bl_ext.{get_repo_module_name(org_repo_name)}"
 third_ext_id = f"bl_ext.{get_repo_module_name(third_repo_name)}"
 
-org_dirPath = Path(repos.get(org_repo_name).directory)
-third_dirPath = Path(repos.get(third_repo_name).directory)
 # print(f"{third_ext_id=}")
 
 
@@ -117,9 +114,8 @@ def convert_value2bool(value):
 
 def set_all_addon_presets(self, context):
     ex_var_dict = {
-        "pan_ex": org_repo_name,
-        "org_ex": org_repo_name,
-        "third_ext": third_repo_name,
+        "org_ex": org_ext_id,
+        "third_ex": third_ext_id,
     }
     with ex_presets_file.open(encoding="utf-8") as json_file:
         json_file_data = json.load(json_file)
@@ -134,6 +130,54 @@ def set_all_addon_presets(self, context):
                     )
 
 
+def install_official_addons(self, context, addons):
+    repo = repos.get(org_repo_name)
+    repo.enabled = True
+    repo_index = repos.find(repo.name)
+    module_prefix = f"bl_ext.{repo.module}"
+    installed = set(get_addon_list())
+
+    if any(f"{module_prefix}.{addon_id}" not in installed for addon_id in addons):
+        try:
+            result = bpy.ops.extensions.repo_sync(
+                "EXEC_DEFAULT", repo_directory=repo.directory, repo_index=repo_index
+            )
+            if "FINISHED" not in result:
+                raise RuntimeError("官方扩展目录同步未完成")
+        except Exception as error:
+            self.report({"ERROR"}, f"无法同步官方扩展源: {error}")
+            return {"CANCELLED"}
+
+    failed = []
+    for addon_id, addon_sets in addons.items():
+        full_ext_id = f"{module_prefix}.{addon_id}"
+        try:
+            if full_ext_id not in installed:
+                result = bpy.ops.extensions.package_install(
+                    "EXEC_DEFAULT",
+                    repo_directory=repo.directory,
+                    repo_index=repo_index,
+                    pkg_id=addon_id,
+                    enable_on_install=True,
+                )
+                if "FINISHED" not in result or full_ext_id not in get_addon_list():
+                    raise RuntimeError("官方源安装未完成，请检查插件兼容性及网络连接")
+            if not addon_utils.check(full_ext_id)[1]:
+                result = bpy.ops.preferences.addon_enable(module=full_ext_id)
+                if "FINISHED" not in result or not addon_utils.check(full_ext_id)[1]:
+                    raise RuntimeError("插件启用失败")
+            set_ex_settings(context, full_ext_id, addon_sets)
+        except Exception as error:
+            failed.append(addon_id)
+            self.report({"WARNING"}, f"{addon_id} 安装或配置失败: {error}")
+
+    if failed:
+        self.report({"WARNING"}, f"官方插件处理完成，失败 {len(failed)}/{len(addons)}: {', '.join(failed)}")
+    else:
+        self.report({"INFO"}, f"已从官方源安装或启用并配置 {len(addons)} 个插件")
+    return {"FINISHED"}
+
+
 def install_addons(self, context):
     set_online()
     if is_BlenderVersion_gthan():
@@ -144,64 +188,8 @@ def install_addons(self, context):
                 for addon_id, addon_sets in json_file_data[self.ex_dirs].items():
                     addon_utils.enable(addon_id, default_set=True)
 
-            elif self.ex_dirs == "pan_ex":
-                enable_repos(org_repo_name)
-                for addon_id, addon_sets in json_file_data[self.ex_dirs].items():
-                    full_ext_id = f"{org_ext_id}.{addon_id}"
-                    if full_ext_id not in get_addon_list():
-                        try:
-                            download_zip(f"{org_repo_name}/{addon_id}.zip", org_dirPath)
-                            addon_utils.modules_refresh()
-                            print(f"已安装 - {addon_id} - 插件!")
-                            bpy.ops.preferences.addon_enable(module=full_ext_id)
-                        except:
-                            self.report(
-                                {"ERROR"}, f"{addon_id}联网下载失败，请检查网络连接"
-                            )
-                    else:
-                        # print(full_ext_id, "!!!", addon_utils.check(full_ext_id))
-                        if not addon_utils.check(full_ext_id)[0]:
-                            bpy.ops.preferences.addon_enable(module=full_ext_id)
-                    set_ex_settings(context, full_ext_id, addon_sets)
-
             elif self.ex_dirs == "org_ex":
-                for addon_id, addon_sets in json_file_data[self.ex_dirs].items():
-                    full_ext_id = f"{org_ext_id}.{addon_id}"
-                    if full_ext_id not in get_addon_list():
-                        repo_directory = repos.get(org_repo_name).directory
-                        repo_index = repos.find(org_repo_name)
-                        try:
-                            bpy.ops.extensions.package_install(
-                                "EXEC_DEFAULT",
-                                repo_directory=repo_directory,
-                                repo_index=repo_index,
-                                pkg_id=addon_id,
-                            )
-                            self.report({"INFO"}, f"已安装 - {addon_id} - 插件!")
-                        except:
-                            self.report({"INFO"}, f"插件 {addon_id} 安装错误!")
-                        # Register the timer function to wait for installation
-                        try:
-                            bpy.app.timers.register(
-                                wait_for_addon_install(context, full_ext_id, addon_sets)
-                            )
-                        except:
-                            pass
-                    # print(bpy.app.timers.is_registered(wait_for_addon_install))
-                    if bpy.app.timers.is_registered(wait_for_addon_install):
-                        bpy.app.timers.unregister(wait_for_addon_install)
-                    else:
-                        if not addon_utils.check(full_ext_id)[0]:
-                            try:
-                                bpy.ops.preferences.addon_enable(module=full_ext_id)
-                            except:
-                                print(f"插件开启错误:{full_ext_id}")
-                                pass
-                        try:
-                            set_ex_settings(context, full_ext_id, addon_sets)
-                        except:
-                            print(f"插件未开启，无法设置插件配置:{full_ext_id}")
-                            pass
+                return install_official_addons(self, context, json_file_data["org_ex"])
 
             elif self.ex_dirs == "third_ex":
                 if get_repos_class().get(third_repo_name) is None:
@@ -370,6 +358,8 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
         return True
 
     def invoke(self, context, event):
+        if self.ex_dirs not in {"sys_ex", "org_ex", "third_ex"}:
+            return {"CANCELLED"}
         if self.ex_dirs == "sys_ex":
             return self.execute(context)
         else:
@@ -382,17 +372,17 @@ class Enable_Pie_Menu_Relay_Addons(Operator):
         if self.ex_dirs == "sys_ex":
             text, icon = "一键开启内置插件", "INFO"
         elif self.ex_dirs == "org_ex":
-            text, icon = "下载常用官方插件,大小2MB", "INFO"
-        elif self.ex_dirs == "pan_ex":
-            text, icon = "下载官方插件(123pan源),大小2MB", "INFO"
+            text, icon = "从 Blender 官方扩展源安装所需插件并应用预设", "INFO"
         elif self.ex_dirs == "third_ex":
             text, icon = "配置作者常用插件预设,会较长卡住! 请耐心等待...", "ERROR"
 
         row.label(text=text, icon=icon)
 
     def execute(self, context):
-        if self.ex_dirs != "":
-            install_addons(self, context)
+        if self.ex_dirs in {"sys_ex", "org_ex", "third_ex"}:
+            result = install_addons(self, context)
+            if "FINISHED" not in result:
+                return result
             bpy.ops.wm.save_userpref()
             return {"FINISHED"}
         else:
@@ -408,7 +398,6 @@ def change_addons(dummy):
         bpy.ops.pie.set_all_addons_presets()
         # bpy.ops.pie.enable_relay_addons(ex_dirs="sys_ex")
         # bpy.ops.pie.enable_relay_addons(ex_dirs="org_ex")
-        # bpy.ops.pie.enable_relay_addons(ex_dirs="pan_ex")
         # bpy.ops.pie.enable_relay_addons(ex_dirs="third_ex")
         print(f"{addon_name()} 已完成配置额外插件预设!")
         bpy.ops.wm.save_userpref()

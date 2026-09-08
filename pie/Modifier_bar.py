@@ -4,6 +4,9 @@ from bpy.types import Context, Event, Menu, Operator
 from ..utils import get_prefs, safe_register_class, safe_unregister_class
 from .utils import *
 
+# The fast Boolean solver was renamed from FAST to FLOAT in newer Blender versions.
+BOOLEAN_FAST_SOLVER = "FLOAT" if "FLOAT" in bpy.types.BooleanModifier.bl_rna.properties["solver"].enum_items else "FAST"
+
 numbers = ("ZERO", "ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN", "EIGHT", "NINE")
 modifier_props = {
     "SOLIDIFY": {
@@ -49,7 +52,7 @@ modifier_props = {
         "Z": [("axis", "Z")],
     },
     "BOOLEAN": {
-        "DEFAULT_PROP": [("solver", "FAST")],
+        "DEFAULT_PROP": [("solver", BOOLEAN_FAST_SOLVER)],
         "shift": [("operation", "UNION")],
         "ctrl": [("operation", "INTERSECT")],
     },
@@ -96,13 +99,13 @@ def add_custom_boolean(context):
                     # 将物体添加到新的集合
                     new_collection.objects.link(obj)
 
-                active_modifier.solver = "FAST"
+                active_modifier.solver = BOOLEAN_FAST_SOLVER
                 active_modifier.operand_type = "COLLECTION"
                 active_modifier.collection = new_collection
             elif len(filtered_objects) == 1:
                 object = filtered_objects[0]
                 object.display_type = "WIRE"
-                active_modifier.solver = "FAST"
+                active_modifier.solver = BOOLEAN_FAST_SOLVER
                 active_modifier.object = object
 
 

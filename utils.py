@@ -68,18 +68,14 @@ def get_desktop_path():
 
 
 def prefs_show_sub_panel(self, layout, show_prop, prop_name=""):
-    if not show_prop in self.keys():
-        # 如果属性不存在，使用 ID 属性（自定义属性）来存储
-        self[show_prop] = False  # 设置默认值为 False
-    attr = self[show_prop]
+    # AddonPreferences may not support IDProperties; use registered RNA properties.
+    attr = getattr(self, show_prop)
     # 创建 UI 布局
     col = layout.box().column()
     col.scale_y = 1.1
     col.use_property_split = False
     name: str = prop_name if prop_name != "" else show_prop
-    # 旧方法 col.prop(self, show_prop, icon="")
-    # 新方法 使用 ID 属性的语法访问属性
-    col.prop(self, f'["{show_prop}"]', text=name, icon="TRIA_DOWN" if attr else "TRIA_RIGHT")
+    col.prop(self, show_prop, text=name, icon="TRIA_DOWN" if attr else "TRIA_RIGHT")
 
     return (attr, col)
 

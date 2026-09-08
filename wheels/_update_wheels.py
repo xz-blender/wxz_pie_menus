@@ -73,7 +73,10 @@ def download_wheels(packages: tuple[str, ...]) -> None:
             wheel.unlink()
 
         for wheel in downloaded_wheels:
-            shutil.move(str(wheel), str(WHEELS_DIR / wheel.name))
+            # Moving on Windows preserves the temporary directory's private ACL,
+            # which can prevent Blender (running as another user) from reading it.
+            # Create a new file so it inherits the destination directory's ACL.
+            shutil.copyfile(wheel, WHEELS_DIR / wheel.name)
 
 
 def manifest_wheel_paths() -> list[str]:

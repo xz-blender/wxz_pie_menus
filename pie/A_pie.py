@@ -107,9 +107,16 @@ class PIE_MT_Bottom_A(Menu):
                     col.scale_y = 1.2
                     col.scale_x = 0.8
                     row = box.row(align=True)
-                    row.operator("mesh.loop_multi_select", text="循环边").ring = False
+                    # New Blender builds split loop/ring selection into separate operators.
+                    if operator_exists("mesh.select_edge_loop_multi"):
+                        row.operator("mesh.select_edge_loop_multi", text="循环边")
+                    else:
+                        row.operator("mesh.loop_multi_select", text="循环边").ring = False
                     row.separator(factor=0.5)
-                    row.operator("mesh.loop_multi_select", text="并排边").ring = True
+                    if operator_exists("mesh.select_edge_ring_multi"):
+                        row.operator("mesh.select_edge_ring_multi", text="并排边")
+                    else:
+                        row.operator("mesh.loop_multi_select", text="并排边").ring = True
                     row = box.row(align=True)
                     row.operator("mesh.loop_to_region", text="选循环内侧")
                     row.separator(factor=0.5)
