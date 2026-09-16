@@ -1,9 +1,12 @@
-from pathlib import Path
-
+from ..module.reg import register_classes, unregister_classes
 import bpy
-from bpy.types import Menu, Operator
+from bpy.types import Menu
 
-from ..utils import safe_register_class, safe_unregister_class
+from ..module.workspace_presets import (
+    WORKSPACE_NAMES,
+    PIE_Workspace_Import_Online_Operator,
+    PIE_WorkspaceSwapOperator,
+)
 from .utils import *
 
 
@@ -68,85 +71,6 @@ class VIEW3D_PIE_MT_Ctrl_Tab(Menu):
         BR.default_workspace = "Geometry Nodes"
 
 
-class PIE_WorkspaceSwapOperator(Operator):
-    """Swap workspaces with this operator"""
-
-    bl_idname = "pie.workspaceswapper"
-    bl_label = "Swap Workspace"
-    bl_options = {"REGISTER", "UNDO"}
-
-    target_workspace: bpy.props.StringProperty(name="Target Workspace")  # type: ignore
-    default_workspace: bpy.props.StringProperty(name="Default Workspcae", default="Layout")  # type: ignore
-
-    def execute(self, context):
-        t_name = self.target_workspace
-        d_name = self.default_workspace
-        d_spaces = bpy.data.workspaces
-
-        path = str(Path(__file__).parent.parent / "workspace.blend")
-
-        if context.workspace.name == t_name:
-            self.report({"INFO"}, "已经为该工作空间！")
-            return {"CANCELLED"}
-
-        if t_name in d_spaces:
-            context.window.workspace = d_spaces[t_name]
-            self.report({"INFO"}, '已切换工作空间:"%s"' % (t_name))
-            return {"FINISHED"}
-
-        if t_name not in d_spaces:
-            bpy.ops.workspace.append_activate(idname=t_name, filepath=path)
-            context.window.workspace = d_spaces[t_name]
-            self.report({"INFO"}, '已添加工作空间:"%s"' % (t_name))
-
-            return {"FINISHED"}
-
-
-class PIE_Workspace_Import_Online_Operator(Operator):
-    """Import All Onlline_workspaces Into Scenes"""
-
-    bl_idname = "pie.workspace_online_batch_import"
-    bl_label = "Import Workspaces"
-    bl_options = {"REGISTER", "UNDO"}
-
-    target_workspace: bpy.props.StringProperty(name="Target Workspace")  # type: ignore
-
-    def execute(self, context):
-        t_name = self.target_workspace
-        d_spaces = bpy.data.workspaces
-
-        path = str(Path(__file__).parent.parent / "workspace_online.blend")
-        workspaces_online_name = [
-            "0-LIB",
-            "1-MOD",
-            "2-GN",
-            "3-MAT",
-            "4-UV",
-            "5-MOTION",
-            "6-RENDER",
-            "7-COMPO",
-            "8-SETTING",
-        ]
-
-        for online_input in workspaces_online_name:
-            if context.workspace.name == online_input:
-                self.report({"INFO"}, "已经为该工作空间！")
-                return {"CANCELLED"}
-
-            if online_input in d_spaces:
-                context.window.workspace = d_spaces[online_input]
-                self.report({"INFO"}, '已切换工作空间:"%s"' % (online_input))
-                return {"FINISHED"}
-
-            if online_input not in d_spaces:
-                bpy.ops.workspace.append_activate(idname=online_input, filepath=path)
-
-                context.window.workspace = d_spaces[online_input]
-                self.report({"INFO"}, '已添加工作空间:"%s"' % (online_input))
-
-        return {"FINISHED"}
-
-
 CLASSES = [
     VIEW3D_PIE_MT_Ctrl_Tab,
     PIE_WorkspaceSwapOperator,
@@ -180,20 +104,10 @@ def register_keymaps():
         kmi.properties.name = "VIEW3D_PIE_MT_Ctrl_Tab"
         addon_keymaps.append((km, kmi))
 
-    wspace_names = {
-        "0-LIB": "ZERO",
-        "1-MOD": "ONE",
-        "2-GN": "TWO",
-        "4-UV": "FOUR",
-        "3-MAT": "THREE",
-        "5-MOTION": "FIVE",
-        "6-RENDER": "SIX",
-        "7-COMPO": "SEVEN",
-        "8-SETTING": "EIGHT",
-    }
+    number_keys = ("ZERO", "ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN", "EIGHT")
 
     km = addon.keymaps.new(name="Window")  # , space_type='EMPTY'
-    for name, number in wspace_names.items():
+    for name, number in zip(WORKSPACE_NAMES, number_keys):
         kmi = km.keymap_items.new(
             idname=PIE_WorkspaceSwapOperator.bl_idname,
             type=number,
@@ -203,7 +117,7 @@ def register_keymaps():
             alt=True,
         )
         kmi.properties.target_workspace = name
-    addon_keymaps.append((km, kmi))
+        addon_keymaps.append((km, kmi))
 
     km = addon.keymaps.new(name="Window")
     kmi = km.keymap_items.new(
@@ -218,11 +132,11 @@ def register_keymaps():
     addon_keymaps.append((km, kmi))
 
 
+@register_classes(CLASSES)
 def register():
-    safe_register_class(CLASSES)
     register_keymaps()
 
 
+@unregister_classes(CLASSES)
 def unregister():
     keymap_safe_unregister(addon_keymaps)
-    safe_unregister_class(CLASSES)

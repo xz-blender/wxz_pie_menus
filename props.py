@@ -1,3 +1,4 @@
+from .module.reg import register_classes, unregister_classes
 import importlib
 
 import bpy
@@ -43,27 +44,6 @@ class WXZ_PIE_Prefs_Props:
     other_modules_index: IntProperty()  # type: ignore
     setting_modules: CollectionProperty(type=PIE_ModuleItem)  # type: ignore
     setting_modules_index: IntProperty()  # type: ignore
-    # 依赖包面板
-    pip_use_china_sources: BoolProperty(name="使用清华镜像源", default=True)  # type: ignore
-    pip_modules_home: BoolProperty(default=False)  # type: ignore
-    pip_user_flag: BoolProperty(default=True)  # type: ignore
-    pip_advanced_toggle: BoolProperty(default=False)  # type: ignore
-    pip_module_name: StringProperty()  # type: ignore
-    default_pkg: EnumProperty(
-        name="default package",
-        description="本插件需要安装的第三方包",
-        items=[
-            # (identifier, pip_display_name, pip_import_name)
-            ("PILLOW", "pillow", "PIL"),
-            # ("OPENAI", "openai", "openai"),
-            ("HTTPX", "httpx", "httpx"),
-            # ("requests", "requests", "requests"),
-            ("pyclipper", "pyclipper", "pyclipper"),
-            ("pulp", "pulp", "pulp"),
-            ("shapely", "shapely", "shapely"),
-        ],
-        default="PILLOW",
-    )  # type: ignore
 
     ### 其他插件设置
     show_other_module_prop: BoolProperty(name="其他小工具设置", default=False)  # type: ignore
@@ -133,40 +113,21 @@ class M4_split_SceneProperties(bpy.types.PropertyGroup):
     focus_history: bpy.props.CollectionProperty(type=PIE_HistoryEpochCollection)  # type: ignore
 
 
-class PIE_PIPOutput_LINE(bpy.types.PropertyGroup):
-    line: StringProperty()  # type: ignore
-
-
-class PIE_PIP_OutputItem(bpy.types.PropertyGroup):
-    RETRUNCODE_OUTPUT: StringProperty(default="")  # type: ignore
-    ERROR_OUTPUT: bpy.props.CollectionProperty(type=PIE_PIPOutput_LINE)  # type: ignore
-    TEXT_OUTPUT: bpy.props.CollectionProperty(type=PIE_PIPOutput_LINE)  # type: ignore
-
-
 CLASSES = [
     PIE_ModuleItem,
     PIE_HistoryObjectsCollection,
     PIE_HistoryUnmirroredCollection,
     PIE_HistoryEpochCollection,
     M4_split_SceneProperties,
-    PIE_PIPOutput_LINE,
-    PIE_PIP_OutputItem,
 ]
 
 
+@register_classes(CLASSES)
 def register():
-    for cls in CLASSES:
-        try:
-            bpy.utils.register_class(cls)
-        except:
-            bpy.utils.unregister_class(cls)
-            bpy.utils.register_class(cls)
-
     bpy.types.Scene.M4_split = bpy.props.PointerProperty(type=M4_split_SceneProperties)
-    bpy.types.Scene.PIE_pip_output = bpy.props.PointerProperty(type=PIE_PIP_OutputItem)
 
 
+@unregister_classes(CLASSES)
 def unregister():
-    del bpy.types.Scene.PIE_pip_output
-
-    safe_unregister_class(CLASSES)
+    if hasattr(bpy.types.Scene, "M4_split"):
+        del bpy.types.Scene.M4_split

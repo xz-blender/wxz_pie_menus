@@ -1,10 +1,11 @@
+from ..module.reg import register_classes, unregister_classes
 from pathlib import Path
 
 import bpy
 import bpy.utils.previews
 from bpy.types import Menu, Operator
 
-from ..utils import ADDON_ID, safe_register_class, safe_unregister_class
+from ..utils import ADDON_ID
 from .utils import *
 
 preview_collections = {}
@@ -290,18 +291,18 @@ def register_keymaps():
     addon_keymaps.append((km, kmi))
 
 
+@register_classes(CLASSES)
 def register():
     try:
         load_custom_icon()
     except:
         bpy.utils.previews.remove(preview_collections[pview_pcoll_name])
         load_custom_icon()
-    safe_register_class(CLASSES)
     register_keymaps()
 
 
+@unregister_classes(CLASSES)
 def unregister():
     keymap_safe_unregister(addon_keymaps)
     bpy.utils.previews.remove(preview_collections[pview_pcoll_name])
     preview_collections.clear()
-    safe_unregister_class(CLASSES)

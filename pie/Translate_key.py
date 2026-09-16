@@ -1,3 +1,4 @@
+from ..module.reg import register_classes, unregister_classes
 import re
 
 import bpy
@@ -5,7 +6,7 @@ from bpy.app import translations
 from bpy.types import Menu, Operator, Panel
 
 from .. import __package__ as base_package
-from ..utils import get_prefs, safe_register_class, safe_unregister_class
+from ..utils import get_prefs
 from .utils import *
 
 bl_info = {
@@ -153,15 +154,15 @@ def register_keymaps():
     addon_keymaps.append((km, kmi))
 
 
+@register_classes(CLASSES)
 def register():
-    safe_register_class(CLASSES)
     bpy.types.Scene.pie_switch_language = bpy.props.PointerProperty(type=PIE_ToggleLanguageSettings)
     # bpy.types.TOPBAR_MT_editor_menus.append(draw_ui)
     register_keymaps()
 
 
+@unregister_classes(CLASSES)
 def unregister():
     keymap_safe_unregister(addon_keymaps)
     del bpy.types.Scene.pie_switch_language
-    safe_unregister_class(CLASSES)
     # bpy.types.TOPBAR_MT_editor_menus.remove(draw_ui)

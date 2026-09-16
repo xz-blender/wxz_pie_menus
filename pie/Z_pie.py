@@ -1,9 +1,9 @@
+from ..module.reg import register_classes, unregister_classes
 import re
 
 import bpy
 from bpy.types import Menu, Operator, Panel
 
-from ..utils import safe_register_class, safe_unregister_class
 from .utils import *
 
 
@@ -235,13 +235,13 @@ def register_keymaps():
     addon_keymaps.append((km, kmi))
 
 
+@register_classes(CLASSES)
 def register():
-    safe_register_class(CLASSES)
     bpy.types.Scene.pie_smooth_prop = bpy.props.FloatProperty(name="angle")
     register_keymaps()
 
 
+@unregister_classes(CLASSES)
 def unregister():
     keymap_safe_unregister(addon_keymaps)
     del bpy.types.Scene.pie_smooth_prop
-    safe_unregister_class(CLASSES)

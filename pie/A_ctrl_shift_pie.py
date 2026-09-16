@@ -1,7 +1,8 @@
+from ..module.reg import register_classes, unregister_classes
 import bpy
 from bpy.types import Menu, Operator
 
-from ..utils import extend_keymaps_list, safe_register_class, safe_unregister_class
+from ..utils import extend_keymaps_list
 from .utils import *
 
 
@@ -47,12 +48,12 @@ def register_keymaps():
     addon_keymaps.append((km, kmi))
 
 
+@register_classes(CLASSES)
 def register():
-    safe_register_class(CLASSES)
     register_keymaps()
     extend_keymaps_list(addon_keymaps)
 
 
+@unregister_classes(CLASSES)
 def unregister():
     keymap_safe_unregister(addon_keymaps)
-    safe_unregister_class(CLASSES)

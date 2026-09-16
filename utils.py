@@ -119,23 +119,6 @@ def iter_submodules_name(path, except_package_list):
     return sub_modules
 
 
-def safe_register_class(classes):
-    for cls in classes:
-        try:
-            bpy.utils.unregister_class(cls)
-        except RuntimeError:
-            pass
-        bpy.utils.register_class(cls)
-
-
-def safe_unregister_class(classes):
-    for cls in reversed(classes):
-        try:
-            bpy.utils.unregister_class(cls)
-        except RuntimeError:
-            pass
-
-
 def extend_keymaps_list(keymaps: list):
     All_Pie_keymaps.extend(keymaps)
 

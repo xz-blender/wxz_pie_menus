@@ -1,3 +1,4 @@
+from ...module.reg import register_classes, unregister_classes
 bl_info = {
     "name": "m4_tools_split",
     "author": "ah",
@@ -12,7 +13,6 @@ from pathlib import Path
 
 import bpy
 
-from ...utils import safe_register_class, safe_unregister_class
 from .align import AlignEditMesh, AlignObjectToEdge, AlignObjectToVert, CenterEditMesh, Straighten
 from .align_helper_npanel import ObjectAlignPanel
 from .align_helper_op import AlignObject
@@ -36,14 +36,14 @@ classes = [
 ]
 
 
+@register_classes(classes)
 def register():
-    safe_register_class(classes)
     icon.register()
     delay_execution(manage_focus_HUD)
 
 
+@unregister_classes(classes)
 def unregister():
-    safe_unregister_class(classes)
     icon.unregister()
 
 

@@ -34,6 +34,9 @@ with patch("builtins.__import__", side_effect=import_without_bgl):
             try:
                 assert addon.WXZ_PIE_Preferences.is_registered
                 prefs = preferences_entry.preferences
+                assert prefs.use_china_mirror is True
+                assert prefs.install_custom_pip_packages == ""
+                assert hasattr(bpy.types.Scene, "PIE_pip_output")
                 for collection_name, modules in addon.all_modules_dir.items():
                     assert [item.name for item in getattr(prefs, collection_name)] == [
                         module.__name__.split(".")[-1] for module in modules
@@ -41,6 +44,7 @@ with patch("builtins.__import__", side_effect=import_without_bgl):
             finally:
                 addon.unregister()
             assert not addon.WXZ_PIE_Preferences.is_registered
+            assert not hasattr(bpy.types.Scene, "PIE_pip_output")
             print(f"PASS: full startup, preferences, and shutdown without bgl, cycle {cycle + 1}")
     finally:
         bpy.context.preferences.addons.remove(preferences_entry)

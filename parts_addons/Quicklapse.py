@@ -1,10 +1,10 @@
+from ..module.reg import register_classes, unregister_classes
 import datetime
 import os
 import webbrowser
 
 import bpy
 
-from ..utils import safe_register_class, safe_unregister_class
 
 bl_info = {
     "name": "Quicklapse Lite",
@@ -204,11 +204,11 @@ CLASSES = [
 ]
 
 
+@register_classes(CLASSES)
 def register():
-    safe_register_class(CLASSES)
     bpy.types.Scene.auto_timelapse_settings = bpy.props.PointerProperty(type=auto_timelapse_settings)
 
 
+@unregister_classes(CLASSES)
 def unregister():
     del bpy.types.Scene.auto_timelapse_settings
-    safe_unregister_class(CLASSES)

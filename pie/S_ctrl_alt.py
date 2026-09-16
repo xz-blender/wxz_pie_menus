@@ -1,10 +1,10 @@
+from ..module.reg import register_classes, unregister_classes
 import bmesh
 import bpy
 from bpy.props import FloatProperty, IntProperty
 from bpy.types import Menu, Operator
 from mathutils import Matrix, Quaternion, Vector
 
-from ..utils import safe_register_class, safe_unregister_class
 from .utils import *
 
 
@@ -238,13 +238,13 @@ def register_keymaps():
     addon_keymaps.append((km, kmi))
 
 
+@register_classes(CLASSES)
 def register():
-    safe_register_class(CLASSES)
     bpy.types.VIEW3D_MT_uv_map.append(uv_menu_func)
     register_keymaps()
 
 
+@unregister_classes(CLASSES)
 def unregister():
     keymap_safe_unregister(addon_keymaps)
     bpy.types.VIEW3D_MT_uv_map.remove(uv_menu_func)
-    safe_unregister_class(CLASSES)

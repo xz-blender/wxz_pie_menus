@@ -1,7 +1,8 @@
 import bpy
 from bpy.types import Menu, Operator, Panel
 
-from ..utils import extend_keymaps_list, safe_register_class, safe_unregister_class
+from ..module.reg import register_classes, unregister_classes
+from ..utils import extend_keymaps_list
 from .utils import *
 
 
@@ -23,9 +24,8 @@ class PIE_Set_Ctrl_B_HotKey(Operator):
             else:
                 # change_key_value_base([(["3D View", "view3d.select_box", "Box Select"], [("active", False)], [])])
                 bpy.ops.mesh.bevel("INVOKE_DEFAULT")
-        elif context.object.mode == "OBJECT":
-            if context.space_data.region_3d.view_perspective == "CAMERA":
-                bpy.ops.view3d.render_border("INVOKE_DEFAULT")
+        elif context.object.mode == "OBJECT" and context.space_data.region_3d.view_perspective == "CAMERA":
+            bpy.ops.view3d.render_border("INVOKE_DEFAULT")
 
         return {"FINISHED"}
 
@@ -42,24 +42,23 @@ class VIEW3D_PIE_MT_Ctrl_B(Menu):
         ob_type = get_ob_type(context)
         ob_mode = get_ob_mode(context)
 
-        if ob_mode == "EDIT":
-            if ob_type == "MESH":
-                # 4 - LEFT
-                pie.separator()
-                # 6 - RIGHT
-                pie.separator()
-                # 2 - BOTTOM
-                pie.operator("pie.unbevel")
-                # 8 - TOP
-                pie.separator()
-                # 7 - TOP - LEFT
-                pie.separator()
-                # 9 - TOP - RIGHT
-                pie.separator()
-                # 1 - BOTTOM - LEFT
-                pie.separator()
-                # 3 - BOTTOM - RIGHT
-                pie.separator()
+        if ob_mode == "EDIT" and ob_type == "MESH":
+            # 4 - LEFT
+            pie.separator()
+            # 6 - RIGHT
+            pie.separator()
+            # 2 - BOTTOM
+            pie.operator("pie.unbevel")
+            # 8 - TOP
+            pie.separator()
+            # 7 - TOP - LEFT
+            pie.separator()
+            # 9 - TOP - RIGHT
+            pie.separator()
+            # 1 - BOTTOM - LEFT
+            pie.separator()
+            # 3 - BOTTOM - RIGHT
+            pie.separator()
 
 
 CLASSES = [
@@ -84,12 +83,12 @@ def register_keymaps():
     addon_keymaps.append((km, kmi))
 
 
+@register_classes(CLASSES)
 def register():
-    safe_register_class(CLASSES)
     register_keymaps()
     extend_keymaps_list(addon_keymaps)
 
 
+@unregister_classes(CLASSES)
 def unregister():
     keymap_safe_unregister(addon_keymaps)
-    safe_unregister_class(CLASSES)

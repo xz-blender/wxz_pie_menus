@@ -1,7 +1,8 @@
+from ..module.reg import register_classes, unregister_classes
 import bpy
 from bpy.types import Context, Event, Menu, Operator
 
-from ..utils import get_prefs, safe_register_class, safe_unregister_class
+from ..utils import get_prefs
 from .utils import *
 
 # The fast Boolean solver was renamed from FAST to FLOAT in newer Blender versions.
@@ -328,11 +329,11 @@ CLASSES = [
 ]
 
 
+@register_classes(CLASSES)
 def register():
-    safe_register_class(CLASSES)
     bpy.types.DATA_PT_modifiers.prepend(costom_modifier_bar)
 
 
+@unregister_classes(CLASSES)
 def unregister():
     bpy.types.DATA_PT_modifiers.remove(costom_modifier_bar)
-    safe_unregister_class(CLASSES)

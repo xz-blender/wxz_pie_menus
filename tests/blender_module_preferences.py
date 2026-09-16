@@ -54,7 +54,8 @@ class WXZ_PIE_Preferences(AddonPreferences, props.WXZ_PIE_Prefs_Props):
 addon = bpy.context.preferences.addons.new()
 addon.module = WXZ_PIE_Preferences.bl_idname
 unused_module = SimpleNamespace(register=lambda: None, unregister=lambda: None)
-modules_ns = dict(globals(), operators=unused_module, pip_package=unused_module, panels=unused_module)
+pip_props = unused_module
+modules_ns = dict(globals(), operators=unused_module, pip_operators=unused_module, panels=unused_module)
 load_nodes(
     "__init__.py",
     lambda node: isinstance(node, ast.Assign)

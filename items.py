@@ -43,15 +43,6 @@ view3d_handlder_sets = [
     ("shading", "cavity_type", "BOTH"),
 ]
 
-RETRUNCODE_DICT = {
-    0: "成功",
-    1: "通用错误",
-    2: "误用 shell 命令",
-    126: "命令不可执行",
-    127: "命令未找到",
-    128: "无效的参数",
-}
-
 oneclick_enable_preset_prop_list = [
     "load_assets_library_presets",
     "load_xz_keys_presets",

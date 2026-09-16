@@ -1,8 +1,8 @@
+from ..module.reg import register_classes, unregister_classes
 import bpy
 from bpy.props import *
 
 from ..pie.utils import keymap_safe_unregister
-from ..utils import safe_register_class, safe_unregister_class
 
 bl_info = {
     "name": "UV Drag Island",
@@ -94,11 +94,11 @@ def add_hotkey():
     addon_keymaps.append((km, kmi))
 
 
+@register_classes(classes)
 def register():
-    safe_register_class(classes)
     add_hotkey()
 
 
+@unregister_classes(classes)
 def unregister():
     keymap_safe_unregister(addon_keymaps)
-    safe_unregister_class(classes)

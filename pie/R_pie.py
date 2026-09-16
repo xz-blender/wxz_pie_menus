@@ -1,3 +1,4 @@
+from ..module.reg import register_classes, unregister_classes
 import math
 from math import pi, radians
 
@@ -7,7 +8,6 @@ from bpy.props import FloatProperty, IntProperty
 from bpy.types import Menu, Operator
 from mathutils import Matrix, Quaternion, Vector
 
-from ..utils import safe_register_class, safe_unregister_class
 from .utils import *
 
 
@@ -430,11 +430,11 @@ def register_keymaps():
     kmi = km.keymap_items.new(idname="pie.mesh_uv_rotate_modal", type="R", value="CLICK", ctrl=True, alt=True)
 
 
+@register_classes(CLASSES)
 def register():
-    safe_register_class(CLASSES)
     register_keymaps()
 
 
+@unregister_classes(CLASSES)
 def unregister():
     keymap_safe_unregister(addon_keymaps)
-    safe_unregister_class(CLASSES)

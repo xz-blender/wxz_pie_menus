@@ -1,10 +1,11 @@
+from .module.reg import register_classes, unregister_classes
 from pathlib import Path
 
 import bpy
 from bpy.types import Operator
 
 from .items import oneclick_enable_preset_prop_list
-from .utils import get_prefs, safe_register_class, safe_unregister_class
+from .utils import get_prefs
 
 operator_folder_path = Path(__file__).parent / "operator"
 assets_p_file = operator_folder_path / "assets_lib_presets.json"
@@ -85,9 +86,11 @@ CLASSES = [
 ]
 
 
+@register_classes(CLASSES)
 def register():
-    safe_register_class(CLASSES)
+    pass
 
 
+@unregister_classes(CLASSES)
 def unregister():
-    safe_unregister_class(CLASSES)
+    pass

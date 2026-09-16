@@ -1,7 +1,7 @@
+from ..module.reg import register_classes, unregister_classes
 import bpy
 from bpy.types import Operator
 
-from ..utils import safe_register_class, safe_unregister_class
 
 
 class Empty_Operator(Operator):
@@ -18,9 +18,11 @@ CLASSES = [
 ]
 
 
+@register_classes(CLASSES)
 def register():
-    safe_register_class(CLASSES)
+    pass
 
 
+@unregister_classes(CLASSES)
 def unregister():
-    safe_unregister_class(CLASSES)
+    pass

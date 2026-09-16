@@ -1,3 +1,4 @@
+from .module.reg import safe_register_class, safe_unregister_class
 import inspect
 
 if "bpy" in locals():
@@ -6,13 +7,18 @@ if "bpy" in locals():
     importlib.reload(props)
     importlib.reload(operators)
     importlib.reload(panels)
-    importlib.reload(pip_package)
+    importlib.reload(pip_operators)
+    importlib.reload(pip_panel)
+    importlib.reload(pip_props)
 else:
     import bpy
     from bpy.props import *
     from bpy.types import AddonPreferences, Operator, PropertyGroup
 
-    from . import operators, panels, pip_package, props
+    from . import operators, panels, props
+    from .module.pip_helper import operators as pip_operators
+    from .module.pip_helper import panel as pip_panel
+    from .module.pip_helper import props as pip_props
     from .translation import translate
     from .utils import *
 
@@ -99,7 +105,7 @@ def unregister_submodule(mod):
                     del prefs[name]
 
 
-class WXZ_PIE_Preferences(AddonPreferences, props.WXZ_PIE_Prefs_Props):
+class WXZ_PIE_Preferences(AddonPreferences, props.WXZ_PIE_Prefs_Props, pip_props.PIP_Prefs_Props):
     bl_idname = __package__
 
     def draw(self, context):
@@ -109,7 +115,7 @@ class WXZ_PIE_Preferences(AddonPreferences, props.WXZ_PIE_Prefs_Props):
         row.alignment = "CENTER"
 
         if self.tabs == "DEPENDENCIES":
-            panels.draw_dependencies(self, layout)
+            pip_panel.draw_dependencies(self, context, layout)
         elif self.tabs == "ADDON_MENUS":
             panels.draw_addon_menus(self, layout, context, module_path_name_list)
         elif self.tabs == "RESOURCE_CONFIG":
@@ -145,7 +151,7 @@ for mod in all_modules:
 
 module_classes = [
     operators,
-    pip_package,
+    pip_operators,
     panels,
 ]
 addon_keymaps = []
@@ -162,6 +168,7 @@ def add_modules_item(prefs, module_list_name):
 def register():
     # Register collection item types before the preferences that reference them.
     props.register()
+    pip_props.register()
     safe_register_class([WXZ_PIE_Preferences])
     for mod in module_classes:
         mod.register()
@@ -191,6 +198,7 @@ def unregister():
         if mod.__addon_enabled__:
             unregister_submodule(mod)
 
-    bpy.utils.unregister_class(WXZ_PIE_Preferences)
+    safe_unregister_class([WXZ_PIE_Preferences])
+    pip_props.unregister()
     props.unregister()
     translate.unregister()
