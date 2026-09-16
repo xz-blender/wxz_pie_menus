@@ -25,7 +25,7 @@ class PIE_Change_Assets_library_Path(bpy.types.Operator):
 
         sync = Path(get_prefs().assets_library_path_sync)
         local = Path(get_prefs().assets_library_path_local)
-        nodes_dir_path = Path(__file__).parent.parent / "nodes_presets"
+        nodes_dir_path = Path(__file__).resolve().parent.parent / "assets" / "blends" / "nodes"
         presets_json_file = Path(__file__).parent / "assets_lib_presets.json"
 
         custom_assets_lib = {}
@@ -34,8 +34,8 @@ class PIE_Change_Assets_library_Path(bpy.types.Operator):
 
             divisors = {"sync": sync, "local": local}
             for key, divisor in divisors.items():
-                for sub_key, sub_value in data[key].items():
-                    path = sub_value[0] / divisor
+                for sub_key, sub_value in list(data[key].items()):
+                    path = divisor / sub_value[0]
                     if path.exists():
                         sub_value[0] = path.resolve()
                     else:
@@ -48,6 +48,9 @@ class PIE_Change_Assets_library_Path(bpy.types.Operator):
         for item in nodes_dir_path.iterdir():
             if item.is_dir():
                 custom_assets_lib[item.name] = str(item)
+                library = context.preferences.filepaths.asset_libraries.get(item.name)
+                if library is not None and not self.remove:
+                    library.path = str(item)
 
         if not self.remove:
             change_assets_library_path(custom_assets_lib)
@@ -77,7 +80,14 @@ def change_assets_library_path(custom_assets_lib, remove=False):
                 if isinstance(data, list):
                     path, method = data[0], data[1]
                     new_item = as_lib.new(name=name, directory=str(path))
-                    new_item.import_method = import_method_dir[method]
+                    import_method = import_method_dir[method]
+                    try:
+                        new_item.import_method = import_method
+                    except TypeError:
+                        if import_method != "APPEND_REUSE":
+                            raise
+                        # Some Blender builds no longer accept APPEND_REUSE.
+                        new_item.import_method = "APPEND"
                 else:
                     new_item = as_lib.new(name=name, directory=str(data))
 

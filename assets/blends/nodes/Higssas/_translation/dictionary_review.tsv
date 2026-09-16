@@ -1,0 +1,991 @@
+-X	-X
+-Y	-Y
+-Z	-Z
+1	1
+1 Ratio	1 比率
+10	10
+10  Instances	10  实例
+10 Ratio	10 比率
+11	11
+11  Instances	11  实例
+11 Ratio	11 比率
+12	12
+12 Instances	12 实例
+12 Ratio	12 比率
+13	13
+13  Instances	13  实例
+13 Ratio	13 比率
+14	14
+14  Instances	14  实例
+14 Ratio	14 比率
+15  Instances	15  实例
+15 Ratio	15 比率
+2	2
+2 Instances	2 实例
+2 Ratio	2 比率
+25	25
+2D	二维
+2D Boundary	二维边界
+3	3
+3 Instances	3 实例
+3 Ratio	3 比率
+30	30
+3D	三维
+3D Distance Threshold	三维距离阈值
+3D Surface	三维表面
+4	4
+4 Instances	4 实例
+4 Ratio	4 比率
+4D Noise	四维噪波
+5	5
+5 Instances	5 实例
+5 Ratio	5 比率
+6	6
+6 Instances	6 实例
+6 Ratio	6 比率
+7	7
+7 Instances	7 实例
+7 Ratio	7 比率
+8	8
+8 Instances	8 实例
+8 Ratio	8 比率
+9	9
+9 Instances	9 实例
+9 Ratio	9 比率
+A	A
+A Blured	模糊后的A
+AO	AO
+Absolute	绝对
+Absolute Grid Size	绝对栅格尺寸
+Absolute Size	绝对尺寸
+Accurate	精确
+Actice Camera	活动相机
+Active Camera	活动相机
+Addendum Factor	齿顶高系数
+Aizawa	Aizawa
+Algorithm	算法
+Align to Direction	对齐方向
+All Paths	所有路径
+All/TopSide/TopBottom	全部/顶侧/顶底
+Alpha	透明度
+Amount of mixing between the A and B inputs	A与B输入之间的混合量
+An index used to group values together for multiple separate accumulations	用于将值分组，以分别执行多组累加的索引
+An index used to group values together for multiple separate operations	用于将值分组，以分别执行多组操作的索引
+Angel	角度
+Angle	角度
+Angle Signed	有向角度
+Angle Unsigned	无向角度
+Angle to rotate the input vector by	输入矢量的旋转角度
+Anti Oloid	反奥洛伊德
+Arc Angle	圆弧角度
+Arc Midpoint	圆弧中点
+Arc Radius	圆弧半径
+Area	面积
+Area Center of Mass	面积质心
+Arrow	箭头
+Ascii	ASCII字符
+Attribute	属性
+Attribute on the geometry above	上方几何体上的属性
+Auto Tangent	自动切向
+Average	平均
+Axis	轴向
+Axis Angle	轴角
+Axis Center	轴心
+Axis Edge	轴边缘
+Axis Push	沿轴推移
+Axis Rotation	轴向旋转
+B	B
+B Blured	模糊后的B
+B Input	B 输入
+Back	回退
+Banking	侧倾
+Base	基数
+Beta	贝塔
+Bevel	倒角
+Bezier	贝塞尔
+Bias 	偏置
+Bias Compression	压缩偏置
+Bias Tension 	张力偏置
+Bisect Points	切分点
+Blend	混合
+Blue	蓝色
+Blur	模糊
+Blur Boundaries 	模糊边界
+Blur Curvature	模糊曲率
+Blur Image	模糊图像
+Blur Iterations	模糊迭代次数
+Blur Radius	模糊半径
+Blur Vector	模糊矢量
+Blur Weight	模糊权重
+Bottom	底部
+Bottom Cap	底部端盖
+Bottom Radius	底部半径
+Bounce	弹跳
+Bounces	弹跳次数
+Boundary Contain	边界限制
+Boundary Edge	网格边界
+Boundary Edges	边界边
+Bounding Box	边界框
+Bounds Center	边界中心
+Bounds Culling	边界剔除
+Bounds Offset	边界偏移
+Bounds Padding	边界留边
+Brightness Max	亮度最大值
+Brightness Min	亮度最小值
+Camera	相机
+Camera Direction	相机方向
+Camera Space	相机空间
+Cartesian	笛卡尔坐标
+Catmull Rom	Catmull-Rom样条
+Cell Center	单元中心
+Cell ID	单元 ID
+Cell Position 	单元位置
+Cells K F	细胞状K/F
+Center	中心
+Center Contain	中心包含
+Center Depth	中心深度
+Center Tile	中心铺砖
+Center of Mass	质心
+Change Font	更换字体
+Circel 2 Radius	圆 2 半径
+Circle 1 Center	圆 1 中心
+Circle 1 Radius	圆 1 半径
+Circle 2 Center	圆 2 中心
+Circle 2 Radius	圆 2 半径
+Circle Pins	圆形固定点
+Circle Rotation	圆旋转
+Circular	圆形
+Circular Fillet	圆弧倒角
+Clamp	钳制
+Clip	裁切
+Cluster Count	聚类数量
+Cluster Points	聚类点
+Color	颜色
+Color Mask	颜色遮罩
+Color Seed	颜色随机种子
+Compression	压缩
+Connect All	连接所有
+Constant Hex Size	恒定六边形尺寸
+Constant Scale	恒定缩放
+Constant Tile Size	恒定铺砖尺寸
+Constant Tris Size	恒定三角形尺寸
+Contain in Boundary	限制在边界内
+Contain in Volume	限制在体积内
+Contrast Max	对比度最大值
+Contrast Min	对比度最小值
+Convert to Instance	转换为实例
+Corner Angles	拐角角度
+Corner Offset	拐角偏移
+Count	数量
+Count/Density	数量/密度
+Cube	立方体
+Culling Seed	剔除随机种子
+Curve	曲线
+Curve Gear Profile	齿轮轮廓曲线
+Curve Index	曲线索引
+Curve Primitive	基础曲线
+Curve Tangent	曲线切向
+Curves	曲线
+Custom Axis	自定义轴向
+Custom Camera	自定义相机
+Custom Face Selection	自定义面选区
+Custom Group ID	自定义组ID
+Custom Normals	自定义法线
+Custom Pins Points	自定义固定点
+Custom Pivot	自定义轴心
+Custom Vector	自定义矢量
+Cyclic Loft	循环放样
+Cyclic Splines	循环样条
+Cylindrical	柱形
+Da	Da
+Da/Db	Da/Db
+Dadras	Dadras
+Damping	阻尼
+Db	Db
+Dedendum Factor	齿根高系数
+Default Cube	默认立方体
+Default K F	默认K/F
+Deformers	形变
+Delete Caps	删除端盖
+Delete Nonvalid	删除无效项
+Delete Section	删除截面
+Density	密度
+Density Max	密度最大值
+Depth	深度
+Depth Size	深度尺寸
+Depth-First Search	深度优先搜索
+Deselected	未选择
+Detail	细节
+Difference	差集
+Direction	方向
+Direction 1	方向 1
+Direction 2	方向 2
+Direction 3	方向 3
+Direction Influence	方向影响
+Directional	定向
+Displacement Scale	置换缩放
+Displacment Scale	置换缩放
+Distance	距离
+Distance Min	距离最小值
+Distance of the vertices from the origin	顶点到原点的距离
+Distance to Edge	到边缘的距离
+Distances from Camera	到相机的距离
+Distortion	畸变
+Distortion Amount	畸变量
+Distribution	分布
+Divide Probability	分割概率
+Documentation web link - www.higgsas-geo-nodes-manual.rtfd.io	文档链接 - www.higgsas-geo-nodes-manual.rtfd.io
+Dots K F	点状K/F
+Duplicate	复制
+Edge	边
+Edge 1 Factor	边 1 系数
+Edge 2 Factor	边 2 系数
+Edge Seam	边接缝
+Edge Walls	边线墙
+Edges	边
+Elastic	弹性
+End	结束
+End Direction	结束方向
+End Face	结束面
+End Frame	结束帧
+End Location	结束位置
+End Point	结束点
+End Radius	结束半径
+Entire Mesh	整个网格
+Epsilon	容差
+Equal	等于
+Equal Epsilon	相等容差
+Error	误差
+Euler	欧拉
+Euler Rotation	欧拉旋转
+Even	均匀
+Even Offset	均匀偏移
+Even Pole	均匀极点
+Even Poles	均匀极点
+Even Probability	均匀概率
+Even Resolution	均匀分辨率
+Even Spacing	均匀间距
+Even Thickness	均匀厚度
+Exponent	指数
+Exponential	指数
+Extend	延伸
+Extend to Fit Curve	延伸以适配曲线
+External Mesh	外部网格
+Extruded String Lines	挤出的绕线
+Extrusion Thickness	挤出厚度
+F	F
+Fac	系数
+Face	面
+Face Corner	面拐角
+Face Group ID	面组ID
+Face Normal	面法线
+Face Selection	面选区
+Face Selection Order	面选择顺序
+Face UV Map	面UV贴图
+Faces	面
+Faces UV Map	面UV贴图
+Factor	系数
+Factor/Lenth	系数/长度
+Falloff Distance	衰减距离
+Falloff Fac	衰减系数
+Falloff Factor	衰减系数
+Falloffs	衰减
+Fan	扇形
+Fast	快速
+Fast - Moves VDM to closest point. Accurate - Interpolates closest position on surface	快速：将VDM移动到最近点。精确：插值得到表面上的最近位置。
+Fill	填充
+Fill Caps	填充端盖
+Fill Curve Group ID	填充曲线组ID
+Fill Curves	填充曲线
+Fill Volume	填充体积
+Fillet Resolution	圆角分辨率
+First Point Tangent	首点切向
+Fit in Geometry	适配几何体
+Fit in Geometry Inside	适配几何体内部
+Fit in Mesh	适配网格
+Fit to Curve	适配曲线
+Flat	平面
+Flat Fillet	平直倒角
+Flatten UV Mesh	展平UV网格
+Flip	翻转
+Flip Direction	翻转方向
+Flip Normals	翻转法线
+Flip Offset In Corner	翻转内拐角偏移
+Flip Offset Middle	翻转中部偏移
+Flip Offset Out Corner	翻转外拐角偏移
+Flip Offset Side	翻转侧面偏移
+Flip Sides	翻转侧面
+Flip U	翻转 U
+Flip V	翻转 V
+Flip X	翻转 X
+Flip X BBox	翻转X边界框
+Flip Y	翻转 Y
+Flip Y BBox	翻转Y边界框
+Flip Z	翻转 Z
+Flip Z BBox	翻转Z边界框
+Float	浮点数
+Floyd-Steinberg	Floyd-Steinberg
+Follow Normals	跟随法线
+Font Scale	字体缩放
+Frame	帧
+From Max	源最大值
+From Min	源最小值
+Gamma	伽马
+Gamma Correction	伽马校正
+Gap	间隙
+Gaussian Curvature	高斯曲率
+Generators	生成器
+Geometry	几何体
+Geometry Measure	几何测量
+Geometry Nodes Cube	几何节点立方体
+Gradient	梯度
+Gravity	重力
+Greater Then	大于
+Greather Then	大于
+Greather Then Or Equal	大于等于
+Green	绿色
+Grid	栅格
+Grid Offset	栅格偏移
+Grid Resoliution	栅格分辨率
+Grid Resolution	栅格分辨率
+Ground Normal	地面法线
+Ground Position	地面位置
+Group ID	组ID
+Guide Direction	引导方向
+Guide Object	引导物体
+Guide Points Count	引导点数量
+Guide Points Spacing	引导点间距
+Halvorsen	Halvorsen
+Height	高度
+Hex X	X方向六边形数量
+Hex Y	Y方向六边形数量
+Hexagon Grid	六边形网格
+Hexagons	六边形
+Hilbert	Hilbert
+Histogram	直方图
+Hit Ground	触地
+Horizontal	水平
+How many times to blur the values for all elements	对所有元素的值进行模糊处理的次数
+How to interpolate the values between neighboring voxels	相邻体素之间数值的插值方式
+Hue	色相
+ID	ID
+Image	图像
+Image Adjustment	图像调整
+In	缓入
+In / Out	缓入/缓出
+InOut	缓入缓出
+Index	索引
+Index In Corner	内拐角索引
+Index Middle	中部索引
+Index Order Pick	按索引顺序拾取
+Index Out Corner	外拐角索引
+Index Side	侧面索引
+Indices	索引
+Individual	独立
+Infinite Loop	无限循环
+Initial Distribution	初始分布
+Initial Distribution View	初始分布预览
+Initial Subdivision	初始细分
+Inner	内部
+Inner Faces	内部面
+Inner Resolution	内部分辨率
+Inner UV Map	内部 UV贴图
+Input	输入
+Inside Volume	体积内部
+Instance	实例
+Instance Index	实例索引
+Instances	实例
+Integer	整数
+Interior Tangent	内切向
+Interpolation	插值
+Intersecting Edges	相交边
+Intersecting Points	相交点
+Intersection	交集
+Intersection Point	交点
+Intersection Point 1	交点 1
+Intersection Point 2	交点 2
+Invert	反转
+Invert Boundary Edge	反转网格边界
+Invert Sorting	反转排序
+Invert Threshold	反转阈值
+Invert Time	反转时间
+Inverted K F	反转K/F
+Is Collision	是否碰撞
+Is Inside	是否在内部
+Is Inside Camera	是否在相机视野内
+Is Intersecting	是否相交
+Is Shadow	是否为阴影
+Is Valid	是否有效
+Island Center Pivot	孤岛中心轴心
+Islands Count	孤岛数量
+Iso	等值
+Iterations	迭代次数
+K	K
+K-Means	K均值聚类
+Keep Boundaries	保持边界
+Keep Cyclic	保持循环
+Keep Faces	保持面
+Keep Z Offset	保持 Z 偏移
+Kruskal's Randomized	随机Kruskal算法
+Left Left	左转左转
+Left Right	左转右转
+Lenght 1	长度 1
+Lenght 2	长度 2
+Length	长度
+Lenth	长度
+Less Then	小于
+Less Then or Equal	小于等于
+Light Direction	光照方向
+Lightness	明度
+Limit Distance	限制距离
+Limit Obtuse Triangles	限制钝角三角形
+Limit Offset	限制偏移
+Limits Lower	下限
+Limits Upper	上限
+Line	直线
+Line 1 Point 1	直线 1 点 1
+Line 1 Point 2	直线 1 点 2
+Line 2 Point 1	直线 2 点 1
+Line 2 Point 2	直线 2 点 2
+Line Point 1	直线点 1
+Line Point 2	直线点 2
+Linear Algebra	线性代数
+Linear interpolation	线性插值
+Lines Distance	线条距离
+Location	位置
+Lock Z Axis	锁定Z轴
+Loft Subdivide	放样细分
+Loop Animation	循环动画
+Lorenz	Lorenz
+Lower Angle	下限角度
+Lower Factor	下限系数
+M	M
+Magnitude	幅度
+Major Radius	主半径
+Major Radius 	主半径
+Major Resolution	主分辨率
+Major Segments	主分段
+Margin	边距
+Mask	遮罩
+Mass	质量
+Material	材质
+Max	最大值
+Max 1 Bounding Box	边界框1最大值
+Max 2 Bounding Box	边界框2最大值
+Max Bounds	最大边界
+Max Brightness	最大亮度
+Max Brightness 	最大亮度
+Max Parameter	最大参数
+Max Points Amount	最大点数
+Max Radius	最大半径
+Max Radius Clamped	最大半径（钳制）
+Max String Length	最大绕线长度
+Max Threshold	最大阈值
+Mean	均值
+Mean Color	平均颜色
+Mean Curvature	平均曲率
+Median Color	中位颜色
+Median Cut	中位切分
+Median Edges	中轴边
+Median Mesh	中轴网格
+Median Points	中轴点
+Menu	菜单
+Merge	合并
+Merge By Distance	按距离合并
+Merge Distance	合并距离
+Mesh	网格
+Mesh Arrow	网格箭头
+Mesh Constrain	网格约束
+Mesh Gear	齿轮网格
+Mesh Islands	网格孤岛
+Mesh Primitives	基础形状
+Mesh Surface	网格表面
+Mesh Volume	网格体积
+Midlevel	中间值
+Midpoint	中点
+Min	最小值
+Min 1 Bounding Box	边界框1最小值
+Min 2 Bounding Box	边界框2最小值
+Min Bounds	最小边界
+Min Bounds 	最小边界
+Min Brightness	最小亮度
+Min Distance	最小距离
+Min Parameter	最小参数
+Min Points Amount	最小点数
+Min Radius	最小半径
+Min String Length	最小绕线长度
+Min Threshold	最小阈值
+Minimal Spline Lenght	最小样条长度
+Minor Radius	次半径
+Minor Resolution	次分辨率
+Minor Segments	次分段
+Mirror	镜像
+Mirror Center	镜像中心
+Mirror X	镜像X
+Mirror Y	镜像Y
+Mirror Z	镜像Z
+Mix Factor	混合系数
+Mode	模式
+Module	模数
+Moore Cyclic	Moore循环曲线
+Mortar Size	灰缝尺寸
+Multiple Lines	多重线
+N	N
+N-Gons	多边形
+N-gons	多边形
+NURBS	NURBS
+Name	名称
+Narrowness	收窄程度
+Next Vertex Index	下一个顶点索引
+Noise Detail	噪波细节
+Noise Distortion	噪波畸变
+Noise Offset	噪波偏移
+Noise Scale	噪波缩放
+Non-Uniform	非均匀
+Non-Uniform Size	非均匀尺寸
+Noodles K F	条状K/F
+Normal	法线
+Normal Axis	法线轴
+Normalize	归一化
+Normalize 	归一化
+Normalize Mask	归一化遮罩
+Normalize Pixels	归一化像素
+Normalize Vector	归一化矢量
+Normalized	归一化
+Normalized Direction	归一化方向
+Nth	每隔N项
+Number of vertices in the X direction	X方向的顶点数量
+Number of vertices in the Y direction	Y方向的顶点数量
+Object	物体
+Object Space	物体空间
+Obtuse Triangles Options	钝角三角形选项
+Offset	偏移
+Offset form Surface	表面偏移
+Offset/Extrude/Duplicate	偏移/挤出/复制
+Oloid	奥洛伊德
+Order	阶数
+Ordered 2x2	有序抖色2×2
+Ordered 4x4	有序抖色4×4
+Ordered 8x8	有序抖色8×8
+Oreantation Bias 	方向偏置
+Origin	原点
+Original Position	原始位置
+Orthographic Scale	正交缩放
+Oscillations K F	振荡K/F
+Out	缓出
+Outer	外部
+Outer Diameter	外径
+Outer Resolution	外部分辨率
+Output	输出
+P	P
+Pack UV	打包UV
+Pack UV Islands	打包UV孤岛
+Packing Ratio	堆积比率
+Padding	留边
+Palatte Count	调色板颜色数量
+Petal Area	花瓣面积
+Phi	Phi
+Pick Instance	拾取实例
+Pin Boundary	固定边界
+Pin Endpoints	固定端点
+Pinch	收拢
+Pins Points	固定点
+Pins Points Count	固定点数量
+Pitch Circle	分度圆
+Pitch Circle Radius	分度圆半径
+Pivot	轴心
+Plane 1 Normal	平面 1 法线
+Plane 1 Position	平面 1 位置
+Plane 2 Normal	平面 2 法线
+Plane 2 Position	平面 2 位置
+Plane 3 Normal	平面 3 法线
+Plane 3 Position	平面 3 位置
+Plane Normal	平面法线
+Plane Position	平面位置
+Point	点
+Point 1	点 1
+Point 1 X	点 1 X
+Point 1 Y	点 1 Y
+Point 2	点 2
+Point 2 X	点 2 X
+Point 2 Y	点 2 Y
+Point 3	点 3
+Point 4	点 4
+Point Light	点光源
+Point Light Location	点光源位置
+Point Radius	点半径
+Point1	点1
+Point2	点2
+Point3	点3
+Points	点
+Points Cluster Centroid	点簇质心
+Points Cluster ID	点簇ID
+Points Count	点数
+Points Culling	点剔除
+Points Normal	点法线
+Points Radius	点半径
+Points Stippling Simulation	点描模拟
+Points X	X方向点数
+Points Y	Y方向点数
+Points Z	Z方向点数
+Polar	极坐标
+Pole Axis	极轴
+Pole Axis Rotation	极轴旋转
+Pole Center	极点中心
+Pole Distance Scale	极向距离缩放
+Pole Location	极向位置
+Pole Target	极向目标
+Poles Distance	极点距离
+Poly	多段线
+Position	位置
+Position 1	位置 1
+Position 2	位置 2
+Positive/Negative Raycast	正向/反向射线投射
+Post Smooth	后续平滑
+Power	幂
+Pressure Angle	压力角
+Profile Curve	轮廓曲线
+Profile Radius	轮廓半径
+Project on Surface	投影到表面
+Project to Surface	投影到表面
+Projection Falloff	投影衰减
+Pull Radius	拉取半径
+Pull Strength	拉取强度
+Pull Strength 	拉取强度
+Push / Pull	推/拉
+Q	Q
+Quads	四边形
+Radius	半径
+Radius 1	半径 1
+Radius 2	半径 2
+Radius 3	半径 3
+Radius Contain	半径包含
+Radius Depth	半径深度
+Radius Scale	半径缩放
+Random Order Pick	随机顺序拾取
+Random Orientation 	随机方向
+Random Path	随机路径
+Random Radius	随机半径
+Random Radius Clamped	随机半径（钳制）
+Randomize	随机化
+Randomize Beta	随机化贝塔
+Randomize Split Orientation	随机分割方向
+Randomize Unfolding	随机展开
+Range	范围
+Ray Direction	射线方向
+Ray Length	射线长度
+Ray Origin	射线起点
+Rays Angle Offset	射线角度偏移
+Rays Samples	射线采样数
+Realize Instances	实例实体化
+Red	红色
+Relax Edges	松弛边
+Relax Iterations	松弛迭代次数
+Relax Strength 	松弛强度
+Relax Weight	松弛权重
+Releax Iterations	松弛迭代次数
+Reletive Offset	相对偏移
+Reletive Scale	相对缩放
+Repeat	重复
+Repulsion Radius Scale	排斥半径缩放
+Repulsion Strength Scale	排斥强度缩放
+Resample Curve	重采样曲线
+Resample Length	重采样长度
+Resample Splines	重采样样条
+Resample/Set Resolution	重采样/设置分辨率
+Resoliution	分辨率
+Resolution	分辨率
+Resolution Scale	分辨率缩放
+Resolution/Resample Count	分辨率/重采样数量
+Rest Position	静止位置
+Result of joining generated geometries from each iteration	合并每次迭代生成的几何体所得的结果
+Reverse	反向
+Right Left	右转左转
+Right Right	右转右转
+Ring Resolution	环分辨率
+Rings	环数
+Root Diameter	齿根圆直径
+Rotate	旋转
+Rotate Half Teeth	旋转半个齿距
+Rotation	旋转
+Rotation Axis	旋转轴向
+Rotation Direction	旋转方向
+Rotation Factor	旋转系数
+Rotations	旋转圈数
+Roughness	糙度
+SDF	SDF
+SDF 1	SDF 1
+SDF 2	SDF 2
+SDF Nodes	SDF节点
+Sample Count	采样数量
+Sample Resolution	采样分辨率
+Saturation	饱和度
+Scale	缩放
+Scale of the profile at each point	各点处轮廓的缩放比例
+Secondary Tangent	次切向
+Seed	随机种子
+Segments	分段
+Selected	已选择
+Selection	选区
+Self Pivot	自身轴心
+Set Cyclic	设为循环
+Shade Smooth	平滑着色
+Sharpness	锐度
+Sharpness Scale	锐度缩放
+Sharpness/Softness	锐利/柔和
+Sheet	薄片
+Shortest	最短
+Shortest Path	最短路径
+Show Bounds	显示边界
+Show Original Geometry	显示原始几何体
+Show Palette	显示调色板
+Show Quantization	显示量化
+Side	侧面
+Side Bricks	侧面砖块
+Side Depth	侧面深度
+Side Segments	侧面分段
+Side length of the plane in the X direction	平面在X方向的边长
+Sides	侧面
+Sierra	Sierra
+Simulation	模拟
+Single Axis	单轴
+Single Slice	单次切片
+Sinusoidal	正弦
+Size	尺寸
+Skeleton Edge	骨架边
+Skeletonization	骨架化
+Skeletonization Overlay	骨架化叠加预览
+Slice	切片
+Slice Distance	切片距离
+Slice/Xor Blend	切片/异或混合
+Smooth	平滑
+Smooth 	平滑
+Smooth Bevel	平滑倒角
+Smooth Limits	平滑限制
+Smooth Mesh	平滑网格
+Smooth Weight	平滑权重
+Smoothness	平滑度
+Smoothstep	平滑阶跃
+Sobel	Sobel算子
+Socket	接口
+Solenoidal	无散度场
+Solid	实体
+Sort Index	排序索引
+Sorted Pins Points	排序后的固定点
+Sorting	排序
+Space between islands	孤岛之间的间距
+Speed	速度
+Sphere 1 Center	球体 1 中心
+Sphere 1 Radius	球体 1 半径
+Sphere 2 Center	球体 2 中心
+Sphere 2 Radius	球体 2 半径
+Sphere Center	球体中心
+Sphere Mesh	球体网格
+Sphere Radius	球体半径
+Spherical	球形
+Spherical Padding	球形留边
+Spine Amount	螺旋圈数
+Spline	样条
+Spline 1	样条 1
+Spline 2	样条 2
+Spline Amount	样条数量
+Spline Length	样条长度
+Spline Resolution	样条分辨率
+Splines	样条
+Split All Faces	分割所有面
+Split Seed	分割随机种子
+Springiness	弹性
+Sprott	Sprott
+Square Pins	方形固定点
+Squish	挤压
+Squish Strength 	挤压强度
+Standard deviation	标准差
+Start	起始
+Start Direction	起始方向
+Start End Path	起点到终点路径
+Start Face	起始面
+Start Faces	起始面
+Start Frame	起始帧
+Start Index	起始索引
+Start Location	起始位置
+Start Pin Index	起始固定点索引
+Start Radius	起始半径
+Start Selection	起始选区
+Step Size	步长
+Steps	步数
+Strength	强度
+Strenth	强度
+Strenth Compression 	压缩强度
+Strenth Tension 	张力强度
+Stretch	拉伸
+Stretch Angle	角度拉伸
+Stretch Area	面积拉伸
+Stretch Weight	拉伸权重
+Strings Settings	绕线设置
+Subdivide	细分
+Subdivisions	细分级别
+Sun Direction	太阳光方向
+Sun Light	太阳光
+Surface Mesh	表面网格
+Surface Project	表面投影
+Switch	切换
+T	T
+Tangent	切向
+Target	目标
+Target Mesh	目标网格
+Target Rest Position	目标静止位置
+Target UV Map	目标 UV贴图
+Teeth	轮齿
+Teeth Resolution	轮齿分辨率
+Tension	张力
+Texture	纹理
+The duplicated geometry, not including the original geometry	复制生成的几何体，不包含原始几何体
+Theta	Theta
+Thickness	厚度
+Threshold	阈值
+Tile	铺砖
+Tile A	铺砖 A
+Tile A Size	铺砖 A 尺寸
+Tile Angle	铺砖角度
+Tile B Size	铺砖 B 尺寸
+Tile Index	铺砖索引
+Tile U Size	铺砖 U 尺寸
+Tile V Size	铺砖 V 尺寸
+Tile X	X方向铺砖数量
+Tile Y	Y方向铺砖数量
+Tilt	倾斜
+Time	时间
+Time Scale	时间缩放
+Time Steps	时间步数
+Time to Hit Ground	触地时间
+Timescale	时间缩放
+To Edge	转为边
+To Face	转为面
+To Max	目标最大值
+To Min	目标最小值
+Top	顶部
+Top Cap	顶部端盖
+Top Radius	顶部半径
+Transfer Attribute	传递属性
+Transform	变换
+Transition	平移
+Translate	平移
+Translation	平移
+Translation Speed	平移速度
+Trefoil Knot	三叶结
+Triangle Mesh	三角形网格
+Triangles	三角形
+Triangulate Intersection	交界三角化
+Tris X	X方向三角形数量
+Tris Y	Y方向三角形数量
+Type	类型
+Type 1	类型 1
+Type 2	类型 2
+Type 3	类型 3
+U	U
+U Count	U 数量
+U Direction	U 方向
+U ID	U ID
+U Index	U 索引
+U Multiply	U 倍率
+U Offset	U 偏移
+U Parameter	U 参数
+U Resolution	U 分辨率
+U Scale	U 缩放
+U Translation	U 平移
+U/V Ratio	U/V比率
+UV	UV
+UV Attribute	UV属性
+UV Islands	UV孤岛
+UV Islands Seed	UV孤岛随机种子
+UV Map	UV贴图
+UV Map Output	UV贴图输出
+UV Tangent	UV切向
+UV Transform	UV变换
+UVMap	UV贴图
+Unfold Amount	展开量
+Unfold Factor	展开系数
+Uniform	均匀
+Union	并集
+Up Axis	向上轴
+Upper Angle	上限角度
+Upper Factor	上限系数
+Use Average	使用平均值
+Use Curve Radius	使用曲线半径
+Use Pole Target	使用极向目标
+Utilities	实用工具
+V	V
+V / E / F / FC	顶点/边/面/面拐角
+V Count	V 数量
+V Direction	V 方向
+V ID	V ID
+V Index	V 索引
+V Multiply	V 倍率
+V Offset	V 偏移
+V Resolution	V 分辨率
+V Scale	V 缩放
+V Translation	V 平移
+VDM Texture	VDM 纹理
+Value	值
+Variance Threshold	方差阈值
+Vector	矢量
+Vector Fields	矢量场
+Vector Scale	矢量缩放
+Vertex Normal	顶点法线
+Vertical	垂直
+Vertical Scale	垂直缩放
+Vertices X	X方向顶点数
+Vertices Y	Y方向顶点数
+View Grid	预览栅格
+View Grid Image	预览图像栅格
+View Threshold	预览阈值
+Visualise Easing Curve	缓动曲线可视化
+Visualize UV Map	UV贴图可视化
+Viz	可视化
+Volume	体积
+Volume Center of Mass	体积质心
+Volume to take a named grid out of	从中提取指定名称栅格的体积
+Voronoi Centroid	Voronoi质心
+Voxel Amount	体素数量
+Voxel Size	体素尺寸
+W	W
+W Speed	W 速度
+Wang-Sun	Wang-Sun
+Web Link	网页链接
+Weight	权重
+Which frame to use for videos. Note that different frames in videos can have different resolutions	视频使用的帧。注意：视频中不同帧的分辨率可能不同。
+Which top-level instances to realize	要实体化的顶层实例
+Whole Image Sorting	整幅图像排序
+Width	宽度
+World Space	世界空间
+Wrap	包裹
+X	X
+X Brick Size	X 砖块尺寸
+X Count	X 数量
+X Frequency	X 频率
+X Grid Size	X 栅格尺寸
+X Offset	X 偏移
+X Plane	X平面
+X Tiles	X 铺砖数量
+X Y	X Y
+X Y Resolution	X Y 分辨率
+XYZ	XYZ
+XYZ Strength	XYZ 强度
+Xor	异或
+Y	Y
+Y Brick Size	Y 砖块尺寸
+Y Count	Y 数量
+Y Frequency	Y 频率
+Y Grid Size	Y 栅格尺寸
+Y Offset	Y 偏移
+Y Phase Offset	Y 相位偏移
+Y Plane	Y平面
+Y Tiles	Y 铺砖数量
+Z	Z
+Z Count	Z 数量
+Z Depth	Z 深度
+Z Frequency	Z 频率
+Z Offset	Z 偏移
+Z Phase Offset	Z 相位偏移
+Z Plane	Z平面
+Z Scale	Z 缩放

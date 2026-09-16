@@ -1,0 +1,22 @@
+# Higgsas v13 中文资产分类；独立UUID可与英文版、v8并存。
+VERSION 1
+
+48f6820c-fbda-504c-a298-b85e3a73aef5:Higgsas Nodes v13 中文:Higgsas Nodes v13 中文
+faa5f9a4-4c4d-562d-9a8b-5a26fece9886:Higgsas Nodes v13 中文/相机:Higgsas Nodes v13 中文-相机
+153df0ae-f318-591b-89c2-eae9e748fe3e:Higgsas Nodes v13 中文/曲线:Higgsas Nodes v13 中文-曲线
+c50d50c6-8242-5921-b4aa-0fa70566771f:Higgsas Nodes v13 中文/基础曲线:Higgsas Nodes v13 中文-基础曲线
+17a8dc45-1a16-5e6d-8501-d79a8012a6c8:Higgsas Nodes v13 中文/形变:Higgsas Nodes v13 中文-形变
+68c51f18-11e8-5b46-886f-908622d3c794:Higgsas Nodes v13 中文/分布:Higgsas Nodes v13 中文-分布
+f55a8e68-abd0-5b9f-bbab-4b787570e620:Higgsas Nodes v13 中文/衰减:Higgsas Nodes v13 中文-衰减
+752657c2-4adf-5e72-86d5-11be319565eb:Higgsas Nodes v13 中文/生成器:Higgsas Nodes v13 中文-生成器
+f37d9e0b-662f-5dd1-98ea-a15f23c2966b:Higgsas Nodes v13 中文/几何测量:Higgsas Nodes v13 中文-几何测量
+07e68d0d-8eb6-5767-b7fa-4b0db83fe66b:Higgsas Nodes v13 中文/图像:Higgsas Nodes v13 中文-图像
+83459dd2-8a82-582c-a02d-1491bb21088e:Higgsas Nodes v13 中文/实例:Higgsas Nodes v13 中文-实例
+e8362fa5-fb15-536b-9976-9e64b28b19de:Higgsas Nodes v13 中文/线性代数:Higgsas Nodes v13 中文-线性代数
+9093a3fa-08c9-5a3f-a83a-909f99d1b2e6:Higgsas Nodes v13 中文/基础形状:Higgsas Nodes v13 中文-基础形状
+14177856-573d-5804-b831-4710a394fb28:Higgsas Nodes v13 中文/SDF节点:Higgsas Nodes v13 中文-SDF节点
+bcae7ab2-f9fe-5851-87f4-93b2eb563fb4:Higgsas Nodes v13 中文/选择:Higgsas Nodes v13 中文-选择
+8d351aab-0bcd-5652-bae7-dbce235bc539:Higgsas Nodes v13 中文/模拟:Higgsas Nodes v13 中文-模拟
+09bd52df-a9b7-52a9-900d-36e123e224ed:Higgsas Nodes v13 中文/UV:Higgsas Nodes v13 中文-UV
+398b03e7-0728-533c-ae08-251b124d7473:Higgsas Nodes v13 中文/实用工具:Higgsas Nodes v13 中文-实用工具
+263b5387-9223-5cd4-a459-2245c59f2eb9:Higgsas Nodes v13 中文/矢量场:Higgsas Nodes v13 中文-矢量场

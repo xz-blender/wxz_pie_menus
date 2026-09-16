@@ -1,0 +1,268 @@
+﻿原名	中文名称
+2D Distance to Edge Circle Packing	HIG_二维边缘距离圆密堆积
+2D Looped Noise Texture	HIG_2D循环噪波纹理
+2D Triangular Remesh	HIG_2D三角重构网格
+3 Planes Intersection	HIG_三平面交点
+3D Fill Curve	HIG_3D填充曲线
+3D Points Grid	HIG_3D网格点
+4 Points Sphere	HIG_四点定球
+Advect Splines	HIG_样条平流
+Align Curve to Surface	HIG_曲线对齐表面
+Array	HIG_阵列
+Belousov-Zhabotinsky Reaction	HIG_别洛乌索夫–扎博廷斯基反应
+Bend	HIG_弯曲
+Bezier Easing	HIG_贝塞尔缓入缓出
+Bezier Extend	HIG_贝塞尔延伸
+Bezier Resample	HIG_贝塞尔重采样
+Blend Curves	HIG_曲线混合
+Boundary Edge	HIG_网格边界
+Boundary Edge Smooth	HIG_边界边平滑
+Bounding Box AABB Collision	HIG_轴对齐边界框碰撞检测
+Bounding Region Selection	HIG_边界框范围选择
+Box Selection	HIG_框选
+Bricks Grid	HIG_砖墙
+Cairo Tile Grid	HIG_开罗五边形平铺网格
+Camera Culling	HIG_摄像机剔除
+Camera Grid	HIG_相机网格
+Camera Perspective Shift	HIG_相机透视偏移
+Camera Perspective to Orthographic Transform	HIG_相机透视转正交变换
+Camera UV Coordinates	HIG_相机UV坐标
+Camera View Flatten	HIG_相机视图展平
+Camera View Transform	HIG_相机视图变换
+Capareda Curve	HIG_卡帕雷达曲线
+Capsule	HIG_胶囊
+Cartesian to Polar	HIG_笛卡尔坐标转极坐标
+Checker Selection	HIG_棋盘格选择
+Circle Packing	HIG_圆密堆积
+Circles Arc Tangent	HIG_圆间相切圆弧
+Circles Line Tangent	HIG_圆间公切线
+Circular Array	HIG_圆形阵列
+Connect Points	HIG_点连线
+Correct UV	HIG_校正UV
+Cube Deform	HIG_基于边界框形变
+Cube Recursive Subdivision	HIG_立方体递归细分
+Curl Noise 2D	HIG_2D噪波力场
+Curl Noise 3D	HIG_3D噪波力场
+Curve Banking	HIG_曲线间隔倾斜
+Curve Bisect	HIG_平面裁切曲线
+Curve Circle Arc Tangent	HIG_曲线圆弧相切
+Curve Circle Line Tangent	HIG_圆内外切线曲线
+Curve Deform	HIG_曲线形变
+Curve Forward Kinematics	HIG_曲线正向运动学
+Curve Intersection	HIG_曲线交点
+Curve Median Axis 2D	HIG_二维曲线中轴
+Curve Mesh Boolean	HIG_曲线布尔裁切
+Curve Offset	HIG_曲线偏移
+Curve Point Angle	HIG_曲线拐角角度
+Curves Inverse Kinematics	HIG_曲线反向运动学
+Cylinder UV Mapping	HIG_柱体UV映射
+Decimate Curve	HIG_精简曲线
+Differential Growth	HIG_差异生长
+Direction Object Space to UV Space Transform	HIG_方向从物体空间变换到UV空间
+Direction Visualize	HIG_方向可视化
+Directional Falloff	HIG_定向衰减
+Directional Reaction Diffusion	HIG_定向扩散求解器
+Displace	HIG_置换
+Distance to Edge Voronoi	HIG_Voronoi到边缘的距离
+Distribute Points in Volume	HIG_分布点于体积
+Distribute Points on Edges	HIG_分布点于边上
+Documentation Higgsas Geo Nodes	HIG_Higgsas几何节点文档
+Dragon Curve	HIG_龙形曲线
+Dubins CSC Path	HIG_Dubins圆弧直线圆弧路径
+Dynamic Catenary Splines	HIG_自适应悬链
+Easing	HIG_缓入缓出
+Edge Angle Selection	HIG_边角度选择
+Edge Bisect	HIG_边平面切分
+Edge Bundling	HIG_边集束
+Edge Offset	HIG_边偏移
+Even Curve to Mesh	HIG_曲线转网格（均匀）
+Even Grid Profile Surface	HIG_轮廓曲面均匀网格
+Expand / Contract Selection	HIG_扩展或收缩选择
+Face Offset	HIG_面均匀偏移
+Face Points Grid Distribution	HIG_面上网格点分布
+Face Tangent	HIG_面切向
+Face UV	HIG_面UV
+Fit Line 2D	HIG_二维直线拟合
+Fit Plane	HIG_平面拟合
+Fit Size	HIG_适应大小
+Fit in Camera	HIG_适配相机视野
+Flatten Geometry	HIG_几何体展平
+Gabriels Horn	HIG_加百列号角
+Geometry Center	HIG_几何中心
+Geometry Visualizer	HIG_几何查看器
+Gradient Direction	HIG_向量渐变方向
+Heart	HIG_心形曲线
+Herringbone Tile Grid	HIG_人字形平铺网格
+Hexagon Grid	HIG_六边形网格
+Hilbert Curve	HIG_二维希尔伯特曲线
+Homogeneous Disk	HIG_均匀圆盘点
+Homogeneous Sphere	HIG_均匀球体点
+Hopscotch Tile Grid	HIG_大小方砖平铺网格
+Image Box Mapping	HIG_图像立方体映射
+Image Color Palette	HIG_图像调色板
+Image Dithering	HIG_图像抖色
+Image Grid	HIG_图像网格
+Image Hilbert Curve	HIG_图像希尔伯特曲线
+Image Pixel Sorting	HIG_图像像素排序
+Image Points Distribute	HIG_分布点于图像上
+Image Points Stippling	HIG_图像点描
+Image Quad Tree	HIG_图像四叉树
+Image String Art	HIG_图像绕线画
+Image Thinning	HIG_图像细化
+Image Trace	HIG_图像描摹
+Image to Ascii	HIG_图像转ASCII字符
+Index Falloff	HIG_索引衰减
+Index Selection	HIG_索引选择
+Index String Selection	HIG_索引字符串选择
+Infinite Cube	HIG_无限立方体
+Inset Face	HIG_内插面
+Instances AABB Colision	HIG_删除交叉实例（轴对齐边框）
+Instances Bounding Box	HIG_实例边界框
+Instances Index Ratio	HIG_编号比率
+Instances Tile	HIG_实例平铺
+Is Inside Volume	HIG_是否在体积内
+Isometric Tile Grid	HIG_等轴测平铺网格
+Klein Bottle	HIG_克莱因瓶
+Line Line Intersection	HIG_两直线交点
+Line Plane Intersection	HIG_直线与无限平面交点
+Lissajous Curve	HIG_利萨茹曲线
+Loft Splines	HIG_曲线放样
+Looped Noise Texture	HIG_循环噪波纹理
+Marching Squares Isolines	HIG_切割交汇线（四边面网格）
+Marching Squares Surface	HIG_纹理切割表面（四边面）
+Marching Triangles Isolines	HIG_切割交汇线（三角网格）
+Marching Triangles Surface	HIG_纹理切割表面（三角面）
+Maze Solver	HIG_生成迷宫
+Mesh Ambient Occlusion	HIG_网格AO
+Mesh Auxetic Structure	HIG_网格负泊松比结构
+Mesh Contours	HIG_网格切片
+Mesh Curvature	HIG_网格曲率
+Mesh Curves Direction Guide	HIG_网格曲线方向引导
+Mesh Face Divider	HIG_随机分割面
+Mesh Face Groups Relax	HIG_网格面组松弛
+Mesh Face Recursive Subdivision	HIG_网格面递归细分
+Mesh Face Subdivide	HIG_网格细分（自定义）
+Mesh Falloff	HIG_网格衰减
+Mesh Fresnel	HIG_网格菲涅尔
+Mesh Islands to Instances	HIG_网格孤岛转实例
+Mesh Measure	HIG_网格测量
+Mesh Offset	HIG_网格偏移
+Mesh Points Fracture	HIG_网格点破碎
+Mesh Relax	HIG_网格松弛
+Mesh Smooth Delete	HIG_网格平滑删除
+Mesh Tension	HIG_网格张力
+Mesh Thickness	HIG_网格厚度
+Mesh To SDF	HIG_网格到SDF
+Mesh Topology Face Strips	HIG_网格拓扑面条带
+Mesh UV Unfold	HIG_网格UV展开
+Mesh Unfold	HIG_网格展开
+Mesh to Ascii	HIG_网格转ASCII字符
+Mirror	HIG_镜像
+Mix Splines	HIG_混合曲线
+Mobius Transformation	HIG_莫比乌斯变换
+Object Directional Falloff	HIG_物体方向衰减
+Object Spherical Falloff	HIG_物体球形衰减
+Oloid	HIG_奥洛伊德
+Phyllotaxis Disk	HIG_叶序圆盘点
+Phyllotaxis Profile Surface	HIG_叶序点于车削曲面上
+Phyllotaxis Sphere	HIG_叶序球体点
+Place Instances on Ground	HIG_实例贴地放置
+Planarize Face	HIG_面平化
+Plane Plane Intersection	HIG_两平面交线
+Points Cluster	HIG_点聚类
+Points Relax in Volume	HIG_体积内点松弛
+Points Relax on Surface	HIG_表面点松弛
+Points to SDF	HIG_点到SDF
+Points to SDF Metaballs	HIG_点到光滑SDF
+Polar to Cartesian	HIG_极坐标转笛卡尔坐标
+Poly Arc	HIG_线转连续圆弧
+Projectile Trajectory	HIG_抛射轨迹
+Pyramid	HIG_棱锥
+Quad Disk	HIG_四边面圆盘
+Quad Sphere	HIG_四边面球体
+Radial Falloff	HIG_径向衰减
+Random Normal Distribution	HIG_随机正态分布值
+Random Points	HIG_随机点
+Ray Sphere Intersection	HIG_射线与球体交点
+Reaction Diffusion Solver	HIG_反应扩散求解器
+Ripples Solver	HIG_涟漪求解器
+Rotate Element	HIG_旋转元素
+Rounded Cone	HIG_圆角锥体
+Rounded Cube	HIG_倒角立方体
+SDF Boolean	HIG_SDF布尔
+SDF Capsule	HIG_SDF胶囊
+SDF Cube	HIG_SDF立方体
+SDF Cylinder	HIG_SDF圆柱体
+SDF Ellipsoid	HIG_SDF椭球体
+SDF Gyroid	HIG_SDF螺旋极小曲面
+SDF Heart	HIG_SDF心形
+SDF IWP	HIG_SDF IWP曲面
+SDF IWP Skeletal	HIG_SDF IWP骨架
+SDF Lidinoid	HIG_SDF利迪诺伊德曲面
+SDF Polygon	HIG_SDF多边形
+SDF Round Cone	HIG_SDF圆角锥体
+SDF Schwarz D	HIG_SDF施瓦茨D曲面
+SDF Schwarz P	HIG_SDF施瓦茨P曲面
+SDF Sphere	HIG_SDF球体
+SDF Spiral	HIG_SDF螺旋
+SDF Torus	HIG_SDF环体
+SDF Volume Points Fracture	HIG_SDF体积点破碎
+SDF to Mesh	HIG_SDF到网格
+Scales Texture	HIG_鳞片纹理
+Select by Normal	HIG_通过法线进行选择
+Set Center	HIG_设置原点
+Shadow Mask	HIG_阴影遮罩
+Sharpen Mesh	HIG_网格尖锐迭代
+Shortest Points Path	HIG_点间最短路径
+Snow Crystal Growth	HIG_雪晶生长
+Solidify	HIG_实体化
+Sphere Plane Intersection	HIG_球体与平面交线
+Sphere Sphere Intersection	HIG_两球交线
+Sphere UV Mapping	HIG_球体UV映射
+Spheres Intersections	HIG_多球相交
+Spherical Falloff	HIG_球形衰减
+Spherical Spiral	HIG_球面螺旋
+Spin	HIG_车削
+Splines Packing	HIG_移除重叠样条管
+Splines Patch	HIG_四曲线建立曲面
+Spur Gear	HIG_直齿轮
+Stereographic Projection	HIG_球极投影
+Strange Attractors	HIG_奇异吸引子
+Stretch	HIG_拉伸
+Super Ellipse	HIG_超椭圆
+Super Ellipsoid	HIG_超椭球
+Surface Bind	HIG_表面绑定
+Surface Curl Noise	HIG_表面噪波力场
+TSP Mesh	HIG_网格旅行商路径
+Taper	HIG_锥化
+Tessellate Mesh	HIG_镶嵌物体于面上
+Tessellate Mesh Smooth	HIG_镶嵌物体于面上（平滑）
+Tessellate Topology Helper	HIG_镶嵌物体拓扑工具
+To Sphere	HIG_到球形
+Torus	HIG_环体
+Torus Knot	HIG_圆环结
+Triangle Circumcircle	HIG_三角形外接圆
+Triangle Grid	HIG_三角网格
+Triangle Incircle	HIG_三角形内切圆
+Triangle Mesh Circle Packing	HIG_三角网格圆密堆积
+Triangle Mesh to Voronoi	HIG_三角网格转Voronoi
+Triangle Tangent Circles	HIG_三角形三切圆半径
+Triplanar UV Mapping	HIG_三平面UV映射
+Tubes to Splines	HIG_管转曲线
+Twist	HIG_扭曲
+Twist Curve	HIG_曲线螺旋化
+UV Align to Direction	HIG_UV对齐方向
+UV Curve to Mesh	HIG_曲线转网格（UV）
+UV Deform	HIG_基于UV形变
+UV Measure	HIG_UV测量
+UV Mirror	HIG_UV镜像
+UV Seam	HIG_UV接缝
+UV Tangent	HIG_UV切向
+UV Transform	HIG_UV变换
+VDM Brush	HIG_设置VDM笔刷
+VDM Points Scatter	HIG_分布VDM笔刷点
+Volume Grid Visualize	HIG_体积栅格可视化
+Volume Points Grid	HIG_体积网格点
+Voxel Remesh	HIG_体素重构网格
+Wave Falloff	HIG_波浪衰减
+Wrap	HIG_包裹
