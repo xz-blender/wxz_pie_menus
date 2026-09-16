@@ -5,9 +5,9 @@
 .git
 .genaiscript
 test.py
-blends_savetime.txt
 blender_assets.cats.txt~
 addons
 img
 __pycache__/
 .venv/
+.env

@@ -1,11 +1,25 @@
 [project]
-name = "wxz-pie-menus"
-version = "0.1.0"
-requires-python = "==3.13.9"
+name = "crostars-designer"
+version = "0.0.1"
+description = ""
+authors = [{ name = "wxz" }]
+readme = "README.md"
+requires-python = "==3.13.13"
 dependencies = [
-    "requests",
-    "shapely",
     "pillow",
+    "numpy==2.3.4",
+    "ruff",
+    "setuptools",
+    "pathspec",
+    "fake-bpy-module-latest",
+    "ty",
+    "tqdm",
+    "openai",
+    "pytest",
+    "pillow",
+    "shapely",
+    "requests",
+
 ]
 
 # VS Code Ruff 扩展使用的配置段
@@ -14,8 +28,6 @@ dependencies = [
 target-version = "py313"
 # 最大行宽
 line-length = 120
-# 与旧版保持一致的忽略规则
-ignore = ["E722", "F401", "F403", "F405", "F811","E741"]
 # 排除不需要分析的路径
 exclude = [
     ".git",
@@ -26,3 +38,15 @@ exclude = [
 ]
 # 允许 Ruff 自动修复可修复的问题
 fix = true
+
+# 与旧版保持一致的忽略规则
+[tool.ruff.lint]
+ignore = ["E722", "F401", "F403", "F405", "F811", "E741","RUF012","S110","S112","SIM118","BLE001"]
+
+[tool.pytest.ini_options]
+testpaths = ["test"]
+python_files = ["test_*.py"]
+
+[tool.ty.environment]
+root = ["."]
+python = ".venv"

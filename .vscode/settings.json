@@ -1,18 +1,117 @@
 {
-"emeraldwalk.runonsave": {
-"commands": [
-    // 1) 先按 isort 规则整理 import（Ruff 规则 I）
-    { "match": "\\.py$", "cmd": ".venv\\Scripts\\python.exe -m ruff check --select I --fix \"${file}\"" },
-    // 2) 再统一代码格式
-    { "match": "\\.py$", "cmd": ".venv\\Scripts\\python.exe -m ruff format \"${file}\"" }
-]},
-"[python]": {
-    "editor.formatOnSave": true, // new
-    "editor.codeActionsOnSave": {
-        "source.organizeImports": "explicit"
-    },
-},
+  "blender.addon.reloadOnSave": true,
+  "editor.fontFamily": "Maple Mono NF CN",
+  "terminal.integrated.fontFamily": "Maple Mono NF CN",
+  "editor.fontLigatures": "'calt'",
+  "python.createEnvironment.trigger": "off",
+  "python.terminal.activateEnvironment": false,
+  "python.terminal.activateEnvInCurrentTerminal": false,
+  "[python]": {
+    "editor.defaultFormatter": "charliermarsh.ruff"
+  },
+  "explorer.confirmDelete": false,
+  "explorer.confirmDragAndDrop": false,
+  "editor.formatOnSave": true,
+  "ruff.format.preview": true,
+  "editor.defaultFormatter": "charliermarsh.ruff",
+  "explorer.confirmPasteNative": false,
+  "ruff.exclude": [
+    "[\"**/*.c\",\"**/*.h\"]"
+  ],
+  "workbench.editorAssociations": {
+    "*.svg": "default",
+    "*.csv": "default"
+  },
+  "security.workspace.trust.untrustedFiles": "open",
+  "terminal.integrated.enableMultiLinePasteWarning": "never",
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/*.pyc": true,
+    "**/*.pyo": true
+  },
+  "search.exclude": {
+    "**/__pycache__": true
+  },
+  "files.watcherExclude": {
+    "**/__pycache__/**": true
+  },
+  "editor.minimap.scale": 2,
+  "editor.minimap.maxColumn": 240,
+  "terminal.integrated.stickyScroll.enabled": false,
+  "windsurf.searchMaxWorkspaceFileCount": 1000,
+  "git.autofetch": true,
+  "git.confirmSync": false,
+  "windsurf.lifeguard.mode": "agent",
+  "emeraldwalk.runonsave": {
+    "commands": [
+      {
+        "match": "\\.py$",
+        "cmd": ".venv\\Scripts\\python.exe -m ruff check --select I --fix \"${file}\""
+      },
+      {
+        "match": "\\.py$",
+        "cmd": ".venv\\Scripts\\python.exe -m ruff format \"${file}\""
+      }
+    ]
+  },
+  "git.enableSmartCommit": true,
+  "files.associations": {
+    "curve_fit_nd.h": "c",
+    "algorithm": "cpp",
+    "atomic": "cpp",
+    "charconv": "cpp",
+    "complex": "cpp",
+    "cstdint": "cpp",
+    "format": "cpp",
+    "random": "cpp",
+    "stop_token": "cpp",
+    "type_traits": "cpp",
+    "xmemory": "cpp",
+    "xutility": "cpp",
+    "arrayobject.h": "c",
+    "float.h": "c",
+    "stdlib.h": "c",
+    "string.h": "c",
+    "omp.h": "c",
+    "math.h": "c",
+    "stdint.h": "c",
+    "stdbool.h": "c",
+    "intrin.h": "c",
+    "immintrin.h": "c",
+    "xiosbase": "c",
+    "xlocale": "c"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "code-runner.runInTerminal": true,
+  "code-runner.executorMap": {
+    "python": "${workspaceFolder}\\.venv\\Scripts\\python.exe"
+  },
+  "code-runner.fileDirectoryAsCwd": false,
+  "code-runner.cwd": "${workspaceFolder}",
+  "python.analysis.extraPaths": [
+    ".venv/Lib/site-packages"
+  ],
+  "python.analysis.diagnosticSeverityOverrides": {
+    "reportMissingModuleSource": "none",
+    "reportInvalidTypeForm": "none",
+    "reportCallInDefaultInitializer": "none",
+    "reportAssignmentType": "none",
+    "reportGeneralClassIssues": "none"
+  },
+  "python.autoComplete.extraPaths": [
+    ".venv/Lib/site-packages"
+  ],
+  "editor.semanticHighlighting.enabled": true,
+  "editor.tokenColorCustomizations": {
+    "comments": "#6A9955",
+    "strings": "#CE9178",
+    "keywords": "#C586C0",
+    "functions": "#DCDCAA",
+    "variables": "#9CDCFE"
+  },
 }
-    
-  
- 
