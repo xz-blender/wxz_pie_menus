@@ -13,12 +13,12 @@ license = [
   "SPDX:GPL-2.0-or-later",
 ]
 wheels = [
-  "wheels/certifi-2026.5.20-py3-none-any.whl",
-  "wheels/charset_normalizer-3.4.7-cp313-cp313-win_amd64.whl",
-  "wheels/idna-3.17-py3-none-any.whl",
-  "wheels/numpy-2.4.6-cp313-cp313-win_amd64.whl",
-  "wheels/pillow-12.2.0-cp313-cp313-win_amd64.whl",
+  "wheels/certifi-2026.7.22-py3-none-any.whl",
+  "wheels/charset_normalizer-3.5.1-cp313-cp313-win_amd64.whl",
+  "wheels/idna-3.19-py3-none-any.whl",
+  "wheels/numpy-2.5.3-cp313-cp313-win_amd64.whl",
+  "wheels/pillow-12.3.0-cp313-cp313-win_amd64.whl",
   "wheels/requests-2.34.2-py3-none-any.whl",
   "wheels/shapely-2.1.2-cp313-cp313-win_amd64.whl",
-  "wheels/urllib3-2.7.0-py3-none-any.whl",
+  "wheels/urllib3-2.8.0-py3-none-any.whl",
 ]

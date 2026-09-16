@@ -52,18 +52,16 @@ def download_wheels(packages: tuple[str, ...]) -> None:
 
     with tempfile.TemporaryDirectory(prefix="_wheel_download_", dir=WHEELS_DIR) as temp_dir:
         temp_path = Path(temp_dir)
-        run(
-            [
-                VENV_PYTHON,
-                "-m",
-                "pip",
-                "download",
-                "--only-binary=:all:",
-                "--dest",
-                temp_path,
-                *packages,
-            ]
-        )
+        run([
+            VENV_PYTHON,
+            "-m",
+            "pip",
+            "download",
+            "--only-binary=:all:",
+            "--dest",
+            temp_path,
+            *packages,
+        ])
 
         downloaded_wheels = sorted(temp_path.glob("*.whl"))
         if not downloaded_wheels:
