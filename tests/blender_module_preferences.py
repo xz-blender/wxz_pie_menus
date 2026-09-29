@@ -1,100 +1,152 @@
 """Run with blender --background --factory-startup --python-exit-code 1 --python this_file.
 
-Load the real RNA declarations and registration functions without importing the
-unrelated operators, dependencies, keymaps, or startup handlers of the add-on.
+Import production lifecycle/RNA declarations under an inert package, exercising
+real Blender preferences without importing unrelated tools or saving preferences.
 """
 
-import ast
+import importlib
+import sys
 from pathlib import Path
-from types import SimpleNamespace
+from types import ModuleType, SimpleNamespace
 
 import bpy
-from bpy.props import *
-from bpy.types import AddonPreferences, PropertyGroup
 
 ROOT = Path(__file__).resolve().parents[1]
-COLLECTIONS = ("pie_modules", "other_modules", "setting_modules")
+PACKAGE = "_wxz_lifecycle_blender_test"
+package = ModuleType(PACKAGE)
+package.__path__ = [str(ROOT)]
+sys.modules[PACKAGE] = package
+core = importlib.import_module(f"{PACKAGE}.module.lifecycle")
+adapter = importlib.import_module(f"{PACKAGE}.module.lifecycle_blender")
+reg = importlib.import_module(f"{PACKAGE}.module.reg")
+
+events = []
+failures = {}
 
 
-def load_nodes(filename, select, namespace):
-    tree = ast.parse((ROOT / filename).read_text(encoding="utf-8"))
-    tree.body = [node for node in tree.body if select(node)]
-    exec(compile(tree, str(ROOT / filename), "exec"), namespace)
+def feature(name):
+    def hook(stage):
+        def invoke():
+            events.append((name, stage))
+            if failures.get((name, stage)):
+                raise RuntimeError(f"{name} {stage} test failure")
+
+        return invoke
+
+    return SimpleNamespace(__name__=f"test_features.{name}", register=hook("register"), unregister=hook("unregister"))
 
 
-load_nodes(
-    "utils.py",
-    lambda node: isinstance(node, ast.FunctionDef)
-    and node.name in {"safe_register_class", "safe_unregister_class"},
-    globals(),
-)
-
-props_ns = dict(globals())
-load_nodes(
-    "props.py",
-    lambda node: (isinstance(node, ast.ClassDef) and node.name != "WXZ_PIE_Prefs_Props")
-    or (isinstance(node, ast.FunctionDef) and node.name in {"register", "unregister"})
-    or (isinstance(node, ast.Assign) and any(isinstance(t, ast.Name) and t.id == "CLASSES" for t in node.targets)),
-    props_ns,
-)
-prefs_tree = ast.parse((ROOT / "props.py").read_text(encoding="utf-8"))
-prefs_class = next(node for node in prefs_tree.body if isinstance(node, ast.ClassDef) and node.name == "WXZ_PIE_Prefs_Props")
-prefs_class.body = [
-    node for node in prefs_class.body
-    if isinstance(node, ast.AnnAssign) and isinstance(node.target, ast.Name) and node.target.id in COLLECTIONS
-]
-exec(compile(ast.Module(body=[prefs_class], type_ignores=[]), str(ROOT / "props.py"), "exec"), props_ns)
-props = SimpleNamespace(**props_ns)
-
-
-class WXZ_PIE_Preferences(AddonPreferences, props.WXZ_PIE_Prefs_Props):
-    bl_idname = "wxz_module_preferences_test"
-
-
-addon = bpy.context.preferences.addons.new()
-addon.module = WXZ_PIE_Preferences.bl_idname
-unused_module = SimpleNamespace(register=lambda: None, unregister=lambda: None)
-pip_props = unused_module
-modules_ns = dict(globals(), operators=unused_module, pip_operators=unused_module, panels=unused_module)
-load_nodes(
-    "__init__.py",
-    lambda node: isinstance(node, ast.Assign)
-    and any(isinstance(t, ast.Name) and t.id == "module_classes" for t in node.targets),
-    modules_ns,
-)
-module_classes = modules_ns["module_classes"]
-all_modules = []
-all_modules_dir = {
-    name: [SimpleNamespace(__name__="wxz.first"), SimpleNamespace(__name__="wxz.second")]
-    for name in COLLECTIONS
+groups = {
+    "pie_modules": [feature("first"), feature("second")],
+    "other_modules": [feature("broken")],
+    "setting_modules": [feature("cleanup")],
 }
-translate = SimpleNamespace(register=lambda: None, unregister=lambda: None)
 
 
-def get_addon_preferences():
-    return addon.preferences
+class ProbePreferences(bpy.types.AddonPreferences):
+    bl_idname = PACKAGE
+    existing_preference: bpy.props.BoolProperty(default=True)  # type: ignore
+    __annotations__.update(adapter.module_collection_properties())
 
 
-load_nodes(
-    "__init__.py",
-    lambda node: isinstance(node, ast.FunctionDef) and node.name in {"add_modules_item", "register", "unregister"},
-    globals(),
+adapter.bind_module_toggles(ProbePreferences, [module for modules in groups.values() for module in modules])
+host = adapter.BlenderLifecycleHost(PACKAGE, lambda: ProbePreferences)
+item_classes = [adapter.PIE_ModuleItem, adapter.PIE_Retry_Module]
+lifecycle = core.AddonLifecycle(
+    groups,
+    host,
+    before_features=(
+        core.LifecycleStep(
+            "items", lambda: reg.safe_register_class(item_classes), lambda: reg.safe_unregister_class(item_classes)
+        ),
+        core.LifecycleStep(
+            "preferences",
+            lambda: reg.safe_register_class([ProbePreferences]),
+            lambda: reg.safe_unregister_class([ProbePreferences]),
+        ),
+    ),
+    after_features=(core.LifecycleStep("lists", lambda: host.rebuild_collections(lifecycle.groups), lambda: None),),
 )
+adapter.bind_lifecycle(lifecycle)
 
-for cycle in range(2):
-    register()
-    prefs = get_addon_preferences()
-    for name in COLLECTIONS:
-        collection = getattr(prefs, name)
-        assert [item.name for item in collection] == ["first", "second"], name
-        assert collection["first"].name == "first", name
-        collection[0].name = "renamed"
-        assert collection["renamed"].name == "renamed", name
-        add_modules_item(prefs, name)
-        assert [item.name for item in collection] == ["first", "second"], name
-    unregister()
-    assert not WXZ_PIE_Preferences.is_registered
-    assert all(not cls.is_registered for cls in props.CLASSES)
-    print(f"PASS: module names, lookup, rebuild, and registration cycle {cycle + 1}")
 
-bpy.context.preferences.addons.remove(addon)
+class Layout:
+    def __init__(self):
+        self.labels = []
+        self.operators = []
+
+    def row(self):
+        return self
+
+    def label(self, **kwargs):
+        self.labels.append(kwargs)
+
+    def prop(self, owner, name, **kwargs):
+        getattr(owner, name)
+
+    def operator(self, operator_id, **kwargs):
+        properties = SimpleNamespace(module_name="")
+        self.operators.append((operator_id, properties))
+        return properties
+
+
+entry = bpy.context.preferences.addons.new()
+entry.module = PACKAGE
+try:
+    for cycle in range(2):
+        failures["broken", "register"] = True
+        lifecycle.start()
+        preferences = entry.preferences
+        assert preferences.existing_preference, "Collection declarations must preserve other annotations"
+        assert preferences.use_second is (cycle == 0), "Saved off intent must survive an unregister/register cycle"
+        for name, modules in groups.items():
+            collection = getattr(preferences, name)
+            assert [item.name for item in collection] == [module.__name__.rsplit(".", 1)[-1] for module in modules]
+            first_name = collection[0].name
+            assert collection[first_name].name == first_name
+            collection[0].name = "renamed"
+            assert collection["renamed"].name == "renamed"
+        host.rebuild_collections(lifecycle.groups)
+        assert preferences.pie_modules["first"].name == "first"
+
+        preferences.use_first = False
+        assert lifecycle.status("first").state == core.ModuleState.DISABLED
+        preferences.use_first = True
+        assert lifecycle.status("first").state == core.ModuleState.ACTIVE
+
+        assert preferences.use_broken, "A failed enable must not change the saved switch"
+        assert lifecycle.status("broken").state == core.ModuleState.ENABLE_FAILED
+        before_draw = list(events)
+        layout = Layout()
+        adapter.draw_module_item(layout, preferences, preferences.other_modules["broken"])
+        assert any(label.get("icon") == "ERROR" for label in layout.labels)
+        assert layout.operators[0][0] == "pie.retry_module"
+        assert layout.operators[0][1].module_name == "broken"
+        assert events == before_draw, "Drawing status must never retry hooks"
+        assert "broken register test failure" in adapter.PIE_Retry_Module.description(
+            bpy.context, layout.operators[0][1]
+        )
+        failures["broken", "register"] = False
+        assert bpy.ops.pie.retry_module(module_name="broken") == {"FINISHED"}
+        assert lifecycle.status("broken").state == core.ModuleState.ACTIVE
+        assert not lifecycle.status("broken").errors
+
+        failures["cleanup", "unregister"] = True
+        preferences.use_cleanup = False
+        assert not preferences.use_cleanup
+        assert lifecycle.status("cleanup").state == core.ModuleState.CLEANUP_FAILED
+        failures["cleanup", "unregister"] = False
+        assert bpy.ops.pie.retry_module(module_name="cleanup") == {"FINISHED"}
+        assert lifecycle.status("cleanup").state == core.ModuleState.DISABLED
+        preferences.use_cleanup = True
+        preferences.use_second = False
+        lifecycle.stop()
+        assert not ProbePreferences.is_registered
+        assert all(not cls.is_registered for cls in item_classes)
+        print(
+            f"PASS: native collections, saved intent, callbacks, error display, retry and lifecycle cycle {cycle + 1}"
+        )
+finally:
+    lifecycle.stop()
+    adapter.bind_lifecycle(None)
+    bpy.context.preferences.addons.remove(entry)

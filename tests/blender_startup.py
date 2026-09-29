@@ -6,8 +6,8 @@ explicitly unavailable, including on Blender versions that still provide it.
 
 import builtins
 import importlib
-from pathlib import Path
 import sys
+from pathlib import Path
 from unittest.mock import patch
 
 import bpy
@@ -28,6 +28,7 @@ with patch("builtins.__import__", side_effect=import_without_bgl):
     assert Path(addon.__file__).resolve() == ROOT / "__init__.py"
     preferences_entry = bpy.context.preferences.addons.new()
     preferences_entry.module = addon.__name__
+    saved_off_name = addon.all_modules_dir["pie_modules"][0].__name__.rsplit(".", 1)[-1]
     try:
         for cycle in range(2):
             addon.register()
@@ -37,10 +38,15 @@ with patch("builtins.__import__", side_effect=import_without_bgl):
                 assert prefs.use_china_mirror is True
                 assert prefs.install_custom_pip_packages == ""
                 assert hasattr(bpy.types.Scene, "PIE_pip_output")
+                if cycle:
+                    assert getattr(prefs, "use_" + saved_off_name) is False
+                    assert addon._lifecycle.status(saved_off_name).state.value == "disabled"
                 for collection_name, modules in addon.all_modules_dir.items():
                     assert [item.name for item in getattr(prefs, collection_name)] == [
                         module.__name__.split(".")[-1] for module in modules
                     ], collection_name
+                setattr(prefs, "use_" + saved_off_name, False)
+                assert addon._lifecycle.status(saved_off_name).desired is False
             finally:
                 addon.unregister()
             assert not addon.WXZ_PIE_Preferences.is_registered
