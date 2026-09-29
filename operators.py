@@ -1,10 +1,11 @@
-from .module.reg import register_classes, unregister_classes
 from pathlib import Path
 
 import bpy
 from bpy.types import Operator
 
 from .items import oneclick_enable_preset_prop_list
+from .module.lifecycle_blender import PIE_Retry_Module
+from .module.reg import register_classes, unregister_classes
 from .utils import get_prefs
 
 operator_folder_path = Path(__file__).parent / "operator"
@@ -81,6 +82,7 @@ class PIE_OneClick_Enable_All_Presets(Operator):
 
 
 CLASSES = [
+    PIE_Retry_Module,
     PIE_Open_Custom_XZ_presets_file_In_NewWindow,
     PIE_OneClick_Enable_All_Presets,
 ]

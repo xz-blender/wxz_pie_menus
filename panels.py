@@ -1,34 +1,26 @@
-from .module.reg import register_classes, unregister_classes
 import bpy
 import rna_keymap_ui
 from bpy.types import UIList
 
+from .module.lifecycle_blender import draw_module_item
+from .module.reg import register_classes, unregister_classes
 from .pie.S_pie import addon_keymaps as s_pie_keymaps
 from .utils import *
 
 
 class PIE_UL_pie_modules(UIList):
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname):
-        mod_name = item.name
-        row = layout.row()
-        row.label(text=mod_name)
-        row.prop(data, "use_" + mod_name, text="")
+        draw_module_item(layout, data, item)
 
 
 class PIE_UL_other_modules(UIList):
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname):
-        mod_name = item.name
-        row = layout.row()
-        row.label(text=mod_name)
-        row.prop(data, "use_" + mod_name, text="")
+        draw_module_item(layout, data, item)
 
 
 class PIE_UL_setting_modules(UIList):
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname):
-        mod_name = item.name
-        row = layout.row()
-        row.label(text=mod_name)
-        row.prop(data, "use_" + mod_name, text="")
+        draw_module_item(layout, data, item)
 
 
 def draw_addon_menus(self, layout, context, module_path_name_list):

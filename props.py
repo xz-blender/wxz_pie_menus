@@ -1,16 +1,13 @@
-from .module.reg import register_classes, unregister_classes
 import importlib
 
 import bpy
 from bpy.props import *
 from bpy.types import *
 
+from .module.lifecycle_blender import PIE_ModuleItem, module_collection_properties
+from .module.reg import register_classes, unregister_classes
 from .pie.Translate_key import enum_languages
 from .utils import *
-
-
-class PIE_ModuleItem(PropertyGroup):
-    name: StringProperty()  # type: ignore
 
 
 class WXZ_PIE_Prefs_Props:
@@ -38,12 +35,7 @@ class WXZ_PIE_Prefs_Props:
     xz_download_parts_extensions: BoolProperty(name="安装作者常用插件", default=False)  # type: ignore
 
     # 饼菜单面板
-    pie_modules: CollectionProperty(type=PIE_ModuleItem)  # type: ignore
-    pie_modules_index: IntProperty()  # type: ignore
-    other_modules: CollectionProperty(type=PIE_ModuleItem)  # type: ignore
-    other_modules_index: IntProperty()  # type: ignore
-    setting_modules: CollectionProperty(type=PIE_ModuleItem)  # type: ignore
-    setting_modules_index: IntProperty()  # type: ignore
+    __annotations__.update(module_collection_properties())
 
     ### 其他插件设置
     show_other_module_prop: BoolProperty(name="其他小工具设置", default=False)  # type: ignore

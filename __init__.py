@@ -1,15 +1,14 @@
-from .module.reg import safe_register_class, safe_unregister_class
 import inspect
+
+from .module.lifecycle import AddonLifecycle, LifecycleStep
+from .module.lifecycle_blender import BlenderLifecycleHost, bind_lifecycle, bind_module_toggles
+from .module.reg import safe_register_class, safe_unregister_class
 
 if "bpy" in locals():
     import importlib
 
-    importlib.reload(props)
-    importlib.reload(operators)
-    importlib.reload(panels)
-    importlib.reload(pip_operators)
-    importlib.reload(pip_panel)
-    importlib.reload(pip_props)
+    for core_name in ("props", "operators", "panels", "pip_operators", "pip_panel", "pip_props"):
+        importlib.reload(globals()[core_name])
 else:
     import bpy
     from bpy.props import *
@@ -44,9 +43,8 @@ for module_path, module_name in module_path_name_list.items():
 
 def _get_pref_class(mod):
     for obj in vars(mod).values():
-        if inspect.isclass(obj) and issubclass(obj, PropertyGroup):
-            if hasattr(obj, "bl_idname") and obj.bl_idname == mod.__name__:
-                return obj
+        if inspect.isclass(obj) and issubclass(obj, PropertyGroup) and getattr(obj, "bl_idname", None) == mod.__name__:
+            return obj
 
 
 def get_addon_preferences(name=""):
@@ -72,37 +70,8 @@ def get_addon_preferences(name=""):
 
 def create_property(cls, name, prop):
     if not hasattr(cls, "__annotations__"):
-        cls.__annotations__ = dict()
+        cls.__annotations__ = {}
     cls.__annotations__[name] = prop
-
-
-def register_submodule(mod):
-    try:
-        mod.register()
-    except ValueError as error:
-        print(error)
-        pass
-    try:
-        # if hasattr(mod.bl_info):
-        mod.__addon_enabled__ = True
-    except:
-        pass
-
-
-def unregister_submodule(mod):
-    if mod.__addon_enabled__:
-        mod.unregister()
-        mod.__addon_enabled__ = False
-
-        prefs = get_addon_preferences()
-        name = mod.__name__.split(".")[-1]
-        if hasattr(WXZ_PIE_Preferences, name):
-            delattr(WXZ_PIE_Preferences, name)
-            if prefs:
-                bpy.utils.unregister_class(WXZ_PIE_Preferences)
-                bpy.utils.register_class(WXZ_PIE_Preferences)
-                if name in prefs:
-                    del prefs[name]
 
 
 class WXZ_PIE_Preferences(AddonPreferences, props.WXZ_PIE_Prefs_Props, pip_props.PIP_Prefs_Props):
@@ -124,30 +93,7 @@ class WXZ_PIE_Preferences(AddonPreferences, props.WXZ_PIE_Prefs_Props, pip_props
             panels.draw_other_addons_setting(self, layout)
 
 
-for mod in all_modules:
-    # info = mod.bl_info
-    mod_name = mod.__name__.split(".")[-1]
-
-    def gen_update(mod):
-        def update(self, context):
-            enabled = getattr(self, "use_" + mod.__name__.split(".")[-1])
-            if enabled:
-                register_submodule(mod)
-            else:
-                unregister_submodule(mod)
-            mod.__addon_enabled__ = enabled
-
-        return update
-
-    create_property(
-        WXZ_PIE_Preferences,
-        "use_" + mod_name,
-        BoolProperty(
-            name=mod_name,
-            update=gen_update(mod),
-            default=True,
-        ),
-    )
+bind_module_toggles(WXZ_PIE_Preferences, all_modules)
 
 module_classes = [
     operators,
@@ -157,48 +103,43 @@ module_classes = [
 addon_keymaps = []
 
 
-def add_modules_item(prefs, module_list_name):
-    module = getattr(prefs, module_list_name)
-    module.clear()
-    for mod in all_modules_dir[module_list_name]:
-        item = module.add()
-        item.name = mod.__name__.split(".")[-1]
+def _core_step(name):
+    # Resolve reloaded core modules when the hook runs, not at composition time.
+    return LifecycleStep(name, lambda: globals()[name].register(), lambda: globals()[name].unregister())
+
+
+if "_lifecycle" not in locals():
+    _lifecycle_host = BlenderLifecycleHost(__package__, lambda: WXZ_PIE_Preferences)
+    _lifecycle = AddonLifecycle(
+        all_modules_dir,
+        _lifecycle_host,
+        before_features=(
+            _core_step("props"),
+            _core_step("pip_props"),
+            LifecycleStep(
+                "preferences",
+                lambda: safe_register_class([WXZ_PIE_Preferences]),
+                lambda: safe_unregister_class([WXZ_PIE_Preferences]),
+            ),
+            _core_step("operators"),
+            _core_step("pip_operators"),
+            _core_step("panels"),
+        ),
+        after_features=(
+            LifecycleStep(
+                "module_lists",
+                lambda: _lifecycle_host.rebuild_collections(_lifecycle.groups),
+                lambda: None,
+            ),
+            _core_step("translate"),
+        ),
+    )
+bind_lifecycle(_lifecycle)
 
 
 def register():
-    # Register collection item types before the preferences that reference them.
-    props.register()
-    pip_props.register()
-    safe_register_class([WXZ_PIE_Preferences])
-    for mod in module_classes:
-        mod.register()
-
-    prefs = get_addon_preferences()
-    for mod in all_modules:
-        if not hasattr(mod, "__addon_enabled__"):
-            mod.__addon_enabled__ = False
-        name = mod.__name__.split(".")[-1]
-        if prefs is None or getattr(prefs, "use_" + name):
-            register_submodule(mod)
-
-    if prefs is not None:
-        add_modules_item(prefs, "setting_modules")
-        add_modules_item(prefs, "other_modules")
-        add_modules_item(prefs, "pie_modules")
-
-    translate.register()
+    _lifecycle.start()
 
 
 def unregister():
-
-    for mod in reversed(module_classes):
-        mod.unregister()
-
-    for mod in all_modules:
-        if mod.__addon_enabled__:
-            unregister_submodule(mod)
-
-    safe_unregister_class([WXZ_PIE_Preferences])
-    pip_props.unregister()
-    props.unregister()
-    translate.unregister()
+    _lifecycle.stop()
