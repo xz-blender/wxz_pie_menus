@@ -1,18 +1,19 @@
 """Run with blender --background --factory-startup --python-exit-code 1 --python this_file.
 
-Load the real RNA declarations and registration functions without importing the
-unrelated operators, dependencies, keymaps, or startup handlers of the add-on.
+Load the preferences package and root registration functions without enabling
+unrelated operators, keymaps, or startup handlers of the add-on.
 """
 
 import ast
+import importlib
 from pathlib import Path
-from types import SimpleNamespace
+import sys
+from types import ModuleType, SimpleNamespace
 
 import bpy
-from bpy.props import *
-from bpy.types import AddonPreferences, PropertyGroup
 
 ROOT = Path(__file__).resolve().parents[1]
+PACKAGE = "wxz_module_preferences_test"
 COLLECTIONS = ("pie_modules", "other_modules", "setting_modules")
 
 
@@ -22,40 +23,17 @@ def load_nodes(filename, select, namespace):
     exec(compile(tree, str(ROOT / filename), "exec"), namespace)
 
 
-load_nodes(
-    "utils.py",
-    lambda node: isinstance(node, ast.FunctionDef)
-    and node.name in {"safe_register_class", "safe_unregister_class"},
-    globals(),
-)
-
-props_ns = dict(globals())
-load_nodes(
-    "props.py",
-    lambda node: (isinstance(node, ast.ClassDef) and node.name != "WXZ_PIE_Prefs_Props")
-    or (isinstance(node, ast.FunctionDef) and node.name in {"register", "unregister"})
-    or (isinstance(node, ast.Assign) and any(isinstance(t, ast.Name) and t.id == "CLASSES" for t in node.targets)),
-    props_ns,
-)
-prefs_tree = ast.parse((ROOT / "props.py").read_text(encoding="utf-8"))
-prefs_class = next(node for node in prefs_tree.body if isinstance(node, ast.ClassDef) and node.name == "WXZ_PIE_Prefs_Props")
-prefs_class.body = [
-    node for node in prefs_class.body
-    if isinstance(node, ast.AnnAssign) and isinstance(node.target, ast.Name) and node.target.id in COLLECTIONS
-]
-exec(compile(ast.Module(body=[prefs_class], type_ignores=[]), str(ROOT / "props.py"), "exec"), props_ns)
-props = SimpleNamespace(**props_ns)
-
-
-class WXZ_PIE_Preferences(AddonPreferences, props.WXZ_PIE_Prefs_Props):
-    bl_idname = "wxz_module_preferences_test"
-
-
+package = ModuleType(PACKAGE)
+package.__package__ = PACKAGE
+package.__path__ = [str(ROOT)]
+sys.modules[PACKAGE] = package
+preferences = importlib.import_module(f"{PACKAGE}.prefs")
+utils = importlib.import_module(f"{PACKAGE}.utils")
+assert preferences.WXZ_PIE_Preferences.bl_idname == PACKAGE
 addon = bpy.context.preferences.addons.new()
-addon.module = WXZ_PIE_Preferences.bl_idname
+addon.module = PACKAGE
 unused_module = SimpleNamespace(register=lambda: None, unregister=lambda: None)
-pip_props = unused_module
-modules_ns = dict(globals(), operators=unused_module, pip_operators=unused_module, panels=unused_module)
+modules_ns = dict(globals(), operators=unused_module, pip_operators=unused_module)
 load_nodes(
     "__init__.py",
     lambda node: isinstance(node, ast.Assign)
@@ -82,19 +60,35 @@ load_nodes(
 )
 
 for cycle in range(2):
+    if cycle:
+        previous_class = preferences.WXZ_PIE_Preferences
+        importlib.reload(preferences)
+        assert preferences.WXZ_PIE_Preferences is not previous_class
+        assert preferences.WXZ_PIE_Preferences.bl_idname == PACKAGE
     register()
-    prefs = get_addon_preferences()
-    for name in COLLECTIONS:
-        collection = getattr(prefs, name)
-        assert [item.name for item in collection] == ["first", "second"], name
-        assert collection["first"].name == "first", name
-        collection[0].name = "renamed"
-        assert collection["renamed"].name == "renamed", name
-        add_modules_item(prefs, name)
-        assert [item.name for item in collection] == ["first", "second"], name
-    unregister()
-    assert not WXZ_PIE_Preferences.is_registered
-    assert all(not cls.is_registered for cls in props.CLASSES)
-    print(f"PASS: module names, lookup, rebuild, and registration cycle {cycle + 1}")
+    try:
+        prefs = get_addon_preferences()
+        assert utils.get_prefs() == prefs
+        assert prefs.use_china_mirror is True
+        assert prefs.quick_crease_weight.sensitivity > 0
+        assert hasattr(bpy.types.Scene, "M4_split")
+        assert hasattr(bpy.types.Scene, "PIE_pip_output")
+        assert all(cls.is_registered for cls in preferences.panels.CLASSES)
+        for name in COLLECTIONS:
+            collection = getattr(prefs, name)
+            assert [item.name for item in collection] == ["first", "second"], name
+            assert collection["first"].name == "first", name
+            collection[0].name = "renamed"
+            assert collection["renamed"].name == "renamed", name
+            add_modules_item(prefs, name)
+            assert [item.name for item in collection] == ["first", "second"], name
+    finally:
+        unregister()
+    assert not preferences.WXZ_PIE_Preferences.is_registered
+    for module in (preferences.props, preferences.pip_props, preferences.panels):
+        assert all(not cls.is_registered for cls in module.CLASSES)
+    assert not hasattr(bpy.types.Scene, "M4_split")
+    assert not hasattr(bpy.types.Scene, "PIE_pip_output")
+    print(f"PASS: preference imports, lookup, collections, registration and reload cycle {cycle + 1}")
 
 bpy.context.preferences.addons.remove(addon)

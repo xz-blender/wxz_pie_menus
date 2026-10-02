@@ -27,6 +27,16 @@
 外部插件清单及其配置保存在 `operator/addons_lib_presets.json` 的 `org_ex` 中，包含原自建源清单。
 在资源配置中点击“安装所需插件（官方源）”，即可通过 Blender 默认官方扩展源安装、启用并应用预设；单项失败会提示并继续处理其余插件。
 
+## 快速折痕 / 倒角权重
+
+`E_pie` 内置 Quick Crease Weight 1.2.1 的网格编辑与 HUD 逻辑。编辑模式下，`Shift + E` 调整折痕，`Ctrl + Shift + E` 调整倒角权重；点选择作用于顶点，边／面选择作用于边，支持多物体编辑。
+
+左右移动鼠标调整；松开调用工具时按住的修饰键后，`Shift` 按 0.1 吸附、`Ctrl` 设为 1、`Alt` 设为 0。左键／Enter 确认，右键／Esc 逐项还原原值（并移除本次新建的属性）；确认后支持撤销。不移动鼠标直接确认会保留各元素原值。
+
+在“其他插件设置 → 快速折痕 / 倒角权重”中调整快捷键、灵敏度和 HUD 的位置、字号、橙／蓝主题色、背景及右侧按键提示。设置随 Blender 偏好设置保存；关闭 `E_pie` 会取消当前操作并清理快捷键。原 E 拖动饼菜单及 `pie.shift_e` 接口保持兼容。
+
+核心来源：WXZ 的 Quick Crease Weight 1.2.1，保留源文件的 GPL-3.0-or-later 标注及 `module/quick_crease_weight/LICENSE`；宿主适配位于同目录的操作符、偏好设置和快捷键模块。
+
 ## -偏好设置菜单-
 <div align="center">
     <img src="https://img.picgo.net/2024/07/12/pref_1e65a9cba62b0014a.png" style="width:80%"/>

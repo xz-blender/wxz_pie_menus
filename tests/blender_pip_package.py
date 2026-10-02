@@ -20,30 +20,20 @@ PACKAGE = "wxz_pip_integration_test"
 PIP_PREFS = {"debug"}
 
 
-def load_nodes(filename, select, namespace):
-    source = ast.parse((ROOT / filename).read_text(encoding="utf-8"))
-    source.body = [node for node in source.body if select(node)]
-    exec(compile(source, str(ROOT / filename), "exec"), namespace)
-
-
 package = ModuleType(PACKAGE)
 package.__path__ = [str(ROOT)]
 sys.modules[PACKAGE] = package
 utils = ModuleType(f"{PACKAGE}.utils")
 utils.bpy = bpy
-load_nodes(
-    "utils.py",
-    lambda node: isinstance(node, ast.FunctionDef) and node.name in {"safe_register_class", "safe_unregister_class"},
-    vars(utils),
-)
 sys.modules[utils.__name__] = utils
 
+registration = importlib.import_module(f"{PACKAGE}.module.reg")
 pip_props = importlib.import_module(f"{PACKAGE}.module.pip_helper.props")
 scope = dict(globals())
-source = ast.parse((ROOT / "props.py").read_text(encoding="utf-8"))
+source = ast.parse((ROOT / "prefs/props.py").read_text(encoding="utf-8"))
 mixin = next(node for node in source.body if isinstance(node, ast.ClassDef) and node.name == "WXZ_PIE_Prefs_Props")
 mixin.body = [node for node in mixin.body if isinstance(node, ast.AnnAssign) and node.target.id in PIP_PREFS]
-exec(compile(ast.Module(body=[mixin], type_ignores=[]), str(ROOT / "props.py"), "exec"), scope)
+exec(compile(ast.Module(body=[mixin], type_ignores=[]), str(ROOT / "prefs/props.py"), "exec"), scope)
 
 
 class ProbePreferences(bpy.types.AddonPreferences, scope["WXZ_PIE_Prefs_Props"], pip_props.PIP_Prefs_Props):
@@ -60,7 +50,7 @@ print(f"PASS: Blender {bpy.app.version_string} Python resolved to {python}")
 
 for cycle in range(2):
     pip_props.register()
-    utils.safe_register_class([ProbePreferences])
+    registration.safe_register_class([ProbePreferences])
     entry = bpy.context.preferences.addons.new()
     entry.module = PACKAGE
     ops.register()
@@ -90,7 +80,7 @@ for cycle in range(2):
     finally:
         ops.unregister()
         bpy.context.preferences.addons.remove(entry)
-        utils.safe_unregister_class([ProbePreferences])
+        registration.safe_unregister_class([ProbePreferences])
         pip_props.unregister()
     assert all(not cls.is_registered for cls in ops.CLASSES)
     assert all(not cls.is_registered for cls in pip_props.CLASSES)

@@ -1,26 +1,25 @@
-from .module.reg import safe_register_class, safe_unregister_class
 import inspect
+from pathlib import Path
+
+from . import prefs as preferences
 
 if "bpy" in locals():
     import importlib
 
-    importlib.reload(props)
+    importlib.reload(preferences)
     importlib.reload(operators)
-    importlib.reload(panels)
     importlib.reload(pip_operators)
-    importlib.reload(pip_panel)
-    importlib.reload(pip_props)
 else:
     import bpy
-    from bpy.props import *
-    from bpy.types import AddonPreferences, Operator, PropertyGroup
+    from bpy.props import BoolProperty, PointerProperty
+    from bpy.types import PropertyGroup
 
-    from . import operators, panels, props
+    from . import operators
     from .module.pip_helper import operators as pip_operators
-    from .module.pip_helper import panel as pip_panel
-    from .module.pip_helper import props as pip_props
     from .translation import translate
-    from .utils import *
+    from .utils import iter_submodules_name
+
+from .prefs import WXZ_PIE_Preferences
 
 except_module_list = [
     "icons",
@@ -33,7 +32,7 @@ except_module_list = [
     "extensions_setting",
 ]
 cwd = Path(__file__).parent
-module_path_name_list = {"pie": "pie_modules", "parts_addons": "other_modules", "operator": "setting_modules"}
+module_path_name_list = preferences.MODULE_PATH_NAMES
 all_modules = []
 all_modules_dir = {}
 for module_path, module_name in module_path_name_list.items():
@@ -105,25 +104,6 @@ def unregister_submodule(mod):
                     del prefs[name]
 
 
-class WXZ_PIE_Preferences(AddonPreferences, props.WXZ_PIE_Prefs_Props, pip_props.PIP_Prefs_Props):
-    bl_idname = __package__
-
-    def draw(self, context):
-        layout = self.layout
-        row = layout.row()
-        row.prop(self, "tabs", expand=True)
-        row.alignment = "CENTER"
-
-        if self.tabs == "DEPENDENCIES":
-            pip_panel.draw_dependencies(self, context, layout)
-        elif self.tabs == "ADDON_MENUS":
-            panels.draw_addon_menus(self, layout, context, module_path_name_list)
-        elif self.tabs == "RESOURCE_CONFIG":
-            panels.draw_resource_config(self, layout)
-        elif self.tabs == "Other_Addons_Setting":
-            panels.draw_other_addons_setting(self, layout)
-
-
 for mod in all_modules:
     # info = mod.bl_info
     mod_name = mod.__name__.split(".")[-1]
@@ -152,7 +132,6 @@ for mod in all_modules:
 module_classes = [
     operators,
     pip_operators,
-    panels,
 ]
 addon_keymaps = []
 
@@ -166,10 +145,7 @@ def add_modules_item(prefs, module_list_name):
 
 
 def register():
-    # Register collection item types before the preferences that reference them.
-    props.register()
-    pip_props.register()
-    safe_register_class([WXZ_PIE_Preferences])
+    preferences.register()
     for mod in module_classes:
         mod.register()
 
@@ -198,7 +174,5 @@ def unregister():
         if mod.__addon_enabled__:
             unregister_submodule(mod)
 
-    safe_unregister_class([WXZ_PIE_Preferences])
-    pip_props.unregister()
-    props.unregister()
+    preferences.unregister()
     translate.unregister()

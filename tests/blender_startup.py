@@ -30,9 +30,15 @@ with patch("builtins.__import__", side_effect=import_without_bgl):
     preferences_entry.module = addon.__name__
     try:
         for cycle in range(2):
+            if cycle:
+                previous_class = addon.WXZ_PIE_Preferences
+                importlib.reload(addon)
+                assert addon.WXZ_PIE_Preferences is not previous_class
             addon.register()
             try:
                 assert addon.WXZ_PIE_Preferences.is_registered
+                assert addon.WXZ_PIE_Preferences is addon.preferences.WXZ_PIE_Preferences
+                assert addon.WXZ_PIE_Preferences.bl_idname == addon.__name__
                 prefs = preferences_entry.preferences
                 assert prefs.use_china_mirror is True
                 assert prefs.install_custom_pip_packages == ""
@@ -41,10 +47,16 @@ with patch("builtins.__import__", side_effect=import_without_bgl):
                     assert [item.name for item in getattr(prefs, collection_name)] == [
                         module.__name__.split(".")[-1] for module in modules
                     ], collection_name
+                e_pie = next(module for module in addon.all_modules if module.__name__.endswith(".E_pie"))
+                prefs.use_E_pie = False
+                assert not e_pie.__addon_enabled__
+                assert prefs.quick_crease_weight.sensitivity > 0
+                prefs.use_E_pie = True
+                assert e_pie.__addon_enabled__
             finally:
                 addon.unregister()
             assert not addon.WXZ_PIE_Preferences.is_registered
             assert not hasattr(bpy.types.Scene, "PIE_pip_output")
-            print(f"PASS: full startup, preferences, and shutdown without bgl, cycle {cycle + 1}")
+            print(f"PASS: startup, preferences, module toggles, reload and shutdown without bgl, cycle {cycle + 1}")
     finally:
         bpy.context.preferences.addons.remove(preferences_entry)
