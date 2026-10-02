@@ -67,19 +67,6 @@ def get_desktop_path():
         return os.path.join(os.path.expanduser("~"), "Desktop")
 
 
-def prefs_show_sub_panel(self, layout, show_prop, prop_name=""):
-    # AddonPreferences may not support IDProperties; use registered RNA properties.
-    attr = getattr(self, show_prop)
-    # 创建 UI 布局
-    col = layout.box().column()
-    col.scale_y = 1.1
-    col.use_property_split = False
-    name: str = prop_name if prop_name != "" else show_prop
-    col.prop(self, show_prop, text=name, icon="TRIA_DOWN" if attr else "TRIA_RIGHT")
-
-    return (attr, col)
-
-
 @persistent
 def manage_app_handlers(handler_list, func, remove=False):
     for handler in handler_list:

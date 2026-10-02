@@ -2,10 +2,22 @@ import bpy
 import rna_keymap_ui
 from bpy.types import UIList
 
-from .module.lifecycle_blender import draw_module_item
-from .module.reg import register_classes, unregister_classes
-from .pie.S_pie import addon_keymaps as s_pie_keymaps
-from .utils import *
+from ..module.lifecycle_blender import draw_module_item
+from ..module.reg import register_classes, unregister_classes
+from ..utils import get_prefs
+
+
+def prefs_show_sub_panel(self, layout, show_prop, prop_name=""):
+    # AddonPreferences may not support IDProperties; use registered RNA properties.
+    attr = getattr(self, show_prop)
+    # 创建 UI 布局
+    col = layout.box().column()
+    col.scale_y = 1.1
+    col.use_property_split = False
+    name: str = prop_name if prop_name != "" else show_prop
+    col.prop(self, show_prop, text=name, icon="TRIA_DOWN" if attr else "TRIA_RIGHT")
+
+    return (attr, col)
 
 
 class PIE_UL_pie_modules(UIList):
@@ -31,7 +43,7 @@ def draw_addon_menus(self, layout, context, module_path_name_list):
     # box = layout.row().box()
     # box.label(text="饼菜单快捷键配置:")
     # col = box.column()
-    # from .items import All_Pie_keymaps
+    # from ..items import All_Pie_keymaps
 
     # kc = bpy.context.window_manager.keyconfigs.addon
 
@@ -160,6 +172,12 @@ def draw_other_addons_setting(self, layout):
     layout = self.layout.column(align=False)
     sep_deffac = 0.4
 
+    attr, col = prefs_show_sub_panel(self, layout, "show_quick_crease_weight", "快速折痕 / 倒角权重")
+    if attr:
+        if not self.use_E_pie:
+            col.label(text="请在饼菜单列表中启用 E_pie 以使用此工具", icon="INFO")
+        self.quick_crease_weight.draw_settings(col, bpy.context)
+
     # 实用小工具设置
     attr, col = prefs_show_sub_panel(self, layout, "show_other_module_prop", "其他小工具设置")
     if attr:
@@ -242,7 +260,7 @@ def draw_other_addons_setting(self, layout):
         box = col.box()
         col = box.column()
         kc = bpy.context.window_manager.keyconfigs.addon
-        from .parts_addons.uv_drag_island import addon_keymaps
+        from ..parts_addons.uv_drag_island import addon_keymaps
 
         for km, kmi in addon_keymaps:
             km = km.active()

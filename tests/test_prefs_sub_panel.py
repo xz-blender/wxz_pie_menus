@@ -11,12 +11,12 @@ except ImportError:
 
 
 ROOT = Path(__file__).resolve().parents[1]
-source = ast.parse((ROOT / "utils.py").read_text(encoding="utf-8"))
+source = ast.parse((ROOT / "prefs/panels.py").read_text(encoding="utf-8"))
 helper = next(node for node in source.body if isinstance(node, ast.FunctionDef) and node.name == "prefs_show_sub_panel")
 namespace = {}
-exec(compile(ast.Module(body=[helper], type_ignores=[]), str(ROOT / "utils.py"), "exec"), namespace)
+exec(compile(ast.Module(body=[helper], type_ignores=[]), str(ROOT / "prefs/panels.py"), "exec"), namespace)
 prefs_show_sub_panel = namespace["prefs_show_sub_panel"]
-panels = ast.parse((ROOT / "panels.py").read_text(encoding="utf-8"))
+panels = source
 panel_flags = {
     node.args[2].value
     for node in ast.walk(panels)
@@ -69,7 +69,7 @@ class BlenderPreferenceSubPanelTests(unittest.TestCase):
     def test_registered_panel_defaults_and_toggles(self):
         # Use the actual panel property declarations and the add-on's mixin pattern,
         # without enabling unrelated modules, handlers, or user preference presets.
-        props = ast.parse((ROOT / "props.py").read_text(encoding="utf-8"))
+        props = ast.parse((ROOT / "prefs/props.py").read_text(encoding="utf-8"))
         mixin = next(node for node in props.body if isinstance(node, ast.ClassDef) and node.name == "WXZ_PIE_Prefs_Props")
         mixin.body = [
             node
@@ -78,7 +78,7 @@ class BlenderPreferenceSubPanelTests(unittest.TestCase):
         ] or [ast.Pass()]
         module = ast.fix_missing_locations(ast.Module(body=[mixin], type_ignores=[]))
         scope = {"BoolProperty": bpy.props.BoolProperty}
-        exec(compile(module, str(ROOT / "props.py"), "exec"), scope)
+        exec(compile(module, str(ROOT / "prefs/props.py"), "exec"), scope)
 
         class ProbePreferences(bpy.types.AddonPreferences, scope["WXZ_PIE_Prefs_Props"]):
             bl_idname = "wxz_prefs_sub_panel_regression"

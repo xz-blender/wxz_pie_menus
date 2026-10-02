@@ -1,13 +1,12 @@
-import importlib
-
 import bpy
 from bpy.props import *
-from bpy.types import *
+from bpy.types import PropertyGroup
 
-from .module.lifecycle_blender import PIE_ModuleItem, module_collection_properties
-from .module.reg import register_classes, unregister_classes
-from .pie.Translate_key import enum_languages
-from .utils import *
+from ..module.lifecycle_blender import PIE_ModuleItem, module_collection_properties
+from ..module.quick_crease_weight.preferences import WXZ_PG_QuickCreaseWeight
+from ..module.reg import register_classes, unregister_classes
+from ..pie.Translate_key import enum_languages
+from ..utils import get_local_path, get_sync_path
 
 
 class WXZ_PIE_Prefs_Props:
@@ -45,6 +44,8 @@ class WXZ_PIE_Prefs_Props:
     show_asset_browser_scroll: BoolProperty(name="资产浏览器-滚轮缩放快捷键", default=False)  # type: ignore
     show_MACHIN4_tools: BoolProperty(name="MACHIN4 功能集合", default=False)  # type: ignore
     show_drag_uv_island: BoolProperty(name="拖动UV孤岛快捷键设置", default=False)  # type: ignore
+    show_quick_crease_weight: BoolProperty(name="快速折痕 / 倒角权重", default=False)  # type: ignore
+    quick_crease_weight: bpy.props.PointerProperty(type=WXZ_PG_QuickCreaseWeight)  # type: ignore
 
     modifier_profiling: BoolProperty(name="修改器-耗时统计面板", default=False)  # type: ignore
     change_overlay_and_shading_sets: BoolProperty(name="个性化更改视图着色", default=False)  # type: ignore
@@ -55,7 +56,7 @@ class WXZ_PIE_Prefs_Props:
     ## formula to nodes
     debug_prints: BoolProperty(name="调试输出", description="在终端中启用调试打印", default=False)  # type: ignore
     generate_previews: BoolProperty(name="生成逻辑预览树", description="在创建节点树之前生成节点树的预览", default=True)  # type: ignore
-    from .parts_addons.formula_to_nodes import VariableSortMode
+    from ..parts_addons.formula_to_nodes import VariableSortMode
 
     sort_vars: EnumProperty(items=VariableSortMode, name="变量排序模式", description="对变量进行排序的顺序", default="INSERTION")  # type: ignore
     ## MeshMachine
@@ -106,6 +107,7 @@ class M4_split_SceneProperties(bpy.types.PropertyGroup):
 
 
 CLASSES = [
+    WXZ_PG_QuickCreaseWeight,
     PIE_ModuleItem,
     PIE_HistoryObjectsCollection,
     PIE_HistoryUnmirroredCollection,
