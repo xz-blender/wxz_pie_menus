@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="440" viewBox="0 0 1280 440" role="img" aria-labelledby="title desc">
+  <title id="title">WXZ Pie Menus</title>
+  <desc id="desc">把常用操作，放到手边。Blender 饼菜单、建模工具与工作流预设。右侧为菜单入口示意。</desc>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#101b2a"/><stop offset="1" stop-color="#17283b"/></linearGradient>
+    <linearGradient id="accent" x2="1" y2="1"><stop stop-color="#ffcf8a"/><stop offset="1" stop-color="#f39547"/></linearGradient>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#b5d8ff" stroke-opacity=".035"/></pattern>
+  </defs>
+  <rect width="1280" height="440" rx="24" fill="url(#bg)"/>
+  <rect width="1280" height="440" rx="24" fill="url(#grid)"/>
+  <path d="M48 49H78" stroke="#ffb568" stroke-width="4"/>
+  <text x="91" y="55" fill="#90a7c0" font-family="Arial,sans-serif" font-size="14" letter-spacing="3">BLENDER WORKFLOW COLLECTION</text>
+  <text x="48" y="138" fill="#f3f7fc" font-family="Arial,sans-serif" font-weight="700" font-size="64" letter-spacing="-2">WXZ Pie Menus</text>
+  <text x="51" y="203" fill="#f4c593" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="34" font-weight="600">把常用操作，放到手边。</text>
+  <text x="51" y="246" fill="#a4b7cd" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="18">饼菜单 · 建模工具 · 工作流预设</text>
+  <g font-family="Arial,sans-serif" font-size="13" letter-spacing="1">
+    <rect x="51" y="294" width="139" height="35" rx="17.5" fill="#23364c"/><text x="71" y="317" fill="#cedcec">CONTEXT AWARE</text>
+    <rect x="201" y="294" width="145" height="35" rx="17.5" fill="#23364c"/><text x="221" y="317" fill="#cedcec">MODULAR TOOLS</text>
+    <rect x="357" y="294" width="140" height="35" rx="17.5" fill="#23364c"/><text x="379" y="317" fill="#cedcec">LOCAL ASSETS</text>
+  </g>
+  <text x="51" y="388" fill="#657e98" font-family="Arial,sans-serif" font-size="13" letter-spacing="2">SELECT. MODEL. SWITCH. KEEP CREATING.</text>
+  <g transform="translate(989 218)">
+    <circle r="154" fill="none" stroke="#344b63" stroke-dasharray="3 8"/>
+    <circle r="104" fill="none" stroke="#223a53" stroke-width="36"/>
+    <path d="M-76-76A107 107 0 0 1 76-76" fill="none" stroke="#d39756" stroke-width="2"/>
+    <g stroke="#395773" stroke-width="1.5"><path d="M0-59V-137M0 59V137M-59 0H-157M59 0H157M-42-42L-104-104M42-42L104-104M-42 42L-104 104M42 42L104 104"/></g>
+    <circle r="51" fill="#152536" stroke="#f5b56f" stroke-width="2"/>
+    <path d="M-18-11L0-22L18-11V11L0 22L-18 11ZM-18-11L0 0L18-11M0 0V22" fill="none" stroke="url(#accent)" stroke-width="2" stroke-linejoin="round"/>
+    <g font-family="Arial,Microsoft YaHei,sans-serif" text-anchor="middle">
+      <rect x="-59" y="-173" width="118" height="45" rx="12" fill="#edab65"/><text y="-145" fill="#192536" font-size="17" font-weight="700">F · 建模</text>
+      <g fill="#22374d" stroke="#39526b"><rect x="-210" y="-23" width="117" height="46" rx="12"/><rect x="93" y="-23" width="117" height="46" rx="12"/><rect x="-74" y="127" width="148" height="46" rx="12"/></g>
+      <g fill="#d4e1ee" font-size="16"><text x="-151" y="6">A · 选择</text><text x="152" y="6">D · 变换</text><text y="157">Ctrl Tab · 工作区</text></g>
+      <g fill="#22374d" stroke="#39526b"><rect x="-157" y="-127" width="67" height="39" rx="10"/><rect x="90" y="-127" width="67" height="39" rx="10"/><rect x="-157" y="88" width="67" height="39" rx="10"/><rect x="90" y="88" width="67" height="39" rx="10"/></g>
+      <g fill="#8fb2d3" font-size="16"><text x="-124" y="-102">E</text><text x="124" y="-102">W</text><text x="-124" y="113">X</text><text x="124" y="113">Ctrl S</text></g>
+    </g>
+  </g>
+  <text x="989" y="422" fill="#6e88a1" text-anchor="middle" font-family="Microsoft YaHei,sans-serif" font-size="11">菜单入口示意 / 按键拖动唤出</text>
+</svg>
