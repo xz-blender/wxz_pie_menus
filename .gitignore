@@ -11,3 +11,4 @@ img
 __pycache__/
 .venv/
 .env
+.dist/
