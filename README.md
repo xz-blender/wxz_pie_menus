@@ -179,6 +179,14 @@ python -m unittest discover -s tests -p "test_*.py"
 
 `tests/blender_*.py` 是需要在 Blender 中单独运行的集成脚本，并非全部由上述命令执行。界面检查请使用独立的 factory-startup 会话，避免改动日常配置。普通 Python 下直接运行 pytest 可能在收集阶段导入插件入口并因缺少 `bpy` 失败。
 
+打包插件并验证 ZIP（需要 Python 3.11+ 和 Blender 4.2+）：
+
+```bash
+python scripts/build_extension.py --blender "C:/path/to/blender.exe"
+```
+
+如果 Blender 已加入 PATH，可省略 `--blender`。输出固定为 `dist/wxz_pie_menus-<版本>.zip`，版本读取自扩展清单；保留本地资源和随包 wheel，排除生成目录、缓存、测试及开发文件。`dist/` 已加入 Git 忽略列表。
+
 发现问题时，请在 [Issues](https://github.com/xz-blender/wxz_pie_menus/issues) 附上 Blender 版本、系统、模块名、复现步骤和控制台错误。
 
 ## 来源与许可证

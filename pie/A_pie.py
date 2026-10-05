@@ -29,7 +29,11 @@ class PIE_MT_Bottom_A(Menu):
                 # 4 - LEFT
                 add_operator(pie, "object.distribute", text="排列物体", icon="MOD_ARRAY")
                 # 6 - RIGHT
-                pie.separator()
+                pie.operator(
+                    PIE_Select_Same_Mesh_Count.bl_idname,
+                    text="选择相同顶点数",
+                    icon="VERTEXSEL",
+                ).count_type = "VERTICES"
                 # 2 - BOTTOM
                 pie.separator()
                 # 8 - TOP
@@ -183,6 +187,64 @@ class PIE_MT_Bottom_A(Menu):
             # 9 - TOP - RIGHT
             # 1 - BOTTOM - LEFT
             # 3 - BOTTOM - RIGHT
+
+
+class PIE_Select_Same_Mesh_Count(Operator):
+    bl_idname = "pie.select_same_mesh_count"
+    bl_label = "选择相同网格元素数"
+    bl_description = "按激活物体的顶点、边线或面数量选择当前视图中的网格物体，不计算修改器"
+    bl_options = {"REGISTER", "UNDO"}
+
+    count_type: bpy.props.EnumProperty(
+        name="匹配数量",
+        items=[
+            ("VERTICES", "顶点数", "选择与激活物体顶点数相同的物体"),
+            ("EDGES", "边线数", "选择与激活物体边线数相同的物体"),
+            ("FACES", "面数", "选择与激活物体面数相同的物体"),
+        ],
+        default="VERTICES",
+    )  # type: ignore
+
+    @classmethod
+    def poll(cls, context):
+        return (
+            context.area is not None
+            and context.area.type == "VIEW_3D"
+            and context.mode == "OBJECT"
+            and context.active_object is not None
+            and context.active_object.type == "MESH"
+        )
+
+    def invoke(self, context, event):
+        return context.window_manager.invoke_props_dialog(self, width=360)
+
+    def draw(self, context):
+        layout = self.layout
+        layout.prop(self, "count_type", expand=True)
+        active = context.active_object
+        if active is not None and active.type == "MESH":
+            mesh = active.data
+            layout.label(text=f"参考物体：{active.name}")
+            layout.label(text=f"顶点：{len(mesh.vertices)}  边线：{len(mesh.edges)}  面：{len(mesh.polygons)}")
+
+    def execute(self, context):
+        if not self.poll(context):
+            self.report({"WARNING"}, "请在物体模式下激活一个网格物体")
+            return {"CANCELLED"}
+
+        attribute = {"VERTICES": "vertices", "EDGES": "edges", "FACES": "polygons"}[self.count_type]
+        target_count = len(getattr(context.active_object.data, attribute))
+        matched = 0
+        for obj in context.selectable_objects:
+            if not obj.visible_get(view_layer=context.view_layer, viewport=context.space_data):
+                continue
+            matches = obj.type == "MESH" and len(getattr(obj.data, attribute)) == target_count
+            obj.select_set(matches, view_layer=context.view_layer)
+            matched += matches
+
+        count_label = self.properties.bl_rna.properties["count_type"].enum_items[self.count_type].name
+        self.report({"INFO"}, f"已选择 {matched} 个{count_label}相同的物体")
+        return {"FINISHED"}
 
 
 class PIE_Image_usefaker(Operator):
@@ -410,6 +472,7 @@ class Creat_Costom_Asset_Preview(Operator):
 CLASSES = [
     PIE_MT_Bottom_A,
     PIE_MT_Bottom_A_Ctrl,
+    PIE_Select_Same_Mesh_Count,
     PIE_Image_usefaker,
     PIE_Apply_MultiObjects_Scale,
     Creat_Costom_Asset_Preview,

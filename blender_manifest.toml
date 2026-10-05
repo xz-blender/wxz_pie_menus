@@ -22,3 +22,18 @@ wheels = [
   "wheels/shapely-2.1.2-cp313-cp313-win_amd64.whl",
   "wheels/urllib3-2.8.0-py3-none-any.whl",
 ]
+
+[build]
+paths_exclude_pattern = [
+  "__pycache__/",
+  ".*",
+  "/*.zip",
+  "*.blend[1-9]",
+  "/dist/",
+  "/docs/",
+  "/tests/",
+  "/scripts/",
+  "/pyproject.toml",
+  "/uv.lock",
+  "/CONTEXT.md",
+]
