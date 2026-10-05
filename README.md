@@ -8,7 +8,7 @@
 
 按键拖动打开菜单，让选择、建模、变换、文件管理和工作区切换更顺手。
 
-![Version](https://img.shields.io/badge/version-0.2.3-f59e42?style=flat-square)
+![Version](https://img.shields.io/badge/version-0.2.4-f59e42?style=flat-square)
 ![Blender](https://img.shields.io/badge/manifest-Blender_4.2%2B-e87d0d?style=flat-square&logo=blender&logoColor=white)
 ![Language](https://img.shields.io/badge/interface-中文-67b7ff?style=flat-square)
 ![Distribution](https://img.shields.io/badge/distribution-完整发行包-85c7ad?style=flat-square)
