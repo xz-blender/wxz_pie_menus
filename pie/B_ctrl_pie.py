@@ -1,3 +1,4 @@
+from ..module.keymaps import owned_keymaps
 import bpy
 from bpy.types import Menu, Operator, Panel
 
@@ -69,6 +70,7 @@ CLASSES = [
 addon_keymaps = []
 
 
+@owned_keymaps
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
     km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
@@ -77,7 +79,7 @@ def register_keymaps():
     kmi = km.keymap_items.new("wm.call_menu_pie", "B", "CLICK_DRAG", ctrl=True)
     kmi.properties.name = "VIEW3D_PIE_MT_Ctrl_B"
 
-    km = addon.keymaps.new(name="MESH")
+    km = addon.keymaps.new(name="Mesh")
     kmi = km.keymap_items.new("pie.set_render_region", "B", "CLICK", ctrl=True)
 
     addon_keymaps.append((km, kmi))
@@ -86,7 +88,6 @@ def register_keymaps():
 @register_classes(CLASSES)
 def register():
     register_keymaps()
-    extend_keymaps_list(addon_keymaps)
 
 
 @unregister_classes(CLASSES)

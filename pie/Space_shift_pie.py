@@ -1,3 +1,4 @@
+from ..module.keymaps import owned_keymaps
 from ..module.reg import register_classes, unregister_classes
 import bpy
 from bpy.types import Menu, Operator
@@ -50,32 +51,28 @@ keymap_areas = [
 ]
 
 
+@owned_keymaps
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
     space_name = [
-        "3D View",
-        "Graph Editor",
-        "Dopesheet",
-        "NLA Editor",
-        "Clip",
-        "Node Editor",
-        "Sequencer",
-        "Screen",
+        ("3D View", "VIEW_3D"),
+        ("Graph Editor", "GRAPH_EDITOR"),
+        ("Dopesheet", "DOPESHEET_EDITOR"),
+        ("NLA Editor", "NLA_EDITOR"),
+        ("Clip", "CLIP_EDITOR"),
+        ("Node Editor", "NODE_EDITOR"),
+        ("Sequencer", "SEQUENCE_EDITOR"),
+        ("Screen", "EMPTY"),
     ]
-    for area in space_name:
-        km = addon.keymaps.new(name=area)
+    for name, space in space_name:
+        km = addon.keymaps.new(name=name, space_type=space)
         kmi = km.keymap_items.new("wm.call_menu_pie", "SPACE", "CLICK_DRAG", shift=True)
         kmi.properties.name = "VIEW3D_PIE_MT_Space_KEY_shift"
         addon_keymaps.append((km, kmi))
 
 
 def unregister_keymaps():
-    wm = bpy.context.window_manager
-    for km in addon_keymaps:
-        for kmi in km.keymap_items:
-            km.keymap_items.remove(kmi)
-        # wm.keyconfigs.addon.keymaps.remove(km)
-    addon_keymaps.clear()
+    keymap_safe_unregister(addon_keymaps)
 
 
 @register_classes(CLASSES)

@@ -1,3 +1,4 @@
+from ..module.keymaps import owned_keymaps
 from ..module.reg import register_classes, unregister_classes
 import re
 
@@ -132,6 +133,7 @@ def draw_ui(self, context):
     row.operator("pie.toggle_language")
 
 
+@owned_keymaps
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
     km = addon.keymaps.new(name="Window", space_type="EMPTY")

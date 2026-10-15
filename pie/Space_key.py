@@ -1,3 +1,4 @@
+from ..module.keymaps import owned_keymaps
 from ..module.reg import register_classes, unregister_classes
 import bpy
 from bpy.types import Menu, Operator
@@ -65,12 +66,13 @@ keymap_areas = [
     ("NLA Editor", "NLA_EDITOR"),
     ("Graph Editor", "GRAPH_EDITOR"),
     ("Dopesheet", "DOPESHEET_EDITOR"),
-    ("UV Editor", "IMAGE_EDITOR"),
+    ("UV Editor", "EMPTY"),
     ("Image", "IMAGE_EDITOR"),
     ("Node Editor", "NODE_EDITOR"),
 ]
 
 
+@owned_keymaps
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
     # KEY:
@@ -81,13 +83,11 @@ def register_keymaps():
         kmi = km.keymap_items.new("wm.search_menu", "SPACE", "DOUBLE_CLICK")  # 搜索栏
         addon_keymaps.append((km, kmi))
 
-        if area[0] == "3D View" or "Node Editor":  # shift-space
-            km.keymap_items.new("screen.animation_play", "SPACE", "CLICK", shift=True)
-            addon_keymaps.append((km, kmi))
-        else:
-            kmi = km.keymap_items.new("screen.animation_play", "SPACE", "CLICK", shift=True)
-            kmi.properties.reverse = True
-            addon_keymaps.append((km, kmi))
+        # Preserve the existing forward-play action in every editor, but own
+        # the actual created item (the old code appended the search item twice).
+        kmi = km.keymap_items.new("screen.animation_play", "SPACE", "CLICK", shift=True)
+        addon_keymaps.append((km, kmi))
+
 
 
 @register_classes(CLASSES)

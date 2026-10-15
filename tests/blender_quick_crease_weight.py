@@ -268,6 +268,34 @@ class IntegrationTests(unittest.TestCase):
         self.assertIsNone(self.bm.verts.layers.float.get("bevel_weight_vert"))
         self.assertEqual(operators.ACTIVE, [])
 
+    def test_focus_loss_restores_mixed_values_and_clears_modal(self):
+        layer = self.bm.verts.layers.float.new("crease_vert")
+        original = [0.125, 0.25, 0.75, 1.0]
+        for vertex, value in zip(self.bm.verts, original):
+            vertex[layer] = value
+        op = self.make_modal()
+        op._hud = object()
+        op._set_value(0.5)
+        # Alt+Tab first sends Alt, which temporarily applies zero.
+        op.modal(bpy.context, event("LEFT_ALT", alt=True))
+        result = op.modal(bpy.context, event("WINDOW_DEACTIVATE", "NOTHING"))
+        self.assertEqual(result, {"CANCELLED"})
+        self.assertEqual(self.values("crease_vert"), original)
+        self.assertEqual(operators.ACTIVE, [])
+        self.assertIsNone(op._hud)
+        self.assertIsNone(op._edit)
+        self.assertTrue(op._closed)
+        self.assertEqual(op.modal(bpy.context, event("MOUSEMOVE")), {"CANCELLED"})
+
+    def test_focus_loss_removes_preview_layer(self):
+        op = self.make_modal("bevel_weight")
+        op._set_value(0.5)
+        self.assertIsNotNone(self.bm.verts.layers.float.get("bevel_weight_vert"))
+        result = op.modal(bpy.context, event("WINDOW_DEACTIVATE", "NOTHING"))
+        self.assertEqual(result, {"CANCELLED"})
+        self.assertIsNone(self.bm.verts.layers.float.get("bevel_weight_vert"))
+        self.assertEqual(operators.ACTIVE, [])
+
     def test_modal_confirm_navigation_and_disable(self):
         op = self.make_modal()
         op.modal(bpy.context, event("MIDDLEMOUSE"))

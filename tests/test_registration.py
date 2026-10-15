@@ -66,6 +66,34 @@ class RegistrationTests(unittest.TestCase):
         self.assertFalse(hasattr(self.types, "A"))
         self.assertFalse(self.reg.is_registering())
 
+    def test_old_blender_refresh_is_transient_and_only_for_operators(self):
+        class Operator:
+            pass
+
+        self.types.Operator = Operator
+        self.reg.bpy.app = SimpleNamespace(version=(4, 3, 2))
+        owned = type("OwnedOperator", (Operator,), {})
+        self.reg.safe_register_class([owned])
+        self.assertEqual([event[0] for event in self.events], ["register", "register", "unregister"])
+        transient = self.events[1][1]
+        self.assertIs(self.events[2][1], transient)
+        self.assertEqual(transient.bl_idname, "wxz_internal.keymap_type_refresh")
+        self.assertFalse(hasattr(self.types, transient.__name__))
+        self.assertIs(getattr(self.types, owned.__name__), owned)
+        self.events.clear()
+        self.reg.safe_register_class([self.a])
+        self.assertEqual(self.events, [("register", self.a)])
+
+    def test_fixed_blender_does_not_need_refresh_shim(self):
+        class Operator:
+            pass
+
+        self.types.Operator = Operator
+        self.reg.bpy.app = SimpleNamespace(version=(4, 5, 3))
+        owned = type("OwnedOperator", (Operator,), {})
+        self.reg.safe_register_class([owned])
+        self.assertEqual(self.events, [("register", owned)])
+
     def test_rna_lookup_for_classes_not_exposed_on_bpy_types(self):
         old = type("HiddenOperator", (), {})
 
@@ -76,6 +104,32 @@ class RegistrationTests(unittest.TestCase):
 
         replacement = type("HiddenOperator", (Operator,), {})
         self.assertIs(self.reg._registered_class(replacement), old)
+
+    def test_operator_rna_lookup_uses_explicit_id_after_class_rename(self):
+        old = type("OldPythonName", (), {})
+
+        class Operator:
+            @classmethod
+            def bl_rna_get_subclass_py(cls, name, default=None):
+                return old if name == "PIE_OT_mesh_f_gesture" else default
+
+        self.types.Operator = Operator
+        replacement = type("PieMeshFGesture", (Operator,), {"bl_idname": "pie.mesh_f_gesture"})
+        self.assertIs(self.reg._registered_class(replacement), old)
+
+    def test_missing_rna_class_does_not_fall_through_to_generic_base(self):
+        class BpyStruct:
+            @classmethod
+            def bl_rna_get_subclass_py(cls, name, default=None):
+                raise AssertionError("Generic bpy_struct lookup is unsafe after unregister")
+
+        class PropertyGroup(BpyStruct):
+            @classmethod
+            def bl_rna_get_subclass_py(cls, name, default=None):
+                return default
+
+        unregistered = type("UnregisteredPreferences", (PropertyGroup,), {})
+        self.assertIsNone(self.reg._registered_class(unregistered))
 
     def test_callback_failures_release_classes_and_guard(self):
         def fail():

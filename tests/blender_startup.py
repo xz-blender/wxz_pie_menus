@@ -40,6 +40,11 @@ with patch("builtins.__import__", side_effect=import_without_bgl):
                 assert addon.WXZ_PIE_Preferences.is_registered
                 assert addon.WXZ_PIE_Preferences is addon.preferences.WXZ_PIE_Preferences
                 assert addon.WXZ_PIE_Preferences.bl_idname == addon.__name__
+                statuses = [addon._lifecycle.status(module.__name__.rsplit(".", 1)[-1])
+                            for module in addon.all_modules]
+                assert all(not status.errors for status in statuses), statuses
+                assert all(status.state.value == ("active" if status.desired else "disabled")
+                           for status in statuses), statuses
                 prefs = preferences_entry.preferences
                 assert prefs.use_china_mirror is True
                 assert prefs.install_custom_pip_packages == ""
@@ -61,6 +66,8 @@ with patch("builtins.__import__", side_effect=import_without_bgl):
                 assert addon._lifecycle.status("E_pie").state.value == "active"
             finally:
                 addon.unregister()
+            assert all(addon._lifecycle.status(module.__name__.rsplit(".", 1)[-1]).state.value == "disabled"
+                       for module in addon.all_modules)
             assert not addon.WXZ_PIE_Preferences.is_registered
             assert not hasattr(bpy.types.Scene, "PIE_pip_output")
             print(f"PASS: startup, preferences, module toggles, reload and shutdown without bgl, cycle {cycle + 1}")

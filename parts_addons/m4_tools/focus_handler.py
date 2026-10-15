@@ -5,6 +5,9 @@ if not bpy.app.background:
     from gpu_extras.batch import batch_for_shader
 
 
+focusHUD = None
+
+
 def get_builtin_shader_name(name, prefix="3D"):
     if bpy.app.version >= (4, 0, 0):
         return name
@@ -41,17 +44,28 @@ def draw_focus_HUD(context, color=(1, 1, 1), alpha=1, width=2):
 
 def manage_focus_HUD():
     global focusHUD
-    focusHUD = None
-
+    if focusHUD is not None and "RNA_HANDLE_REMOVED" in str(focusHUD):
+        focusHUD = None
+    if focusHUD is not None:
+        return
     scene = getattr(bpy.context, "scene", None)
-
     if scene:
-        if focusHUD and "RNA_HANDLE_REMOVED" in str(focusHUD):
-            focusHUD = None
-
         focusHUD = bpy.types.SpaceView3D.draw_handler_add(
             draw_focus_HUD, (bpy.context, (1, 1, 1), 1, 2), "WINDOW", "POST_PIXEL"
         )
+
+
+def remove_focus_hud():
+    """Cancel deferred setup and release the draw callback before disabling."""
+    global focusHUD
+    if bpy.app.timers.is_registered(manage_focus_HUD):
+        bpy.app.timers.unregister(manage_focus_HUD)
+    if focusHUD is not None:
+        try:
+            bpy.types.SpaceView3D.draw_handler_remove(focusHUD, "WINDOW")
+        except (ReferenceError, ValueError):
+            pass
+        focusHUD = None
 
 
 def delay_execution(func, delay=0):

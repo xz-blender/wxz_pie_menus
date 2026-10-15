@@ -1,3 +1,4 @@
+from ..module.keymaps import owned_keymaps
 from ..module.reg import register_classes, unregister_classes
 import bpy
 from bpy.types import Operator
@@ -68,6 +69,7 @@ CLASSES = [
 addon_keymaps = []
 
 
+@owned_keymaps
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
     km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
@@ -76,12 +78,7 @@ def register_keymaps():
 
 
 def unregister_keymaps():
-    wm = bpy.context.window_manager
-    for km in addon_keymaps:
-        for kmi in km.keymap_items:
-            km.keymap_items.remove(kmi)
-        # wm.keyconfigs.addon.keymaps.remove(km)
-    addon_keymaps.clear()
+    keymap_safe_unregister(addon_keymaps)
 
 
 @register_classes(CLASSES)

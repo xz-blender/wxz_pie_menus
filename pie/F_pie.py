@@ -1,3 +1,4 @@
+from ..module.keymaps import owned_keymaps
 from ..module.reg import register_classes, unregister_classes
 import bpy
 from bpy.types import Menu, Operator
@@ -87,7 +88,7 @@ class Clean_Custom_Normal(Operator):
 
     @classmethod
     def poll(cls, context):
-        if context.object != None and context.object.type == "MESH":
+        if context.object is not None and context.object.type == "MESH":
             return True
 
     def execute(self, context):
@@ -120,7 +121,7 @@ class Merge_Objects_WithoutActive(Operator):
 
     @classmethod
     def poll(cls, context):
-        if context.object != None:
+        if context.object is not None:
             if context.object.type in ["MESH", "CURVE", "SURFACE", "GPENCIL", "ARMATURE"]:
                 return True
 
@@ -135,7 +136,126 @@ class Merge_Objects_WithoutActive(Operator):
         return {"FINISHED"}
 
 
+F_GESTURE_IDNAME = "pie.mesh_f_gesture"
+_ACTIVE_F_GESTURES = set()
+
+
+def cancel_f_gestures():
+    for operator in tuple(_ACTIVE_F_GESTURES):
+        operator._cancelled = True
+    _ACTIVE_F_GESTURES.clear()
+
+
+def _event_modifiers_match(kmi, event):
+    return kmi.any or all(
+        getattr(kmi, name) in {-1, int(getattr(event, name))} for name in ("shift", "ctrl", "alt", "oskey")
+    )
+
+
+def _has_custom_press(context, event):
+    """Yield to explicit user/F2 bindings instead of silently replacing them."""
+    configs = context.window_manager.keyconfigs
+    for config in (configs.user, configs.addon):
+        if config is None:
+            continue
+        km = config.keymaps.get("Mesh")
+        if km is None:
+            continue
+        for kmi in km.keymap_items:
+            if (
+                not kmi.active
+                or kmi.idname == F_GESTURE_IDNAME
+                or kmi.type != event.type
+                or kmi.value not in {"PRESS", "ANY"}
+                or kmi.key_modifier != "NONE"
+                or not _event_modifiers_match(kmi, event)
+            ):
+                continue
+            if config == configs.addon or kmi.is_user_modified or kmi.is_user_defined:
+                return True
+    return False
+
+
+class PieMeshFGesture(Operator):
+    bl_idname = F_GESTURE_IDNAME
+    bl_label = "XZ F: Click Make Edge/Face, Drag Pie"
+    bl_description = "Release without dragging: Make Edge/Face. Move while held: F pie. No hold timer"
+    # The delegated mesh operation owns its undo entry; the dispatcher changes no data.
+    bl_options = {"INTERNAL"}
+
+    @classmethod
+    def poll(cls, context):
+        return (
+            context.area is not None
+            and context.area.type == "VIEW_3D"
+            and context.region is not None
+            and context.region.type == "WINDOW"
+            and context.mode == "EDIT_MESH"
+        )
+
+    def _finish(self, result):
+        _ACTIVE_F_GESTURES.discard(self)
+        return result
+
+    def invoke(self, context, event):
+        if _has_custom_press(context, event):
+            return {"PASS_THROUGH"}
+        if event.value == "CLICK_DRAG":
+            bpy.ops.wm.call_menu_pie("INVOKE_DEFAULT", name="VIEW3D_PIE_MT_Bottom_F")
+            return {"FINISHED"}
+        if event.value in {"CLICK", "RELEASE"}:
+            return bpy.ops.mesh.edge_face_add("EXEC_DEFAULT", True)
+        if event.value != "PRESS" or event.is_repeat:
+            return {"CANCELLED"}
+        self._key = event.type
+        self._origin = (event.mouse_x, event.mouse_y)
+        self._modifiers = tuple(getattr(event, name) for name in ("shift", "ctrl", "alt", "oskey"))
+        self._window = context.window.as_pointer()
+        self._area = context.area.as_pointer()
+        self._cancelled = False
+        inputs = context.preferences.inputs
+        self._threshold = max(1, getattr(inputs, "drag_threshold_keyboard", inputs.drag_threshold))
+        _ACTIVE_F_GESTURES.add(self)
+        context.window_manager.modal_handler_add(self)
+        return {"RUNNING_MODAL"}
+
+    def modal(self, context, event):
+        if (
+            self._cancelled
+            or event.type in {"ESC", "WINDOW_DEACTIVATE"}
+            or context.window is None
+            or context.window.as_pointer() != self._window
+            or context.area is None
+            or context.area.as_pointer() != self._area
+            or context.mode != "EDIT_MESH"
+        ):
+            return self._finish({"CANCELLED"})
+        modifiers = tuple(getattr(event, name) for name in ("shift", "ctrl", "alt", "oskey"))
+        if modifiers != self._modifiers:
+            return self._finish({"CANCELLED", "PASS_THROUGH"})
+        if event.type == self._key:
+            if event.value == "RELEASE":
+                self._finish({"FINISHED"})
+                return bpy.ops.mesh.edge_face_add("EXEC_DEFAULT", True)
+            return {"RUNNING_MODAL"}  # OS repeat must not fill or launch a second modal.
+        if event.type in {"MOUSEMOVE", "INBETWEEN_MOUSEMOVE"}:
+            dx, dy = event.mouse_x - self._origin[0], event.mouse_y - self._origin[1]
+            if max(abs(dx), abs(dy)) >= self._threshold:
+                self._finish({"FINISHED"})
+                bpy.ops.wm.call_menu_pie("INVOKE_DEFAULT", name="VIEW3D_PIE_MT_Bottom_F")
+                return {"FINISHED"}
+            return {"RUNNING_MODAL"}
+        if event.type in {"TIMER", "TIMER_REPORT", "TIMERREGION"}:
+            return {"RUNNING_MODAL", "PASS_THROUGH"}
+        # Do not swallow an unrelated shortcut (including the physical F2 key).
+        return self._finish({"CANCELLED", "PASS_THROUGH"})
+
+    def cancel(self, context):
+        self._finish({"CANCELLED"})
+
+
 CLASSES = [
+    PieMeshFGesture,
     VIEW3D_PIE_MT_Bottom_F,
     Clean_Custom_Normal,
     Merge_Objects_WithoutActive,
@@ -145,11 +265,11 @@ CLASSES = [
 addon_keymaps = []
 
 
+@owned_keymaps
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
     space_name = [
         "Object Mode",
-        "Mesh",
         "Curve",
     ]
     for name in space_name:
@@ -157,6 +277,10 @@ def register_keymaps():
         kmi = km.keymap_items.new("wm.call_menu_pie", "F", "CLICK_DRAG")
         kmi.properties.name = "VIEW3D_PIE_MT_Bottom_F"
         addon_keymaps.append((km, kmi))
+
+    km = addon.keymaps.new(name="Mesh")
+    kmi = km.keymap_items.new(F_GESTURE_IDNAME, "F", "PRESS", repeat=False)
+    addon_keymaps.append((km, kmi))
 
     km = addon.keymaps.new(name="Mesh")  # ,space_type ='VIEW_3D')
     kmi = km.keymap_items.new("mesh.vert_connect_path", "F", "CLICK", shift=True)
@@ -166,9 +290,9 @@ def register_keymaps():
 @register_classes(CLASSES)
 def register():
     register_keymaps()
-    extend_keymaps_list(addon_keymaps)
 
 
 @unregister_classes(CLASSES)
 def unregister():
+    cancel_f_gestures()
     keymap_safe_unregister(addon_keymaps)

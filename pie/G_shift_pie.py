@@ -1,3 +1,4 @@
+from ..module.keymaps import owned_keymaps
 from ..module.reg import register_classes, unregister_classes
 import bpy
 from bpy.types import Menu, Operator
@@ -61,6 +62,7 @@ CLASSES = [
 addon_keymaps = []
 
 
+@owned_keymaps
 def register_keymaps():
     spaces = {
         "3D View": "VIEW_3D",

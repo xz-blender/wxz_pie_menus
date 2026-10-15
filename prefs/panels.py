@@ -2,6 +2,7 @@ import bpy
 import rna_keymap_ui
 from bpy.types import UIList
 
+from ..module.keymaps_ui import draw_keymaps
 from ..module.lifecycle_blender import draw_module_item
 from ..module.reg import register_classes, unregister_classes
 from ..utils import get_prefs
@@ -40,31 +41,7 @@ def draw_addon_menus(self, layout, context, module_path_name_list):
     top_row = layout.row()
     draw_pie_modules(self, top_row, module_path_name_list)
 
-    # box = layout.row().box()
-    # box.label(text="饼菜单快捷键配置:")
-    # col = box.column()
-    # from ..items import All_Pie_keymaps
-
-    # kc = bpy.context.window_manager.keyconfigs.addon
-
-    # for km, kmi in All_Pie_keymaps:
-    #     col.context_pointer_set("keymap", km)
-    #     km = kc.keymaps.get(km.name)
-    #     if km:
-    #         try:
-    #             kmi = km.keymap_items.get(kmi.idname, get_kmi_operator_properties(kmi))
-    #             if kmi:
-    #                 rna_keymap_ui.draw_kmi(["ADDON", "DEFAULT"], kc, km, kmi, col, 0)
-    #         except:
-    #             pass
-
-    # for km, kmi in All_Pie_keymaps:
-    #     km = km.active()
-    #     col.context_pointer_set("keymap", km)
-    #     try:
-    #         rna_keymap_ui.draw_kmi([], kc, kc.keymaps.get(km.name), kmi, col, 0)
-    #     except:
-    #         pass
+    draw_keymaps(self, context, layout)
 
 
 def draw_pie_modules(self, top_row, module_path_name_list):
@@ -146,15 +123,8 @@ def draw_resource_config(self, layout):
         box_r_split_col.operator("pie.open_custom_xz_presets_file_in_new_window", text="编辑路径").path_name = "Assets"
 
     row = box.row().box()
-    text = "加载预设 - 快捷键 -- (请备份好您的快捷键!)"
-    if self.load_xz_keys_presets:
-        split = row.column().split(factor=split_main_factor)
-        split.prop(self, "load_xz_keys_presets", text=text)
-        split.alignment = "RIGHT"
-        split.operator("pie.load_xz_keys_presets", text="手动执行")
-    else:
-
-        row.prop(self, "load_xz_keys_presets", text=text)
+    row.column().operator("pie.load_xz_keys_presets", text="创建独立 XZ 快捷键预设")
+    row.label(text="手动选择和导出；加载文件不会重写快捷键")
 
     row = box.row().box()
     text = "加载预设 - 通用设置 -- (请备份好您的userpref.blend文件!)"

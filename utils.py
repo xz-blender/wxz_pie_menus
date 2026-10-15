@@ -39,11 +39,19 @@ def get_config_path():
     return bpy.utils.user_resource("CONFIG")
 
 
+def _get_xdg_path(variable, default):
+    """Use absolute XDG paths only, as required by the base-directory spec."""
+    value = os.environ.get(variable, "")
+    return Path(value) if value and Path(value).is_absolute() else Path.home() / default
+
+
 def get_sync_path():
     if is_windows():
         return "D:/BaiduSyncdisk/Blender Assets"
     if is_macos():
         return "/Users/wangxianzhi/Library/CloudStorage/OneDrive-个人/Sync/Blender/Assets Sync"
+    # A configurable default only; no directory or sync service is created.
+    return str(_get_xdg_path("XDG_DATA_HOME", ".local/share") / "wxz_pie_menus" / "assets" / "sync")
 
 
 def get_local_path():
@@ -51,10 +59,11 @@ def get_local_path():
         return "F:/Blender Assets"
     if is_macos():
         return "/Users/wangxianzhi/Blender Lib"
+    return str(_get_xdg_path("XDG_DATA_HOME", ".local/share") / "wxz_pie_menus" / "assets" / "local")
 
 
 def get_desktop_path():
-    """获取win桌面路径,即使路径被手动更改了(从注册表获取)"""
+    """Return the desktop directory, including redirected/localized desktops."""
     if is_windows():
         import winreg
 
@@ -65,6 +74,27 @@ def get_desktop_path():
             return desktop_path
     elif is_macos():
         return os.path.join(os.path.expanduser("~"), "Desktop")
+
+    home = Path.home()
+    user_dirs = _get_xdg_path("XDG_CONFIG_HOME", ".config") / "user-dirs.dirs"
+    try:
+        lines = user_dirs.read_text(encoding="utf-8").splitlines()
+    except (OSError, UnicodeError):
+        lines = []
+    for line in lines:
+        match = re.fullmatch(r'\s*XDG_DESKTOP_DIR\s*=\s*"((?:\\.|[^"\\])*)"\s*(?:#.*)?', line)
+        if not match:
+            continue
+        value = match.group(1)
+        # Parse the XDG assignment as data, never source a shell configuration.
+        for variable in ("$HOME", "${HOME}"):
+            if value == variable or value.startswith(variable + "/"):
+                value = str(home) + value[len(variable) :]
+                break
+        value = re.sub(r'\\([$`"\\])', r"\1", value)
+        if value and "\0" not in value and Path(value).is_absolute():
+            return value
+    return str(home / "Desktop")
 
 
 @persistent
