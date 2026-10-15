@@ -108,6 +108,9 @@ class WeightOperator:
     def modal(self, context, event):
         if self._closed:
             return {"CANCELLED"}
+        if event.type == "WINDOW_DEACTIVATE":
+            self.cancel(context)
+            return {"CANCELLED"}
         if context.mode != "EDIT_MESH" or not self._edit.valid() or context.area != self._area:
             self.cancel(context)
             return {"CANCELLED"}

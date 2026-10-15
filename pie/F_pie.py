@@ -176,7 +176,7 @@ def _has_custom_press(context, event):
     return False
 
 
-class PIE_Mesh_F_Gesture(Operator):
+class PieMeshFGesture(Operator):
     bl_idname = F_GESTURE_IDNAME
     bl_label = "XZ F: Click Make Edge/Face, Drag Pie"
     bl_description = "Release without dragging: Make Edge/Face. Move while held: F pie. No hold timer"
@@ -255,7 +255,7 @@ class PIE_Mesh_F_Gesture(Operator):
 
 
 CLASSES = [
-    PIE_Mesh_F_Gesture,
+    PieMeshFGesture,
     VIEW3D_PIE_MT_Bottom_F,
     Clean_Custom_Normal,
     Merge_Objects_WithoutActive,

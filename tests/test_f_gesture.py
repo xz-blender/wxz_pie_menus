@@ -26,7 +26,7 @@ class GestureTests(unittest.TestCase):
             "cancel_f_gestures",
             "_event_modifiers_match",
             "_has_custom_press",
-            "PIE_Mesh_F_Gesture",
+            "PieMeshFGesture",
         }
         tree = ast.parse((ROOT / "pie/F_pie.py").read_text())
         tree.body = [
@@ -38,7 +38,7 @@ class GestureTests(unittest.TestCase):
         ]
         self.ns = {"bpy": bpy, "Operator": object}
         exec(compile(tree, "F_pie.py", "exec"), self.ns)
-        self.gesture = self.ns["PIE_Mesh_F_Gesture"]()
+        self.gesture = self.ns["PieMeshFGesture"]()
         self.context = NS(
             area=NS(type="VIEW_3D", as_pointer=lambda: 1),
             region=NS(type="WINDOW"),

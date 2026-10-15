@@ -93,16 +93,18 @@ class ProcessBoundaryTests(ReportFixture, unittest.TestCase):
         self.assertIs(self.launch_fixture(self.report_source())["passed"], True)
 
     def test_real_process_false_report_is_rejected(self):
+        source = self.report_source(False)
         with self.assertRaisesRegex(RuntimeError, "validation failed"):
-            self.launch_fixture(self.report_source(False))
+            self.launch_fixture(source)
 
     def test_real_process_missing_report_is_rejected(self):
         with self.assertRaisesRegex(RuntimeError, "missing or invalid"):
             self.launch_fixture("pass")
 
     def test_real_process_nonzero_exit_is_rejected(self):
+        source = self.report_source() + "raise SystemExit(7)"
         with self.assertRaisesRegex(RuntimeError, "status 7"):
-            self.launch_fixture(self.report_source() + "raise SystemExit(7)")
+            self.launch_fixture(source)
 
     def test_stale_success_report_cannot_mask_missing_new_report(self):
         write_report(lambda: {}, self.report, "write")

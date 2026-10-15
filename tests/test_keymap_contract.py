@@ -38,7 +38,7 @@ class KeymapContract(unittest.TestCase):
 
     def test_f_uses_no_hold_timer_and_explicit_undo(self):
         tree = ast.parse((ROOT / "pie/F_pie.py").read_text())
-        cls = next(n for n in tree.body if isinstance(n, ast.ClassDef) and n.name == "PIE_Mesh_F_Gesture")
+        cls = next(n for n in tree.body if isinstance(n, ast.ClassDef) and n.name == "PieMeshFGesture")
         calls = [n for n in ast.walk(cls) if isinstance(n, ast.Call)]
         self.assertFalse(any("timer" in ast.unparse(n.func) for n in calls))
         fills = [n for n in calls if ast.unparse(n.func) == "bpy.ops.mesh.edge_face_add"]

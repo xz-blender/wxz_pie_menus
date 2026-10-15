@@ -105,6 +105,18 @@ class RegistrationTests(unittest.TestCase):
         replacement = type("HiddenOperator", (Operator,), {})
         self.assertIs(self.reg._registered_class(replacement), old)
 
+    def test_operator_rna_lookup_uses_explicit_id_after_class_rename(self):
+        old = type("OldPythonName", (), {})
+
+        class Operator:
+            @classmethod
+            def bl_rna_get_subclass_py(cls, name, default=None):
+                return old if name == "PIE_OT_mesh_f_gesture" else default
+
+        self.types.Operator = Operator
+        replacement = type("PieMeshFGesture", (Operator,), {"bl_idname": "pie.mesh_f_gesture"})
+        self.assertIs(self.reg._registered_class(replacement), old)
+
     def test_missing_rna_class_does_not_fall_through_to_generic_base(self):
         class BpyStruct:
             @classmethod

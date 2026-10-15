@@ -25,7 +25,9 @@ The two original command-injection findings require review against this intended
 
 Keymap cleanup, legacy identity matching, event overlap, conflict discovery/rendering, and CLI orchestration have been split into focused helpers while retaining the existing behavior. Regression tests cover retry after failed cleanup and preservation of unrelated items, unavailable native editors, conflict labels, CLI session failures and test discovery. The added HUD cleanup helper uses snake_case; all repository callers were updated. Repeated F-gesture operator identifiers share a constant. Test assertions use boolean assertions and consistent actual/expected ordering.
 
-The existing Blender operator class names `WXZ_OT_keymap_type_refresh` and `PIE_Mesh_F_Gesture` are retained for RNA lifecycle compatibility and consistency with this add-on. They are not renamed solely to satisfy a generic Python naming rule. Any remaining naming findings need a project-level human decision, not an automatic configuration exemption.
+The final follow-up renames only the Python classes to `WxzKeymapTypeRefresh` and `PieMeshFGesture`; their explicit `bl_idname` values remain unchanged. Real Blender registration confirmed that Python class names and operator RNA identifiers are independent. Lifecycle lookup now derives the operator RNA identifier from its explicit ID, so an old class object can still find and clean up a replacement after a rename or hot reload. A real-Blender regression verifies old-name registration, new-name replacement, operator invocation, cleanup through the old object, and absence of the transient refresh operator. The existing full-reload test now checks the actual RNA identifier of that transient operator instead of its Python name.
+
+The remaining event-overlap complexity is split into a modifier-overlap helper, and both exception tests prepare their subprocess source before entering the assertion context. No rule, quality profile, security setting, or issue disposition is changed.
 
 ## Reproduction
 
@@ -50,3 +52,13 @@ The last command requires a real display, performs two GUI launches against the 
 - Ruff passed for changed Python files except the pre-existing E402 import layout in `parts_addons/m4_tools/__init__.py`; those 10 baseline diagnostics were not disabled or broadened into unrelated cleanup.
 
 The remote Sonar check must be read against the pushed commit before claiming its gate passed. Passing local tests alone does not establish that result.
+
+## Expanded-menu follow-up
+
+Real keyboard/mouse QA reproduced a Shift+E interruption bug: switching to another window with Alt+Tab left the weight modal and HUD active. Alt could first set the preview to zero. `WINDOW_DEACTIVATE` now follows the existing cancel/restore path before reading motion state. Added real-mesh regressions verify restoration of mixed original values after Alt, removal of a newly created preview layer, empty active-modal state, and released edit/HUD references.
+
+The quality follow-up was tested with 138 standard-library unit tests (133 passed, 5 environment-specific skips), 19 background integration scripts including the new operator-name lifecycle test, 26 native keymap UI/RNA tests, and 18 Quick Crease Weight RNA tests. Expanded real-window coverage and final commit/check results are recorded in the accompanying validation report.
+
+### Remaining real-input limitation
+
+Expanded manual input testing found that A in Object Mode and E in Edit Mesh do not reliably open their original `CLICK_DRAG` pies with factory keymaps: A PRESS followed by a 31-pixel mouse move and release selected the scene objects; E with the same gesture started Blender's default extrude modal. Event logs confirmed the press/move/release sequence. These paths must not be reported as passing based on direct `wm.call_menu_pie` calls or RNA draw tests. Their default PRESS actions need a separate, context-aware dispatch design that preserves normal short-key behavior and user/custom bindings; no default or user keymap was disabled or overwritten as a workaround.

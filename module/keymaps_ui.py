@@ -229,6 +229,11 @@ def _modifier_values(kmi):
     return tuple(getattr(kmi, name, 0) for name in MODIFIERS)
 
 
+def _modifiers_overlap(left, right):
+    return all(a == -1 or b == -1 or a == b
+               for a, b in zip(_modifier_values(left), _modifier_values(right)))
+
+
 def _drag_directions_overlap(left, right):
     if left.value != "CLICK_DRAG" or right.value != "CLICK_DRAG":
         return True
@@ -244,9 +249,8 @@ def event_relation(left, right):
         return None
     if getattr(left, "key_modifier", "NONE") != getattr(right, "key_modifier", "NONE"):
         return None
-    for a, b in zip(_modifier_values(left), _modifier_values(right)):
-        if a != -1 and b != -1 and a != b:
-            return None
+    if not _modifiers_overlap(left, right):
+        return None
     if left.value == right.value or "ANY" in {left.value, right.value}:
         if not _drag_directions_overlap(left, right):
             return None

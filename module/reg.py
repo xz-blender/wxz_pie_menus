@@ -26,6 +26,17 @@ def is_registering():
     return _REGISTERING_DEPTH > 0
 
 
+def _rna_identifier(cls):
+    # Explicit operator IDs are independent of Python class names. Blender
+    # exposes e.g. pie.mesh_f_gesture as PIE_OT_mesh_f_gesture in RNA.
+    operator_type = getattr(bpy.types, "Operator", None)
+    if operator_type is not None and issubclass(cls, operator_type):
+        category, separator, name = getattr(cls, "bl_idname", "").partition(".")
+        if separator:
+            return f"{category.upper()}_OT_{name}"
+    return cls.__name__
+
+
 def _registered_class(cls):
     # Reloading creates a new Python object; unregister the actual RNA owner.
     registered = getattr(bpy.types, cls.__name__, None)
@@ -39,7 +50,7 @@ def _registered_class(cls):
         if lookup is not None:
             # None from a concrete RNA family is final. Falling through to
             # generic bpy_struct can dereference freed RNA after unregister.
-            return lookup(cls.__name__, None)
+            return lookup(_rna_identifier(cls), None)
     return None
 
 
@@ -62,7 +73,7 @@ def _tag_legacy_operator_keymap_refresh(classes):
     if not any(issubclass(cls, operator_type) for cls in classes):
         return
 
-    class WXZ_OT_keymap_type_refresh(operator_type):
+    class WxzKeymapTypeRefresh(operator_type):
         bl_idname = "wxz_internal.keymap_type_refresh"
         bl_label = "WXZ Internal Keymap Type Refresh"
         bl_options = {"INTERNAL"}
@@ -70,17 +81,17 @@ def _tag_legacy_operator_keymap_refresh(classes):
         def execute(self, context):
             return {"CANCELLED"}
 
-    if _registered_class(WXZ_OT_keymap_type_refresh) is not None:
+    if _registered_class(WxzKeymapTypeRefresh) is not None:
         raise RuntimeError("WXZ temporary keymap refresh operator is unexpectedly registered")
     registered = False
     try:
-        bpy.utils.register_class(WXZ_OT_keymap_type_refresh)
+        bpy.utils.register_class(WxzKeymapTypeRefresh)
         registered = True
     finally:
         if registered:
             # Removing this inert type marks operator metadata dirty; Blender's
             # normal native update then reconnects diffs to the restored types.
-            bpy.utils.unregister_class(WXZ_OT_keymap_type_refresh)
+            bpy.utils.unregister_class(WxzKeymapTypeRefresh)
 
 
 def safe_register_class(classes):

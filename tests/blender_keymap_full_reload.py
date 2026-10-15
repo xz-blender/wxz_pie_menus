@@ -27,7 +27,7 @@ def enable():
     addon._lifecycle.set_enabled("F_pie", True)
     statuses = [addon._lifecycle.status(module.__name__.rsplit(".", 1)[-1]) for module in addon.all_modules]
     assert all(not status.errors for status in statuses), statuses
-    assert bpy.types.Operator.bl_rna_get_subclass_py("WXZ_OT_keymap_type_refresh", None) is None
+    assert bpy.types.Operator.bl_rna_get_subclass_py("WXZ_INTERNAL_OT_keymap_type_refresh", None) is None
     kc.update()
     return addon
 
@@ -99,4 +99,4 @@ try:
     print("PASS: preferences disable/re-enable, safe native UI lookup, unchanged default and add-on template", flush=True)
 finally:
     addon_utils.disable(ROOT.name, default_set=True)
-    assert bpy.types.Operator.bl_rna_get_subclass_py("WXZ_OT_keymap_type_refresh", None) is None
+    assert bpy.types.Operator.bl_rna_get_subclass_py("WXZ_INTERNAL_OT_keymap_type_refresh", None) is None
