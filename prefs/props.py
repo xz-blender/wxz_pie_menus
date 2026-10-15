@@ -26,12 +26,17 @@ class WXZ_PIE_Prefs_Props:
     load_assets_library_presets: BoolProperty(name="加载资源库预设", default=False)  # type: ignore
     assets_library_path_sync: StringProperty(name="远程路径", subtype="DIR_PATH", default=get_sync_path())  # type: ignore
     assets_library_path_local: StringProperty(name="本地路径", subtype="DIR_PATH", default=get_local_path())  # type: ignore
-    load_xz_keys_presets: BoolProperty(name="加载XZ快捷键预设", default=False)  # type: ignore
+    load_xz_keys_presets: BoolProperty(name="旧版 XZ 自动加载（已停用）", default=False)  # type: ignore
     load_xz_setting_presets: BoolProperty(name="加载XZ配置预设", default=False)  # type: ignore
     download_official_addons: BoolProperty(name="下载常用内置插件", default=False)  # type: ignore
     enable_addon_presets_items: BoolProperty(name="开启常用插件预设", default=False)  # type: ignore
     xz_download_offical_extensions: BoolProperty(name="安装常用官方插件", default=False)  # type: ignore
     xz_download_parts_extensions: BoolProperty(name="安装作者常用插件", default=False)  # type: ignore
+
+    # 饼菜单键位 UI 状态；不会触发键位写入或自动修复。
+    show_pie_keymaps: BoolProperty(name="饼菜单快捷键", default=False)  # type: ignore
+    show_pie_keymap_conflicts: BoolProperty(name="显示潜在冲突", default=True)  # type: ignore
+    pie_keymap_filter: StringProperty(name="筛选快捷键", default="")  # type: ignore
 
     # 饼菜单面板
     __annotations__.update(module_collection_properties())

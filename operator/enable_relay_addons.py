@@ -15,34 +15,10 @@ ex_presets_file = Path(__file__).parent / "addons_lib_presets.json"
 org_repo_name = "extensions.blender.org"
 third_repo_name = "blender4.com"
 
-repos = bpy.context.preferences.extensions.repos
-
-
 def get_repo_module_name(repo_name):
-    repos = bpy.context.preferences.extensions.repos
-    module_name = repos.get(repo_name)
-    if module_name is None:
-        bpy.ops.preferences.extension_repo_add(
-            name=repo_name,
-            remote_url=f"https://{repo_name}",
-            type="REMOTE",
-        )
-        repos[repo_name].use_sync_on_startup = False
-        module_name = repos.get(repo_name)
-
-        # 刚添加的远程库可能还未正确初始化 module，返回空字符串避免报错
-        if module_name is None:
-            return ""
-
-        return module_name.module
-
-    return repos[repo_name].module
-
-
-org_ext_id = f"bl_ext.{get_repo_module_name(org_repo_name)}"
-third_ext_id = f"bl_ext.{get_repo_module_name(third_repo_name)}"
-
-# print(f"{third_ext_id=}")
+    """Resolve existing repository IDs lazily; never create repos on import."""
+    repo = get_repos_class().get(repo_name)
+    return repo.module if repo is not None else ""
 
 
 def replace_substitute(op_args, placeholders):
@@ -114,14 +90,16 @@ def convert_value2bool(value):
 
 def set_all_addon_presets(self, context):
     ex_var_dict = {
-        "org_ex": org_ext_id,
-        "third_ex": third_ext_id,
+        "org_ex": get_repo_module_name(org_repo_name),
+        "third_ex": get_repo_module_name(third_repo_name),
     }
     with ex_presets_file.open(encoding="utf-8") as json_file:
         json_file_data = json.load(json_file)
         for ex_var_dict_Name, ex_var_dict_Value in ex_var_dict.items():
+            if not ex_var_dict_Value:
+                continue
             for addon_id, addon_sets in json_file_data[ex_var_dict_Name].items():
-                full_ext_id = f"{ex_var_dict_Value}.{addon_id}"
+                full_ext_id = f"bl_ext.{ex_var_dict_Value}.{addon_id}"
                 try:
                     set_ex_settings(context, full_ext_id, addon_sets)
                 except:
@@ -131,7 +109,11 @@ def set_all_addon_presets(self, context):
 
 
 def install_official_addons(self, context, addons):
+    repos = get_repos_class()
     repo = repos.get(org_repo_name)
+    if repo is None:
+        self.report({"ERROR"}, "未配置 Blender 官方扩展源，请先在偏好设置中添加官方源")
+        return {"CANCELLED"}
     repo.enabled = True
     repo_index = repos.find(repo.name)
     module_prefix = f"bl_ext.{repo.module}"
@@ -194,12 +176,17 @@ def install_addons(self, context):
             elif self.ex_dirs == "third_ex":
                 if get_repos_class().get(third_repo_name) is None:
                     bpy.ops.preferences.extension_repo_add(
-                        remote_url=f"https://{third_repo_name}/xz", type="REMOTE"
+                        name=third_repo_name, remote_url=f"https://{third_repo_name}/xz", type="REMOTE"
                     )
                 else:
                     enable_repos(third_repo_name)
+                repos = get_repos_class()
+                third_module = get_repo_module_name(third_repo_name)
+                if not third_module:
+                    self.report({"ERROR"}, "第三方扩展源尚未就绪")
+                    return {"CANCELLED"}
                 for addon_id, addon_sets in json_file_data[self.ex_dirs].items():
-                    full_ext_id = f"{third_ext_id}.{addon_id}"
+                    full_ext_id = f"bl_ext.{third_module}.{addon_id}"
                     if full_ext_id not in get_addon_list():
                         repo_directory = repos.get(third_repo_name).directory
                         repo_index = repos.find(third_repo_name)

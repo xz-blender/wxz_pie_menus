@@ -69,7 +69,7 @@ class OfficialInstallTests(unittest.TestCase):
         )
         patches = [
             patch.object(relay, "bpy", self.fake_bpy),
-            patch.object(relay, "repos", self.repos),
+            patch.object(relay, "get_repos_class", return_value=self.repos),
             patch.object(relay, "set_online"),
             patch.object(relay, "is_BlenderVersion_gthan", return_value=True),
             patch.object(relay, "get_addon_list", side_effect=lambda: list(self.installed)),
@@ -137,15 +137,29 @@ class OfficialInstallTests(unittest.TestCase):
         self.save.assert_not_called()
 
     def test_apply_all_presets_uses_extension_module_ids(self):
-        with (
-            patch.object(relay, "org_ext_id", "bl_ext.blender_org"),
-            patch.object(relay, "third_ext_id", "bl_ext.blender4_com"),
-        ):
+        with patch.object(relay, "get_repo_module_name", side_effect=["blender_org", "blender4_com"]):
             relay.set_all_addon_presets(self.operator, self.context)
         self.settings.assert_any_call(self.context, "bl_ext.blender_org.f2", PRESETS["org_ex"]["f2"])
         self.settings.assert_any_call(
             self.context, "bl_ext.blender4_com.simple_tabs", PRESETS["third_ex"]["simple_tabs"]
         )
+
+    def test_missing_official_repo_cancels_without_network_or_save(self):
+        self.repos.get.return_value = None
+        self.assertEqual(self.execute(), {"CANCELLED"})
+        self.sync.assert_not_called()
+        self.install.assert_not_called()
+        self.save.assert_not_called()
+
+    def test_presets_skip_missing_repositories(self):
+        with patch.object(relay, "get_repo_module_name", return_value=""):
+            relay.set_all_addon_presets(self.operator, self.context)
+        self.settings.assert_not_called()
+
+    def test_repository_lookup_is_read_only_and_current(self):
+        self.assertEqual(relay.get_repo_module_name("example"), "blender_org")
+        self.repos.get.return_value = None
+        self.assertEqual(relay.get_repo_module_name("example"), "")
 
 
 suite = unittest.defaultTestLoader.loadTestsFromTestCase(OfficialInstallTests)

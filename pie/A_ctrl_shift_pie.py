@@ -1,3 +1,4 @@
+from ..module.keymaps import owned_keymaps
 from ..module.reg import register_classes, unregister_classes
 import bpy
 from bpy.types import Menu, Operator
@@ -39,6 +40,7 @@ CLASSES = [
 addon_keymaps = []
 
 
+@owned_keymaps
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
 
@@ -51,7 +53,6 @@ def register_keymaps():
 @register_classes(CLASSES)
 def register():
     register_keymaps()
-    extend_keymaps_list(addon_keymaps)
 
 
 @unregister_classes(CLASSES)

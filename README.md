@@ -161,6 +161,10 @@
 
 ## 开发与维护
 
+快捷键注册、原生改键 UI、冲突诊断和 F 点击/拖动行为见 [菜单快捷键重构](docs/keymap-refactor.md)。
+
+Linux 开发请阅读 [Linux 开发环境与重建说明](docs/linux-development.md)。按 Blender 的实际 Python ABI 创建隔离依赖，使用临时副本打包以保留 Windows wheels。
+
 | 路径 | 内容 |
 | --- | --- |
 | [`pie/`](pie/) | 饼菜单、快捷键和相关操作符 |

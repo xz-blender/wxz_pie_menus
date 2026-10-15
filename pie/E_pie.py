@@ -1,3 +1,4 @@
+from ..module.keymaps import owned_keymaps
 from ..module.reg import register_classes, unregister_classes
 import bpy
 from bpy.types import Menu
@@ -82,8 +83,8 @@ CLASSES = [
 addon_keymaps = []
 
 
+@owned_keymaps
 def register_keymaps():
-    unregister_keymaps()
     addon = bpy.context.window_manager.keyconfigs.addon
     if addon is None:
         return
@@ -105,21 +106,13 @@ def register_keymaps():
 
 
 def unregister_keymaps():
-    # Remove the shared UI registry entries while the RNA items are still valid.
-    All_Pie_keymaps[:] = [entry for entry in All_Pie_keymaps if entry not in addon_keymaps]
-    for km, kmi in addon_keymaps:
-        try:
-            km.keymap_items.remove(kmi)
-        except (ReferenceError, RuntimeError):
-            pass
-    addon_keymaps.clear()
+    keymap_safe_unregister(addon_keymaps)
 
 
 @register_classes(CLASSES)
 def register():
     cancel_active()
     register_keymaps()
-    extend_keymaps_list(addon_keymaps)
 
 
 @unregister_classes(CLASSES)

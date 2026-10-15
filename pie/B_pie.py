@@ -1,3 +1,4 @@
+from ..module.keymaps import owned_keymaps
 from ..module.reg import register_classes, unregister_classes
 import bpy
 from bpy.types import Menu, Operator, Panel
@@ -63,13 +64,14 @@ CLASSES = [
 addon_keymaps = []
 
 
+@owned_keymaps
 def register_keymaps():
     addon = bpy.context.window_manager.keyconfigs.addon
 
     space_name = [
         ("3D View", "VIEW_3D"),
         ("UV Editor", "EMPTY"),
-        ("Node Editor", "EMPTY"),
+        ("Node Editor", "NODE_EDITOR"),
     ]
     for space in space_name:
         km = addon.keymaps.new(name=space[0], space_type=space[1])
@@ -82,7 +84,6 @@ def register_keymaps():
 @register_classes(CLASSES)
 def register():
     register_keymaps()
-    extend_keymaps_list(addon_keymaps)
 
 
 @unregister_classes(CLASSES)

@@ -37,10 +37,50 @@ def _registered_class(cls):
     for base in cls.__mro__[1:]:
         lookup = getattr(base, "bl_rna_get_subclass_py", None)
         if lookup is not None:
-            registered = lookup(cls.__name__, None)
-            if registered is not None:
-                return registered
+            # None from a concrete RNA family is final. Falling through to
+            # generic bpy_struct can dereference freed RNA after unregister.
+            return lookup(cls.__name__, None)
     return None
+
+
+def _tag_legacy_operator_keymap_refresh(classes):
+    """Backport the native operator-registration refresh for Blender < 4.5.3.
+
+    Blender #143838 (4.5 LTS commit dabca7703b) fixed operator registration
+    failing to tag dormant keymap properties for an RNA-type refresh. Without
+    that flag a feature disabled across another operator's removal can lose its
+    customized shortcut on re-enable. There is no public Python tag API on old
+    versions. Registering/removing our private, inert operator supplies the same
+    native flag. It never runs and owns no keymap, handler or lasting class.
+    No default/user item is read, cached, copied or written by this workaround.
+    https://www.blender.org/releases/4-5/ (4.5.3 corrective release, #143838)
+    """
+    version = getattr(getattr(bpy, "app", None), "version", (999, 0, 0))
+    operator_type = getattr(bpy.types, "Operator", None)
+    if version >= (4, 5, 3) or operator_type is None:
+        return
+    if not any(issubclass(cls, operator_type) for cls in classes):
+        return
+
+    class WXZ_OT_keymap_type_refresh(operator_type):
+        bl_idname = "wxz_internal.keymap_type_refresh"
+        bl_label = "WXZ Internal Keymap Type Refresh"
+        bl_options = {"INTERNAL"}
+
+        def execute(self, context):
+            return {"CANCELLED"}
+
+    if _registered_class(WXZ_OT_keymap_type_refresh) is not None:
+        raise RuntimeError("WXZ temporary keymap refresh operator is unexpectedly registered")
+    registered = False
+    try:
+        bpy.utils.register_class(WXZ_OT_keymap_type_refresh)
+        registered = True
+    finally:
+        if registered:
+            # Removing this inert type marks operator metadata dirty; Blender's
+            # normal native update then reconnects diffs to the restored types.
+            bpy.utils.unregister_class(WXZ_OT_keymap_type_refresh)
 
 
 def safe_register_class(classes):
@@ -54,6 +94,7 @@ def safe_register_class(classes):
                     bpy.utils.unregister_class(previous)
                 bpy.utils.register_class(cls)
                 registered.append(cls)
+            _tag_legacy_operator_keymap_refresh(registered)
         except Exception:
             safe_unregister_class(registered)
             raise
@@ -61,11 +102,20 @@ def safe_register_class(classes):
 
 def safe_unregister_class(classes):
     """Remove classes in reverse dependency order; tolerate absent classes."""
+    removed = False
     with _registering():
         for cls in reversed(tuple(classes)):
             registered = _registered_class(cls)
             if registered is not None:
                 bpy.utils.unregister_class(registered)
+                removed = True
+        # Preserve dormant native user-keymap diffs while another feature's
+        # operators are absent during a full add-on disable/reload sequence.
+        context = getattr(bpy, "context", None)
+        wm = getattr(context, "window_manager", None)
+        configs = getattr(wm, "keyconfigs", None)
+        if removed and configs is not None:
+            configs.update(keep_properties=True)
 
 
 def register_classes(classes):

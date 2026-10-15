@@ -74,50 +74,6 @@ def pie_check_rely_addon_op(pie, addon_name):  # addon name & path name
         return False  # 未安装
 
 
-def change_default_keymap(keys_class, keys_idname, value_list, prop_list=None):
-    keys_config = bpy.context.window_manager.keyconfigs.default.keymaps[keys_class].keymap_items
-
-    keys_list = []
-
-    stored_value_list = {}
-    stored_prop_list = {}
-
-    for keys_name, keys_bpy in keys_config.items():
-        if keys_name == keys_idname:
-            keys_list.append(keys_bpy)
-    for keys in keys_list:
-        for value in value_list:
-            # ----stored----
-            stored_value_list[keys] = [value[0], getattr(keys, value[0])]
-            setattr(keys, value[0], value[1])
-        if prop_list and prop_list is not None:
-            for prop in prop_list:
-                # ----stored----
-                stored_prop_list[keys] = [prop[0], getattr(keys.properties, prop[0])]
-                try:
-                    setattr(keys.properties, prop[0], prop[1])
-                except:
-                    None
-    keys_list.clear()
-    return (stored_value_list, stored_prop_list)
-
-
-def restored_default_keymap(stored_keys):
-    stored_value_list = stored_keys[0]
-    stored_prop_list = stored_keys[1]
-
-    for value_bpy, value in stored_value_list.items():
-        setattr(value_bpy, value[0], value[1])
-    if len(stored_prop_list) is not None:
-        for prop_bpy, prop in stored_prop_list.items():
-            try:
-                setattr(prop_bpy.properties, prop[0], prop[1])
-            except:
-                print("error:", prop_bpy, prop[0], prop[1])
-    stored_value_list.clear()
-    stored_prop_list.clear()
-
-
 def operator_exists(idname):
     names = idname.split(".")
     # print(names)
@@ -177,9 +133,5 @@ def get_pyfilename() -> str:  # 获取当前运行脚本的文件名
 
 
 def keymap_safe_unregister(addon_keymaps: list):
-    try:
-        for km, kmi in addon_keymaps:
-            km.keymap_items.remove(kmi)
-        addon_keymaps.clear()
-    except:
-        pass
+    from ..module.keymaps import unregister_owned
+    unregister_owned(addon_keymaps)

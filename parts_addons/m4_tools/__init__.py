@@ -17,7 +17,7 @@ from .align import AlignEditMesh, AlignObjectToEdge, AlignObjectToVert, CenterEd
 from .align_helper_npanel import ObjectAlignPanel
 from .align_helper_op import AlignObject
 from .align_helper_uv import AlignUV
-from .focus_handler import delay_execution, manage_focus_HUD
+from .focus_handler import delay_execution, manage_focus_HUD, remove_focus_HUD
 from .icons import icon
 from .material_pincker import PIE_MaterialPicker
 from .mirror import Mirror
@@ -44,6 +44,7 @@ def register():
 
 @unregister_classes(classes)
 def unregister():
+    remove_focus_HUD()
     icon.unregister()
 
 

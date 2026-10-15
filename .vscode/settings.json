@@ -45,18 +45,6 @@
   "git.autofetch": true,
   "git.confirmSync": false,
   "windsurf.lifeguard.mode": "agent",
-  "emeraldwalk.runonsave": {
-    "commands": [
-      {
-        "match": "\\.py$",
-        "cmd": ".venv\\Scripts\\python.exe -m ruff check --select I --fix \"${file}\""
-      },
-      {
-        "match": "\\.py$",
-        "cmd": ".venv\\Scripts\\python.exe -m ruff format \"${file}\""
-      }
-    ]
-  },
   "git.enableSmartCommit": true,
   "files.associations": {
     "curve_fit_nd.h": "c",
@@ -89,13 +77,11 @@
   },
   "code-runner.runInTerminal": true,
   "code-runner.executorMap": {
-    "python": "${workspaceFolder}\\.venv\\Scripts\\python.exe"
+    "python": "uv run python"
   },
   "code-runner.fileDirectoryAsCwd": false,
   "code-runner.cwd": "${workspaceFolder}",
-  "python.analysis.extraPaths": [
-    ".venv/Lib/site-packages"
-  ],
+  "python.defaultInterpreterPath": "${workspaceFolder}/.venv",
   "python.analysis.diagnosticSeverityOverrides": {
     "reportMissingModuleSource": "none",
     "reportInvalidTypeForm": "none",
@@ -103,9 +89,6 @@
     "reportAssignmentType": "none",
     "reportGeneralClassIssues": "none"
   },
-  "python.autoComplete.extraPaths": [
-    ".venv/Lib/site-packages"
-  ],
   "editor.semanticHighlighting.enabled": true,
   "editor.tokenColorCustomizations": {
     "comments": "#6A9955",

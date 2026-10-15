@@ -1,8 +1,16 @@
 import bpy
-from bpy.app.handlers import persistent
 
 from ..items import *
 from ..utils import *
+
+
+_BUILDING_PRESET = None
+
+
+def _preset_keymaps():
+    if _BUILDING_PRESET is None:
+        raise RuntimeError("XZ preset changes require an explicit isolated preset build")
+    return _BUILDING_PRESET.keymaps
 
 
 #### def ####
@@ -10,7 +18,7 @@ def change_key_value(A_dir, value):
     for space_type in A_dir:
         s_idname = space_type.lower().replace(" ", "_").replace("_editor", "").replace("_mode", "") + ".select_all"
 
-        keymaps = bpy.context.window_manager.keyconfigs.default.keymaps
+        keymaps = _preset_keymaps()
         for ks_name, ks_data in keymaps.items():
             if ks_name == space_type:
                 list_keymaps = []
@@ -23,17 +31,16 @@ def change_key_value(A_dir, value):
 
 
 def change_key_value_base(change_dir):
-
     # stored_value_list = {}
     # stored_prop_list = {}
     for dir_list in change_dir:
-        keymaps = bpy.context.window_manager.keyconfigs.default.keymaps
+        keymaps = _preset_keymaps()
         for ks_name, ks_data in keymaps.items():
             if ks_name == dir_list[0][0]:
                 list_keymaps = []
                 for id_name, id_data in ks_data.keymap_items.items():
                     if id_name == dir_list[0][1]:
-                        if id_data.name == dir_list[0][2]:
+                        if id_data.name in {dir_list[0][2], bpy.app.translations.pgettext_iface(dir_list[0][2])}:
                             list_keymaps.append(id_data)
                         else:
                             None
@@ -42,7 +49,7 @@ def change_key_value_base(change_dir):
                     for value in dir_list[1]:
                         # stored_value_list[data] = [value[0],getattr(data, value[0])]
                         setattr(data, value[0], value[1])
-                    if dir_list[2] != None:
+                    if dir_list[2] is not None:
                         for prop in dir_list[2]:
                             # stored_prop_list[data] = [prop[0],getattr(data.properties, prop[0])]
                             try:
@@ -56,7 +63,7 @@ def change_key_value_base(change_dir):
 
 # 其他键位设置
 def change_keys_value():
-    keys = bpy.context.window_manager.keyconfigs.default.keymaps
+    keys = _preset_keymaps()
     for keys_name, keys_data in keys.items():
         if keys_name in ["Object Mode", "Mesh", "Curve", "Curves", "Pose", "Armatrue", "Littice"]:
             for key_name, key_data in keys_data.keymap_items.items():
@@ -69,25 +76,23 @@ def change_keys_value():
                     key_name == "wm.save_mainfile"
                     and key_data.name == "Save Blender File"
                     and key_data.type == "S"
-                    and key_data.ctrl == True
-                    and key_data.alt == True
+                    and key_data.ctrl
+                    and key_data.alt
                 ):
                     key_data.active = False
-        elif keys_name == "Object Mode" or "Pose":
+        elif keys_name in {"Object Mode", "Pose"}:
             for key_name, key_data in keys_data.keymap_items.items():
                 if key_name == "object.hide_collection" and key_data.type != "H":
                     key_data.active = False
 
 
 def change_Asset_Shelf_Popover_Key():
-    bpy.context.preferences.view.use_translate_interface = False
-    keys = bpy.context.window_manager.keyconfigs.default.keymaps
+    keys = _preset_keymaps()
     for _, keys_data in keys.items():
         for key_idname, key_data in keys_data.keymap_items.items():
             if key_idname == "wm.call_asset_shelf_popover":
                 if key_data.name == "Call Asset Shelf Popover":
                     setattr(key_data, "value", "CLICK")
-    bpy.context.preferences.view.use_translate_interface = True
 
 
 A_select_dir = [
@@ -97,7 +102,8 @@ A_select_dir = [
     "Mesh",
     "UV Editor",
     "NLA Editor",
-    "Outliner" "Clip Editor",
+    "Outliner",
+    "Clip Editor",
     "Node Editor",
     "Graph Editor",
     "Sequencer",
@@ -310,20 +316,39 @@ Others_dir = [
 
 class PIE_Load_XZ_Keys_Presets(bpy.types.Operator):
     bl_idname = "pie.load_xz_keys_presets"
-    bl_label = "更改为xz的快捷键预设"
-    bl_description = ""
-    bl_options = {"REGISTER", "UNDO"}
+    bl_label = "创建独立 XZ 快捷键预设"
+    bl_description = "从 Blender 默认键位创建独立 XZ 配置；不会改写当前用户键位。请在键位偏好中手动选择，并导出以保留"
+    bl_options = {"REGISTER"}
 
     @classmethod
     def poll(cls, context):
         return True
 
     def execute(self, context):
-        # 访问快捷键的名称会因翻译而改变,先改变为英文状态
-        view = bpy.context.preferences.view
-        stored_trans: bool = view.use_translate_interface
-        view.use_translate_interface = False
+        global _BUILDING_PRESET
+        configs = context.window_manager.keyconfigs
+        if configs.get("XZ Pie (Independent)") is not None:
+            self.report({"WARNING"}, "XZ 配置已存在；不会覆盖自定义。请先手动重命名或移除它")
+            return {"CANCELLED"}
+        preset = configs.new("XZ Pie (Independent)")
+        try:
+            for source in configs.default.keymaps:
+                target = preset.keymaps.new(
+                    source.name, space_type=source.space_type, region_type=source.region_type, modal=source.is_modal
+                )
+                for item in source.keymap_items:
+                    target.keymap_items.new_from_item(item)
+            _BUILDING_PRESET = preset
+            self._apply()
+        except Exception:
+            configs.remove(preset)
+            raise
+        finally:
+            _BUILDING_PRESET = None
+        self.report({"INFO"}, "已创建独立 XZ 配置，请在键位偏好中选择并导出；当前键位未改写")
+        return {"FINISHED"}
 
+    def _apply(self):
         change_key_value(A_select_dir, "CLICK")
 
         for _dir in [
@@ -356,27 +381,28 @@ class PIE_Load_XZ_Keys_Presets(bpy.types.Operator):
         change_keys_value()
         change_Asset_Shelf_Popover_Key()
 
-        # 更改完之后切换回中文翻译
-        if stored_trans:
-            view.use_translate_interface = True
-        print(f"{addon_name()} 已更改快捷键!!")
-
         return {"FINISHED"}
 
 
-@persistent
-def run_set_load_xz_keys_presets(dummy):
-    if get_prefs().load_xz_keys_presets:
-        bpy.ops.pie.load_xz_keys_presets()
+def _remove_legacy_handlers():
+    """Clean only this module's pre-refactor callbacks during a live upgrade."""
+    for name in ("load_pre", "load_post", "load_factory_startup_post"):
+        handlers = getattr(bpy.app.handlers, name)
+        for callback in tuple(handlers):
+            if (
+                getattr(callback, "__module__", None) == __name__
+                and getattr(callback, "__name__", None) == "run_set_load_xz_keys_presets"
+            ):
+                handlers.remove(callback)
 
 
 def register():
+    _remove_legacy_handlers()
     bpy.utils.register_class(PIE_Load_XZ_Keys_Presets)
-    manage_app_handlers(handler_on_default_blender_list, run_set_load_xz_keys_presets)
 
 
 def unregister():
-    manage_app_handlers(handler_on_default_blender_list, run_set_load_xz_keys_presets, True)
+    _remove_legacy_handlers()
     bpy.utils.unregister_class(PIE_Load_XZ_Keys_Presets)
 
 
