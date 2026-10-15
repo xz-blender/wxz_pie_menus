@@ -21,6 +21,7 @@ class GestureTests(unittest.TestCase):
 
         bpy = NS(ops=NS(mesh=NS(edge_face_add=op("fill")), wm=NS(call_menu_pie=op("pie"))))
         names = {
+            "F_GESTURE_IDNAME",
             "_ACTIVE_F_GESTURES",
             "cancel_f_gestures",
             "_event_modifiers_match",

@@ -106,7 +106,9 @@ class BuildExtensionTests(unittest.TestCase):
                 self.assertFalse((self.destination / relative).exists(), relative)
         manifest = tomllib.loads((self.destination / "blender_manifest.toml").read_text(encoding="utf-8"))
         self.assertEqual(manifest["wheels"], [f"wheels/{name}" for name in sorted([LINUX_WHEEL, PURE_WHEEL])])
-        self.assertEqual({**manifest, "wheels": tomllib.loads(MANIFEST)["wheels"]}, tomllib.loads(MANIFEST))
+        source_metadata = {key: value for key, value in tomllib.loads(MANIFEST).items() if key != "wheels"}
+        built_metadata = {key: value for key, value in manifest.items() if key != "wheels"}
+        self.assertEqual(built_metadata, source_metadata)
         self.assertFalse((self.destination / "wheels" / "README.txt").exists())
 
     def test_prepared_wheels_inside_checkout_are_not_copied_twice(self):

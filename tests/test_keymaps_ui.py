@@ -255,6 +255,40 @@ class NativeDrawingTests(unittest.TestCase):
         self.assertIn(("keymap", self.user), layout.pointers)
         self.assertIn(("keyconfig", self.kcs.user), layout.pointers)
 
+    def test_unresolved_and_filtered_entries_never_edit_templates(self):
+        calls = []
+        items_module = ModuleType(f"{PACKAGE}.items")
+        items_module.All_Pie_keymaps = [(self.addon, self.templates[0])]
+        renderer = ModuleType("rna_keymap_ui")
+        renderer.draw_kmi = lambda *args: calls.append(args)
+        prefs = SimpleNamespace(show_pie_keymaps=True, show_pie_keymap_conflicts=True, pie_keymap_filter="")
+        context = SimpleNamespace(window_manager=SimpleNamespace(keyconfigs=self.kcs))
+        self.user.keymap_items.remove(self.customized)
+        with patch.dict(sys.modules, {items_module.__name__: items_module, "rna_keymap_ui": renderer}):
+            layout = Layout()
+            ui.draw_keymaps(prefs, context, layout)
+            self.assertTrue(any("身份无法安全确认" in label["text"] for label in layout.labels))
+            prefs.pie_keymap_filter = "no matching shortcut"
+            layout = Layout()
+            ui.draw_keymaps(prefs, context, layout)
+            self.assertTrue(any("没有匹配" in label["text"] for label in layout.labels))
+        self.assertEqual(calls, [])
+
+    def test_conflict_drawing_preserves_fallback_and_custom_press_guidance(self):
+        own = item(5, idname="pie.mesh_f_gesture", properties={})
+        fallback = item(2, idname="mesh.edge_face_add", properties={})
+        peer = item(8, idname="mesh.f2", properties={})
+        km = keymap(entries=[own, fallback, peer])
+        defaults = keymap(entries=[item(2, idname="mesh.edge_face_add", properties={})])
+        kc = SimpleNamespace(user=config(km), default=config(defaults))
+        layout = Layout()
+        ui._draw_keymap_conflicts(layout, kc, km, own)
+        self.assertTrue(any("预期回退" in label["text"] and label.get("icon") == "INFO"
+                            for label in layout.labels))
+        self.assertTrue(any("同一事件可能冲突" in label["text"] and label.get("icon") == "ERROR"
+                            for label in layout.labels))
+        self.assertEqual(sum("Mesh 自定义 PRESS 优先" in label["text"] for label in layout.labels), 1)
+
 
 @unittest.skipIf(bpy is None, "Requires Blender; use scripts/blender_dev.py --test tests/test_keymaps_ui.py")
 class BlenderKeymapUITests(unittest.TestCase):

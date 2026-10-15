@@ -19,6 +19,8 @@ python scripts/blender_dev.py --ui
 
 解释器路径以 --info 的实际输出为准；不要按 Blender 版本猜 Python ABI。项目允许 Python 3.11–3.13，并不代表已跨版本验证。启动器验证 venv 与 Blender Python 主/次版本及架构匹配，使用 factory-startup、离线模式、禁用自动脚本，且将配置/脚本/数据/扩展目录重定向到临时目录。不会保存日常 Blender 偏好。
 
+开发启动器的信任边界：`--blender`、`PATH`、`--venv` 和 `--test` 必须由开发者选择并信任；这些输入可以执行本地代码，隔离偏好和离线模式并不是安全沙箱。`--blender` 支持 PATH 中的程序名及相对/绝对可执行路径（包括空格），在启动前解析为同一个绝对路径，避免后续切换工作目录后运行不同程序。子进程使用参数列表及显式 `shell=False`，不拼接 shell 命令；这不验证所选程序或测试脚本是否可信。Windows 的 `.bat`/`.cmd` 包装脚本仍可能由系统 shell 处理，只应使用可信包装脚本和参数。
+
 --test-all 排除 *_ui.py。真实显示环境中可单独执行：
 
 ```sh

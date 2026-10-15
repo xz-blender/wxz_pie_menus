@@ -35,7 +35,7 @@ class FocusHandlerTests(unittest.TestCase):
         f = self.focus
         f.delay_execution(f.manage_focus_HUD)
         self.assertIn(f.manage_focus_HUD, self.pending)
-        f.remove_focus_HUD()
+        f.remove_focus_hud()
         for callback in tuple(self.pending):
             callback()
         self.assertIsNone(f.focusHUD)
@@ -49,8 +49,8 @@ class FocusHandlerTests(unittest.TestCase):
         f.manage_focus_HUD()
         self.assertIs(f.focusHUD, handle)
         self.add.assert_called_once()
-        f.remove_focus_HUD()
-        f.remove_focus_HUD()
+        f.remove_focus_hud()
+        f.remove_focus_hud()
         self.remove.assert_called_once_with(handle, "WINDOW")
         self.assertIsNone(f.focusHUD)
 
@@ -61,7 +61,7 @@ class FocusHandlerTests(unittest.TestCase):
             self.pending.remove(f.manage_focus_HUD)
             f.manage_focus_HUD()
             self.assertIsNotNone(f.focusHUD)
-            f.remove_focus_HUD()
+            f.remove_focus_hud()
             self.assertIsNone(f.focusHUD)
             self.assertFalse(self.pending)
         self.assertEqual(self.add.call_count, 3)

@@ -34,17 +34,8 @@ def track_keymaps(entries):
             known.add(identity)
 
 
-def unregister_owned(entries):
-    """Attempt every owned removal; retain failed items for lifecycle retry."""
-    if not entries:
-        return
-    # Flush pending native UI edits while the original templates still exist.
-    # Otherwise Blender may diff a just-edited user item against a removed base.
-    wm = getattr(bpy.context, "window_manager", None)
-    if wm is not None:
-        wm.keyconfigs.update(keep_properties=True)
-    identities = {(_pointer(km), _pointer(kmi)) for km, kmi in entries}
-    All_Pie_keymaps[:] = [pair for pair in All_Pie_keymaps if (_pointer(pair[0]), _pointer(pair[1])) not in identities]
+def _remove_owned_items(entries):
+    """Remove distinct live items, collecting only failures that remain live."""
     failed = []
     errors = []
     seen = set()
@@ -61,6 +52,21 @@ def unregister_owned(entries):
             if _live(km, kmi):
                 failed.append((km, kmi))
                 errors.append(str(exc))
+    return failed, errors
+
+
+def unregister_owned(entries):
+    """Attempt every owned removal; retain failed items for lifecycle retry."""
+    if not entries:
+        return
+    # Flush pending native UI edits while the original templates still exist.
+    # Otherwise Blender may diff a just-edited user item against a removed base.
+    wm = getattr(bpy.context, "window_manager", None)
+    if wm is not None:
+        wm.keyconfigs.update(keep_properties=True)
+    identities = {(_pointer(km), _pointer(kmi)) for km, kmi in entries}
+    All_Pie_keymaps[:] = [pair for pair in All_Pie_keymaps if (_pointer(pair[0]), _pointer(pair[1])) not in identities]
+    failed, errors = _remove_owned_items(entries)
     entries[:] = failed
     for owner, owned in list(_OWNERS.items()):
         if owned is entries or not any(_live(*pair) for pair in owned):

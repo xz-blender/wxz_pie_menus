@@ -94,6 +94,14 @@ def operator_signature(kmi):
     return kmi.idname, _freeze(props) if props is not None else ()
 
 
+def _matches_legacy_offset(item, templates, offset):
+    index = item.id - offset - 1
+    if not 0 <= index < len(templates):
+        return False
+    return (getattr(item, "is_user_modified", False)
+            or operator_signature(item) == operator_signature(templates[index]))
+
+
 def _legacy_merged_id_offset(base_map, addon_map, user_map):
     """Infer Blender's private base-id counter without assuming max(id)==counter.
 
@@ -113,14 +121,7 @@ def _legacy_merged_id_offset(base_map, addon_map, user_map):
     maximum = min(item.id for item in extras) - 1
     possible = []
     for offset in range(minimum, maximum + 1):
-        valid = True
-        for item in extras:
-            index = item.id - offset - 1
-            if (not 0 <= index < len(templates)
-                    or (not getattr(item, "is_user_modified", False)
-                        and operator_signature(item) != operator_signature(templates[index]))):
-                valid = False
-                break
+        valid = all(_matches_legacy_offset(item, templates, offset) for item in extras)
         if valid:
             possible.append(offset)
             if len(possible) > 1:
@@ -228,6 +229,13 @@ def _modifier_values(kmi):
     return tuple(getattr(kmi, name, 0) for name in MODIFIERS)
 
 
+def _drag_directions_overlap(left, right):
+    if left.value != "CLICK_DRAG" or right.value != "CLICK_DRAG":
+        return True
+    a, b = getattr(left, "direction", "ANY"), getattr(right, "direction", "ANY")
+    return a == "ANY" or b == "ANY" or a == b
+
+
 def event_relation(left, right):
     """SAME_EVENT, PRESS_BLOCKS_GESTURE, GESTURE_BLOCKED_BY_PRESS, or None."""
     if not left.active or not right.active:
@@ -240,10 +248,8 @@ def event_relation(left, right):
         if a != -1 and b != -1 and a != b:
             return None
     if left.value == right.value or "ANY" in {left.value, right.value}:
-        if left.value == right.value == "CLICK_DRAG":
-            a, b = getattr(left, "direction", "ANY"), getattr(right, "direction", "ANY")
-            if a != "ANY" and b != "ANY" and a != b:
-                return None
+        if not _drag_directions_overlap(left, right):
+            return None
         return "SAME_EVENT"
     if left.value == "PRESS" and right.value in GESTURES:
         return "PRESS_BLOCKS_GESTURE"
@@ -303,6 +309,20 @@ def _expected_mesh_fallback(own_map, own, other_map, other, keyconfigs):
             and event_label(default_item) == event_label(other))
 
 
+def _keymap_conflicts(keyconfigs, own_map, own, km):
+    for item in km.keymap_items:
+        if keymap_identity(km) == keymap_identity(own_map) and item.id == own.id:
+            continue
+        relation = event_relation(own, item)
+        if relation is None:
+            continue
+        if _expected_mesh_fallback(own_map, own, km, item, keyconfigs):
+            relation = "EXPECTED_FALLBACK"
+        uncertain = bool(keymap_scope(own_map).unknown or keymap_scope(km).unknown)
+        yield KeymapConflict(km, item, relation,
+                             operator_signature(own) == operator_signature(item), uncertain)
+
+
 def find_conflicts(keyconfigs, own_map, own, candidate_maps=None):
     """Inspect only the effective user configuration; never disable/remap a peer.
 
@@ -316,23 +336,67 @@ def find_conflicts(keyconfigs, own_map, own, candidate_maps=None):
     for km in user.keymaps if candidate_maps is None else candidate_maps:
         if not keymaps_overlap(own_map, km):
             continue
-        for item in km.keymap_items:
-            if keymap_identity(km) == keymap_identity(own_map) and item.id == own.id:
-                continue
-            relation = event_relation(own, item)
-            if relation is None:
-                continue
-            if _expected_mesh_fallback(own_map, own, km, item, keyconfigs):
-                relation = "EXPECTED_FALLBACK"
-            uncertain = bool(keymap_scope(own_map).unknown or keymap_scope(km).unknown)
-            conflicts.append(KeymapConflict(km, item, relation,
-                                            operator_signature(own) == operator_signature(item), uncertain))
+        conflicts.extend(_keymap_conflicts(keyconfigs, own_map, own, km))
     return conflicts
+
+
+def _group_keymap_entries(keyconfigs, entries, query):
+    grouped = {}
+    for addon_map, template in tuple(entries):
+        try:
+            resolved = resolve_user_item(keyconfigs, addon_map, template)
+            km, item = resolved if resolved is not None else (addon_map, template)
+            haystack = " ".join((km.name, operator_label(item), event_label(item))).casefold()
+            if query and query not in haystack:
+                continue
+            grouped.setdefault(keymap_identity(km), []).append((template, resolved))
+        except (ReferenceError, RuntimeError):
+            continue
+    return grouped
+
+
+def _draw_keymap_conflicts(col, keyconfigs, km, item):
+    labels = {
+        "SAME_EVENT": "同一事件可能冲突",
+        "PRESS_BLOCKS_GESTURE": "此 PRESS 可能拦截对方点击/拖动",
+        "GESTURE_BLOCKED_BY_PRESS": "对方 PRESS 可能拦截此点击/拖动",
+        "EXPECTED_FALLBACK": "预期回退：Mesh F 点击建面（保留 Blender 默认键位）",
+    }
+    for conflict in find_conflicts(keyconfigs, km, item):
+        expected = conflict.kind == "EXPECTED_FALLBACK"
+        row = col.row()
+        row.alert = not expected
+        label = labels[conflict.kind]
+        if conflict.same_action:
+            label += "（相同操作/属性）"
+        if conflict.context_uncertain:
+            label += "（上下文未知，请手动核对）"
+        row.label(text=label, icon="INFO" if expected else "ERROR")
+        col.label(text=f"{conflict.keymap.name} · {operator_label(conflict.item)} · {event_label(conflict.item)}")
+        if (item.idname == "pie.mesh_f_gesture" and not expected
+                and conflict.keymap.name == "Mesh" and conflict.item.value in {"PRESS", "ANY"}):
+            col.label(text="Mesh 自定义 PRESS 优先；请手动选择保留的绑定或改键。")
+
+
+def _draw_keymap_entry(group, keyconfigs, template, resolved, show_conflicts):
+    import rna_keymap_ui
+
+    if resolved is None:
+        group.label(text=f"{operator_label(template)}：用户键位已移除、尚未合并或身份无法安全确认。", icon="INFO")
+        group.label(text="可在 Blender 偏好设置 > 键位映射中检查或恢复。")
+        return
+    km, item = resolved
+    col = group.column()
+    col.context_pointer_set("keymap", km)
+    col.context_pointer_set("keyconfig", keyconfigs.user)
+    rna_keymap_ui.draw_kmi([], keyconfigs.user, km, item, col, 0)
+    if not show_conflicts:
+        return
+    _draw_keymap_conflicts(col, keyconfigs, km, item)
 
 
 def draw_keymaps(preferences, context, layout):
     """Draw user-owned customization through Blender's own keymap editor."""
-    import rna_keymap_ui
     from ..items import All_Pie_keymaps
 
     box = layout.box()
@@ -357,51 +421,11 @@ def draw_keymaps(preferences, context, layout):
         box.label(text="启用饼菜单后，这里会显示其快捷键。", icon="INFO")
         return
     query = preferences.pie_keymap_filter.strip().casefold()
-    grouped = {}
-    for addon_map, template in tuple(All_Pie_keymaps):
-        try:
-            resolved = resolve_user_item(keyconfigs, addon_map, template)
-            km, item = resolved if resolved is not None else (addon_map, template)
-            haystack = " ".join((km.name, operator_label(item), event_label(item))).casefold()
-            if query and query not in haystack:
-                continue
-            grouped.setdefault(keymap_identity(km), []).append((template, resolved))
-        except (ReferenceError, RuntimeError):
-            continue
+    grouped = _group_keymap_entries(keyconfigs, All_Pie_keymaps, query)
     if not grouped:
         box.label(text="没有匹配的已启用快捷键。", icon="INFO")
-    labels = {
-        "SAME_EVENT": "同一事件可能冲突",
-        "PRESS_BLOCKS_GESTURE": "此 PRESS 可能拦截对方点击/拖动",
-        "GESTURE_BLOCKED_BY_PRESS": "对方 PRESS 可能拦截此点击/拖动",
-        "EXPECTED_FALLBACK": "预期回退：Mesh F 点击建面（保留 Blender 默认键位）",
-    }
     for identity, entries in sorted(grouped.items()):
         group = box.box()
         group.label(text=f"{identity[0]} · {identity[1]} / {identity[2]}")
         for template, resolved in entries:
-            if resolved is None:
-                group.label(text=f"{operator_label(template)}：用户键位已移除、尚未合并或身份无法安全确认。", icon="INFO")
-                group.label(text="可在 Blender 偏好设置 > 键位映射中检查或恢复。")
-                continue
-            km, item = resolved
-            col = group.column()
-            col.context_pointer_set("keymap", km)
-            col.context_pointer_set("keyconfig", keyconfigs.user)
-            rna_keymap_ui.draw_kmi([], keyconfigs.user, km, item, col, 0)
-            if not preferences.show_pie_keymap_conflicts:
-                continue
-            for conflict in find_conflicts(keyconfigs, km, item):
-                expected = conflict.kind == "EXPECTED_FALLBACK"
-                row = col.row()
-                row.alert = not expected
-                label = labels[conflict.kind]
-                if conflict.same_action:
-                    label += "（相同操作/属性）"
-                if conflict.context_uncertain:
-                    label += "（上下文未知，请手动核对）"
-                row.label(text=label, icon="INFO" if expected else "ERROR")
-                col.label(text=f"{conflict.keymap.name} · {operator_label(conflict.item)} · {event_label(conflict.item)}")
-                if (item.idname == "pie.mesh_f_gesture" and not expected
-                        and conflict.keymap.name == "Mesh" and conflict.item.value in {"PRESS", "ANY"}):
-                    col.label(text="Mesh 自定义 PRESS 优先；请手动选择保留的绑定或改键。")
+            _draw_keymap_entry(group, keyconfigs, template, resolved, preferences.show_pie_keymap_conflicts)

@@ -55,7 +55,7 @@ def manage_focus_HUD():
         )
 
 
-def remove_focus_HUD():
+def remove_focus_hud():
     """Cancel deferred setup and release the draw callback before disabling."""
     global focusHUD
     if bpy.app.timers.is_registered(manage_focus_HUD):

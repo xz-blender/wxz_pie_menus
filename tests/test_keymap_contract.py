@@ -44,7 +44,7 @@ class KeymapContract(unittest.TestCase):
         fills = [n for n in calls if ast.unparse(n.func) == "bpy.ops.mesh.edge_face_add"]
         self.assertEqual(len(fills), 2)
         for call in fills:
-            self.assertEqual(ast.literal_eval(call.args[1]), True)
+            self.assertTrue(ast.literal_eval(call.args[1]))
 
 
 if __name__ == "__main__":

@@ -136,6 +136,7 @@ class Merge_Objects_WithoutActive(Operator):
         return {"FINISHED"}
 
 
+F_GESTURE_IDNAME = "pie.mesh_f_gesture"
 _ACTIVE_F_GESTURES = set()
 
 
@@ -163,7 +164,7 @@ def _has_custom_press(context, event):
         for kmi in km.keymap_items:
             if (
                 not kmi.active
-                or kmi.idname == "pie.mesh_f_gesture"
+                or kmi.idname == F_GESTURE_IDNAME
                 or kmi.type != event.type
                 or kmi.value not in {"PRESS", "ANY"}
                 or kmi.key_modifier != "NONE"
@@ -176,7 +177,7 @@ def _has_custom_press(context, event):
 
 
 class PIE_Mesh_F_Gesture(Operator):
-    bl_idname = "pie.mesh_f_gesture"
+    bl_idname = F_GESTURE_IDNAME
     bl_label = "XZ F: Click Make Edge/Face, Drag Pie"
     bl_description = "Release without dragging: Make Edge/Face. Move while held: F pie. No hold timer"
     # The delegated mesh operation owns its undo entry; the dispatcher changes no data.
@@ -278,7 +279,7 @@ def register_keymaps():
         addon_keymaps.append((km, kmi))
 
     km = addon.keymaps.new(name="Mesh")
-    kmi = km.keymap_items.new("pie.mesh_f_gesture", "F", "PRESS", repeat=False)
+    kmi = km.keymap_items.new(F_GESTURE_IDNAME, "F", "PRESS", repeat=False)
     addon_keymaps.append((km, kmi))
 
     km = addon.keymaps.new(name="Mesh")  # ,space_type ='VIEW_3D')
